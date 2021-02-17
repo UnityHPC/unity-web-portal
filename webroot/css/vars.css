@@ -1,0 +1,24 @@
+:root {
+    /* Background */
+    --color-base-1: #ffffff;
+    /* Divider Color */
+    --color-base-2: #eeeeee;
+    /* Footer */
+    --color-base-3: #fafafa;
+    --color-base-5: #dddddd;
+    /* Footer Text */
+    --color-base-4: #bbbbbb;
+    /* UMass Maroon */
+    --color-accent-1: #881c1c;
+    /* Darker Maroon */
+    --color-accent-2: #7f1a1a;
+    --color-accent-3: #9c2020;
+    --color-accent-4: #a92323;
+    --color-text-dark: #1a1a1a;
+    --color-text-faded: #666666;
+    --color-text-light: var(--color-base-1);
+    --color-text-success: #009933;
+    --color-text-failure: #cc0000;
+    --color-text-warning: #ffcc00;
+    --size-mobile-switch: 1000px;
+}

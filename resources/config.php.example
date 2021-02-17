@@ -1,0 +1,66 @@
+<?php
+
+//DEBUG Error Reporing, remove later
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+/**
+ * The directory structure MUST be:
+ * /resources
+ *  /resources/libraries
+ *  /resources/templates
+ *  /resources/config.php
+ * /webroot - Public document root
+ */
+
+define("ROOT", substr(__DIR__, 0, strrpos(__DIR__, '/')));  // Root Directory of the web docs (not webroot, but one level above that)
+
+class config {
+    public const URL = "";  // Enter URL of Website, ie. https://unity.rc.umass.edu
+    public const PREFIX = "/";  // Site prefix
+    public const MAINTENANCE_MODE = false;  // This will activate maintenance mode, which doesn't allow users in
+
+    // Hardcoded paths, change these locations if you move them
+    public const PATHS = array(
+        "templates" => ROOT . "/resources/templates",
+        "libraries" => ROOT . "/resources/libraries",
+        "locale" => ROOT . "/resources/locale",
+        "init" => ROOT . "/resources/init"
+    );
+
+    public const LDAP = array(
+        "dn" => "",  // Bind DN
+        "pass" => "",  // Bind Password
+        "host" => ""  // Hostname
+    );
+
+    public const SQL = array(
+        "host" => "", // MySQL Server hostname
+        "user" => "", // MySQL Server Username
+        "pass" => "", // MySQL Server Password
+        "db" => "unity" // MySQL Server DB
+    );
+
+    public const SLURM = array(
+        "cluster" => "unity",  // Cluster name registered in sacctmgr
+    );
+
+    public const MAIL = array(
+        "host" => "",  // SMTP server hostname
+        "user" => "",  // SMTP Server username
+        "pass" => "",  // SMTP Server password
+        "addresses" => array(
+            "contact" => array("hpc@it.umass.edu", "UMass HPC"),  // Administrative Email
+            "sender" => array("info@unity.rc.umass.edu", "Unity Cluster")  // Sender Email (can be fake)
+        )
+    );
+
+    public const LOCALE = "en";  // Select locale
+
+    public const CLUSTER = array(
+        "name" => "",  // Cluster Name
+        "org" => "",  // Organization Name
+        "desc" => ""  // Organization Description
+    );
+}

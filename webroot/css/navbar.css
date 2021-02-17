@@ -1,0 +1,120 @@
+/* Navbar */
+
+nav.mainNav {
+    background: var(--color-accent-1);
+    position: fixed;
+    left: 0;
+    top: 45px;
+    font-size: 11pt;
+    overflow: hidden;
+    white-space: nowrap;
+    z-index: 100;
+}
+
+nav.mainNav a {
+    color: var(--color-base-1);
+    background: #941e1e;
+    border-radius: 10px;
+    display: block;
+    margin: 10px 8px 10px 8px;
+    padding: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+nav.mainNav a:hover {
+    text-decoration: none;
+    background: var(--color-accent-3);
+}
+
+nav.mainNav a.active {
+    background: var(--color-accent-4);
+}
+
+header {
+    background: var(--color-accent-1);
+    height: 50px;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+header>#imgLogo {
+    height: 65%;
+    margin-left: 10px;
+    margin-top: 8px;
+}
+
+header>a.unity-state {
+    background: var(--color-base-3);
+    color: var(--color-accent-1);
+    display: block;
+    position: absolute;
+    top: 8px;
+    left: 140px;
+    padding: 1px 5px 1px 5px;
+    font-weight: bold;
+    font-size: 10pt;
+    border-radius: 5px;
+}
+
+header>a.unity-state:hover {
+    text-decoration: none;
+}
+
+header>button.hamburger {
+    background: var(--color-accent-1);
+    padding: 0;
+    right: 23px;
+    height: 60%;
+}
+
+header>button.hamburger>img {
+    position: relative;
+    height: 100%;
+}
+
+/* MOBILE VIEW */
+
+@media only screen and (max-width: 1000px) {
+    nav.mainNav {
+        right: 0;
+    }
+    header {
+        width: 100%;
+    }
+    main {
+        /* Header element height + 2*element padding */
+        margin-top: 45px;
+    }
+}
+
+/* DESKTOP VIEW */
+
+@media only screen and (min-width: 1001px) {
+    nav.mainNav {
+        bottom: 0;
+        width: 250px;
+    }
+    header>button.hamburger {
+        display: none;
+    }
+    main {
+        margin-left: 250px;
+    }
+    footer {
+        margin-left: 250px;
+    }
+}
+
+/* Only show MGHPCC overlay image if height and width support it */
+
+@media only screen and (min-width: 1001px) and (min-height: 1000px) {
+    nav.mainNav {
+        background: url("/res/mghpcc-image.png"), var(--color-accent-1);
+        background-position: center bottom;
+        background-repeat: no-repeat;
+    }
+}
