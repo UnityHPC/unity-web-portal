@@ -70,13 +70,13 @@ table tr:first-child {
 }
 
 table tr > td:first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 
 table tr > td:last-child {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 table tr, table td {
@@ -121,7 +121,7 @@ table form>* {
     white-space: nowrap;
     z-index: 1;
     box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.75);
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 .btnDropdown>div>button {
@@ -157,7 +157,7 @@ input[type=text], input[type=password] {
     width: calc(100% - 12px);
     /* Factors in extra border and padding */
     max-width: 300px;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 input[type=submit], button {
@@ -166,7 +166,7 @@ input[type=submit], button {
     cursor: pointer;
     border: 0;
     padding: 8px 12px 8px 12px;
-    border-radius: 10px;
+    border-radius: 5px;
     transition: background 0.1s;
 }
 
@@ -196,7 +196,7 @@ select {
     padding: 5px;
     width: 100%;
     max-width: 300px;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 textarea {
@@ -210,7 +210,8 @@ textarea {
     resize: vertical;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 11pt;
-    border-radius: 10px;
+    border-radius: 5px;
+    outline: none;
 }
 
 /* User Messages */
@@ -221,6 +222,15 @@ textarea {
 
 .message-failure {
     color: var(--color-accent-1);
+}
+
+.notice {
+    display: block;
+    background: var(--color-accent-1);
+    color: var(--color-base-1);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
 }
 
 /*

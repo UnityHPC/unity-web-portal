@@ -26,7 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 <h1><?php echo unity_locale::ACCOUNT_HEADER_MAIN; ?></h1>
 
 <div class="pageTop">
-    <span>We use SSH keys for console authentication to Unity. Users are not given passwords for this reason.</span>
+    <?php
+    if (!$user->isActive()) {
+        echo "<span class='notice'><b>Notice</b> Your account is currently <b>NOT ACTIVE</b>. You will not be able to login via SSH or JupyterLab until you are a member of at least one PI group.</span>";
+    }
+    ?>
     <pre>ssh -i [downloaded key] <?php echo $user->getUID(); ?>@unity.rc.umass.edu</pre>
 </div>
 
