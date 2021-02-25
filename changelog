@@ -1,0 +1,10 @@
+#### 0.4.1-BETA ####
+* [Feature] Added notices for inactive account
+* [Locale] Refined en locale file
+
+#### 0.4.0HF1-BETA ####
+* [Bug] Fixed issue where some users account wasn't activating
+
+#### 0.4.0-BETA ####
+* [Feature] Added Multiple PI Support
+* [Backend] Users and PI Groups are treated as different entities
