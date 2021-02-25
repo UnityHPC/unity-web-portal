@@ -21,6 +21,11 @@ class config {
     public const PREFIX = "/";  // Site prefix
     public const MAINTENANCE_MODE = false;  // This will activate maintenance mode, which doesn't allow users in
 
+    public const APP = array(
+        "repo" => "https://github.com/UMass-RC/unity-web-portal",
+        "version" => "0.4.1-BETA"
+    );
+
     // Hardcoded paths, change these locations if you move them
     public const PATHS = array(
         "templates" => ROOT . "/resources/templates",

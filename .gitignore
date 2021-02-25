@@ -1,2 +1,4 @@
 resources/config.php
 resources/libraries/composer/
+
+.vscode/

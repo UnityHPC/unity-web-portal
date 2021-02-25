@@ -6,7 +6,7 @@
     <img draggable="false" title="Massachusetts Green High Performance Computing Center" src="/res/mghpcc.png">
   </div>
   <div class="footerBlock">
-    <span>Copyright &copy;<?php echo date("Y") . " " . config::CLUSTER["org"]; ?> </span>&nbsp;&nbsp;<a href="/priv.php">Site Policy</a>
+    <span>Copyright &copy;<?php echo date("Y") . " " . config::CLUSTER["org"]; ?></span>&nbsp;&nbsp;<a href="/priv.php">Site Policy</a> - <a target="_blank" href="<?php echo config::APP["repo"]; ?>"><?php echo config::APP["version"]; ?></a>
   </div>
 </footer>
 
