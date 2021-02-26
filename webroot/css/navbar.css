@@ -1,7 +1,7 @@
 /* Navbar */
 
 nav.mainNav {
-    background: var(--color-accent-1);
+    background: var(--color-foreground);
     position: fixed;
     left: 0;
     top: 45px;
@@ -12,7 +12,7 @@ nav.mainNav {
 }
 
 nav.mainNav a {
-    color: var(--color-base-1);
+    color: var(--color-foreground-text);
     background: #941e1e;
     border-radius: 10px;
     display: block;
@@ -25,15 +25,15 @@ nav.mainNav a {
 
 nav.mainNav a:hover {
     text-decoration: none;
-    background: var(--color-accent-3);
+    background: var(--color-foreground-hover);
 }
 
 nav.mainNav a.active {
-    background: var(--color-accent-4);
+    background: var(--color-foreground-active);
 }
 
 header {
-    background: var(--color-accent-1);
+    background: var(--color-foreground);
     height: 50px;
     width: 250px;
     position: fixed;
@@ -48,8 +48,8 @@ header>#imgLogo {
 }
 
 header>a.unity-state {
-    background: var(--color-base-3);
-    color: var(--color-accent-1);
+    background: var(--color-foreground-text);
+    color: var(--color-foreground);
     display: block;
     position: absolute;
     top: 8px;
@@ -65,7 +65,7 @@ header>a.unity-state:hover {
 }
 
 header>button.hamburger {
-    background: var(--color-accent-1);
+    background: var(--color-foreground);
     padding: 0;
     right: 23px;
     height: 60%;
@@ -113,7 +113,7 @@ header>button.hamburger>img {
 
 @media only screen and (min-width: 1001px) and (min-height: 1000px) {
     nav.mainNav {
-        background: url("/res/mghpcc-image.png"), var(--color-accent-1);
+        background: url("/res/mghpcc-image.png"), var(--color-foreground;
         background-position: center bottom;
         background-repeat: no-repeat;
     }

@@ -1,7 +1,7 @@
 html, body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
-    background: var(--color-base-1);
+    background: var(--color-background);
     color: var(--color-text-dark);
     height: 100%;
     overscroll-behavior-y: none;
@@ -21,7 +21,7 @@ body {
 */
 
 a {
-    color: var(--color-accent-1);
+    color: var(--color-foreground);
     text-decoration: none;
 }
 
@@ -33,7 +33,7 @@ h1 {
     font-size: 15pt;
     font-weight: bold;
     padding-bottom: 10px;
-    border-bottom: 1px solid var(--color-base-2);
+    border-bottom: 1px solid var(--color-background-dividers);
     display: block;
     margin: 0 0 20px 0;
 }
@@ -42,7 +42,7 @@ hr {
     border-top: 0;
     border-right: 0;
     border-left: 0;
-    border-bottom: 1px solid var(--color-base-2);
+    border-bottom: 1px solid var(--color-background-dividers);
     margin: 10px 0 10px 0;
     display: block;
 }
@@ -65,8 +65,8 @@ table {
 
 table tr:first-child {
     text-align: center;
-    background: var(--color-accent-1);
-    color: var(--color-base-1);
+    background: var(--color-foreground);
+    color: var(--color-foreground-text);
 }
 
 table tr > td:first-child {
@@ -84,10 +84,6 @@ table tr, table td {
     height: 30px;
     overflow: hidden;
     white-space: nowrap;
-}
-
-table tr:not(:first-child):hover {
-    background: var(--color-base-3);
 }
 
 table button, table input[type=submit] {
@@ -125,15 +121,15 @@ table form>* {
 }
 
 .btnDropdown>div>button {
-    background: var(--color-base-3);
-    color: var(--color-text-dark);
+    background: var(--color-background-panel);
+    color: var(--color-background-text);
     width: 100%;
     text-align: left;
     border-radius: 0;
 }
 
 .btnDropdown>div>button:hover {
-    background: var(--color-base-5);
+    background: var(--color-background-panel-active);
 }
 
 .btnDropdown button {
@@ -152,7 +148,7 @@ form>*:not(:last-child) {
 
 input[type=text], input[type=password] {
     margin: 10px 0 10px 0;
-    border: 1px solid var(--color-base-2);
+    border: 1px solid var(--color-background-dividers);
     padding: 5px;
     width: calc(100% - 12px);
     /* Factors in extra border and padding */
@@ -161,8 +157,8 @@ input[type=text], input[type=password] {
 }
 
 input[type=submit], button {
-    background: var(--color-accent-1);
-    color: var(--color-text-light);
+    background: var(--color-foreground);
+    color: var(--color-foreground-text);
     cursor: pointer;
     border: 0;
     padding: 8px 12px 8px 12px;
@@ -171,7 +167,7 @@ input[type=submit], button {
 }
 
 input[type=submit]:hover, button:hover {
-    background: var(--color-accent-3);
+    background: var(--color-foreground-hover);
 }
 
 input:focus, button:focus {
@@ -187,11 +183,11 @@ form label {
     display: inline;
     user-select: none;
     font-size: 10pt;
-    color: var(--color-text-faded);
+    color: var(--color-background-text-inactive);
 }
 
 select {
-    border: 1px solid var(--color-base-2);
+    border: 1px solid var(--color-background-dividers);
     background: white;
     padding: 5px;
     width: 100%;
@@ -200,7 +196,7 @@ select {
 }
 
 textarea {
-    border: 1px solid var(--color-base-2);
+    border: 1px solid var(--color-background-dividers);
     width: 100%;
     min-height: 150px;
     max-width: 600px;
@@ -221,13 +217,13 @@ textarea {
 }
 
 .message-failure {
-    color: var(--color-accent-1);
+    color: var(--color-foreground);
 }
 
 .notice {
     display: block;
-    background: var(--color-accent-1);
-    color: var(--color-base-1);
+    background: var(--color-foreground);
+    color: var(--color-foreground-text);
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 20px;
@@ -266,11 +262,11 @@ div.pageMessages > * {
 /* FOOTER */
 
 footer {
-    background: var(--color-base-3);
+    background: var(--color-background-panel);
     flex-shrink: 0;
     text-align: center;
     font-size: 8pt;
-    color: var(--color-base-4);
+    color: var(--color-background-panel-inactive);
 }
 
 footer #footerLogos img {
@@ -280,7 +276,7 @@ footer #footerLogos img {
 }
 
 footer #footerLogos>*:not(:last-child) {
-    border-right: 1px solid var(--color-base-4);
+    border-right: 1px solid var(--color-background-panel-inactive);
 }
 
 .footerBlock {
