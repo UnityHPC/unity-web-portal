@@ -53,6 +53,26 @@ hr {
     transform: translateY(-50%);
 }
 
+div.checkmark {
+    background: var(--color-success);
+    border-radius: 100px;
+    padding: 5px;
+    display: inline-block;
+    vertical-align: bottom;
+    width: 20px;
+    height: 20px;
+    color: var(--color-foreground-text);
+    font-weight: bold;
+    text-align: center;
+    user-select: none;
+    margin-left: 15px;
+}
+
+/*
+main > section {
+    display: inline-block;
+}*/
+
 /* Tables */
 
 table {
@@ -64,9 +84,8 @@ table {
 }
 
 table tr:first-child {
-    text-align: center;
-    background: var(--color-foreground);
-    color: var(--color-foreground-text);
+    border-bottom: 2px solid var(--color-background-dividers);
+    font-weight: bold;
 }
 
 table tr > td:first-child {
@@ -100,6 +119,14 @@ table form:not(:first-child) {
 
 table form>* {
     margin: 0;
+}
+
+button.plusBtn {
+    font-size: 24pt;
+    display: block;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
 }
 
 /* Dropdown Button */
@@ -200,7 +227,6 @@ textarea {
     width: 100%;
     min-height: 150px;
     max-width: 600px;
-    padding: 5px;
     display: block;
     margin: 10px 0 10px 0;
     resize: vertical;
@@ -208,6 +234,11 @@ textarea {
     font-size: 11pt;
     border-radius: 5px;
     outline: none;
+}
+
+div.inline * {
+    display: inline;
+    margin-right: 10px;
 }
 
 /* User Messages */

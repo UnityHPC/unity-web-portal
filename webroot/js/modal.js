@@ -5,8 +5,8 @@ function openModal(title, link, message = "") {
         $("div.modalBody").html(result);
     }});
 
-    //$("div.modalWrapper").fadeIn(100);  // With Animation
-    $("div.modalWrapper").show();
+    $("div.modalWrapper").fadeIn(100);  // With Animation
+    //$("div.modalWrapper").show();
 }
 
 $("button.btnClose").click(function() {

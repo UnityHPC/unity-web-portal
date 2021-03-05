@@ -7,13 +7,13 @@
     --color-foreground-hover: #9c2020; /* Active color for buttons/links on hover, with --color-foreground as the background */
     --color-foreground-active: #a92323;
 
-    --color-background-dividers: #eeeeee; /* Colors to use for dividers and borders with --color-background in the background */
+    --color-background-dividers: #dddddd; /* Colors to use for dividers and borders with --color-background in the background */
 
     --color-background-panel: #fafafa; /* Panel background with --color-background in the background (used on footer, some popup panels) */
     --color-background-panel-active: #dddddd; /* Used when an element in a panel is active (such as hovering over a button) with --color-background-panel as the background */
     --color-background-panel-inactive: #bbbbbb;/* Text/divider/border color for faded/inactive elements, with --color-background-panel as the background */
 
-    --color-text-success: #009933;
+    --color-success: #009933;
     --color-text-failure: #cc0000;
     --color-text-warning: #ffcc00;
     --size-mobile-switch: 1000px;
