@@ -26,21 +26,18 @@
     <?php
     // Public Items - Always Visible
     echo "<a href='" . config::PREFIX . "/index.php'>About</a>";
-    echo "<a href='" . config::PREFIX . "/contact.php'>Contact</a>";
     echo "<a target='_blank' href='/docs'>Documentation</a>";
     //echo "<a href='" . config::PREFIX . "/cluster-status.php'>Cluster Status</a>";
 
     if (isset($_SESSION["user-state"]) && $_SESSION["user-state"] == "present") {
       // Menu Items for Present Users
+      echo "<a href='" . config::PREFIX . "/panel/support.php'>Support</a>";
       echo "<a href='" . config::PREFIX . "/panel/account.php'>Account Settings</a>";
       echo "<a href='" . config::PREFIX . "/panel/groups.php'>My Groups</a>";
-
-      if ($_SESSION["is_pi"]) {
-        echo "<a href='" . config::PREFIX . "/panel/pi.php'>PI Management</a>";
-      }
+      echo "<a href='" . config::PREFIX . "/panel/pi.php'>PI Portal</a>";
       echo "<a target='_blank' href='/panel/jhub'>JupyterLab</a>";
     } else {
-      echo "<a href='/panel'>Login / Request Account</a>";
+      echo "<a href='/panel/account.php'>Login / Request Account</a>";
     }
     ?>
   </nav>
@@ -48,7 +45,7 @@
   <div class="modalWrapper" style="display: none;">
     <div class="modalContent">
       <div class="modalTitleWrapper">
-        <span class="modalTitle">Test Modal</span>
+        <span class="modalTitle"></span>
         <button style="position: absolute; right: 10px; top: 10px;" class="btnClose"></button>
       </div>
       <div class="modalBody"></div>
