@@ -51,7 +51,7 @@ require_once "../../../resources/autoload.php";  // Load required libs
         }
 
         $.ajax({
-            url: "/js/ajax/ssh_generate.php?type=" + type,
+            url: "<?php echo config::PREFIX; ?>/js/ajax/ssh_generate.php?type=" + type,
             success: function(result) {
                 var pubKey = result.substr(result.indexOf(pubSection) + pubSection.length, result.indexOf(endingSection) - result.indexOf(pubSection) - pubSection.length);
                 var privKey = result.substr(result.indexOf(privSection) + privSection.length, result.indexOf(endingSection, result.indexOf(endingSection) + 1) - result.indexOf(privSection) - privSection.length);
