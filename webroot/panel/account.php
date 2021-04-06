@@ -112,7 +112,7 @@ if ($user->isActive()) {
     }
 
     button.plusBtn {
-        max-width: 605px;
+        max-width: 612px;
     }
 
     div.modalContent {
