@@ -196,6 +196,10 @@ class unityUser
         return $this->getLDAPUser()->getAttribute("sn")[0];
     }
 
+    public function getFullname() {
+        return $this->getFirstname() . " " . $this->getLastname();
+    }
+
     /**
      * Sets the mail in the account and the ldap entry
      *
