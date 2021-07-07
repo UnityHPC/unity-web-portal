@@ -23,6 +23,7 @@ require_once config::PATHS["libraries"] . "/unity-user.php";
 require_once config::PATHS["libraries"] . "/unity-account.php";
 require_once config::PATHS["libraries"] . "/unity-sql.php";
 require_once config::PATHS["libraries"] . "/curl.php";
+require_once config::PATHS["libraries"] . "/unity-storage.php";
 
 require_once config::PATHS["init"] . "/slurm.php";
 require_once config::PATHS["init"] . "/sql.php";
