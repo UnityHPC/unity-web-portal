@@ -12,7 +12,7 @@ class unityStorage
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $api_key));
-        //curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  // uncomment for debug
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  // comment for debug
 
         return $curl;
     }
@@ -57,8 +57,31 @@ class unityStorage
         {
             "user": "$user",
             "group": "$user",
+            "acl": [
+                {
+                    "flags": {"BASIC": "INHERIT"},
+                    "id": null,
+                    "perms": {"BASIC": "FULL_CONTROL"},
+                    "tag": "owner@",
+                    "type": "ALLOW"
+                },
+                {
+                    "flags": {"BASIC": "INHERIT"},
+                    "id": null,
+                    "tag": "group@",
+                    "type": "ALLOW"
+                },
+                {
+                    "flags": {"BASIC": "INHERIT"},
+                    "id": null,
+                    "tag": "everyone@",
+                    "type": "ALLOW"
+                }
+            ],
             "options": {
-                "recursive": true
+                "stripacl": false,
+                "recursive": true,
+                "traverse": true
             }
         }
         DATA;
@@ -67,16 +90,12 @@ class unityStorage
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);  // send data
 
         curl_setopt($curl, CURLOPT_URL, $path);
-
         curl_exec($curl);
-        var_dump(curl_getinfo($curl));
-        die();
-        /*
-        if (!curl_exec($curl)) {
-            // roll back changes
+
+        if (curl_getinfo($curl)["http_code"] != 200) {
             $this->deleteHomeDirectory($user);
-            throw new Exception("Unable to update permission for this dataset");
-        }*/
+            throw new Exception("Unable to create dataset for home directory");
+        }
 
         curl_close($curl);  // close session
     }
@@ -113,10 +132,10 @@ class unityStorage
     public function updateHomeDirectory($user, $size)
     {
         // This method should be redone for different deployments
-
+        throw new Exception("Not yet implemented");
     }
 
     public function getHomeDirectory($user) {
-
+        throw new Exception("Not yet implemented");
     }
 }
