@@ -31,6 +31,8 @@ class unityStorage
 
         $dataset = $CONF["home_dataset"] . $user;
 
+        $web_uid = config::WEB_UID;
+
         // CREATE DATASET
         $home_quota = config::STORAGE["home_quota"];
         $path = $CONF["host"] . "/pool/dataset";
@@ -67,7 +69,7 @@ class unityStorage
                 },
                 {
                     "tag": "USER",
-                    "id": 25000,
+                    "id": "$web_uid",
                     "type": "ALLOW",
                     "perms": {"BASIC": "FULL_CONTROL"},
                     "flags": {"BASIC": "INHERIT"}
@@ -96,7 +98,7 @@ class unityStorage
     }
 
     public function populateHomeDirectory($user) {
-        
+
     }
 
     public function deleteHomeDirectory($user)
@@ -121,6 +123,8 @@ class unityStorage
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);  // send data
 
         curl_setopt($curl, CURLOPT_URL, $path);
+        curl_exec($curl);
+
         if (curl_getinfo($curl)["http_code"] != 200) {
             throw new Exception("Unable to delete dataset");
         }
