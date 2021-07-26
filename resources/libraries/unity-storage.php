@@ -95,6 +95,8 @@ class unityStorage
         }
 
         curl_close($curl);  // close session
+
+        $this->populateHomeDirectory($user);  // populate initial files in home directory
     }
 
     public function deleteHomeDirectory($user)
@@ -151,7 +153,7 @@ class unityStorage
             chown($destination, $user);
             chgrp($destination, $user);
         }
-        
+
         //create scratch space
         $scratch_web_location = config::STORAGE["scratch_web_mount"] . "/" . $user;
         mkdir($scratch_web_location, 0700, true);
