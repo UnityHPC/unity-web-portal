@@ -59,23 +59,18 @@ class unityStorage
             "group": "$user",
             "acl": [
                 {
-                    "flags": {"BASIC": "INHERIT"},
-                    "id": null,
-                    "perms": {"BASIC": "FULL_CONTROL"},
                     "tag": "owner@",
-                    "type": "ALLOW"
+                    "id": null,
+                    "type": "ALLOW",
+                    "perms": {"BASIC": "FULL_CONTROL"},
+                    "flags": {"BASIC": "INHERIT"}
                 },
                 {
-                    "flags": {"BASIC": "INHERIT"},
-                    "id": null,
-                    "tag": "group@",
-                    "type": "ALLOW"
-                },
-                {
-                    "flags": {"BASIC": "INHERIT"},
-                    "id": null,
-                    "tag": "everyone@",
-                    "type": "ALLOW"
+                    "tag": "USER",
+                    "id": 25000,
+                    "type": "ALLOW",
+                    "perms": {"BASIC": "FULL_CONTROL"},
+                    "flags": {"BASIC": "INHERIT"}
                 }
             ],
             "options": {
@@ -98,6 +93,10 @@ class unityStorage
         }
 
         curl_close($curl);  // close session
+    }
+
+    public function populateHomeDirectory($user) {
+        
     }
 
     public function deleteHomeDirectory($user)
