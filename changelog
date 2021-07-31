@@ -1,6 +1,10 @@
-#### 0.4.1-BETA ####
+#### 0.5.0-BETA ####
 * [Feature] Added notices for inactive account
-* [Locale] Refined en locale file
+* [Locale] New XML based locale for easier dynamic lang switching
+* [Feature] Added VAST storage and Truenas Core storage integration for automatic storage creation
+* [Feature] Added contact form for new ticketing system, removed public contact form
+* [Feature] Added GitHub SSH key import
+* [Performance] Nested groups are loaded via AJAX instead of directly to avoid long loading times
 
 #### 0.4.0HF1-BETA ####
 * [Bug] Fixed issue where some users account wasn't activating
