@@ -153,9 +153,11 @@ class unityStorage
         //create scratch space
         $scratch_web_location = config::STORAGE["scratch_web_mount"] . "/" . $user;
         mkdir($scratch_web_location, 0700, true);
+        $this->populateScratchDirectory($user);
+
+        // set directory perms after populating it (then the website loses access!) TODO in the future we should use posix ACLs on the scratch space as well so the website has permanent access, but we don't have any features that can take care of that right now
         chgrp($scratch_web_location, $user);
         chown($scratch_web_location, $user);
-        $this->populateScratchDirectory($user);
 
         // create scratch space sym link
         symlink(config::STORAGE["scratch_mount"] . "/" . $user, $dest_dir . "/scratch");

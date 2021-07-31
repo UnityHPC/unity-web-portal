@@ -3,6 +3,7 @@
 // REQUIRES config.php
 // REQUIRES unity-ldap.php
 // REQUIRES slurm.php
+// REQUIRED unity-storage.php
 
 /**
  * Class that represents a single user account in the Unity Cluster. This class manages ldap entries as well as slurm account manager entries.
@@ -11,7 +12,7 @@ class unityUser
 {
     public function clone($uid)
     {
-        return new unityUser($uid, $this->ldap, $this->sql, $this->sacctmgr);
+        return new unityUser($uid, $this->ldap, $this->sql, $this->sacctmgr, $this->storage);
     }
 
     const HOME_DIR = "/home/";  // trailing slash is important
@@ -22,14 +23,16 @@ class unityUser
     private $ldap;
     private $sql;
     private $sacctmgr;
+    private $storage;
 
-    public function __construct($uid, $unityLDAP, $unitySQL, $sacctmgr)
+    public function __construct($uid, $unityLDAP, $unitySQL, $sacctmgr, $storage)
     {
         $this->uid = $uid;
 
         $this->ldap = $unityLDAP;  // Set LDAP connection instance var
         $this->sql = $unitySQL;  // Set SQL connection instance var
         $this->sacctmgr = $sacctmgr;  // Set sacctmgr instance var
+        $this->storage = $storage;
     }
 
     /**
@@ -327,6 +330,8 @@ class unityUser
      */
     public function activate()
     {
+        $this->storage->createHomeDirectory($this->getUID());  // create home/scratch spaces
+
         $this->setLoginShell(unityLDAP::DEFAULT_SHELL);
     }
 
