@@ -17,10 +17,6 @@ class unityStorage
         return $curl;
     }
 
-    private function getVASTCurlObject() {
-
-    }
-
     public function createHomeDirectory($user)
     {
         // This method should be redone for different deployments
@@ -140,7 +136,7 @@ class unityStorage
         throw new Exception("Not yet implemented");
     }
 
-    public function populateHomeDirectory($user) {
+    private function populateHomeDirectory($user) {
         $source_dir = config::DOCS_ROOT . "/etc/skel/home";
         $source_dir_obj = new FilesystemIterator($source_dir);
 
@@ -159,8 +155,24 @@ class unityStorage
         mkdir($scratch_web_location, 0700, true);
         chgrp($scratch_web_location, $user);
         chown($scratch_web_location, $user);
+        $this->populateScratchDirectory($user);
 
         // create scratch space sym link
         symlink(config::STORAGE["scratch_mount"] . "/" . $user, $dest_dir . "/scratch");
+    }
+
+    private function populateScratchDirectory($user) {
+        $source_dir = config::DOCS_ROOT . "/etc/skel/scratch";
+        $source_dir_obj = new FilesystemIterator($source_dir);
+
+        $dest_dir = config::STORAGE["scratch_web_mount"] . "/" . $user;
+
+        foreach ($source_dir_obj as $file) {
+            $filename = $file->getFilename();
+            $destination = $dest_dir . "/" . $filename;
+            copy($source_dir . "/" . $filename, $destination);
+            chown($destination, $user);
+            chgrp($destination, $user);
+        }
     }
 }
