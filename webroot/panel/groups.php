@@ -128,17 +128,7 @@ if (count($groups) == 0 && !$user->isPI()) {
         echo "<td><form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to leave " . $group->getPIUID() . "?\");'><input type='hidden' name='form_name' value='removePIForm'><input type='hidden' name='pi' value='" . $group->getPIUID() . "'><div class='inline'><input type='submit' value='Leave Group'></div></form></td>";
         echo "</tr>";
     }
-
-    foreach ($groups as $group) {
-        $owner = $group->getOwner();
-
-        echo "<tr class='expandable'>";
-        echo "<td><button class='btnExpand'>&#9654;</button>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
-        echo "<td>" . $group->getPIUID() . "</td>";
-        echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
-        echo "<td><form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to leave " . $group->getPIUID() . "?\");'><input type='hidden' name='form_name' value='removePIForm'><input type='hidden' name='pi' value='" . $group->getPIUID() . "'><div class='inline'><input type='submit' value='Leave Group'></div></form></td>";
-        echo "</tr>";
-    }
+    
     echo "</table>";
 }
 ?>
