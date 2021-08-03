@@ -2,7 +2,7 @@
 require_once "../../../resources/autoload.php";  // Load required libs
 ?>
 
-<form id="newKeyform" method="POST" action="<?php echo config::PREFIX; ?>/panel/account.php">
+<form id="newKeyform" enctype="multipart/form-data" method="POST" action="<?php echo config::PREFIX; ?>/panel/account.php">
     <div class='inline'><input type="radio" id="paste" name="add_type" value="paste" checked><label for="paste">Paste Key</label></div>
     <div class='inline'><input type="radio" id="import" name="add_type" value="import"><label for="import">Local File</label></div>
     <div class='inline'><input type="radio" id="generate" name="add_type" value="generate"><label for="generate">Generate Key</label></div>
@@ -15,8 +15,9 @@ require_once "../../../resources/autoload.php";  // Load required libs
     </div>
 
     <div style="display: none;" id="key_import">
-        <label for="avatar">Select local file:</label>
-        <input type="file" id="avatar" name="avatar">
+        <label for="keyfile">Select local file:</label>
+        <input type="file" id="keyfile" name="keyfile">
+        <input type="submit" value="Import Key">
     </div>
 
     <div style="display: none;" id="key_generate">

@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 array_push($added_keys, $_POST["key"]);
                 break;
             case "import":
-                array_push($added_keys, file_get_contents($_FILES['uploadedfile']['tmp_name']));
+                array_push($added_keys, file_get_contents($_FILES['keyfile']['tmp_name']));
                 break;
             case "generate":
                 array_push($added_keys, $_POST["gen_key"]);
@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     } elseif (isset($_POST["delIndex"])) {
         $keys = $user->getSSHKeys();
         unset($keys[intval($_POST["delIndex"])]);  // remove key from array
+        $keys = array_values($keys);
 
         $user->setSSHKeys($keys);  // Update user keys
     } elseif (isset($_POST["loginshell"])) {
@@ -73,7 +74,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 // only allow changing login shell if user is active
 if ($user->isActive()) {
     echo "<label>Login Shell</label><br>";
-    echo "<div class='inline'><input type='text' name='loginshell' placeholder='Login Shell (ie. /bin/bash)' value=" . $user->getLoginShell() . "><input type='submit' value='Set Login Shell'></div>";
+    echo "<div class='inline'><form action='' method='POST'><input type='text' name='loginshell' placeholder='Login Shell (ie. /bin/bash)' value=" . $user->getLoginShell() . "><input type='submit' value='Set Login Shell'></form></div>";
 }
 ?>
 
