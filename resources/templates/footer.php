@@ -13,5 +13,6 @@
 </body>
 
 <script src="<?php echo config::PREFIX; ?>/js/global.js"></script>
+<script src="<?php echo config::PREFIX; ?>/js/tables.js"></script>
 
 </html>

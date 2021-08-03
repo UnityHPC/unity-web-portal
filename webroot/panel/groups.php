@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     // Send approval email to admins
                     $mailer->send("new_pi_request", array("netid" => $user->getUID(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname(), "mail" => $user->getMail()));
-                    
+
                     $success = "A request for a PI account has been sent";
                 }
 
@@ -96,21 +96,6 @@ include config::PATHS["templates"] . "/header.php";
 
 <h1><?php echo unity_locale::GROUP_HEADER_MAIN; ?></h1>
 
-<div class="pageControls">
-
-    <button class="btnAddPI"><?php echo unity_locale::GROUP_BTN_JOIN_PI; ?></button>
-
-    <?php
-    if (!$user->isPI()) {
-        echo "<form method='POST' action='' onsubmit='return confirm(\"" . unity_locale::GROUP_WARN_ACTIVATE_PI . "\");'>";
-        echo "<input type='hidden' name='form_name' value='newPIform'>";
-        echo "<input type='submit' class='btnNewPI' value='" . unity_locale::GROUP_BTN_ACTIVATE_PI . "'>";
-        echo "</form>";
-    }
-    ?>
-
-</div>
-
 <div class="pageMessages">
     <?php
     if (isset($errors) && is_array($errors) && count($errors) > 0) {
@@ -133,26 +118,42 @@ if (count($groups) == 0 && !$user->isPI()) {
 } else {
     echo "<table>";
 
-    echo "<tr>";
-    echo "<td>PI Name</td>";
-    echo "<td>PI Group ID</td>";
-    echo "<td>PI Email</td>";
-    echo "<td>Actions</td>";
-    echo "</tr>";
+    foreach ($groups as $group) {
+        $owner = $group->getOwner();
+
+        echo "<tr class='expandable'>";
+        echo "<td><button class='btnExpand'>&#9654;</button>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
+        echo "<td>" . $group->getPIUID() . "</td>";
+        echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
+        echo "<td><form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to leave " . $group->getPIUID() . "?\");'><input type='hidden' name='form_name' value='removePIForm'><input type='hidden' name='pi' value='" . $group->getPIUID() . "'><div class='inline'><input type='submit' value='Leave Group'></div></form></td>";
+        echo "</tr>";
+    }
 
     foreach ($groups as $group) {
         $owner = $group->getOwner();
 
-        echo "<tr>";
-        echo "<td>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
+        echo "<tr class='expandable'>";
+        echo "<td><button class='btnExpand'>&#9654;</button>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
         echo "<td>" . $group->getPIUID() . "</td>";
         echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
-        echo "<td><form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to leave " . $group->getPIUID() . "?\");'><input type='hidden' name='form_name' value='removePIForm'><input type='hidden' name='pi' value='" . $group->getPIUID() . "'><input type='submit' value='Remove'></form></td>";
+        echo "<td><form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to leave " . $group->getPIUID() . "?\");'><input type='hidden' name='form_name' value='removePIForm'><input type='hidden' name='pi' value='" . $group->getPIUID() . "'><div class='inline'><input type='submit' value='Leave Group'></div></form></td>";
         echo "</tr>";
     }
     echo "</table>";
 }
 ?>
+
+<button type="button" class="plusBtn btnAddPI">&#43;</button>
+
+<style>
+    button.plusBtn {
+        max-width: 1200px;
+    }
+
+    div.modalContent {
+        max-width: 300px;
+    }
+</style>
 
 <script>
     $("button.btnAddPI").click(function() {
@@ -170,6 +171,8 @@ if (count($groups) == 0 && !$user->isPI()) {
         echo "openModal('Add New PI', '" . config::PREFIX . "/panel/modal/new_pi.php', '" . $errorHTML . "');";
     }
     ?>
+
+    var ajax_url = "<?php echo config::PREFIX; ?>/panel/ajax/get_group_members.php?pi_uid=";
 </script>
 
 <?php
