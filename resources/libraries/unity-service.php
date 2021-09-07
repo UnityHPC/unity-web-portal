@@ -1,7 +1,5 @@
 <?php
 
-
-
 class serviceStack
 {
     private $services = array(
