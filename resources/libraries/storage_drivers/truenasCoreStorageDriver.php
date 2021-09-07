@@ -3,16 +3,14 @@
 class truenasCoreStorageDriver extends storageDriver
 {
     private $curl;  // curl object
-    private $write_uid;
     private $url;
     private $home_dataset;
     private $scratch_dataset;
     private $project_dataset;
 
-    public function __construct($url, $api_key, $write_uid, $home_dataset = NULL, $scratch_dataset = NULL, $project_dataset = NULL)
+    public function __construct($url, $api_key, $home_dataset = NULL, $scratch_dataset = NULL, $project_dataset = NULL)
     {
         $this->url = $url;
-        $this->write_uid = $write_uid;
         $this->home_dataset = $home_dataset;
         $this->scratch_dataset = $scratch_dataset;
         $this->project_dataset = $project_dataset;

@@ -1,5 +1,7 @@
 <?php
 abstract class storageDriver {
+    public const web_access_uid = 25000;
+
     abstract public function isHomeStorage();
     abstract public function isScratchStorage();
     abstract public function isProjectStorage();
