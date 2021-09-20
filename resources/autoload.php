@@ -20,17 +20,21 @@ require_once config::PATHS["templates"] . "/globals.php";
 require_once config::PATHS["libraries"] . "/slurm.php";
 require_once config::PATHS["libraries"] . "/unity-ldap.php";
 require_once config::PATHS["libraries"] . "/unity-user.php";
-require_once config::PATHS["libraries"] . "/unity-account.php";
+//require_once config::PATHS["libraries"] . "/unity-account.php";
 require_once config::PATHS["libraries"] . "/unity-sql.php";
-require_once config::PATHS["libraries"] . "/curl.php";
 require_once config::PATHS["libraries"] . "/unity-storage.php";
+require_once config::PATHS["libraries"] . "/unity-group.php";
+require_once config::PATHS["libraries"] . "/unity-service.php";
 
-require_once config::PATHS["init"] . "/slurm.php";
-require_once config::PATHS["init"] . "/sql.php";
-require_once config::PATHS["init"] . "/shib.php";
-require_once config::PATHS["init"] . "/ldap.php";
-require_once config::PATHS["init"] . "/smtp.php";
-require_once config::PATHS["init"] . "/api.php";
+$SERVICE = new serviceStack();
+$SERVICE->add_ldap(config::LDAP);
+$SERVICE->add_sql(config::SQL);
+$SERVICE->add_mail(config::MAIL);
+$SERVICE->add_sacctmgr(config::SLURM);
+
+foreach (config::STORAGE_DEVICES as $name => $device) {
+  $SERVICE->add_storage($device, $name);
+}
 
 // Load Locale
 require_once config::PATHS["locale"] . "/" . config::LOCALE . ".php";  // Loads the locale class
