@@ -111,7 +111,7 @@ class serviceStack
                     throw new Exception("Local device requires path to be set in connection_details parameter.");
                 }
 
-                $device = new localStorageDriver($details["path"], $details["home"], $details["scratch"], $details["project"]);
+                $device = new localStorageDriver($details["path"], $details["flags"], $details["home"], $details["scratch"], $details["project"]);
 
                 break;
             case "truenas_core":
@@ -121,7 +121,7 @@ class serviceStack
                     throw new Exception("Truenas device requires api_key and url to be set in connection_details parameter.");
                 }
 
-                $device = new truenasCoreStorageDriver($details["url"], $details["api_key"], $details["home"], $details["scratch"], $details["project"]);
+                $device = new truenasCoreStorageDriver($details["url"], $details["flags"], $details["api_key"], $details["home"], $details["scratch"], $details["project"]);
 
                 break;
             default:
@@ -168,6 +168,10 @@ class serviceStack
     public function storage($name = self::DEFAULT_KEY)
     {
         return $this->services["storage"][$name];
+    }
+
+    public function all_storage() {
+        return $this->services["storage"];
     }
 
     public function sacctmgr($name = self::DEFAULT_KEY)

@@ -8,8 +8,10 @@ class truenasCoreStorageDriver extends storageDriver
     private $scratch_dataset;
     private $project_dataset;
 
-    public function __construct($url, $api_key, $home_dataset = NULL, $scratch_dataset = NULL, $project_dataset = NULL)
+    public function __construct($url, $flags, $api_key, $home_dataset = NULL, $scratch_dataset = NULL, $project_dataset = NULL)
     {
+        parent::__construct($flags);
+
         $this->url = $url;
         $this->home_dataset = $home_dataset;
         $this->scratch_dataset = $scratch_dataset;
@@ -20,22 +22,6 @@ class truenasCoreStorageDriver extends storageDriver
         curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $api_key));
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);  // comment for debug
-    }
-
-    public function isHomeStorage()
-    {
-        // in the future we should add a verification step that checks to make sure the dataset exists and is writable
-        return $this->home_dataset != NULL;
-    }
-
-    public function isScratchStorage()
-    {
-        return $this->scratch_dataset != NULL;
-    }
-
-    public function isProjectStorage()
-    {
-        return $this->project_dataset != NULL;
     }
 
     public function createHomeDirectory($user, $quota)
