@@ -16,15 +16,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		array_push($errors, "Accepting the EULA is required");
 	}
 
+	if (isset($_POST["acc_type"]) && $_POST["acc_type"] == "pi") {
+		// send email to admins here
+		$SERVICES->mail()->send("new_pi_request", $SHIB);
+	} else {
+		array_push($errors, "Please select your role");
+	}
+
 	// Request Account Form was Submitted
 	if (count($errors) == 0) {
 		try {
 			$user->init($SHIB["firstname"],$SHIB["lastname"],$SHIB["mail"],isset($_POST["pi"]) && $_POST["pi"] == "pi");
-
-			if (isset($_POST["pi"]) && $_POST["pi"] == "pi") {
-				// send email to admins here
-				$mailer->send("new_pi_request", $SHIB);
-			}
 
 			redirect(config::PREFIX . "/panel");
 		} catch (Exception $e) {
@@ -43,10 +45,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		<b>Name&nbsp;&nbsp;</b><?php echo $SHIB["firstname"] . " " . $SHIB["lastname"]; ?><br>
 		<b>Email&nbsp;&nbsp;</b><?php echo $SHIB["mail"]; ?>
 	</div>
-	<span>Your username will be <b><?php echo $SHIB["netid"]; ?></b></span>
+	<span>Your unity cluster username will be <b><?php echo $SHIB["netid"]; ?></b></span>
 
-	<input type="checkbox" id="chk_pi" name="pi" value="pi">
-	<label for="chk_pi">I am a PI (Principal Investigator)</label>
+	<input type="radio" id="btn_yes_pi" name="acc_type" value="pi">
+	<label for="btn_yes_pi">I am a principal investigator (PI)</label><br>
+	<input type="radio" id="btn_researcher" name="acc_type" value="research">
+	<label for="btn_researcher">I am a researcher</label><br>
+	<input type="radio" id="btn_student" name="acc_type" value="student">
+	<label for="btn_student">I am a student in a class</label><br>
 
 	<br>
 
