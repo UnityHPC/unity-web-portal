@@ -18,6 +18,7 @@ div.modalContent {
     width: calc(100% - 30px);
     box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.4);
     border-radius: 5px;
+    max-width: 600px;
 }
 
 div.modalTitleWrapper {
@@ -65,4 +66,26 @@ div.searchWrapper > * {
 
 div.searchWrapper > *:hover {
     background: var(--color-background);
+}
+
+.btnClose {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    text-align: center;
+    font-size: 20pt;
+}
+
+
+.btnClose::before {
+    content: "\00d7";
+}
+
+.buttonList {
+    margin-top: 10px;
+}
+
+.buttonList > * {
+    display: inline-block;
+    margin-right: 10px;
 }

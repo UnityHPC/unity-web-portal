@@ -58,7 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 <h1><?php echo unity_locale::ACCOUNT_HEADER_MAIN; ?></h1>
 
-<label>Account Status</label>
+<hr>
+
+<h5>Account Status</h5>
 
 <?php
 
@@ -77,7 +79,7 @@ if (!$isPI) {
     echo "<form action='' method='POST' id='piReq'><input type='hidden' name='pi_request' value='yes'></form>";
     if ($SERVICE->sql()->requestExists($USER->getUID())) {
         echo "<button class='btnReqPI' disabled>Request PI Account</button>";
-        echo "<span>Your request has been submitted and is currently pending</span>";
+        echo "<label>Your request has been submitted and is currently pending</label>";
     } else {
         echo "<button class='btnReqPI'>Request PI Account</button>";
     }
@@ -86,11 +88,11 @@ if (!$isPI) {
 
 <hr>
 
-<label>SSH Keys</label>
+<h5>SSH Keys</h5>
 <?php
 $sshPubKeys = $USER->getSSHKeys();  // Get ssh public key attr
 for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop through keys
-    echo "<div class='key-box'><textarea spellcheck='false' readonly>" . $sshPubKeys[$i] . "</textarea><form action='' method='POST'><input type='submit' class='btnRemove' value='&times;'><input type='hidden' name='delIndex' value='$i'></form></div>";
+    echo "<div class='key-box'><textarea spellcheck='false' readonly>" . $sshPubKeys[$i] . "</textarea><button class='btnRemove' data-id='" . $i . "'>&times;</button><form action='' id='del-" . $i . "' method='POST'><input type='hidden' name='delIndex' value='$i'></form></div>";
 }
 ?>
 
@@ -99,17 +101,9 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 <hr>
 
 <?php
-echo "<label>Login Shell</label><br>";
+echo "<h5>Login Shell</h5>";
 echo "<div class='inline'><form action='' method='POST'><input type='text' name='loginshell' placeholder='Login Shell (ie. /bin/bash)' value=" . $USER->getLoginShell() . "><input type='submit' value='Set Login Shell'></form></div>";
 ?>
-
-<div>
-    <?php
-    if (isset($errors) && empty($errors)) {
-        echo "<div class='checkmark'>&check;</div>";
-    }
-    ?>
-</div>
 
 <?php
 // GYPSUM GOES HERE
@@ -131,6 +125,11 @@ echo "<div class='inline'><form action='' method='POST'><input type='text' name=
     $("button.btnReqPI").click(function() {
         confirmModal("Are you sure you want to request a PI account? <strong>You need to be a PI to be approved</strong>", "#piReq");
     });
+
+    $("button.btnRemove").click(function() {
+        var id = $(this).attr("data-id");
+        confirmModal("Are you sure you want to delete this SSH key?", "#del-" + id);
+    });
 </script>
 
 <style>
@@ -138,27 +137,30 @@ echo "<div class='inline'><form action='' method='POST'><input type='text' name=
         position: relative;
         width: auto;
         height: auto;
+        max-width: 700px;
     }
 
-    .key-box input[type=submit] {
+    .key-box button {
         position: absolute;
-        left: 0;
+        right: 0;
+        top: 0;
         bottom: 0;
-        padding: 0;
+        padding: 5px;
+        width: 32px;
+        border-radius: 0 3px 3px 0;
+        font-size: 20pt;
         margin: 0;
     }
 
     .key-box textarea {
         word-wrap: break-word;
         word-break: break-all;
+        width: calc(100% - 44px);
+        border-radius: 3px 0 0 3px;
     }
 
     button.plusBtn {
-        max-width: 612px;
-    }
-
-    div.modalContent {
-        max-width: 600px;
+        max-width: 700px;
     }
 </style>
 

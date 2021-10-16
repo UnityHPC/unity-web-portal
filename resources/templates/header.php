@@ -70,8 +70,8 @@ if (isset($SHIB)) {
       <div class="modalBody"></div>
       <div class="modalMessages"></div>
       <div class="modalButtons">
-        <div style='display: none;' class='messageButtons'><button class='btnOkay'>Okay</button></div>
-        <div style='display: none;' class='yesnoButtons'><button class='btnYes'>Yes</button><button class='btnNo'>No</button></div>
+        <div class='buttonList messageButtons' style='display: none;'><button class='btnOkay'>Okay</button></div>
+        <div class='buttonList yesnoButtons' style='display: none;'><button class='btnYes'>Yes</button><button class='btnNo'>No</button></div>
       </div>
     </div>
   </div>

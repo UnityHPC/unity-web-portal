@@ -6,6 +6,7 @@
     --color-foreground-text: #ffffff; /* Text color with --color-foreground in the background */
     --color-foreground-hover: #9c2020; /* Active color for buttons/links on hover, with --color-foreground as the background */
     --color-foreground-active: #a92323;
+    --color-foreground-disabled: #e48181;
 
     --color-background-dividers: #dddddd; /* Colors to use for dividers and borders with --color-background in the background */
 
