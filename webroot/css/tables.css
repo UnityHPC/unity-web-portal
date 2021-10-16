@@ -30,6 +30,10 @@ table form>* {
     margin: 0;
 }
 
+tr.expanded {
+    border-bottom: 0;
+}
+
 tr.expanded > td {
     background: #eeeeee;
 }
@@ -38,8 +42,8 @@ tr.expandable {
     cursor: pointer;
 }
 
-tr.expandable.expanded {
-    border-bottom: 2px solid var(--color-background-dividers);
+tr.expanded.first {
+    border-bottom: 5px solid var(--color-background-dividers);
 }
 
 tr.expanded.first > td:first-child {
@@ -80,6 +84,7 @@ button.btnExpand {
     margin: 0 10px 0 0;
     padding: 0;
     background: transparent;
+    color: var(--color-foreground);
 }
 
 button.btnExpand:hover {
@@ -88,4 +93,8 @@ button.btnExpand:hover {
 
 button.btnExpanded {
     transform: rotate(90deg);
+}
+
+td:last-child > button {
+    float: right;
 }

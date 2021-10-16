@@ -30,7 +30,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Add row to sql
                 if (empty($modalErrors)) {
                     $SERVICE->sql()->addRequest($USER->getUID(), $_POST["pi"]);
-                    $message = "A request for joining " . $_POST["pi"] . " has been sent";
 
                     // Send approval email to PI
                     $SERVICE->mail()->send("new_group_request", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail(), "to" => $pi_owner->getMail()));
@@ -68,32 +67,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 include config::PATHS["templates"] . "/header.php";
 ?>
 
-<h1><?php echo unity_locale::GROUP_HEADER_MAIN; ?></h1>
-
-<div class="pageMessages">
-    <?php
-    if (isset($errors) && is_array($errors) && count($errors) > 0) {
-        foreach ($errors as $error) {
-            echo "<span class='message-failure'>" . unity_locale::LABEL_ERROR . " $error</span>";
-        }
-    }
-
-    if (isset($success)) {
-        echo "<span class='message-success'>" . unity_locale::LABEL_SUCCESS . " $success</span>";
-    }
-    ?>
-</div>
+<h1>My Principal Investigators</h1>
+<hr>
 
 <?php
 $groups = $USER->getGroups();
 
 $requests = $SERVICE->sql()->getRequestsByUser($USER->getUID());
+
 $req_filtered = array();
 foreach ($requests as $request) {
     if ($request["request_for"] != "admin") {  // put this in config later for gypsum
         array_push($req_filtered, $request);
     }
 }
+
+if (count($groups) + count($req_filtered) == 0) {
+    echo "<p>You do not have any PIs attached to your account. You need at least one to use the cluster. Click the button below to request.</p>";
+}
+
 if (count($req_filtered) > 0) {
     echo "<h3>Pending Requests</h3>";
     echo "<table>";
@@ -108,7 +100,10 @@ if (count($req_filtered) > 0) {
         echo "</tr>";
     }
     echo "</table>";
-    echo "<hr>";
+
+    if (count($groups) > 0) {
+        echo "<hr>";
+    }
 }
 
 
@@ -131,10 +126,6 @@ echo "</table>";
 <button type="button" class="plusBtn btnAddPI">&#43;</button>
 
 <style>
-    button.plusBtn {
-        max-width: 1200px;
-    }
-
     div.modalContent {
         max-width: 300px;
     }
@@ -164,6 +155,14 @@ echo "</table>";
 
     var ajax_url = "<?php echo config::PREFIX; ?>/panel/ajax/get_group_members.php?pi_uid=";
 </script>
+
+<style>
+    @media only screen and (max-width: 1000px) {
+        table td:nth-child(3) {
+            display: none;
+        }
+    }
+</style>
 
 <?php
 include config::PATHS["templates"] . "/footer.php";
