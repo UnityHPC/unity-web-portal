@@ -92,12 +92,22 @@ class unityAccount
     }
 
     public function removeGroup() {
-        $ldapPiGroupEntry = $this->getLDAPPiGroup();
-        if (!$ldapPiGroupEntry->delete()) {
-            throw new Exception("Unable to delete PI ldap group");
+        $this->service_stack->sql()->removeRequests($this->pi_uid);  // remove any lasting requests
+
+        $users = $this->getGroupMembers();
+        foreach ($users as $user) {
+            $this->removeUserFromGroup($user);
         }
 
-        $this->service_stack->sql()->removeRequests($this->pi_uid);  // remove any lasting requests
+        // remove admin
+        $this->removeUserFromGroup($this->getOwner());
+
+        $ldapPiGroupEntry = $this->getLDAPPiGroup();
+        if ($ldapPiGroupEntry->exists()) {
+            if (!$ldapPiGroupEntry->delete()) {
+                throw new Exception("Unable to delete PI ldap group");
+            }
+        }
 
         $this->removeSlurmAccount();
     }
