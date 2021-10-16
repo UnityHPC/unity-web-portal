@@ -234,8 +234,9 @@ class unityUser
     public function setSSHKeys($keys)
     {
         $ldapUser = $this->getLDAPUser();
+        $keys_filt = array_values(array_unique($keys));
         if ($ldapUser->exists()) {
-            $ldapUser->setAttribute("sshpublickey", $keys);
+            $ldapUser->setAttribute("sshpublickey", $keys_filt);
             if (!$ldapUser->write()) {
                 throw new Exception("Failed to modify SSH keys for $this->uid");
             }
