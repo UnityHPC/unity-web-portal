@@ -8,7 +8,7 @@ class serviceStack
         "ldap" => array(),
         "sql" => array(),
         "mail" => array(),
-        "storage" => array(),
+        "unityfs" => array(),
         "sacctmgr" => array()
     );
 
@@ -64,7 +64,7 @@ class serviceStack
         }
         $mailer->Port = $details["port"];
 
-        if (array_key_exists("smtp_options", $details)) {
+        if (!array_key_exists("smtp_options", $details)) {
             $mailer->SMTPOptions = array(
                 'ssl' => array(
                     'verify_peer' => false,
@@ -93,49 +93,9 @@ class serviceStack
         return $this;
     }
 
-    public function add_storage($details, $name = self::DEFAULT_KEY)
-    {
-        if (array_key_exists($name, $this->services["mail"])) {
-            throw new Exception("Service '$name' already exists.");
-        }
-
-        if (!array_key_exists("type", $details)) {
-            throw new Exception("Storage type not set.");
-        }
-
-        // this is where storage drivers should be indexed and listed
-        switch ($details["type"]) {
-            case "local":
-                // locally mounted storage device
-                if (!array_key_exists("path", $details)) {
-                    throw new Exception("Local device requires path to be set in connection_details parameter.");
-                }
-
-                $device = new localStorageDriver($details["path"], $details["flags"], $details["home"], $details["scratch"], $details["project"]);
-
-                break;
-            case "truenas_core":
-                // truenas core device via rest API
-
-                if (!array_key_exists("api_key", $details) || !array_key_exists("url", $details)) {
-                    throw new Exception("Truenas device requires api_key and url to be set in connection_details parameter.");
-                }
-
-                $device = new truenasCoreStorageDriver($details["url"], $details["flags"], $details["api_key"], $details["home"], $details["scratch"], $details["project"]);
-
-                break;
-            default:
-                throw new Exception($details["type"] + " is not a supported storage device type.");
-        }
-
-        $this->services["storage"][$name] = $device;
-
-        return $this;
-    }
-
     public function add_sacctmgr($details, $name = self::DEFAULT_KEY)
     {
-        if (array_key_exists($name, $this->services["mail"])) {
+        if (array_key_exists($name, $this->services["sacctmgr"])) {
             throw new Exception("Service '$name' already exists.");
         }
 
@@ -146,6 +106,19 @@ class serviceStack
         $sacctmgr = new slurm($details["cluster"]);
 
         $this->services["sacctmgr"][$name] = $sacctmgr;
+
+        return $this;
+    }
+
+    public function add_unityfs($details, $name = self::DEFAULT_KEY)
+    {
+        if (array_key_exists($name, $this->services["unityfs"])) {
+            throw new Exception("Service '$name' already exists.");
+        }
+
+        $unityfs = new unityfs($details["host"], $details["port"]);
+
+        $this->services["unityfs"][$name] = $unityfs;
 
         return $this;
     }
@@ -165,17 +138,18 @@ class serviceStack
         return $this->services["mail"][$name];
     }
 
-    public function storage($name = self::DEFAULT_KEY)
+    public function all_storage()
     {
-        return $this->services["storage"][$name];
-    }
-
-    public function all_storage() {
         return $this->services["storage"];
     }
 
     public function sacctmgr($name = self::DEFAULT_KEY)
     {
         return $this->services["sacctmgr"][$name];
+    }
+
+    public function unityfs($name = self::DEFAULT_KEY)
+    {
+        return $this->services["unityfs"][$name];
     }
 }

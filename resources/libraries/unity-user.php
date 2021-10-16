@@ -10,12 +10,8 @@
  */
 class unityUser
 {
-    public function clone($uid)
-    {
-        return new unityUser($uid, $this->ldap, $this->sql, $this->sacctmgr, $this->storage);
-    }
-
     const HOME_DIR = "/home/";  // trailing slash is important
+    const HOME_QUOTA = 536870912000;
 
     private $uid;
 
@@ -23,16 +19,16 @@ class unityUser
     private $ldap;
     private $sql;
     private $sacctmgr;
-    private $storage;
+    private $unityfs;
 
-    public function __construct($uid, $unityLDAP, $unitySQL, $sacctmgr, $storage)
+    public function __construct($uid, $service_stack)
     {
         $this->uid = $uid;
 
-        $this->ldap = $unityLDAP;  // Set LDAP connection instance var
-        $this->sql = $unitySQL;  // Set SQL connection instance var
-        $this->sacctmgr = $sacctmgr;  // Set sacctmgr instance var
-        $this->storage = $storage;
+        $this->ldap = $service_stack->ldap();  // Set LDAP connection instance var
+        $this->sql = $service_stack->sql();  // Set SQL connection instance var
+        $this->sacctmgr = $service_stack->sacctmgr();  // Set sacctmgr instance var
+        $this->unityfs = $service_stack->unityfs();
     }
 
     /**
@@ -81,7 +77,7 @@ class unityUser
             $ldapUserEntry->setAttribute("sn", $lastname);
             $ldapUserEntry->setAttribute("mail", $email);
             $ldapUserEntry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
-            $ldapUserEntry->setAttribute("loginshell", unityLDAP::NOLOGIN_SHELL);
+            $ldapUserEntry->setAttribute("loginshell", unityLDAP::DEFAULT_SHELL);
             $ldapUserEntry->setAttribute("uidnumber", strval($nextUID));
             $ldapUserEntry->setAttribute("gidnumber", strval($currentGID));
 
@@ -97,6 +93,9 @@ class unityUser
         if ($isPI) {
             $this->sql->addRequest($this->uid);
         }
+
+        // filesystem
+        $this->initFilesystem();
     }
 
 
@@ -323,36 +322,9 @@ class unityUser
         return $this->getAccount()->exists();
     }
 
-    /**
-     * Activates the account for normal login
-     *
-     * @return void
-     */
-    public function activate()
-    {
-        $this->storage->createHomeDirectory($this->getUID());  // create home/scratch spaces
-
-        $this->setLoginShell(unityLDAP::DEFAULT_SHELL);
-    }
-
-    /**
-     * Deactivates the account (user leaves, is forced to leave)
-     *
-     * @return void
-     */
-    public function deactivate()
-    {
-        $this->setLoginShell(unityLDAP::NOLOGIN_SHELL);
-    }
-
-    public function isActive()
-    {
-        return $this->getLoginShell() != unityLDAP::NOLOGIN_SHELL;
-    }
-
     public function getAccount()
     {
-        return new unityAccount(unityAccount::getPIUIDfromUID($this->uid), $this->ldap, $this->sql, $this->sacctmgr);
+        return new unityAccount(unityAccount::getPIUIDfromUID($this->uid), $this->ldap, $this->sql, $this->sacctmgr, $this->storage);
     }
 
     /**
@@ -365,12 +337,15 @@ class unityUser
 
         $out = array();
         foreach ($groups as $group) {
-            array_push($out, new unityAccount($group, $this->ldap, $this->sql, $this->sacctmgr));
+            array_push($out, new unityAccount($group, $this->ldap, $this->sql, $this->sacctmgr, $this->storage));
         }
         return $out;
     }
 
-    public function getGroup($pi_uid) {
-        return new unityAccount($pi_uid, $this->ldap, $this->sql, $this->sacctmgr);
+    public function initFilesystem() {
+        $this->unityfs->createHomeDirectory($this->getUID(), self::HOME_QUOTA);
+        $this->unityfs->createScratchDirectory($this->getUID());
+        $this->unityfs->populateHomeDirectory($this->getUID());
+        $this->unityfs->populateScratchDirectory($this->getUID());
     }
 }
