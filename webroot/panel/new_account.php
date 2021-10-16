@@ -31,6 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <h1><?php echo unity_locale::NEWACC_HEADER_MAIN; ?></h1>
+<hr>
 
 <form id="newAccountForm" action="" method="POST">
 	<span>Please verify that the information below is correct before continuing</span>
@@ -39,7 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		<b>Email&nbsp;&nbsp;</b><?php echo $SHIB["mail"]; ?>
 	</div>
 	<span>Your unity cluster username will be <b><?php echo $SHIB["netid"]; ?></b></span>
-	<br>
+
+	<hr>
 
 	<input type="checkbox" id="chk_eula" name="eula" value="agree">
 	<label for="chk_eula">I have read and accept the <a target="_blank" href="<?php echo config::PREFIX; ?>/priv.php">Unity EULA</a></label>

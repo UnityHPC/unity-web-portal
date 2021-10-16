@@ -29,7 +29,7 @@ if (isset($SHIB)) {
 
   <header>
     <img id="imgLogo" draggable=false src="<?php echo config::PREFIX; ?>/res/logo.png">
-    <a href="/docs/roadmap" target="_blank" class="unity-state">Beta</a>
+    <a href="<?php echo config::APP["repo"]; ?>" target="_blank" class="unity-state">Beta</a>
     <button class="hamburger vertical-align"><img draggable="false" src="<?php echo config::PREFIX; ?>/res/menu.png" alt="Menu Button"></button>
   </header>
 

@@ -5,6 +5,7 @@ require_once config::PATHS["templates"] . "/header.php";
 ?>
 
 <h1>Support</h1>
+<hr>
 
 <section id="faq">
 

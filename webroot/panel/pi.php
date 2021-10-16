@@ -1,7 +1,7 @@
 <?php
 require "../../resources/autoload.php";
 
-$USER = new unityUser("jgriffin_umass_edu", $SERVICE); // ! DEBUG remove later
+//$USER = new unityUser("jgriffin_umass_edu", $SERVICE); // ! DEBUG remove later
 $group = $USER->getAccount();
 
 if (!$USER->isPI()) {
@@ -60,11 +60,17 @@ include config::PATHS["templates"] . "/header.php";
 ?>
 
 <h1>My Users</h1>
-
-<p>The following users are attached to your PI group and are authorized to use Unity</p>
+<hr>
 
 <?php
 $requests = $group->getRequests();
+$assocs = $group->getGroupMembers();
+
+if (count($requests) + count($assocs) == 0) {
+    echo "<p>You do not have any users attached to your PI account. Ask your users to request to join your account on the <a href='" . config::PREFIX . "/panel/groups.php'>My PIs</a> page.</p>";
+} else {
+    echo "<p>The following users are attached to your PI group and are authorized to use Unity</p>";
+}
 
 if (count($requests) > 0) {
     echo "<h3>Pending Requests</h3>";
@@ -82,11 +88,13 @@ if (count($requests) > 0) {
         echo "</tr>";
     }
     echo "</table>";
-    echo "<hr>";
+
+    if (count($assocs) > 0) {
+        echo "<hr>";
+    }
 }
 
 echo "<table>";
-$assocs = $group->getGroupMembers();
 
 foreach ($assocs as $assoc) {
     echo "<tr>";
