@@ -1,5 +1,6 @@
 resources/config.php
 resources/libraries/composer/
 resources/custom_user_mappings/*.csv
+bin/*.service
 
 .vscode/
