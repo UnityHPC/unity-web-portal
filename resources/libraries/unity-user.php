@@ -48,7 +48,7 @@ class unityUser
      * @param bool $isPI boolean value for if the user checked the "I am a PI box"
      * @return void
      */
-    public function init($firstname, $lastname, $email, $isPI)
+    public function init($firstname, $lastname, $email)
     {
         //
         // Create LDAP group
