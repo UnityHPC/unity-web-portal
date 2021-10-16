@@ -56,8 +56,6 @@ def threaded_client(conn):
                     elif child.tag == "scratch":
                         scratch_loc = child.text
 
-                print("Populating " + dest)
-
                 if not user.isdigit():
                     user = pwd.getpwnam(user).pw_uid
                 if not group.isdigit():
@@ -91,8 +89,6 @@ def threaded_client(conn):
                         user = child.text
                     elif child.tag == "gid":
                         group = child.text
-
-                print("Populating " + dest)
 
                 if not user.isdigit():
                     user = pwd.getpwnam(user).pw_uid
@@ -135,6 +131,7 @@ def threaded_client(conn):
                 if code != 200 and code != 422:
                     error = "<response code=" + str(code) + ">Error creating dataset</response>"
                     conn.send(error.encode())
+                    continue
 
                 # set perms
                 data = {
@@ -220,6 +217,7 @@ def threaded_client(conn):
                 if code != 200 and code != 422:
                     error = "<response code=" + str(code) + ">Error setting dataset permissions</response>"
                     conn.send(error.encode())
+                    continue
 
                 full_url = NAS1_URL + "/sharing/nfs"
                 mnt_path = "/mnt/" + dataset_path
@@ -247,6 +245,7 @@ def threaded_client(conn):
                 if code != 200 and code != 422:
                     error = "<response code=" + str(code) + ">Error creating NFS export</response>"
                     conn.send(error.encode())
+                    continue
 
                 conn.send("<response>Success</response>".encode())
 
@@ -260,15 +259,18 @@ def threaded_client(conn):
                     elif child.tag == "gid":
                         group = child.text
 
+                scratch_path = "/scratch/" + user
+
                 if not user.isdigit():
                     user = pwd.getpwnam(user).pw_uid
                 if not group.isdigit():
                     group = grp.getgrnam(group).gr_gid
 
-                scratch_path = "/scratch/" + user
                 os.mkdir(scratch_path)
 
                 os.chown(scratch_path, int(user), int(group))
+
+                conn.send("<response>Success</response>".encode())
 
         except Exception as e:
             print(e)
