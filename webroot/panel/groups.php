@@ -7,31 +7,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST["form_name"])) {
         switch ($_POST["form_name"]) {
-            case "newPIform":
-                // requesting a PI account, this is dealt by admins
-                if ($user->isPI()) {
-                    array_push($errors, "You are already a PI");
-                }
-
-                if ($sql->requestExists($user->getUID())) {
-                    array_push($errors, "You've already requested this");
-                }
-
-                if (empty($errors)) {
-                    //proceed
-                    $sql->addRequest($user->getUID());
-
-                    // Send approval email to admins
-                    $mailer->send("new_pi_request", array("netid" => $user->getUID(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname(), "mail" => $user->getMail()));
-
-                    $success = "A request for a PI account has been sent";
-                }
-
-                // 1. Check if PI is already a PI (DONE)
-                // 2. Check if a PI request already exists (DONE)
-                // 3. Add row to sql table (DONE)
-                // 4. Send email to admins
-                break;
             case "addPIform":
                 // The new PI modal was submitted
                 // existing PI request
@@ -41,23 +16,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     array_push($modalErrors, "You have not chosen a PI");
                 }
 
-                if (!$sacctmgr->accountExists($_POST["pi"])) {
+                if (!$SERVICE->sacctmgr()->accountExists($_POST["pi"])) {
                     array_push($modalErrors, "This PI doesn't exist");
                 }
 
-                if ($sql->requestExists($user->getUID(), $_POST["pi"])) {
+                if ($SERVICE->sql()->requestExists($USER->getUID(), $_POST["pi"])) {
                     array_push($modalErrors, "You've already requested this");
                 }
 
                 // Add row to sql
                 if (empty($modalErrors)) {
-                    $sql->addRequest($user->getUID(), $_POST["pi"]);
-                    $success = "A request for joining " . $_POST["pi"] . " has been sent";
+                    $SERVICE->sql()->addRequest($USER->getUID(), $_POST["pi"]);
+                    $message = "A request for joining " . $_POST["pi"] . " has been sent";
 
-                    $pi_owner = $user->getGroup($_POST["pi"])->getOwner();
+                    $pi_account = new unityAccount($_POST["pi"], $SERVICE);
+                    $pi_owner = $pi_account->getOwner();
 
                     // Send approval email to PI
-                    $mailer->send("new_group_request", array("netid" => $user->getUID(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname(), "mail" => $user->getMail(), "to" => $pi_owner->getMail()));
+                    $SERVICE->mail()->send("new_group_request", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail(), "to" => $pi_owner->getMail()));
                 }
 
                 // 1. Check if PI value was submitted (DONE)
@@ -68,20 +44,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 break;
             case "removePIForm":
                 // Remove PI form
-                if (!$sacctmgr->accountExists($_POST["pi"])) {
-                    array_push($modalErrors, "The requested account doesn't exist");
+                if (!$SERVICE->sacctmgr()->accountExists($_POST["pi"])) {
+                    break;
                 }
 
-                if (!$sacctmgr->userExists($user->getUID(), $_POST["pi"])) {
-                    array_push($modalErrors, "You are not a member of this group");
+                if (!$SERVICE->sacctmgr()->userExists($USER->getUID(), $_POST["pi"])) {
+                    break;
                 }
 
-                if (empty($modalErrors)) {
-                    $pi_user = $user->getGroup($_POST["pi"]);
-                    $pi_user->removeSlurmAccount($user);
+                $pi_user = new unityAccount($_POST["pi"], $SERVICE);
+                $pi_user->removeUserFromGroup($USER->getUID());
 
-                    $mailer->send("left_user", array("netid" => $user->getUID(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname(), "mail" => $user->getMail(), "to" => $pi_owner->getMail()));
-                }
+                $SERVICE->mail()->send("left_user", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail(), "to" => $pi_owner->getMail()));
 
                 // 1. check if pi group exists (DONE)
                 // 1. Check the selected PI actually belongs to this user (DONE)
@@ -111,26 +85,33 @@ include config::PATHS["templates"] . "/header.php";
 </div>
 
 <?php
-$groups = $user->getGroups();
+$groups = $USER->getGroups();
 
-if (count($groups) == 0 && !$user->isPI()) {
-    echo "<span>You are not assigned to any PI, you will not be able to log in via Jupyter or SSH until you are.</span>";
-} else {
-    echo "<table>";
+echo "<table>";
 
-    foreach ($groups as $group) {
-        $owner = $group->getOwner();
+foreach ($groups as $group) {
+    $owner = $group->getOwner();
 
-        echo "<tr class='expandable'>";
-        echo "<td><button class='btnExpand'>&#9654;</button>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
-        echo "<td>" . $group->getPIUID() . "</td>";
-        echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
-        echo "<td><form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to leave " . $group->getPIUID() . "?\");'><input type='hidden' name='form_name' value='removePIForm'><input type='hidden' name='pi' value='" . $group->getPIUID() . "'><div class='inline'><input type='submit' value='Leave Group'></div></form></td>";
-        echo "</tr>";
-    }
-    
-    echo "</table>";
+    echo "<tr class='expandable'>";
+    echo "<td><button class='btnExpand'>&#9654;</button>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
+    echo "<td>" . $group->getPIUID() . "</td>";
+    echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
+    echo "<td><form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to leave " . $group->getPIUID() . "?\");'><input type='hidden' name='form_name' value='removePIForm'><input type='hidden' name='pi' value='" . $group->getPIUID() . "'><div class='inline'><input type='submit' value='Leave Group'></div></form></td>";
+    echo "</tr>";
 }
+
+foreach ($SERVICE->sql()->getRequestsByUser($USER->getUID()) as $request) {
+    $requested_account = new unityAccount($request["request_for"], $SERVICE);
+    $requested_owner = $requested_account->getOwner();
+    echo "<tr class='pending_request'>";
+    echo "<td>" . $requested_owner->getFirstname() . " " . $requested_owner->getLastname() . "</td>";
+    echo "<td>" . $requested_account->getPIUID() . "</td>";
+    echo "<td><a href='mailto:" . $requested_owner->getMail() . "'>" . $requested_owner->getMail() . "</a></td>";
+    echo "<td></td>";
+    echo "</tr>";
+}
+
+echo "</table>";
 ?>
 
 <button type="button" class="plusBtn btnAddPI">&#43;</button>

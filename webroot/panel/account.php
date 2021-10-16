@@ -39,16 +39,51 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $USER->setSSHKeys($keys);  // Update user keys
     } elseif (isset($_POST["loginshell"])) {
         $USER->setLoginShell($_POST["loginshell"]);
+
+        $message = "Login shell updated to " . $USER->getLoginShell() . ".";
+    } elseif (isset($_POST["pi_request"])) {
+        if (!$USER->isPI()) {
+            if (!$SERVICE->sql()->requestExists($USER->getUID())) {
+                $SERVICE->sql()->addRequest($USER->getUID());
+
+                // Send approval email to admins
+                $SERVICE->mail()->send("new_pi_request", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail()));
+                    
+                $message = "A request for a PI account has been sent to admins for review";
+            }
+        }
     }
 }
 ?>
 
 <h1><?php echo unity_locale::ACCOUNT_HEADER_MAIN; ?></h1>
 
-<div class="pageTop">
-    <p>Any changes made on this page may take a few minutes to take effect on Unity.</p>
-    <pre>ssh -i [downloaded key] <?php echo $USER->getUID(); ?>@unity.rc.umass.edu</pre>
-</div>
+<label>Account Status</label>
+
+<?php
+
+$isActive = count($USER->getGroups()) > 0;
+$isPI = $USER->isPI();
+
+if ($isPI) {
+    echo "<p>You are curently a <strong>principal investigator</strong> on the Unity Cluster</p>";
+} elseif ($isActive) {
+    echo "<p>You are curently a <strong>user</strong> on the Unity Cluster</p>";
+} else {
+    echo "<p>You are currently not assigned to any PI, and will be <strong>unable to use the cluster</strong>. Go to the <a href='groups.php'>My PIs</a> page to join a PI, or click on the button below if you are a PI</p>";
+}
+
+if (!$isPI) {
+    if ($SERVICE->sql()->requestExists($USER->getUID())) {
+        echo "<form action='' method='POST'><input type='hidden' name='pi_request' value='yes'><input type='submit' value='Request PI Account' disabled></form>";
+        echo "<span>Your request has been submitted and is currently pending</span>";
+    } else {
+        echo "<form action='' method='POST'><input type='hidden' name='pi_request' value='yes'><input type='submit' value='Request PI Account'></form>";
+    }
+}
+?>
+
+<hr>
 
 <label>SSH Keys</label>
 <?php
@@ -85,6 +120,12 @@ echo "<div class='inline'><form action='' method='POST'><input type='text' name=
     $("button.btnAddKey").click(function() {
         openModal("Add New Key", "<?php echo config::PREFIX; ?>/panel/modal/new_key.php");
     });
+
+    <?php
+    if (isset($message)) {
+        echo "openModal('Message', '" . config::PREFIX . "/panel/modal/message.php?message=$message')";
+    }
+    ?>
 </script>
 
 <style>
