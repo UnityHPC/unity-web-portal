@@ -19,7 +19,7 @@ attributetype ( 1.3.6.1.4.1.8473.2.1.100002
         SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32}
         MULTI-VALUE )
 
-objectclass ( 1.3.6.1.4.1.84732.2.2.100000
+objectclass ( 1.3.6.1.4.1.8473.2.2.100000
         NAME 'unityGroup'
         DESC 'Unity Group Class'
         SUP ( top $ posixGroup )
