@@ -74,11 +74,12 @@ if ($isPI) {
 }
 
 if (!$isPI) {
+    echo "<form action='' method='POST' id='piReq'><input type='hidden' name='pi_request' value='yes'></form>";
     if ($SERVICE->sql()->requestExists($USER->getUID())) {
-        echo "<form action='' method='POST'><input type='hidden' name='pi_request' value='yes'><input type='submit' value='Request PI Account' disabled></form>";
+        echo "<button class='btnReqPI' disabled>Request PI Account</button>";
         echo "<span>Your request has been submitted and is currently pending</span>";
     } else {
-        echo "<form action='' method='POST'><input type='hidden' name='pi_request' value='yes'><input type='submit' value='Request PI Account'></form>";
+        echo "<button class='btnReqPI'>Request PI Account</button>";
     }
 }
 ?>
@@ -123,9 +124,13 @@ echo "<div class='inline'><form action='' method='POST'><input type='text' name=
 
     <?php
     if (isset($message)) {
-        echo "openModal('Message', '" . config::PREFIX . "/panel/modal/message.php?message=$message')";
+        echo "messageModal('$message');";
     }
     ?>
+
+    $("button.btnReqPI").click(function() {
+        confirmModal("Are you sure you want to request a PI account? <strong>You need to be a PI to be approved</strong>", "#piReq");
+    });
 </script>
 
 <style>

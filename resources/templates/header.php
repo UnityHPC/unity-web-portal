@@ -69,6 +69,10 @@ if (isset($SHIB)) {
       </div>
       <div class="modalBody"></div>
       <div class="modalMessages"></div>
+      <div class="modalButtons">
+        <div style='display: none;' class='messageButtons'><button class='btnOkay'>Okay</button></div>
+        <div style='display: none;' class='yesnoButtons'><button class='btnYes'>Yes</button><button class='btnNo'>No</button></div>
+      </div>
     </div>
   </div>
   <script src="<?php echo config::PREFIX; ?>/js/modal.js"></script>

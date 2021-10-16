@@ -25,6 +25,10 @@ div.modalTitleWrapper {
     display: inline-block;
 }
 
+span.modalTitle {
+    font-size: 13pt;
+}
+
 div.modalMessages {
     color: var(--color-text-failure);
     font-size: 11pt;

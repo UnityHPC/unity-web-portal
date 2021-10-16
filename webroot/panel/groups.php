@@ -6,6 +6,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors = array();
 
     if (isset($_POST["form_name"])) {
+        $pi_account = new unityAccount($_POST["pi"], $SERVICE);
+        $pi_owner = $pi_account->getOwner();
+
         switch ($_POST["form_name"]) {
             case "addPIform":
                 // The new PI modal was submitted
@@ -29,9 +32,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $SERVICE->sql()->addRequest($USER->getUID(), $_POST["pi"]);
                     $message = "A request for joining " . $_POST["pi"] . " has been sent";
 
-                    $pi_account = new unityAccount($_POST["pi"], $SERVICE);
-                    $pi_owner = $pi_account->getOwner();
-
                     // Send approval email to PI
                     $SERVICE->mail()->send("new_group_request", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail(), "to" => $pi_owner->getMail()));
                 }
@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 $pi_user = new unityAccount($_POST["pi"], $SERVICE);
-                $pi_user->removeUserFromGroup($USER->getUID());
+                $pi_user->removeUserFromGroup($USER);
 
                 $SERVICE->mail()->send("left_user", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail(), "to" => $pi_owner->getMail()));
 
@@ -87,6 +87,31 @@ include config::PATHS["templates"] . "/header.php";
 <?php
 $groups = $USER->getGroups();
 
+$requests = $SERVICE->sql()->getRequestsByUser($USER->getUID());
+$req_filtered = array();
+foreach ($requests as $request) {
+    if ($request["request_for"] != "admin") {  // put this in config later for gypsum
+        array_push($req_filtered, $request);
+    }
+}
+if (count($req_filtered) > 0) {
+    echo "<h3>Pending Requests</h3>";
+    echo "<table>";
+    foreach ($req_filtered as $request) {
+        $requested_account = new unityAccount($request["request_for"], $SERVICE);
+        $requested_owner = $requested_account->getOwner();
+        echo "<tr class='pending_request'>";
+        echo "<td>" . $requested_owner->getFirstname() . " " . $requested_owner->getLastname() . "</td>";
+        echo "<td>" . $requested_account->getPIUID() . "</td>";
+        echo "<td><a href='mailto:" . $requested_owner->getMail() . "'>" . $requested_owner->getMail() . "</a></td>";
+        echo "<td></td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+    echo "<hr>";
+}
+
+
 echo "<table>";
 
 foreach ($groups as $group) {
@@ -96,18 +121,7 @@ foreach ($groups as $group) {
     echo "<td><button class='btnExpand'>&#9654;</button>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
     echo "<td>" . $group->getPIUID() . "</td>";
     echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
-    echo "<td><form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to leave " . $group->getPIUID() . "?\");'><input type='hidden' name='form_name' value='removePIForm'><input type='hidden' name='pi' value='" . $group->getPIUID() . "'><div class='inline'><input type='submit' value='Leave Group'></div></form></td>";
-    echo "</tr>";
-}
-
-foreach ($SERVICE->sql()->getRequestsByUser($USER->getUID()) as $request) {
-    $requested_account = new unityAccount($request["request_for"], $SERVICE);
-    $requested_owner = $requested_account->getOwner();
-    echo "<tr class='pending_request'>";
-    echo "<td>" . $requested_owner->getFirstname() . " " . $requested_owner->getLastname() . "</td>";
-    echo "<td>" . $requested_account->getPIUID() . "</td>";
-    echo "<td><a href='mailto:" . $requested_owner->getMail() . "'>" . $requested_owner->getMail() . "</a></td>";
-    echo "<td></td>";
+    echo "<td><button class='leaveGroupBtn' data-group='" . $group->getPIUID() . "'>Leave Group</button><form action='' method='POST' id='leave-" . $group->getPIUID() . "'><input type='hidden' name='form_name' value='removePIForm'><input type='hidden' name='pi' value='" . $group->getPIUID() . "'></form></td>";
     echo "</tr>";
 }
 
@@ -142,6 +156,11 @@ echo "</table>";
         echo "openModal('Add New PI', '" . config::PREFIX . "/panel/modal/new_pi.php', '" . $errorHTML . "');";
     }
     ?>
+
+    $("button.leaveGroupBtn").click(function() {
+        var group = $(this).attr("data-group");
+        confirmModal("Are you sure you want to leave " + group + "?", "#leave-" + group);
+    });
 
     var ajax_url = "<?php echo config::PREFIX; ?>/panel/ajax/get_group_members.php?pi_uid=";
 </script>

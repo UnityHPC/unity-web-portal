@@ -1,10 +1,14 @@
 <?php
 require "../../resources/autoload.php";
 
+if (!$USER->isAdmin()) {
+    die();
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST["uid"])) {
-        $form_user = $user->clone($_POST["uid"]);
+        $form_user = new unityUser($_POST["uid"], $SERVICE);
     }
 
     switch ($_POST["form_name"]) {
@@ -14,9 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $group->createGroup();
             }
 
-            $sql->removeRequest($form_user->getUID());
+            $SERVICE->sql()->removeRequest($form_user->getUID());
 
-            $mailer->send("admin_approve_pi", array("to" => $form_user->getMail()));
+            $SERVICE->mail()->send("admin_approve_pi", array("to" => $form_user->getMail()));
 
             // (1) Create Slurm Account
             // (2) Create LDAP Group
@@ -24,32 +28,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // (4) Send email to new PI
             break;
         case "denyReq":
-            $sql->removeRequest($form_user->getUID());
+            $SERVICE->sql()->removeRequest($form_user->getUID());
 
-            $mailer->send("admin_deny_pi", array("to" => $form_user->getMail()));
+            $SERVICE->mail()->send("admin_deny_pi", array("to" => $form_user->getMail()));
 
             // (1) Remove SQL Row request
             // (2) Send email to requestor
             break;
         case "remUser":
-            $remGroup = $user->getGroup($_POST["piuid"]);
+            $remGroup = new unityAccount($_POST["pi"], $SERVICE);
 
             if ($remGroup->exists()) {
                 foreach ($remGroup->getGroupMembers() as $member) {
                     $remGroup->removeUserFromGroup($member);
                     
-                    $mailer->send("rem_pi", array("to" => $member->getMail(), "group" => $remGroup->getPIUID()));
+                    $SERVICE->mail()->send("rem_pi", array("to" => $member->getMail(), "group" => $remGroup->getPIUID()));
                 }
             }
             $remGroup->removeGroup();
 
-            $mailer->send("admin_disband_pi", array("to" => $remGroup->getOwner()->getMail()));
+            $SERVICE->mail()->send("admin_disband_pi", array("to" => $remGroup->getOwner()->getMail()));
 
             // (same as disband PI from pi.php), except also send email to PI
             break;
         case "approveReqChild":
             // approve request button clicked
-            $parent = $user->getGroup($_POST["pi"]);
+            $parent = new unityAccount($_POST["pi"], $SERVICE);
 
             $parent->addUserToGroup($form_user);  // Add to group (ldap and slurm)
 
@@ -60,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo $e->getMessage();  // ! DEBUG
             }
 
-            $mailer->send("join_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
+            $SERVICE->mail()->send("join_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
 
             // (1) Create slurm association [DONE]
             // (2) Remove SQL Row if (1) succeeded [DONE]
@@ -69,11 +73,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         case "denyReqChild":
             // deny request button clicked
 
-            $parent = $user->getGroup($_POST["pi"]);
+            $parent = new unityAccount($_POST["pi"], $SERVICE);
 
-            $parent->removeRequestFromThis($form_user->getUID());  // remove request from db
+            $parent->removeRequest($form_user->getUID());  // remove request from db
 
-            $mailer->send("deny_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
+            $SERVICE->mail()->send("deny_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
 
             // (1) Remove SQL Row
             // (2) Send email to requestor
@@ -81,12 +85,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         case "remUserChild":
             // remove user button clicked
 
-            $parent = $user->getGroup($_POST["pi"]);
+            $parent = new unityAccount($_POST["pi"], $SERVICE);
 
             $parent->removeUserFromGroup($form_user);
 
-            $mailer->send("rem_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
-            $mailer->send("left_user", array("netid" => $form_user->getUID(), "firstname" => $form_user->getFirstname(), "lastname" => $form_user->getLastname(), "mail" => $form_user->getMail(), "to" => $parent->getOwner()->getMail()));
+            $SERVICE->mail()->send("rem_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
+            $SERVICE->mail()->send("left_user", array("netid" => $form_user->getUID(), "firstname" => $form_user->getFirstname(), "lastname" => $form_user->getLastname(), "mail" => $form_user->getMail(), "to" => $parent->getOwner()->getMail()));
 
             // (1) Remove slurm association
             // (2) Send email to removed user
@@ -108,10 +112,10 @@ include config::PATHS["templates"] . "/header.php";
     </tr>
 
     <?php
-    $requests = $sql->getRequests();
+    $requests = $SERVICE->sql()->getRequests();
 
     foreach ($requests as $request) {
-        $request_user = $user->clone($request["uid"]);
+        $request_user = new unityUser($request["uid"], $SERVICE);
 
         echo "<tr>";
         echo "<td>" . $request_user->getFirstname() . " " . $request_user->getLastname() . "</td>";
@@ -124,10 +128,10 @@ include config::PATHS["templates"] . "/header.php";
         echo "</tr>";
     }
 
-    $accounts = $sacctmgr->getAccounts();
+    $accounts = $SERVICE->sacctmgr()->getAccounts();
 
     foreach ($accounts as $account) {
-        $pi_group = $user->getGroup($account);
+        $pi_group = new unityAccount($account, $SERVICE);
         $pi_user = $pi_group->getOwner();
 
         echo "<tr>";
@@ -135,7 +139,7 @@ include config::PATHS["templates"] . "/header.php";
         echo "<td>" . $pi_group->getPIUID() . "</td>";
         echo "<td><a href='mailto:" . $pi_user->getMail() . "'>" . $pi_user->getMail() . "</a></td>";
         echo "<td>";
-        echo "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " . $pi_group->getPIUID() . "? This will also remove associations for all users under this PI - the users themselves will not be deleted, nor will the PI user itself.\");'><input type='hidden' name='form_name' value='remUser'><input type='hidden' name='piuid' value='" . $pi_group->getPIUID() . "'><input type='submit' value='Remove'></form>";
+        echo "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " . $pi_group->getPIUID() . "? This will also remove associations for all users under this PI - the users themselves will not be deleted, nor will the PI user itself.\");'><input type='hidden' name='form_name' value='remUser'><input type='hidden' name='pi' value='" . $pi_group->getPIUID() . "'><input type='submit' value='Remove'></form>";
         echo "</td>";
         echo "</tr>";
 
