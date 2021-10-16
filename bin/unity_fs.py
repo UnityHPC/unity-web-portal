@@ -10,6 +10,7 @@ from _thread import *
 import requests
 from requests.auth import HTTPBasicAuth
 import urllib3
+import time
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -277,12 +278,17 @@ def threaded_client(conn):
             xml_error = "<response code=1>" + str(e) + "</response>"
             conn.send(xml_error.encode())
 
+        time.delay(0.01)
+
     conn.close()
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind((HOST, PORT))
-    s.listen(10)  # don't open more than 10 connections at a time
+    s.setblocking(1)
+    s.listen(5)  # don't open more than 5 connections at a time
     while True:
         conn, addr = s.accept()
         start_new_thread(threaded_client, (conn, ))
+
+        time.delay(0.01)
