@@ -17,55 +17,69 @@ error_reporting(E_ALL);
 define("ROOT", substr(__DIR__, 0, strrpos(__DIR__, '/')));  // Root Directory of the web docs (not webroot, but one level above that)
 
 class config {
-    public const URL = "";  // Enter URL of Website, ie. https://unity.rc.umass.edu
-    public const PREFIX = "/";  // Site prefix
-    public const MAINTENANCE_MODE = false;  // This will activate maintenance mode, which doesn't allow users in
+    public const URL = "https://unity.rc.umass.edu";
+    public const PREFIX = "/dev";  // Site prefix
+    public const MAINTENANCE_MODE = false;
+    public const WEB_UID = 0;  // set to uid of web server user
+    public const DOCS_ROOT = ROOT;
 
     public const APP = array(
         "repo" => "https://github.com/UMass-RC/unity-web-portal",
-        "version" => "0.4.1-BETA"
+        "version" => "0.5.0-BETA"
     );
 
-    // Hardcoded paths, change these locations if you move them
     public const PATHS = array(
         "templates" => ROOT . "/resources/templates",
         "libraries" => ROOT . "/resources/libraries",
         "locale" => ROOT . "/resources/locale",
-        "init" => ROOT . "/resources/init"
+        "skel" => ROOT . "/resources/etc/skel",
+        "custom_user" => ROOT . "/resources/custom_user_mappings"
     );
 
     public const LDAP = array(
-        "dn" => "",  // Bind DN
-        "pass" => "",  // Bind Password
-        "host" => ""  // Hostname
+        "bind_dn" => "",
+        "bind_pass" => "",
+        "uri" => ""
     );
 
     public const SQL = array(
-        "host" => "", // MySQL Server hostname
-        "user" => "", // MySQL Server Username
-        "pass" => "", // MySQL Server Password
-        "db" => "unity" // MySQL Server DB
+        "host" => "",
+        "user" => "",
+        "pass" => "",
+        "db" => ""
     );
 
     public const SLURM = array(
-        "cluster" => "unity",  // Cluster name registered in sacctmgr
+        "cluster" => ""
     );
 
     public const MAIL = array(
-        "host" => "",  // SMTP server hostname
-        "user" => "",  // SMTP Server username
-        "pass" => "",  // SMTP Server password
+        "host" => "",
+        "smtp_user" => "",
+        "smtp_pass" => "",
+        "smtp_secure" => "",
+        "port" => "",
+        "template_path" => config::PATHS["templates"] . "/mail",
         "addresses" => array(
-            "contact" => array("hpc@it.umass.edu", "UMass HPC"),  // Administrative Email
-            "sender" => array("info@unity.rc.umass.edu", "Unity Cluster")  // Sender Email (can be fake)
+            "contact" => array("", ""),
+            "sender" => array("", "")
         )
     );
 
-    public const LOCALE = "en";  // Select locale
+    public const UNITYFS = array(
+        "host" => "",
+        "port" => ""
+    );
+
+    public const SUPPORT = array(
+        "sendmail" => ""
+    );
+
+    public const LOCALE = "en";
 
     public const CLUSTER = array(
-        "name" => "",  // Cluster Name
-        "org" => "",  // Organization Name
-        "desc" => ""  // Organization Description
+        "name" => "",
+        "org" => "",
+        "desc" => ""
     );
 }
