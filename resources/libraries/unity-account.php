@@ -9,11 +9,6 @@
  */
 class unityAccount
 {
-    public function clone($uid)
-    {
-        return new unityAccount($uid, $this->ldap, $this->sql, $this->sacctmgr);
-    }
-
     const PI_PREFIX = "pi_";
 
     private $pi_uid;
@@ -22,6 +17,7 @@ class unityAccount
     private $ldap;
     private $sql;
     private $sacctmgr;
+    private $unityfs;
 
     /**
      * Constructor for the object
@@ -31,13 +27,14 @@ class unityAccount
      * @param unitySQL $unitySQL SQL Connection
      * @param slurm $sacctmgr Slurm Connection
      */
-    public function __construct($pi_uid, $unityLDAP, $unitySQL, $sacctmgr)
+    public function __construct($pi_uid, $service_stack)
     {
         $this->pi_uid = $pi_uid;
 
-        $this->ldap = $unityLDAP;  // Set LDAP connection instance var
-        $this->sql = $unitySQL;  // Set SQL connection instance var
-        $this->sacctmgr = $sacctmgr;  // Set sacctmgr instance var
+        $this->ldap = $service_stack->ldap();  // Set LDAP connection instance var
+        $this->sql = $service_stack->sql();  // Set SQL connection instance var
+        $this->sacctmgr = $service_stack->sacctmgr();  // Set sacctmgr instance var
+        $this->unityfs = $service_stack->unityfs();
     }
 
     /**
@@ -82,11 +79,6 @@ class unityAccount
         // (2) Create slurm account
         $this->createSlurmAccount();
         $this->addAssociation(self::getUIDfromPIUID($this->pi_uid));  // add owner user
-
-        // activate group
-        if (!$owner->isActive()) {
-            $owner->activate();
-        }
     }
 
     public function removeGroup() {

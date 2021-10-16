@@ -21,9 +21,8 @@ require_once config::PATHS["libraries"] . "/slurm.php";
 require_once config::PATHS["libraries"] . "/unityfs.php";
 require_once config::PATHS["libraries"] . "/unity-ldap.php";
 require_once config::PATHS["libraries"] . "/unity-user.php";
-//require_once config::PATHS["libraries"] . "/unity-account.php";
+require_once config::PATHS["libraries"] . "/unity-account.php";
 require_once config::PATHS["libraries"] . "/unity-sql.php";
-require_once config::PATHS["libraries"] . "/unity-group.php";
 require_once config::PATHS["libraries"] . "/template_mailer.php";
 
 require_once config::PATHS["libraries"] . "/unity-service.php";
