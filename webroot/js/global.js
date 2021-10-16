@@ -63,12 +63,6 @@ $(window).click(function (e) {
   }
 });
 
-$(function () {
-  setTimeout(function () {
-    $("div.checkmark").fadeOut(500);
-  }, 5000);
-});
-
 function downloadFile(text, filename) {
   var element = document.createElement('a');
   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
