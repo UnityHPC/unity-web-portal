@@ -42,7 +42,7 @@ class slurm
 
     public function addUser($name, $account)
     {
-        if (!$this->userExists($name)) {
+        if (!$this->userExists($name, $account)) {
             self::cmd(self::CMD_PREFIX . "add user $name Account=$account");
         }
     }
