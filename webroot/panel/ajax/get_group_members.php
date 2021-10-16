@@ -6,13 +6,22 @@ if (!isset($_GET["pi_uid"])) {
     die("PI UID not set");
 }
 
-$group = new unityAccount($_GET["pi_uid"], $ldap, $sql, $sacctmgr, $storage);
+$group = new unityAccount($_GET["pi_uid"], $SERVICE);
 $members = $group->getGroupMembers();
 
-// this doesnt work right now???
-//if (!in_array($user, $members)) {
-//    die("You are not allowed to query this group");
-//}
+// verify that the user querying is actually in the group
+$found = false;
+foreach ($members as $member) {
+    if ($member->getUID() == $USER->getUID()) {
+        $found = true;
+        break;
+    }
+}
+
+if (!$found) {
+    die();
+}
+
 $count = count($members);
 foreach ($members as $key=>$member) {
     if ($key >= $count - 1) {
