@@ -12,9 +12,7 @@ class unityLDAP extends ldapConn
   // Units (relative to base DN)
   const USERS = "ou=users," . self::BASE;
   const GROUPS = "ou=groups," . self::BASE;
-  const STORAGE = "ou=storage," . self::BASE;
   const PI_GROUPS = "ou=pi_groups," . self::BASE;
-  const SHARED_GROUPS = "ou=shared_groups," . self::BASE;
   const ADMIN_GROUP = "cn=sudo," . self::BASE;
 
   const STOR_PREFIX = "storage_";
@@ -22,7 +20,6 @@ class unityLDAP extends ldapConn
   // User Specific Constants
   const ID_MAP = array(1000, 9999);
   const PI_ID_MAP = array(10000, 19999);
-  const STOR_ID_MAP = array(20000, 29999);  // ! Not yet implemented
 
   const RDN = "cn";  // The defauls RDN for LDAP entries is set to "common name"
 
@@ -55,10 +52,8 @@ class unityLDAP extends ldapConn
     // Get Global Entries
     $this->userOU = $this->getEntry(self::USERS);
     $this->groupOU = $this->getEntry(self::GROUPS);
-    $this->storageOU = $this->getEntry(self::STORAGE);
     $this->pi_groupOU = $this->getEntry(self::PI_GROUPS);
     $this->adminGroup = $this->getEntry(self::ADMIN_GROUP);
-    $this->shared_groupOU = $this->getEntry(self::SHARED_GROUPS);
   }
 
   public function getNextUID()
@@ -107,55 +102,9 @@ class unityLDAP extends ldapConn
     return $id;
   }
 
-  public function getNextStorGID()
-  {
-    $groups = $this->storOU->getChildrenArray(true);
-
-    usort($groups, function ($a, $b) {
-      return $a["gidnumber"] <=> $b["gidnumber"];
-    });
-
-    $id = self::STOR_ID_MAP[0];
-    foreach ($groups as $acc) {
-      if ($id == $acc["gidnumber"][0]) {
-        $id++;
-        if ($id > self::STOR_ID_MAP[1]) {
-          throw new Exception("Storage GID Limits reached");  // all hell has broken if this executes
-        }
-      } else {
-        break;
-      }
-    }
-
-    return $id;
-  }
-
   public function getNextPiGID()
   {
     $groups = $this->pi_groupOU->getChildrenArray(true);
-
-    usort($groups, function ($a, $b) {
-      return $a["gidnumber"] <=> $b["gidnumber"];
-    });
-
-    $id = self::PI_ID_MAP[0];
-    foreach ($groups as $acc) {
-      if ($id == $acc["gidnumber"][0]) {
-        $id++;
-        if ($id > self::PI_ID_MAP[1]) {
-          throw new Exception("Storage GID Limits reached");  // all hell has broken if this executes
-        }
-      } else {
-        break;
-      }
-    }
-
-    return $id;
-  }
-
-  public function getNextSharedGID()
-  {
-    $groups = $this->shared_groupOU->getChildrenArray(true);
 
     usort($groups, function ($a, $b) {
       return $a["gidnumber"] <=> $b["gidnumber"];
@@ -242,7 +191,6 @@ class unityLDAP extends ldapConn
     return $next_uid;
   }
 
-  // TEMP FUNCTION
   public function getAllUsers($services)
   {
     $users = $this->userOU->getChildren(true);
