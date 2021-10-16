@@ -11,6 +11,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 import urllib3
 import time
+import select
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -26,18 +27,31 @@ NAS1_HOME_DATASET = "nas1-pool/home"
 NAS1_PROJECT_DATASET = "nas1-pool/project"
 NAS1_HEADERS = { 'Authorization': 'Bearer ' + NAS1_API_KEY }
 
+TIME_WAIT = 0.01
+TIMEOUT = 5  # timeout in seconds
+
 def threaded_client(conn):
+    NO_MESSAGE = 0
+
     while True:
+        if (NO_MESSAGE * TIME_WAIT > TIMEOUT):
+            # timeout
+            break
+
         try:
             data = conn.recv(1024).decode('utf-8')
 
             try:
                 tree = ET.ElementTree(ET.fromstring(data))
                 root = tree.getroot()
+                NO_MESSAGE = 0
             except:
+                NO_MESSAGE += 1
+                time.sleep(TIME_WAIT)
                 continue
             
             if root.tag != "request":
+                time.sleep(TIME_WAIT)
                 continue
 
             req_type = root.attrib["type"]
@@ -132,6 +146,7 @@ def threaded_client(conn):
                 if code != 200 and code != 422:
                     error = "<response code=" + str(code) + ">Error creating dataset</response>"
                     conn.send(error.encode())
+                    time.sleep(TIME_WAIT)
                     continue
 
                 # set perms
@@ -218,6 +233,7 @@ def threaded_client(conn):
                 if code != 200 and code != 422:
                     error = "<response code=" + str(code) + ">Error setting dataset permissions</response>"
                     conn.send(error.encode())
+                    time.sleep(TIME_WAIT)
                     continue
 
                 full_url = NAS1_URL + "/sharing/nfs"
@@ -246,6 +262,7 @@ def threaded_client(conn):
                 if code != 200 and code != 422:
                     error = "<response code=" + str(code) + ">Error creating NFS export</response>"
                     conn.send(error.encode())
+                    time.sleep(TIME_WAIT)
                     continue
 
                 conn.send("<response>Success</response>".encode())
@@ -278,18 +295,21 @@ def threaded_client(conn):
             xml_error = "<response code=1>" + str(e) + "</response>"
             conn.send(xml_error.encode())
 
-        time.sleep(0.01)
+        time.sleep(TIME_WAIT)
 
     conn.close()
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+s = socket.socket()
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+try:
     s.bind((HOST, PORT))
-    s.setblocking(1)
-    s.settimeout(5)
-    s.listen(5)  # don't open more than 5 connections at a time
-    while True:
-        conn, addr = s.accept()
-        start_new_thread(threaded_client, (conn, ))
+except socket.error as e:
+    print(str(e))
 
-        time.sleep(0.01)
+s.listen(5)
+
+while True:
+    (conn, addr) = s.accept()
+    start_new_thread(threaded_client, (conn, ))
+
+s.close()
