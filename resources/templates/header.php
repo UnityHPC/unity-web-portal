@@ -1,3 +1,13 @@
+<?php
+
+if (isset($SHIB)) {
+  if (!$_SESSION["user_exists"]) {
+    redirect(config::PREFIX . "/panel/new_account.php");
+  }
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -28,14 +38,22 @@
     // Public Items - Always Visible
     echo "<a href='" . config::PREFIX . "/index.php'>About</a>";
     echo "<a target='_blank' href='/docs'>Documentation</a>";
-    //echo "<a href='" . config::PREFIX . "/cluster-status.php'>Cluster Status</a>";
 
-    if (isset($_SESSION["user-state"]) && $_SESSION["user-state"] == "present") {
+    if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
       // Menu Items for Present Users
       echo "<a href='" . config::PREFIX . "/panel/support.php'>Support</a>";
       echo "<a href='" . config::PREFIX . "/panel/account.php'>Account Settings</a>";
-      echo "<a href='" . config::PREFIX . "/panel/groups.php'>My Groups</a>";
-      echo "<a href='" . config::PREFIX . "/panel/pi.php'>PI Portal</a>";
+      echo "<a href='" . config::PREFIX . "/panel/groups.php'>My PIs</a>";
+
+      if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
+        // PI only pages
+        echo "<a href='" . config::PREFIX . "/panel/pi.php'>My Users</a>";
+      }
+
+      if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"]) {
+        // Admin only pages
+        echo "<a href='" . config::PREFIX . "/admin/user-mgmt.php'>User Management</a>";
+      }
       echo "<a target='_blank' href='/panel/jhub'>JupyterLab</a>";
     } else {
       echo "<a href='/panel/account.php'>Login / Request Account</a>";
