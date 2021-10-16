@@ -2,9 +2,11 @@
 * [Feature] Added notices for inactive account
 * [Locale] New XML based locale for easier dynamic lang switching
 * [Feature] Added VAST storage and Truenas Core storage integration for automatic storage creation
-* [Feature] Added contact form for new ticketing system, removed public contact form
 * [Feature] Added GitHub SSH key import
 * [Performance] Nested groups are loaded via AJAX instead of directly to avoid long loading times
+* [Feature] Added support for custom user id mappings
+* [Style] General style changes
+* [Feature] Added unityfs service, which is a socket service responsible for provisioning storage on Unity
 
 #### 0.4.0HF1-BETA ####
 * [Bug] Fixed issue where some users account wasn't activating
