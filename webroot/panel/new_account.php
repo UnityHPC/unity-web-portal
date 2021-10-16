@@ -4,7 +4,7 @@ require_once "../../resources/autoload.php";
 
 require_once config::PATHS["templates"] . "/header.php";
 
-if ($_SESSION["user-state"] == "active" && !$user->isAdmin()) {
+if ($USER->exists()) {
 	redirect("/panel/index.php");  // Redirect if account already exists
 }
 
@@ -16,17 +16,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		array_push($errors, "Accepting the EULA is required");
 	}
 
-	if (isset($_POST["acc_type"]) && $_POST["acc_type"] == "pi") {
-		// send email to admins here
-		$SERVICES->mail()->send("new_pi_request", $SHIB);
-	} else {
+	if (!isset($_POST["acc_type"])) {
 		array_push($errors, "Please select your role");
 	}
 
 	// Request Account Form was Submitted
 	if (count($errors) == 0) {
 		try {
-			$user->init($SHIB["firstname"],$SHIB["lastname"],$SHIB["mail"],isset($_POST["pi"]) && $_POST["pi"] == "pi");
+			$isPI = $_POST["acc_type"] == "pi";
+			$USER->init($SHIB["firstname"],$SHIB["lastname"],$SHIB["mail"],$isPI);
+			if ($isPI) {
+				$SERVICES->mail()->send("new_pi_request", $SHIB);
+			}
 
 			redirect(config::PREFIX . "/panel");
 		} catch (Exception $e) {
