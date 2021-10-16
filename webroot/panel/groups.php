@@ -112,6 +112,10 @@ echo "<table>";
 foreach ($groups as $group) {
     $owner = $group->getOwner();
 
+    if ($USER->getUID() == $owner->getUID()) {
+        continue;
+    }
+
     echo "<tr class='expandable'>";
     echo "<td><button class='btnExpand'>&#9654;</button>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
     echo "<td>" . $group->getPIUID() . "</td>";

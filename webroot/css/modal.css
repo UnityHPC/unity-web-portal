@@ -46,16 +46,18 @@ div.modalBody > * {
 
 /* Search Box CSS */
 div.searchWrapper {
-    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.4);
     background: var(--color-background);
     position: absolute;
-    top: 40px;
+    top: 36px;
     z-index: 200;
-    width: 100%;
+    width: calc(100% - 4px);
     overflow: hidden;
     font-size: 11pt;
     user-select: none;
-    border-radius: 10px;
+    border-radius: 0 0 5px 5px;
+    border-bottom: 2px solid var(--color-foreground);
+    border-left: 2px solid var(--color-foreground);
+    border-right: 2px solid var(--color-foreground);
 }
 
 div.searchWrapper > * {
@@ -65,7 +67,7 @@ div.searchWrapper > * {
 }
 
 div.searchWrapper > *:hover {
-    background: var(--color-background);
+    background: var(--color-background-panel-active);
 }
 
 .btnClose {

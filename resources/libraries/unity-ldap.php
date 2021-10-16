@@ -26,7 +26,6 @@ class unityLDAP extends ldapConn
 
   const RDN = "cn";  // The defauls RDN for LDAP entries is set to "common name"
 
-  const NOLOGIN_SHELL = "/sbin/nologin";
   const DEFAULT_SHELL = "/bin/bash";
 
   const POSIX_ACCOUNT_CLASS = array(
