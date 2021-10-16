@@ -18,8 +18,9 @@ class templateMailer extends PHPMailer {
     public function send($template = null, $data = null) {
         if (isset($template)) {
             ob_start();
-            include $this->template_dir . "/" . $template . ".php";
-            $this->msgHTML(ob_get_clean());
+            require_once $this->template_dir . "/" . $template . ".php";
+            $mes_html = ob_get_clean();
+            $this->msgHTML($mes_html);
         }
 
         if (parent::send()) {

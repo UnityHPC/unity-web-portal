@@ -125,31 +125,46 @@ class serviceStack
 
     public function ldap($name = self::DEFAULT_KEY)
     {
-        return $this->services["ldap"][$name];
+        if (array_key_exists($name, $this->services["ldap"])) {
+            return $this->services["ldap"][$name];
+        } else {
+            return NULL;
+        }
     }
 
     public function sql($name = self::DEFAULT_KEY)
     {
-        return $this->services["sql"][$name];
+        if (array_key_exists($name, $this->services["sql"])) {
+            return $this->services["sql"][$name];
+        } else {
+            return NULL;
+        }
     }
 
     public function mail($name = self::DEFAULT_KEY)
     {
-        return $this->services["mail"][$name];
-    }
-
-    public function all_storage()
-    {
-        return $this->services["storage"];
+        if (array_key_exists($name, $this->services["mail"])) {
+            return $this->services["mail"][$name];
+        } else {
+            return NULL;
+        }
     }
 
     public function sacctmgr($name = self::DEFAULT_KEY)
     {
-        return $this->services["sacctmgr"][$name];
+        if (array_key_exists($name, $this->services["sacctmgr"])) {
+            return $this->services["sacctmgr"][$name];
+        } else {
+            return NULL;
+        }
     }
 
     public function unityfs($name = self::DEFAULT_KEY)
     {
-        return $this->services["unityfs"][$name];
+        if (array_key_exists($name, $this->services["unityfs"])) {
+            return $this->services["unityfs"][$name];
+        } else {
+            return NULL;
+        }
     }
 }

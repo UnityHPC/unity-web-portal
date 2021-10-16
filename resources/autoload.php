@@ -44,9 +44,12 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SHIB is enabled on this page
     "mail" => isset($_SERVER["mail"]) ? $_SERVER["mail"] : $_SERVER["eppn"]  // Fallback to EPPN if mail is not set
   );
   $_SESSION["SHIB"] = $SHIB;  // Set the session var for non-authenticated pages
-}
 
-$USER = new unityUser($SHIB["netid"], $SERVICE);
+  $USER = new unityUser($SHIB["netid"], $SERVICE);
+  $_SESSION["user_exists"] = $USER->exists();
+  $_SESSION["is_pi"] = $USER->isPI();
+  $_SESSION["is_admin"] = $USER->isAdmin();
+}
 
 // Load Locale
 require_once config::PATHS["locale"] . "/" . config::LOCALE . ".php";  // Loads the locale class
