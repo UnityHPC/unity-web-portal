@@ -14,6 +14,7 @@ class unityLDAP extends ldapConn
   const GROUPS = "ou=groups," . self::BASE;
   const STORAGE = "ou=storage," . self::BASE;
   const PI_GROUPS = "ou=pi_groups," . self::BASE;
+  const SHARED_GROUPS = "ou=shared_groups," . self::BASE;
   const ADMIN_GROUP = "cn=sudo," . self::BASE;
 
   const STOR_PREFIX = "storage_";
@@ -46,6 +47,7 @@ class unityLDAP extends ldapConn
   public $storageOU;
   public $adminGroup;
   public $pi_groupOU;
+  public $shared_groupOU;
 
   public function __construct($host, $dn, $pass)
   {
@@ -57,6 +59,7 @@ class unityLDAP extends ldapConn
     $this->storageOU = $this->getEntry(self::STORAGE);
     $this->pi_groupOU = $this->getEntry(self::PI_GROUPS);
     $this->adminGroup = $this->getEntry(self::ADMIN_GROUP);
+    $this->shared_groupOU = $this->getEntry(self::SHARED_GROUPS);
   }
 
   public function getNextUID()
@@ -82,7 +85,8 @@ class unityLDAP extends ldapConn
     return $id;
   }
 
-  public function getNextGID() {
+  public function getNextGID()
+  {
     $groups = $this->groupOU->getChildrenArray(true);
 
     usort($groups, function ($a, $b) {
@@ -104,7 +108,8 @@ class unityLDAP extends ldapConn
     return $id;
   }
 
-  public function getNextStorGID() {
+  public function getNextStorGID()
+  {
     $groups = $this->storOU->getChildrenArray(true);
 
     usort($groups, function ($a, $b) {
@@ -126,7 +131,8 @@ class unityLDAP extends ldapConn
     return $id;
   }
 
-  public function getNextPiGID() {
+  public function getNextPiGID()
+  {
     $groups = $this->pi_groupOU->getChildrenArray(true);
 
     usort($groups, function ($a, $b) {
@@ -148,12 +154,103 @@ class unityLDAP extends ldapConn
     return $id;
   }
 
-  public function getAllRecipients() {
+  public function getNextSharedGID()
+  {
+    $groups = $this->shared_groupOU->getChildrenArray(true);
+
+    usort($groups, function ($a, $b) {
+      return $a["gidnumber"] <=> $b["gidnumber"];
+    });
+
+    $id = self::PI_ID_MAP[0];
+    foreach ($groups as $acc) {
+      if ($id == $acc["gidnumber"][0]) {
+        $id++;
+        if ($id > self::PI_ID_MAP[1]) {
+          throw new Exception("Storage GID Limits reached");  // all hell has broken if this executes
+        }
+      } else {
+        break;
+      }
+    }
+
+    return $id;
+  }
+
+  public function getAllRecipients()
+  {
     $users = $this->userOU->getChildren(true);
 
     $out = array();
     foreach ($users as $user) {
       array_push($out, $user->getAttribute("mail")[0]);
+    }
+
+    return $out;
+  }
+
+  private function UIDNumInUse($id) {
+    $users = $this->userOU->getChildrenArray(true);
+    foreach ($users as $user) {
+      if ($user["uidnumber"][0] == $id) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private function GIDNumInUse($id) {
+    $users = $this->groupOU->getChildrenArray(true);
+    foreach ($users as $user) {
+      if ($user["gidnumber"][0] == $id) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public function getUnassignedID($uid)
+  {
+    $netid = strtok($uid, "_");  // extract netid
+    // scrape all files in custom folder
+    $dir = new DirectoryIterator(config::PATHS["custom_user"]);
+    foreach ($dir as $fileinfo) {
+      if ($fileinfo->getExtension() == "csv") {
+        // found csv file
+        $handle = fopen($fileinfo->getPathname(), "r");
+        while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+          $netid_match = $data[0];
+          $uid_match = $data[1];
+
+          if ($uid == $netid_match || $netid == $netid_match) {
+            // found a match
+            if (!$this->UIDNumInUse($uid_match) && !$this->GIDNumInUse($uid_match)) {
+              return $uid_match;
+            }
+          }
+        }
+      }
+    }
+
+    // didn't find anything from existing mappings, use next available
+    $next_uid = $this->getNextUID();
+    if ($this->GIDNumInUse($next_uid)) {
+      throw new Exception("UID/GID Mismatch");
+    }
+
+    return $next_uid;
+  }
+
+  // TEMP FUNCTION
+  public function getAllUsers($services)
+  {
+    $users = $this->userOU->getChildren(true);
+
+    $out = array();
+    foreach ($users as $user) {
+      array_push($out, new unityUser($user->getAttribute("cn")[0], $services));
     }
 
     return $out;

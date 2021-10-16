@@ -14,10 +14,7 @@ class unityAccount
     private $pi_uid;
 
     // Services
-    private $ldap;
-    private $sql;
-    private $sacctmgr;
-    private $unityfs;
+    private $service_stack;
 
     /**
      * Constructor for the object
@@ -31,10 +28,23 @@ class unityAccount
     {
         $this->pi_uid = $pi_uid;
 
-        $this->ldap = $service_stack->ldap();  // Set LDAP connection instance var
-        $this->sql = $service_stack->sql();  // Set SQL connection instance var
-        $this->sacctmgr = $service_stack->sacctmgr();  // Set sacctmgr instance var
-        $this->unityfs = $service_stack->unityfs();
+        if (is_null($service_stack->ldap())) {
+            throw new Exception("LDAP is required for the unityUser class");
+        }
+
+        if (is_null($service_stack->sql())) {
+            throw new Exception("SQL is required for the unityUser class");
+        }
+
+        if (is_null($service_stack->sacctmgr())) {
+            throw new Exception("sacctmgr is required for the unityUser class");
+        }
+
+        if (is_null($service_stack->unityfs())) {
+            throw new Exception("unityfs is required for the unityUser class");
+        }
+
+        $this->service_stack = $service_stack;
     }
 
     /**
@@ -53,7 +63,7 @@ class unityAccount
      */
     public function exists()
     {
-        return $this->sacctmgr->accountExists($this->pi_uid);
+        return $this->service_stack->sacctmgr()->accountExists($this->pi_uid);
     }
 
     public function createGroup()
@@ -65,7 +75,7 @@ class unityAccount
         $ldapPiGroupEntry = $this->getLDAPPiGroup();
 
         if (!$ldapPiGroupEntry->exists()) {
-            $nextGID = $this->ldap->getNextPiGID();
+            $nextGID = $this->service_stack->ldap()->getNextPiGID();
 
             $ldapPiGroupEntry->setAttribute("objectclass", unityLDAP::POSIX_GROUP_CLASS);
             $ldapPiGroupEntry->setAttribute("gidnumber", strval($nextGID));
@@ -87,23 +97,23 @@ class unityAccount
             throw new Exception("Unable to delete PI ldap group");
         }
 
-        $this->sql->removeRequests($this->pi_uid);  // remove any lasting requests
+        $this->service_stack->sql()->removeRequests($this->pi_uid);  // remove any lasting requests
 
         $this->removeSlurmAccount();
     }
 
     public function getOwner() {
-        return new unityUser(self::getUIDfromPIUID($this->pi_uid), $this->ldap, $this->sql, $this->sacctmgr);
+        return new unityUser(self::getUIDfromPIUID($this->pi_uid), $this->service_stack);
     }
 
     public function getLDAPPiGroup()
     {
-        $group_entries = $this->ldap->pi_groupOU->getChildren(true, "(" . unityLDAP::RDN . "=" . $this->pi_uid . ")");
+        $group_entries = $this->service_stack->ldap()->pi_groupOU->getChildren(true, "(" . unityLDAP::RDN . "=" . $this->pi_uid . ")");
 
         if (count($group_entries) > 0) {
             return $group_entries[0];
         } else {
-            return new ldapEntry($this->ldap->getConn(), unityLDAP::RDN . "=$this->pi_uid," . unityLDAP::PI_GROUPS);
+            return new ldapEntry($this->service_stack->ldap()->getConn(), unityLDAP::RDN . "=$this->pi_uid," . unityLDAP::PI_GROUPS);
         }
     }
 
@@ -119,10 +129,6 @@ class unityAccount
             // failed to write
             $this->removeAssociation($new_user->getUID());
         }
-
-        if (!$new_user->isActive()) {
-            $new_user->activate();
-        }
     }
 
     public function removeUserFromGroup($old_user)
@@ -137,10 +143,6 @@ class unityAccount
             // failed to write
             $this->addAssociation($old_user->getUID());
         }
-
-        if ($old_user->isActive() && count($old_user->getGroups()) == 0) {
-            $old_user->deactivate();
-        }
     }
 
     //
@@ -152,22 +154,22 @@ class unityAccount
      */
     private function createSlurmAccount()
     {
-        $this->sacctmgr->addAccount($this->pi_uid);
+        $this->service_stack->sacctmgr()->addAccount($this->pi_uid);
     }
 
     private function removeSlurmAccount()
     {
-        $this->sacctmgr->deleteAccount($this->pi_uid);
+        $this->service_stack->sacctmgr()->deleteAccount($this->pi_uid);
     }
 
     private function addAssociation($uid)
     {
-        if (!$this->sacctmgr->accountExists($this->pi_uid)) {
+        if (!$this->service_stack->sacctmgr()->accountExists($this->pi_uid)) {
             throw new Exception("Unable to create an association to a nonexist account $this->pi_uid");
         }
 
         // Add Slurm User
-        $this->sacctmgr->addUser($uid, $this->pi_uid);
+        $this->service_stack->sacctmgr()->addUser($uid, $this->pi_uid);
     }
 
     /**
@@ -178,17 +180,17 @@ class unityAccount
      */
     private function removeAssociation($uid)
     {
-        if (!$this->sacctmgr->userExists($uid, $this->pi_uid)) {
+        if (!$this->service_stack->sacctmgr()->userExists($uid, $this->pi_uid)) {
             throw new Exception("Unable to remove association because an association doesn't exist");
         }
 
-        $this->sacctmgr->deleteUser($uid, $this->pi_uid);
+        $this->service_stack->sacctmgr()->deleteUser($uid, $this->pi_uid);
     }
 
 
     public function getAssociations()
     {
-        return $this->sacctmgr->getUsersFromAccount($this->pi_uid);
+        return $this->service_stack->sacctmgr()->getUsersFromAccount($this->pi_uid);
     }
 
     public function getGroupMembers()
@@ -196,8 +198,11 @@ class unityAccount
         $members = $this->getAssociations();
 
         $out = array();
+        $owner_uid = $this->getOwner()->getUID();
         foreach ($members as $member) {
-            array_push($out, new unityUser($member, $this->ldap, $this->sql, $this->sacctmgr));
+            if ($member != $owner_uid) {
+                array_push($out, new unityUser($member, $this->service_stack));
+            }
         }
 
         return $out;
@@ -214,21 +219,21 @@ class unityAccount
 
     public function addRequest($uid)
     {
-        $this->sql->addRequest($uid, $this->pi_uid);
+        $this->service_stack->sql()->addRequest($uid, $this->pi_uid);
     }
 
     public function removeRequest($uid)
     {
-        $this->sql->removeRequest($uid, $this->pi_uid);
+        $this->service_stack->sql()->removeRequest($uid, $this->pi_uid);
     }
 
     public function getRequests()
     {
-        $requests = $this->sql->getRequests($this->pi_uid);
+        $requests = $this->service_stack->sql()->getRequests($this->pi_uid);
 
         $out = array();
         foreach ($requests as $request) {
-            array_push($out, new unityUser($request["uid"], $this->ldap, $this->sql, $this->sacctmgr));
+            array_push($out, new unityUser($request["uid"], $this->service_stack));
         }
 
         return $out;

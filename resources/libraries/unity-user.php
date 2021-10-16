@@ -14,21 +14,29 @@ class unityUser
     const HOME_QUOTA = 536870912000;
 
     private $uid;
-
-    // Services
-    private $ldap;
-    private $sql;
-    private $sacctmgr;
-    private $unityfs;
+    private $service_stack;
 
     public function __construct($uid, $service_stack)
     {
         $this->uid = $uid;
 
-        $this->ldap = $service_stack->ldap();  // Set LDAP connection instance var
-        $this->sql = $service_stack->sql();  // Set SQL connection instance var
-        $this->sacctmgr = $service_stack->sacctmgr();  // Set sacctmgr instance var
-        $this->unityfs = $service_stack->unityfs();
+        if (is_null($service_stack->ldap())) {
+            throw new Exception("LDAP is required for the unityUser class");
+        }
+
+        if (is_null($service_stack->sql())) {
+            throw new Exception("SQL is required for the unityUser class");
+        }
+
+        if (is_null($service_stack->sacctmgr())) {
+            throw new Exception("sacctmgr is required for the unityUser class");
+        }
+
+        if (is_null($service_stack->unityfs())) {
+            throw new Exception("unityfs is required for the unityUser class");
+        }
+
+        $this->service_stack = $service_stack;
     }
 
     /**
@@ -46,12 +54,11 @@ class unityUser
         // Create LDAP group
         //
         $ldapGroupEntry = $this->getLDAPGroup();
+        $id = $this->service_stack->ldap()->getUnassignedID($this->getUID());
 
         if (!$ldapGroupEntry->exists()) {
-            $nextGID = $this->ldap->getNextGID();
-
             $ldapGroupEntry->setAttribute("objectclass", unityLDAP::POSIX_GROUP_CLASS);
-            $ldapGroupEntry->setAttribute("gidnumber", strval($nextGID));
+            $ldapGroupEntry->setAttribute("gidnumber", strval($id));
 
             if (!$ldapGroupEntry->write()) {
                 throw new Exception("Failed to create POSIX group for $this->uid");
@@ -64,13 +71,6 @@ class unityUser
         $ldapUserEntry = $this->getLDAPUser();
 
         if (!$ldapUserEntry->exists()) {
-            $nextUID = $this->ldap->getNextUID();
-            $currentGID = $ldapGroupEntry->getAttribute("gidnumber")[0];
-            if ($currentGID != $nextUID) {
-                $ldapGroupEntry->delete();  // Cleanup previous group
-                throw new Exception("UID/GID mismatch: Attempting to match UID $nextUID with GID $currentGID");
-            }
-
             $ldapUserEntry->setAttribute("objectclass", unityLDAP::POSIX_ACCOUNT_CLASS);
             $ldapUserEntry->setAttribute("uid", $this->uid);
             $ldapUserEntry->setAttribute("givenname", $firstname);
@@ -78,8 +78,8 @@ class unityUser
             $ldapUserEntry->setAttribute("mail", $email);
             $ldapUserEntry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
             $ldapUserEntry->setAttribute("loginshell", unityLDAP::DEFAULT_SHELL);
-            $ldapUserEntry->setAttribute("uidnumber", strval($nextUID));
-            $ldapUserEntry->setAttribute("gidnumber", strval($currentGID));
+            $ldapUserEntry->setAttribute("uidnumber", strval($id));
+            $ldapUserEntry->setAttribute("gidnumber", strval($id));
 
             if (!$ldapUserEntry->write()) {
                 $ldapGroupEntry->delete();  // Cleanup previous group
@@ -91,7 +91,7 @@ class unityUser
         // MySQL row
         //
         if ($isPI) {
-            $this->sql->addRequest($this->uid);
+            $this->service_stack->sql()->addRequest($this->uid);
         }
 
         // filesystem
@@ -106,12 +106,12 @@ class unityUser
      */
     public function getLDAPUser()
     {
-        $user_entries = $this->ldap->userOU->getChildren(true, "(" . unityLDAP::RDN . "=$this->uid)");
+        $user_entries = $this->service_stack->ldap()->userOU->getChildren(true, "(" . unityLDAP::RDN . "=$this->uid)");
 
         if (count($user_entries) > 0) {
             return $user_entries[0];
         } else {
-            return new ldapEntry($this->ldap->getConn(), unityLDAP::RDN . "=$this->uid," . unityLDAP::USERS);
+            return new ldapEntry($this->service_stack->ldap()->getConn(), unityLDAP::RDN . "=$this->uid," . unityLDAP::USERS);
         }
     }
 
@@ -122,12 +122,12 @@ class unityUser
      */
     public function getLDAPGroup()
     {
-        $group_entries = $this->ldap->groupOU->getChildren(true, "(" . unityLDAP::RDN . "=$this->uid)");
+        $group_entries = $this->service_stack->ldap()->groupOU->getChildren(true, "(" . unityLDAP::RDN . "=$this->uid)");
 
         if (count($group_entries) > 0) {
             return $group_entries[0];
         } else {
-            return new ldapEntry($this->ldap->getConn(), unityLDAP::RDN . "=$this->uid," . unityLDAP::GROUPS);
+            return new ldapEntry($this->service_stack->ldap()->getConn(), unityLDAP::RDN . "=$this->uid," . unityLDAP::GROUPS);
         }
     }
 
@@ -250,7 +250,12 @@ class unityUser
     public function getSSHKeys()
     {
         $ldapUser = $this->getLDAPUser();
-        return $ldapUser->getAttribute("sshpublickey");
+        $result = $ldapUser->getAttribute("sshpublickey");
+        if (is_null($result)) {
+            return array();
+        } else {
+            return $result;
+        }
     }
 
     /**
@@ -308,7 +313,7 @@ class unityUser
      */
     public function isAdmin()
     {
-        $admins = $this->ldap->adminGroup->getAttribute("memberuid");
+        $admins = $this->service_stack->ldap()->adminGroup->getAttribute("memberuid");
         return in_array($this->uid, $admins);
     }
 
@@ -324,7 +329,7 @@ class unityUser
 
     public function getAccount()
     {
-        return new unityAccount(unityAccount::getPIUIDfromUID($this->uid), $this->ldap, $this->sql, $this->sacctmgr, $this->storage);
+        return new unityAccount(unityAccount::getPIUIDfromUID($this->uid), $this->service_stack);
     }
 
     /**
@@ -333,19 +338,19 @@ class unityUser
      */
     public function getGroups()
     {
-        $groups = $this->sacctmgr->getAccountsFromUser($this->uid);
+        $groups = $this->service_stack->sacctmgr()->getAccountsFromUser($this->uid);
 
         $out = array();
         foreach ($groups as $group) {
-            array_push($out, new unityAccount($group, $this->ldap, $this->sql, $this->sacctmgr, $this->storage));
+            array_push($out, new unityAccount($group, $this->service_stack));
         }
         return $out;
     }
 
     public function initFilesystem() {
-        $this->unityfs->createHomeDirectory($this->getUID(), self::HOME_QUOTA);
-        $this->unityfs->createScratchDirectory($this->getUID());
-        $this->unityfs->populateHomeDirectory($this->getUID());
-        $this->unityfs->populateScratchDirectory($this->getUID());
+        $this->service_stack->unityfs()->createHomeDirectory($this->getUID(), self::HOME_QUOTA);
+        $this->service_stack->unityfs()->createScratchDirectory($this->getUID());
+        $this->service_stack->unityfs()->populateHomeDirectory($this->getUID());
+        $this->service_stack->unityfs()->populateScratchDirectory($this->getUID());
     }
 }
