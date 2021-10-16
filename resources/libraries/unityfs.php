@@ -6,6 +6,7 @@ class unityfs {
     public function __construct($host, $port)
     {
         $this->s = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        socket_set_option($this->s, SOL_SOCKET, SO_REUSEADDR, 1);
         if (!socket_connect($this->s, $host, $port)) {
             throw new Exception("Unable to connect to socket");
         }
@@ -65,5 +66,9 @@ class unityfs {
 
         $result = socket_read($this->s, 1024);
         return $result;
+    }
+
+    public function close() {
+        socket_close($this->s);
     }
 }
