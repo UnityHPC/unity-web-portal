@@ -27,3 +27,4 @@ The unity/webroot directory should be the **only** publicly accessible location 
 #### Server Setup ####
 This website has a public and private interface. The private interface is authenticated using a shibboleth SP. The following files/directories must be behind a shibboleth SP (configured through apache).
 * `/panel`
+* `/admin` for admins only
