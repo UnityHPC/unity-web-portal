@@ -1,0 +1,11 @@
+[Unit]
+Description=Unity Filesystem Daemon
+After=network.target
+
+[Service]
+WorkingDirectory=<path to bin folder>
+ExecStart=python3 unity_fs.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

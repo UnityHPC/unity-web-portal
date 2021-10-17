@@ -1,0 +1,21 @@
+:root {
+    --color-background: #ffffff; /* Site background color */
+    --color-background-text: #1a1a1a; /* Text color with --color-background in the background */
+    --color-background-text-inactive: #666666;
+    --color-foreground: #881d1d; /* Primary foreground color (navbar, buttons, links) */
+    --color-foreground-text: #ffffff; /* Text color with --color-foreground in the background */
+    --color-foreground-hover: #9c2020; /* Active color for buttons/links on hover, with --color-foreground as the background */
+    --color-foreground-active: #a92323;
+    --color-foreground-disabled: #e48181;
+
+    --color-background-dividers: #dddddd; /* Colors to use for dividers and borders with --color-background in the background */
+
+    --color-background-panel: #fafafa; /* Panel background with --color-background in the background (used on footer, some popup panels) */
+    --color-background-panel-active: #dddddd; /* Used when an element in a panel is active (such as hovering over a button) with --color-background-panel as the background */
+    --color-background-panel-inactive: #bbbbbb;/* Text/divider/border color for faded/inactive elements, with --color-background-panel as the background */
+
+    --color-success: #009933;
+    --color-text-failure: #cc0000;
+    --color-text-warning: #ffcc00;
+    --size-mobile-switch: 1000px;
+}

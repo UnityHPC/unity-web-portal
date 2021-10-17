@@ -1,0 +1,27 @@
+attributetype ( 1.3.6.1.4.1.8473.2.1.100000
+        NAME 'groupType'
+        DESC 'Group type'
+        EQUALITY caseExactMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32}
+        SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.8473.2.1.100001
+        NAME 'groupOwner'
+        DESC 'Group owner UID'
+        EQUALITY caseExactMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32}
+        SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.8473.2.1.100002
+        NAME 'groupRequests'
+        DESC 'UIDs that have requested to join this group'
+        EQUALITY caseExactMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32}
+        MULTI-VALUE )
+
+objectclass ( 1.3.6.1.4.1.8473.2.2.100000
+        NAME 'unityGroup'
+        DESC 'Unity Group Class'
+        SUP ( top $ posixGroup )
+        STRUCTURAL
+        MUST ( cn $ groupType $ groupOwner ) )

@@ -1,0 +1,85 @@
+<?php
+
+//DEBUG Error Reporing, remove later
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+/**
+ * The directory structure MUST be:
+ * /resources
+ *  /resources/libraries
+ *  /resources/templates
+ *  /resources/config.php
+ * /webroot - Public document root
+ */
+
+define("ROOT", substr(__DIR__, 0, strrpos(__DIR__, '/')));  // Root Directory of the web docs (not webroot, but one level above that)
+
+class config {
+    public const URL = "https://unity.rc.umass.edu";
+    public const PREFIX = "/dev";  // Site prefix
+    public const MAINTENANCE_MODE = false;
+    public const WEB_UID = 0;  // set to uid of web server user
+    public const DOCS_ROOT = ROOT;
+
+    public const APP = array(
+        "repo" => "https://github.com/UMass-RC/unity-web-portal",
+        "version" => "0.5.0-BETA"
+    );
+
+    public const PATHS = array(
+        "templates" => ROOT . "/resources/templates",
+        "libraries" => ROOT . "/resources/libraries",
+        "locale" => ROOT . "/resources/locale",
+        "skel" => ROOT . "/resources/etc/skel",
+        "custom_user" => ROOT . "/resources/custom_user_mappings"
+    );
+
+    public const LDAP = array(
+        "bind_dn" => "",
+        "bind_pass" => "",
+        "uri" => ""
+    );
+
+    public const SQL = array(
+        "host" => "",
+        "user" => "",
+        "pass" => "",
+        "db" => ""
+    );
+
+    public const SLURM = array(
+        "cluster" => ""
+    );
+
+    public const MAIL = array(
+        "host" => "",
+        "smtp_user" => "",
+        "smtp_pass" => "",
+        "smtp_secure" => "",
+        "port" => "",
+        "template_path" => config::PATHS["templates"] . "/mail",
+        "addresses" => array(
+            "contact" => array("", ""),
+            "sender" => array("", "")
+        )
+    );
+
+    public const UNITYFS = array(
+        "host" => "",
+        "port" => ""
+    );
+
+    public const SUPPORT = array(
+        "sendmail" => ""
+    );
+
+    public const LOCALE = "en";
+
+    public const CLUSTER = array(
+        "name" => "",
+        "org" => "",
+        "desc" => ""
+    );
+}

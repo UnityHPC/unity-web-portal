@@ -1,0 +1,100 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 1000px;
+}
+
+table tr, table td {
+    padding: 8px 10px 8px 10px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+table tr {
+    border-bottom: 5px solid transparent;
+}
+
+table button, table input[type=submit] {
+    padding: 5px 10px 5px 10px;
+}
+
+table form {
+    display: inline-block;
+}
+
+table form:not(:first-child) {
+    margin-left: 10px;
+}
+
+table form>* {
+    margin: 0;
+}
+
+tr.expanded {
+    border-bottom: 0;
+}
+
+tr.expanded > td {
+    background: #eeeeee;
+}
+
+tr.expandable {
+    cursor: pointer;
+}
+
+tr.expanded.first {
+    border-bottom: 5px solid var(--color-background-dividers);
+}
+
+tr.expanded.first > td:first-child {
+    border-top-left-radius: 10px;
+}
+
+tr.expanded.first > td:last-child {
+    border-top-right-radius: 10px;
+}
+
+tr.expanded.last > td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+tr.expanded.last > td:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+tr.expanded.last {
+    border-bottom: 10px solid transparent;
+}
+
+tr.expanded:not(.expandable) {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+tr.expanded:not(.expandable) > td:first-child {
+    padding-left: 30px;
+}
+
+button.btnExpanded {
+    transform: rotate(90deg);
+}
+
+/* Buttons */
+button.btnExpand {
+    margin: 0 10px 0 0;
+    padding: 0;
+    background: transparent;
+    color: var(--color-foreground);
+}
+
+button.btnExpand:hover {
+    background: transparent;
+}
+
+button.btnExpanded {
+    transform: rotate(90deg);
+}
+
+td:last-child > button {
+    float: right;
+}

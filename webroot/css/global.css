@@ -1,0 +1,234 @@
+html, body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--color-background);
+    color: var(--color-text-dark);
+    height: 100%;
+    overscroll-behavior-y: none;
+    font-size: 11pt;
+    color: var(--color-text-dark);
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+/*
+-------------
+   GLOBALS
+-------------
+*/
+
+a {
+    color: var(--color-foreground);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1 {
+    font-size: 18pt;
+    font-weight: bold;
+    padding-bottom: 5px;
+    display: block;
+    margin: 0;
+}
+
+h2 {
+    font-size: 16pt;
+    font-weight: bold;
+    padding-bottom: 5px;
+    display: block;
+    margin: 0;
+}
+
+h3 {
+    font-size: 16pt;
+    font-weight: unset;
+    padding-bottom: 5px;
+    display: block;
+    margin: 0;
+}
+
+h4 {
+    font-size: 15pt;
+    font-weight: unset;
+    padding-bottom: 5px;
+    font-style: italic;
+    display: block;
+    margin: 0;
+}
+
+h5 {
+    font-size: 12pt;
+    font-weight: unset;
+    color: var(--color-background-text-inactive);
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+hr {
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+    border-bottom: 1px solid var(--color-background-dividers);
+    margin: 10px 0 10px 0;
+    display: block;
+}
+
+.vertical-align {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+button.plusBtn {
+    font-size: 24pt;
+    display: block;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+}
+
+pre {
+    background: var(--color-background-panel-active);
+    display: inline;
+    border-radius: 3px;
+    padding: 3px 6px 3px 6px;
+}
+
+/* Form Elements */
+
+form>* {
+    display: block;
+}
+
+form > *:not(:first-child) {
+    margin-top: 5px;
+}
+
+input:focus, textarea:focus {
+    outline: var(--color-foreground) solid 2px;
+}
+
+button:focus, input[type=submit]:focus {
+    outline: none;
+}
+
+input[type=text], input[type=password] {
+    margin: 10px 0 10px 0;
+    border: 1px solid var(--color-background-dividers);
+    padding: 5px;
+    width: calc(100% - 12px);
+    /* Factors in extra border and padding */
+    max-width: 300px;
+    border-radius: 5px;
+}
+
+input[type=submit], button {
+    background: var(--color-foreground);
+    color: var(--color-foreground-text);
+    cursor: pointer;
+    border: 0;
+    padding: 8px 12px 8px 12px;
+    border-radius: 5px;
+    transition: background 0.1s;
+}
+
+input[type=submit]:hover, button:hover {
+    background: var(--color-foreground-hover);
+}
+
+input[type=submit]:disabled, button:disabled {
+    background: var(--color-foreground-disabled);
+    cursor: default;
+}
+
+input[type=checkbox], input[type=radio] {
+    display: inline-block;
+}
+
+label {
+    display: inline;
+    user-select: none;
+    font-size: 10pt;
+    color: var(--color-background-text-inactive);
+    overflow: hidden;
+    margin: 0 10px 0 10px;
+}
+
+input[type=radio] {
+    margin-bottom: 0;
+}
+
+select {
+    border: 1px solid var(--color-background-dividers);
+    background: white;
+    padding: 5px;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 5px;
+}
+
+textarea {
+    border: 1px solid var(--color-background-dividers);
+    width: calc(100% - 12px);
+    min-height: 150px;
+    display: block;
+    margin: 10px 0 10px 0;
+    resize: vertical;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+div.inline * {
+    display: inline;
+    margin-right: 10px;
+}
+
+/*
+---------------------
+   Global Elements
+---------------------
+*/
+
+/* WRAPPERS */
+
+main {
+    flex: 1 0 auto;
+    padding: 15px 20px 20px 20px;
+    max-width: 1000px;
+    line-height: 24px;
+}
+
+/* FOOTER */
+
+footer {
+    background: var(--color-background-panel);
+    flex-shrink: 0;
+    text-align: center;
+    font-size: 8pt;
+    color: var(--color-background-panel-inactive);
+}
+
+footer #footerLogos img {
+    margin: 10px 0 0 0;
+    padding: 0 10px 0 10px;
+    height: 20px;
+}
+
+footer #footerLogos>*:not(:last-child) {
+    border-right: 1px solid var(--color-background-panel-inactive);
+}
+
+.footerBlock {
+    display: block;
+    margin: 10px;
+}
