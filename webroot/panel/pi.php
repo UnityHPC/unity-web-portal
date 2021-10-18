@@ -128,6 +128,12 @@ echo "</table>";
     });
 </script>
 
+<style>
+button.btnApprove {
+    margin-right: 5px;
+}
+</style>
+
 <?php
 include config::PATHS["templates"] . "/footer.php";
 ?>
