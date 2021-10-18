@@ -129,8 +129,8 @@ echo "</table>";
 </script>
 
 <style>
-button.btnApprove {
-    margin-right: 5px;
+button.btnDeny {
+    margin-right: 10px;
 }
 </style>
 
