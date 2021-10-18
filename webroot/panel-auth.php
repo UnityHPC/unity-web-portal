@@ -5,6 +5,7 @@ require_once config::PATHS["templates"] . "/header.php";
 ?>
 
 <h1><?php echo unity_locale::AUTH_HEADER_MAIN; ?></h1>
+<hr>
 
 <div id="idpSelect"></div>
 

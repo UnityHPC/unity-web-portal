@@ -1,7 +1,6 @@
 <?php
 
-require "../../../resources/config.php";
-require config::PATHS["libraries"] . "/composer/vendor/autoload.php";
+require "../../../resources/autoload.php";
 
 use \phpseclib\Crypt\RSA;
 

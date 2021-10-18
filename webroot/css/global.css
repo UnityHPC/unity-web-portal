@@ -95,11 +95,13 @@ button.plusBtn {
     overflow: hidden;
 }
 
-pre {
+.code {
     background: var(--color-background-panel-active);
     display: inline;
     border-radius: 3px;
     padding: 3px 6px 3px 6px;
+    white-space: normal;
+    font-family: monospace;
 }
 
 /* Form Elements */
