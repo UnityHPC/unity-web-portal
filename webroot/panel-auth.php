@@ -13,6 +13,12 @@ require_once config::PATHS["templates"] . "/header.php";
 <script src="/js/eds/idpselect.js" type="text/javascript" language="javascript"></script>
 <link rel="stylesheet" type="text/css" href="/js/eds/idpselect.css">
 
+<style>
+label {
+    margin: 0;
+}
+</style>
+
 <?php
 require_once config::PATHS["templates"] . "/footer.php";
 ?>
