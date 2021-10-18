@@ -153,75 +153,10 @@ def threaded_client(conn):
                 data = {
                     "user": user,
                     "group": group,
-                    "acl": [
-                        {
-                            "tag": "owner@",
-                            "id": None,
-                            "type": "ALLOW",
-                            "perms": {
-                                "READ_DATA": True,
-                                "WRITE_DATA": True,
-                                "APPEND_DATA": True,
-                                "READ_NAMED_ATTRS": True,
-                                "WRITE_NAMED_ATTRS": True,
-                                "DELETE_CHILD": True,
-                                "READ_ATTRIBUTES": True,
-                                "WRITE_ATTRIBUTES": True,
-                                "DELETE": True,
-                                "READ_ACL": True,
-                                "WRITE_ACL": True,
-                                "WRITE_OWNER": True,
-                                "SYNCHRONIZE": True
-                            },
-                            "flags": {
-                                "BASIC": "INHERIT"
-                            }
-                        },
-                        {
-                            "tag": "owner@",
-                            "id": None,
-                            "type": "ALLOW",
-                            "perms": {
-                                "EXECUTE": True
-                            },
-                            "flags": {"DIRECTORY_INHERIT": True}
-                        },
-                        {
-                            "tag": "group@",
-                            "id": None,
-                            "type": "ALLOW",
-                            "perms": {
-                                "READ_DATA": True,
-                                "READ_NAMED_ATTRS": True,
-                                "READ_ATTRIBUTES": True,
-                                "READ_ACL": True,
-                                "SYNCHRONIZE": True
-                            },
-                            "flags": {"BASIC": "INHERIT"}
-                        },
-                        {
-                            "tag": "group@",
-                            "id": None,
-                            "type": "ALLOW",
-                            "perms": {
-                                "EXECUTE": True
-                            },
-                            "flags": {"DIRECTORY_INHERIT": True}
-                        },
-                        {
-                            "tag": "everyone@",
-                            "id": None,
-                            "type": "ALLOW",
-                            "perms": {
-                                "READ_NAMED_ATTRS": True,
-                                "READ_ATTRIBUTES": True,
-                                "READ_ACL": True
-                            },
-                            "flags": {"BASIC": "INHERIT"}
-                        }
-                    ],
+                    "mode": "700",
+                    "acl": [],
                     "options": {
-                        "stripacl": False,
+                        "stripacl": True,
                         "recursive": True,
                         "traverse": True
                     }

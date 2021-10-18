@@ -114,7 +114,7 @@ form > *:not(:first-child) {
     margin-top: 5px;
 }
 
-input:focus, textarea:focus {
+input:focus, textarea:focus, select:focus {
     outline: var(--color-foreground) solid 2px;
 }
 
