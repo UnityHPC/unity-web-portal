@@ -1,9 +1,12 @@
-# Unity Cluster Website #
+![alt text](https://user-images.githubusercontent.com/40907639/137608695-2d914da2-1ecc-480b-a47e-a9e33b2b1b45.png)
+
+## Unity Cluster Web Portal ##
 
 ### Installation ###
 1. Prerequisites
     1. OpenLDAP Server with Admin Credentials, correct schema
-    1. SQL Server, correct schema
+    1. SQL Server, correct schema!
+
     1. Slurm commands accessible on this host, `www-data` (or whatever the web server user is) should be an operator in `sacctmgr`
     1. SMTP Server
     1. Some HTTP Authentication mechanism (such as Shibboleth SP)
