@@ -20,7 +20,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 if (!$SERVICE->sacctmgr()->accountExists($_POST["pi"])) {
-                    array_push($modalErrors, "This PI doesn't exist");
+                    // "\'"  instead of "'", otherwise it will close a single quote used to place the message
+                    array_push($modalErrors, "This PI doesn\'t exist");
                 }
 
                 if ($SERVICE->sql()->requestExists($USER->getUID(), $_POST["pi"])) {
