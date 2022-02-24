@@ -32,7 +32,7 @@ $SERVICE->add_ldap(config::LDAP);
 $SERVICE->add_sql(config::SQL);
 $SERVICE->add_mail(config::MAIL);
 $SERVICE->add_sacctmgr(config::SLURM);
-$SERVICE->add_unityfs(config::UNITYFS);
+//$SERVICE->add_unityfs(config::UNITYFS);
 
 if (isset($_SERVER["REMOTE_USER"])) {  // Check if SHIB is enabled on this page
   // Set Shibboleth Session Vars - Vars stored in session to be accessible outside shib-controlled areas of the sites (ie contact page)

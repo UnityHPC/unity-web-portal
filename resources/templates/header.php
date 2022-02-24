@@ -56,7 +56,7 @@ if (isset($SHIB)) {
       }
       echo "<a target='_blank' href='/panel/jhub'>JupyterLab</a>";
     } else {
-      echo "<a href='/panel/account.php'>Login / Request Account</a>";
+      echo "<a href='" . config::PREFIX . "/panel/account.php'>Login / Request Account</a>";
     }
     ?>
   </nav>
