@@ -7,6 +7,8 @@ if (file_exists("config.php")) {
   require_once "config.php";
 }
 
+require "libraries/composer/vendor/autoload.php";
+
 // set relative path
 if (config::PREFIX == "/") {
   define("REL_PATH", $_SERVER['REQUEST_URI']);
@@ -35,6 +37,7 @@ require_once config::PATHS["libraries"] . "/template_mailer.php";
 require_once config::PATHS["libraries"] . "/unity-service.php";
 
 $SERVICE = new serviceStack();
+$SERVICE->initializeLogger(config::LOG_PATH);
 $SERVICE->add_ldap(config::LDAP);
 $SERVICE->add_sql(config::SQL);
 $SERVICE->add_mail(config::MAIL);

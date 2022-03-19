@@ -1,7 +1,5 @@
 <?php
 
-require "composer/vendor/autoload.php";
-
 use PHPMailer\PHPMailer\PHPMailer;
 
 /**

@@ -1,8 +1,13 @@
 <?php
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 class serviceStack
 {
     const DEFAULT_KEY = "default";
+
+    private $logger;
 
     private $services = array(
         "ldap" => array(),
@@ -14,6 +19,17 @@ class serviceStack
 
     public function __construct()
     {
+    }
+
+    public function initializeLogger($log_path)
+    {
+        $this->logger = new Logger('unity-web-portal');
+        $this->logger->pushHandler(new StreamHandler($log_path, Logger::WARNING));
+    }
+
+    public function logger()
+    {
+        return $this->logger;
     }
 
     public function add_ldap($details, $name = self::DEFAULT_KEY)
