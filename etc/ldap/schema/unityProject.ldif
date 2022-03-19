@@ -1,0 +1,13 @@
+dn: cn=unity-project,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: unity-project
+olcAttributeTypes: ( 1.3.6.1.4.1.8473.2.1.10000 NAME 'projectType'
+    DESC 'Project type' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.1466.115.
+ 121.1.15 SINGLE-VALUE )
+olcAttributeTypes: ( 1.3.6.1.4.1.8473.2.1.10001 NAME 'projectOwners'
+    DESC 'Project owners' EQUALITY caseIgnoreMatch SYNTAX 1.3.6.1.4.1.1466.115.
+ 121.1.15 )
+olcObjectClasses: ( 1.3.6.1.4.1.8473.2.2.10000 NAME 'unityProject' SUP top AUXILIARY
+    DESC 'Unity project class'
+    MUST ( projectType $ projectOwners )
+    )
