@@ -7,6 +7,13 @@ if (file_exists("config.php")) {
   require_once "config.php";
 }
 
+// set relative path
+if (config::PREFIX == "/") {
+  define("REL_PATH", $_SERVER['REQUEST_URI']);
+} else {
+  define("REL_PATH", str_replace(config::PREFIX, "", $_SERVER['REQUEST_URI']));
+}
+
 // Start Session
 session_start();
 
@@ -32,7 +39,7 @@ $SERVICE->add_ldap(config::LDAP);
 $SERVICE->add_sql(config::SQL);
 $SERVICE->add_mail(config::MAIL);
 $SERVICE->add_sacctmgr(config::SLURM);
-//$SERVICE->add_unityfs(config::UNITYFS);
+$SERVICE->add_unityfs(config::UNITYFS);
 
 if (isset($_SERVER["REMOTE_USER"])) {  // Check if SHIB is enabled on this page
   // Set Shibboleth Session Vars - Vars stored in session to be accessible outside shib-controlled areas of the sites (ie contact page)
@@ -49,6 +56,24 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SHIB is enabled on this page
   $_SESSION["user_exists"] = $USER->exists();
   $_SESSION["is_pi"] = $USER->isPI();
   $_SESSION["is_admin"] = $USER->isAdmin();
+} elseif (DEVMODE) {
+  // dev environment enabled, now we need to check if the user is currently in /panel, which is the only place remote_user would be set
+  $panelSearch = "/panel";
+  if (substr(REL_PATH, 0, strlen($panelSearch)) === $panelSearch) {
+    $SHIB = array(
+      "netid" => EPPN_to_uid(DEVUSER["eppn"]),
+      "firstname" => DEVUSER["firstname"],
+      "lastname" => DEVUSER["lastname"],
+      "name" => DEVUSER["firstname"] . " " . DEVUSER["lastname"],
+      "mail" => DEVUSER["mail"]
+    );
+    $_SESSION["SHIB"] = $SHIB;
+
+    $USER = new unityUser($SHIB["netid"], $SERVICE);
+    $_SESSION["user_exists"] = $USER->exists();
+    $_SESSION["is_pi"] = $USER->isPI();
+    $_SESSION["is_admin"] = $USER->isAdmin();
+  }
 }
 
 // Load Locale

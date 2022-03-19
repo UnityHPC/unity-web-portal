@@ -1,9 +1,20 @@
 <?php
 
-//DEBUG Error Reporing, remove later
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+//DEV MODE
+define("DEVMODE", false);
+if (DEVMODE) {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+
+    // example: change to your liking
+    define("DEVUSER", array(
+        "eppn" => "hsaplakoglu@umass.edu",
+        "firstname" => "Hakan",
+        "lastname" => "Saplakoglu",
+        "mail" => "hsaplakoglu@umass.edu"
+    ));
+}
 
 /**
  * The directory structure MUST be:
