@@ -5,7 +5,7 @@ require_once "../../resources/autoload.php";
 require_once config::PATHS["templates"] . "/header.php";
 
 if ($USER->exists()) {
-	redirect("/panel/index.php");  // Redirect if account already exists
+	redirect(config::PREFIX . "/panel/index.php");  // Redirect if account already exists
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
