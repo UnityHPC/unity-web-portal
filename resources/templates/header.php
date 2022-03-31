@@ -37,7 +37,7 @@ if (isset($SHIB)) {
     <?php
     // Public Items - Always Visible
     echo "<a href='" . config::PREFIX . "/index.php'>About</a>";
-    echo "<a target='_blank' href='/docs'>Documentation</a>";
+    echo "<a target='_blank' href='" . config::DOCS_URL . "'>Documentation</a>";
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
       // Menu Items for Present Users
