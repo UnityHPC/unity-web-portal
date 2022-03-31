@@ -87,13 +87,6 @@ class unityUser
             }
         }
 
-        //
-        // MySQL row
-        //
-        if ($isPI) {
-            $this->service_stack->sql()->addRequest($this->uid);
-        }
-
         // filesystem
         $this->initFilesystem();
     }
@@ -350,8 +343,8 @@ class unityUser
 
     public function initFilesystem() {
         $this->service_stack->unityfs()->createHomeDirectory($this->getUID(), self::HOME_QUOTA);
-        $this->service_stack->unityfs()->createScratchDirectory($this->getUID());
-        $this->service_stack->unityfs()->populateHomeDirectory($this->getUID());
-        $this->service_stack->unityfs()->populateScratchDirectory($this->getUID());
+        //$this->service_stack->unityfs()->createScratchDirectory($this->getUID());
+        //$this->service_stack->unityfs()->populateHomeDirectory($this->getUID());
+        //$this->service_stack->unityfs()->populateScratchDirectory($this->getUID());
     }
 }
