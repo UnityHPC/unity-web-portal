@@ -61,6 +61,8 @@ class unityUser
             $ldapGroupEntry->setAttribute("gidnumber", strval($id));
 
             if (!$ldapGroupEntry->write()) {
+                $this->logger->logCritical("Failed to create POSIX group for " . $this->uid);
+                $this->logger->killPortal();
                 throw new Exception("Failed to create POSIX group for $this->uid");
             }
         }
@@ -83,6 +85,8 @@ class unityUser
 
             if (!$ldapUserEntry->write()) {
                 $ldapGroupEntry->delete();  // Cleanup previous group
+                $this->logger->logCritical("Failed to create POSIX user for " . $this->uid);
+                $this->logger->killPortal();
                 throw new Exception("Failed to create POSIX user for  $this->uid");
             }
         }
@@ -153,6 +157,8 @@ class unityUser
         $this->getLDAPUser()->setAttribute("givenname", $firstname);
 
         if (!$this->getLDAPUser()->write()) {
+            $this->logger->logCritical("Failed to update firstname for user " . $this->uid);
+            $this->logger->killPortal();
             throw new Exception("Error updating LDAP entry $this->uid");
         }
     }
@@ -177,6 +183,8 @@ class unityUser
         $this->getLDAPUser()->setAttribute("sn", $lastname);
 
         if (!$this->getLDAPUser()->write()) {
+            $this->logger->logCritical("Failed to update lastname for user " . $this->uid);
+            $this->logger->killPortal();
             throw new Exception("Error updating LDAP entry $this->uid");
         }
     }
@@ -205,6 +213,8 @@ class unityUser
         $this->getLDAPUser()->setAttribute("mail", $email);
 
         if (!$this->getLDAPUser()->write()) {
+            $this->logger->logCritical("Failed to update mail for user " . $this->uid);
+            $this->logger->killPortal();
             throw new Exception("Error updating LDAP entry $this->uid");
         }
     }
@@ -231,6 +241,8 @@ class unityUser
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("sshpublickey", $keys_filt);
             if (!$ldapUser->write()) {
+                $this->logger->logCritical("Failed to update ssh keys for user " . $this->uid);
+                $this->logger->killPortal();
                 throw new Exception("Failed to modify SSH keys for $this->uid");
             }
         }
@@ -263,6 +275,8 @@ class unityUser
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("loginshell", $shell);
             if (!$ldapUser->write()) {
+                $this->logger->logCritical("Failed to update loginshell for user " . $this->uid);
+                $this->logger->killPortal();
                 throw new Exception("Failed to modify login shell for $this->uid");
             }
         }
@@ -285,6 +299,8 @@ class unityUser
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("homedirectory", $home);
             if (!$ldapUser->write()) {
+                $this->logger->logCritical("Failed to update homedir for user " . $this->uid);
+                $this->logger->killPortal();
                 throw new Exception("Failed to modify home directory for $this->uid");
             }
         }

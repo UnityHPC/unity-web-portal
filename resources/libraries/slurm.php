@@ -17,12 +17,14 @@ class slurm
         $this->cluster = $clustername;
     }
 
-    private static function cmd($cmd)
+    private function cmd($cmd)
     {
         exec($cmd, $output, $return);
 
         if ($return != 0) {
-            throw new Exception("$cmd returned error code $return with output " . var_dump($output));
+            $this->logger->logCritical("$cmd returned error code $return with output " . var_dump($output));
+            $this->logger->killPortal();
+            throw new Exception("$cmd returned error code $return with output " . var_dump($output));  // this won't execute
         }
 
         return $output;
@@ -31,28 +33,28 @@ class slurm
     public function addAccount($name)
     {
         if (!$this->accountExists($name)) {
-            self::cmd(self::CMD_PREFIX . "add account $name Cluster=$this->cluster");
+            $this->cmd(self::CMD_PREFIX . "add account $name Cluster=$this->cluster");
         }
     }
 
     public function deleteAccount($name)
     {
         if ($this->accountExists($name)) {
-            self::cmd(self::CMD_PREFIX . "delete account $name");
+            $this->cmd(self::CMD_PREFIX . "delete account $name");
         }
     }
 
     public function addUser($name, $account)
     {
         if (!$this->userExists($name, $account)) {
-            self::cmd(self::CMD_PREFIX . "add user $name Account=$account");
+            $this->cmd(self::CMD_PREFIX . "add user $name Account=$account");
         }
     }
 
     public function deleteUser($name, $account)
     {
         if ($this->userExists($name, $account)) {
-            self::cmd(self::CMD_PREFIX . "delete user $name where Account=$account");
+            $this->cmd(self::CMD_PREFIX . "delete user $name where Account=$account");
         }
     }
 
@@ -120,7 +122,7 @@ class slurm
             $query .= " where $filter";
         }
 
-        $associations = self::cmd($query);
+        $associations = $this->cmd($query);
         array_shift($associations);  // Remove the key output
 
         $out = array();
@@ -139,7 +141,7 @@ class slurm
             $query .= " where $filter";
         }
 
-        $associations = self::cmd($query);
+        $associations = $this->cmd($query);
         array_shift($associations);  // Remove the key output
 
         $out = array();

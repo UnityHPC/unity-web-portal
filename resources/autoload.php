@@ -10,7 +10,7 @@ if (file_exists("config.php")) {
 require "libraries/composer/vendor/autoload.php";
 
 require_once config::PATHS["libraries"] . "/unity-logger.php";
-$LOGGER = new unityLogger(config::LOG_PATH, DEVMODE);
+$LOGGER = new unityLogger(config::LOG_PATH, false);
 
 // set relative path
 if (config::PREFIX == "/") {
@@ -40,6 +40,8 @@ require_once config::PATHS["libraries"] . "/template_mailer.php";
 require_once config::PATHS["libraries"] . "/unity-service.php";
 
 $SERVICE = new serviceStack($LOGGER);
+$SERVICE->getLogger()->logInfo("Accepted connection from " . $_SERVER['REMOTE_ADDR']);
+
 $SERVICE->add_ldap(config::LDAP);
 $SERVICE->add_sql(config::SQL);
 $SERVICE->add_mail(config::MAIL);

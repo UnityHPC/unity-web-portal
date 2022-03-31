@@ -82,7 +82,9 @@ class unityAccount
             $ldapPiGroupEntry->setAttribute("memberuid", array($owner->getUID()));  // add current user as the first memberuid
 
             if (!$ldapPiGroupEntry->write()) {
-                throw new Exception("Failed to create POSIX group for " . $owner->getUID());
+                $this->logger->logCritical("Failed to create LDAP PI group for " . $this->getPIUID());
+                $this->logger->killPortal();
+                throw new Exception("Failed to create POSIX group for " . $owner->getUID());  // this shouldn't execute
             }
         }
 
@@ -105,6 +107,8 @@ class unityAccount
         $ldapPiGroupEntry = $this->getLDAPPiGroup();
         if ($ldapPiGroupEntry->exists()) {
             if (!$ldapPiGroupEntry->delete()) {
+                $this->logger->logCritical("Failed to delete LDAP PI group for " . $this->getPIUID());
+                $this->logger->killPortal();
                 throw new Exception("Unable to delete PI ldap group");
             }
         }

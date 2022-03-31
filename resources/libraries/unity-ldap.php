@@ -43,7 +43,6 @@ class unityLDAP extends ldapConn
   public $storageOU;
   public $adminGroup;
   public $pi_groupOU;
-  public $shared_groupOU;
 
   private $logger;
 
@@ -73,6 +72,8 @@ class unityLDAP extends ldapConn
       if ($id == $acc["uidnumber"][0]) {
         $id++;
         if ($id > self::ID_MAP[1]) {
+          $this->logger->logCritical("UID Limits Reached");
+          $this->logger->killPortal();
           throw new Exception("UID Limits reached");  // all hell has broken if this executes
         }
       } else {
@@ -96,6 +97,8 @@ class unityLDAP extends ldapConn
       if ($id == $acc["gidnumber"][0]) {
         $id++;
         if ($id > self::ID_MAP[1]) {
+          $this->logger->logCritical("GID Limits Reached");
+          $this->logger->killPortal();
           throw new Exception("GID Limits reached");  // all hell has broken if this executes
         }
       } else {
@@ -119,7 +122,9 @@ class unityLDAP extends ldapConn
       if ($id == $acc["gidnumber"][0]) {
         $id++;
         if ($id > self::PI_ID_MAP[1]) {
-          throw new Exception("Storage GID Limits reached");  // all hell has broken if this executes
+          $this->logger->logCritical("PI GID Limits Reached");
+          $this->logger->killPortal();
+          throw new Exception("PI GID Limits reached");  // all hell has broken if this executes
         }
       } else {
         break;
@@ -189,6 +194,8 @@ class unityLDAP extends ldapConn
     // didn't find anything from existing mappings, use next available
     $next_uid = $this->getNextUID();
     if ($this->GIDNumInUse($next_uid)) {
+      $this->logger->logCritical("UID/GID Mismatch");
+      $this->logger->killPortal();
       throw new Exception("UID/GID Mismatch");
     }
 

@@ -2,6 +2,7 @@
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Monolog\Handler\FirePHPHandler;
 
 class unityLogger {
     private $logger;
@@ -10,7 +11,8 @@ class unityLogger {
     public function __construct($log_path, $printlog)
     {
         $this->logger = new Logger('unity-web-portal');
-        $this->logger->pushHandler(new StreamHandler($log_path, Logger::WARNING));
+        $this->logger->pushHandler(new StreamHandler($log_path, Logger::INFO));
+        $this->logger->pushHandler(new FirePHPHandler());
         $this->printlog = $printlog;
     }
 
