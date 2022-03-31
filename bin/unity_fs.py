@@ -55,72 +55,7 @@ def threaded_client(conn):
                 continue
 
             req_type = root.attrib["type"]
-            if req_type == "populate_home":
-                dest = ""
-                user = ""
-                group = ""
-                scratch_loc = ""
-
-                for child in root:
-                    if child.tag == "location":
-                        dest = child.text
-                    elif child.tag == "uid":
-                        user = child.text
-                    elif child.tag == "gid":
-                        group = child.text
-                    elif child.tag == "scratch":
-                        scratch_loc = child.text
-
-                if not user.isdigit():
-                    user = pwd.getpwnam(user).pw_uid
-                if not group.isdigit():
-                    group = grp.getgrnam(group).gr_gid
-
-                source_home = os.path.join(dirname, 'skel/home')
-                for root, dirs, files in os.walk(source_home): 
-                    for file in files:
-                        fullpath = os.path.join(root, file)
-                        destpath = os.path.join(dest, file)
-                        shutil.copy(fullpath, destpath)
-                        os.chown(destpath, int(user), int(group))
-
-                # create symlink to scratch
-                if scratch_loc != "":
-                    source_path = os.path.join(dest, "scratch")
-                    os.symlink(scratch_loc, source_path)
-                    os.chown(source_path, int(user), int(group), follow_symlinks = False)
-
-                conn.send("<response code=0>success</response>".encode())
-
-            elif req_type == "populate_scratch":
-                dest = ""
-                user = ""
-                group = ""
-
-                for child in root:
-                    if child.tag == "location":
-                        dest = child.text
-                    elif child.tag == "uid":
-                        user = child.text
-                    elif child.tag == "gid":
-                        group = child.text
-
-                if not user.isdigit():
-                    user = pwd.getpwnam(user).pw_uid
-                if not group.isdigit():
-                    group = grp.getgrnam(group).gr_gid
-
-                source_scratch = os.path.join(dirname, 'skel/scratch')
-                for root, dirs, files in os.walk(source_scratch):
-                    for file in files:
-                        fullpath = os.path.join(root, file)
-                        destpath = os.path.join(dest, file)
-                        shutil.copy(fullpath, destpath)
-                        os.chown(destpath, int(user), int(group))
-
-                conn.send("<response code=0>success</response>".encode())
-
-            elif req_type == "create_home":
+            if req_type == "create_home":
                 user = ""
                 group = ""
                 quota = ""
@@ -184,8 +119,8 @@ def threaded_client(conn):
                     "alldirs": True,
                     "ro": False,
                     "quiet": False,
-                    "maproot_user": "root",
-                    "maproot_group": "wheel",
+                    "maproot_user": "",
+                    "maproot_group": "",
                     "mapall_user": "",
                     "mapall_group": "",
                     "security": [],
@@ -199,29 +134,6 @@ def threaded_client(conn):
                     conn.send(error.encode())
                     time.sleep(TIME_WAIT)
                     continue
-
-                conn.send("<response>Success</response>".encode())
-
-            elif req_type == "create_scratch":
-                user = ""
-                group = ""
-
-                for child in root:
-                    if child.tag == "uid":
-                        user = child.text
-                    elif child.tag == "gid":
-                        group = child.text
-
-                scratch_path = "/scratch/" + user
-
-                if not user.isdigit():
-                    user = pwd.getpwnam(user).pw_uid
-                if not group.isdigit():
-                    group = grp.getgrnam(group).gr_gid
-
-                os.mkdir(scratch_path)
-
-                os.chown(scratch_path, int(user), int(group))
 
                 conn.send("<response>Success</response>".encode())
 
