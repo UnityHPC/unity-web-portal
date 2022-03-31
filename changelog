@@ -1,3 +1,13 @@
+#### 0.6.0-BETA ####
+* [Feature] Added cluster notices - hakan
+* [Feature] Added development environment features - hakan
+* [Feature] Added universal logging support - hakan
+* [Feature] Deployed new documentation - hakan
+* [Feature] Added custom unity-web-portal ldif file for future - hakan
+* [Bug] Disabled PI check for new user - hakan
+* [Bug] Fixed issue which caused PI already exists message to not display correctly - calvin
+* [UI] Added URI branding - hakan
+
 #### 0.5.0-BETA ####
 * [Feature] Added notices for inactive account
 * [Locale] New XML based locale for easier dynamic lang switching
