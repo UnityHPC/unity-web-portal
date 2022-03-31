@@ -45,9 +45,13 @@ class unityLDAP extends ldapConn
   public $pi_groupOU;
   public $shared_groupOU;
 
-  public function __construct($host, $dn, $pass)
+  private $logger;
+
+  public function __construct($host, $dn, $pass, $logger)
   {
     parent::__construct($host, $dn, $pass);
+
+    $this->logger = $logger;
 
     // Get Global Entries
     $this->userOU = $this->getEntry(self::USERS);

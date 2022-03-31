@@ -9,9 +9,11 @@ class slurm
     const CMD_PREFIX = "sacctmgr -i ";  // -i disabled the yes/no confirmation
 
     private $cluster;
+    private $logger;
 
-    public function __construct($clustername)
+    public function __construct($clustername, $logger)
     {
+        $this->logger = $logger;
         $this->cluster = $clustername;
     }
 

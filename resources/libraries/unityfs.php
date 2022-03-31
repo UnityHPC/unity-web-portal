@@ -3,8 +3,12 @@
 class unityfs {
     private $s;
 
-    public function __construct($host, $port)
+    private $logger;
+
+    public function __construct($host, $port, $logger)
     {
+        $this->logger = $logger;
+
         $this->s = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         socket_set_option($this->s, SOL_SOCKET, SO_REUSEADDR, 1);
         if (!socket_connect($this->s, $host, $port)) {

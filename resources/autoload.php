@@ -9,6 +9,9 @@ if (file_exists("config.php")) {
 
 require "libraries/composer/vendor/autoload.php";
 
+require_once config::PATHS["libraries"] . "/unity-logger.php";
+$LOGGER = new unityLogger(config::LOG_PATH, DEVMODE);
+
 // set relative path
 if (config::PREFIX == "/") {
   define("REL_PATH", $_SERVER['REQUEST_URI']);
@@ -36,8 +39,7 @@ require_once config::PATHS["libraries"] . "/template_mailer.php";
 
 require_once config::PATHS["libraries"] . "/unity-service.php";
 
-$SERVICE = new serviceStack();
-$SERVICE->initializeLogger(config::LOG_PATH);
+$SERVICE = new serviceStack($LOGGER);
 $SERVICE->add_ldap(config::LDAP);
 $SERVICE->add_sql(config::SQL);
 $SERVICE->add_mail(config::MAIL);
@@ -57,7 +59,6 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SHIB is enabled on this page
 
   $USER = new unityUser($SHIB["netid"], $SERVICE);
   $_SESSION["user_exists"] = $USER->exists();
-  $_SESSION["is_pi"] = $USER->isPI();
   $_SESSION["is_admin"] = $USER->isAdmin();
 } elseif (DEVMODE) {
   // dev environment enabled, now we need to check if the user is currently in /panel, which is the only place remote_user would be set
@@ -74,7 +75,6 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SHIB is enabled on this page
 
     $USER = new unityUser($SHIB["netid"], $SERVICE);
     $_SESSION["user_exists"] = $USER->exists();
-    $_SESSION["is_pi"] = $USER->isPI();
     $_SESSION["is_admin"] = $USER->isAdmin();
   }
 }

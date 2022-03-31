@@ -1,8 +1,5 @@
 <?php
 
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-
 class serviceStack
 {
     const DEFAULT_KEY = "default";
@@ -17,18 +14,12 @@ class serviceStack
         "sacctmgr" => array()
     );
 
-    public function __construct()
+    public function __construct($logger)
     {
+        $this->logger = $logger;
     }
 
-    public function initializeLogger($log_path)
-    {
-        $this->logger = new Logger('unity-web-portal');
-        $this->logger->pushHandler(new StreamHandler($log_path, Logger::WARNING));
-    }
-
-    public function logger()
-    {
+    public function getLogger() {
         return $this->logger;
     }
 
@@ -38,7 +29,7 @@ class serviceStack
             throw new Exception("Service '$name' already exists.");
         }
 
-        $ldap_object = new unityLDAP($details["uri"], $details["bind_dn"], $details["bind_pass"]);
+        $ldap_object = new unityLDAP($details["uri"], $details["bind_dn"], $details["bind_pass"], $this->logger);
         $this->services["ldap"][$name] = $ldap_object;
 
         return $this;
@@ -50,7 +41,7 @@ class serviceStack
             throw new Exception("Service '$name' already exists.");
         }
 
-        $sql_object = new unitySQL($details["host"], $details["db"], $details["user"], $details["pass"]);
+        $sql_object = new unitySQL($details["host"], $details["db"], $details["user"], $details["pass"], $this->logger);
         $this->services["sql"][$name] = $sql_object;
 
         return $this;
@@ -65,7 +56,7 @@ class serviceStack
         if (!array_key_exists("template_path", $details)) {
             throw new Exception("Template path not set.");
         }
-        $mailer = new templateMailer($details["template_path"]);
+        $mailer = new templateMailer($details["template_path"], $this->logger);
 
         $mailer->isSMTP();
         //$mailer->SMTPDebug = 4;  // DEBUG
@@ -119,7 +110,7 @@ class serviceStack
             throw new Exception("Slurm cluster name must be set.");
         }
 
-        $sacctmgr = new slurm($details["cluster"]);
+        $sacctmgr = new slurm($details["cluster"], $this->logger);
 
         $this->services["sacctmgr"][$name] = $sacctmgr;
 
@@ -132,7 +123,7 @@ class serviceStack
             throw new Exception("Service '$name' already exists.");
         }
 
-        $unityfs = new unityfs($details["host"], $details["port"]);
+        $unityfs = new unityfs($details["host"], $details["port"], $this->logger);
 
         $this->services["unityfs"][$name] = $unityfs;
 

@@ -8,8 +8,13 @@ use PHPMailer\PHPMailer\PHPMailer;
 class templateMailer extends PHPMailer {
     private $template_dir;
 
-    public function __construct($template_dir) {
+    private $logger;
+
+    public function __construct($template_dir, $logger) {
         parent::__construct();
+
+        $this->logger = $logger;
+
         $this->template_dir = $template_dir;
     }
 

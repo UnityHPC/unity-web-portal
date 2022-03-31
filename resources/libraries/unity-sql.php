@@ -9,9 +9,12 @@ class unitySQL
     const REQUEST_ADMIN = "admin";
 
     private $conn;
+    private $logger;
 
-    public function __construct($db_host, $db, $db_user, $db_pass)
+    public function __construct($db_host, $db, $db_user, $db_pass, $logger)
     {
+        $this->logger = $logger;
+
         $this->conn = new PDO("mysql:host=" . $db_host . ";dbname=" . $db, $db_user, $db_pass);
         $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
