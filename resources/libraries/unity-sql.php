@@ -4,6 +4,7 @@ class unitySQL
 {
 
     const TABLE_REQS = "requests";
+    const TABLE_NOTICES = "notices";
 
     const REQUEST_ADMIN = "admin";
 
@@ -76,6 +77,13 @@ class unitySQL
         $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid");
         $stmt->bindParam(":uid", $user);
 
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function getNotices() {
+        $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_NOTICES . " ORDER BY date DESC");
         $stmt->execute();
 
         return $stmt->fetchAll();

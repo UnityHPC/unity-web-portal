@@ -41,6 +41,7 @@ if (isset($SHIB)) {
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
       // Menu Items for Present Users
+      echo "<a href='" . config::PREFIX . "/panel/status.php'>Cluster Notices</a>";
       echo "<a href='" . config::PREFIX . "/panel/support.php'>Support</a>";
       echo "<a href='" . config::PREFIX . "/panel/account.php'>Account Settings</a>";
       echo "<a href='" . config::PREFIX . "/panel/groups.php'>My PIs</a>";

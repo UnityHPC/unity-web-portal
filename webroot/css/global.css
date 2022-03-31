@@ -248,3 +248,32 @@ footer #footerLogos > * {
         display: block;
     }
 }
+
+/* notices */
+div.notice {
+    background: var(--color-background-panel);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid var(--color-background-text);
+}
+
+div.notice > span.noticeTitle {
+    display: block;
+    background: var(--color-foreground);
+    color: var(--color-foreground-text);
+    border-radius: 8px 8px 0 0;
+    padding: 10px 10px 0 10px;
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+div.notice > span.noticeDate {
+    display: block;
+    background: var(--color-foreground);
+    color: var(--color-foreground-text);
+    padding: 0 10px 10px 10px;
+}
+
+div.notice > p {
+    padding: 0 10px 0 10px;
+}
