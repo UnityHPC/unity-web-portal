@@ -36,12 +36,11 @@ if (isset($SHIB)) {
   <nav class="mainNav">
     <?php
     // Public Items - Always Visible
-    echo "<a href='" . config::PREFIX . "/index.php'>About</a>";
+    echo "<a href='" . config::PREFIX . "/index.php'>Home</a>";
     echo "<a target='_blank' href='" . config::DOCS_URL . "'>Documentation</a>";
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
       // Menu Items for Present Users
-      echo "<a href='" . config::PREFIX . "/panel/status.php'>Cluster Notices</a>";
       echo "<a href='" . config::PREFIX . "/panel/support.php'>Support</a>";
       echo "<a href='" . config::PREFIX . "/panel/account.php'>Account Settings</a>";
       echo "<a href='" . config::PREFIX . "/panel/groups.php'>My PIs</a>";
