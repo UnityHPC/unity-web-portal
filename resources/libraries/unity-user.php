@@ -11,7 +11,7 @@
 class unityUser
 {
     const HOME_DIR = "/home/";  // trailing slash is important
-    const HOME_QUOTA = 536870912000;
+    const HOME_QUOTA = 10737418240;
 
     private $uid;
     private $service_stack;
