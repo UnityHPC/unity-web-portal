@@ -15,6 +15,7 @@
         1. Create directory and navigate to `resources/libraries/composer`
         1. Install phpmailer: `composer require phpmailer/phpmailer`
         1. Install phpseclib: `composer require phpseclib/phpseclib`
+        1. Install monolog: `composer require monolog/monolog`
     1. Install php-ldap `apt install php-ldap`
 1. Setup config File `resources/config.php`, use the `resoures/config.php.example` as a reference
 1. Apache Configs
