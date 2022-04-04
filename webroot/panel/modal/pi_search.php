@@ -6,8 +6,7 @@ if (empty($search_query)) {
     die("<span>No Results</span>");
 }
 
-$sacctmgr = new slurm(config::CLUSTER["name"]);
-$assocs = $sacctmgr->getAccounts();
+$assocs = $SERVICE->sacctmgr()->getAccounts();
 
 $MAX_COUNT = 10;  // Max results of PI search
 
