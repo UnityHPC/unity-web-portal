@@ -113,7 +113,7 @@ header>button.hamburger>img {
 
 @media only screen and (min-width: 1001px) and (min-height: 1000px) {
     nav.mainNav {
-        background: url("/res/mghpcc-image.png"), var(--color-foreground;
+        background: url("/res/mghpcc-image.png"), var(--color-foreground);
         background-position: center bottom;
         background-repeat: no-repeat;
     }

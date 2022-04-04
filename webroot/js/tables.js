@@ -34,6 +34,7 @@ $("button.btnExpand").click(function() {
         $.ajax({
             url: ajax_url + pi_uid,
             success: function(result) {
+                console.log(result);
                 piRow.after(result);
             }
         });

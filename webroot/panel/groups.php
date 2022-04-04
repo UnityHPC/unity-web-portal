@@ -163,7 +163,7 @@ echo "</table>";
 
 <style>
     @media only screen and (max-width: 1000px) {
-        table td:nth-child(3) {
+        table td:nth-child(2) {
             display: none;
         }
     }

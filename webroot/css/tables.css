@@ -2,6 +2,7 @@ table {
     border-collapse: collapse;
     width: 100%;
     max-width: 1000px;
+    margin-bottom: 10px;
 }
 
 table tr, table td {
@@ -10,9 +11,10 @@ table tr, table td {
     white-space: nowrap;
 }
 
+/*
 table tr {
     border-bottom: 5px solid transparent;
-}
+}*/
 
 table button, table input[type=submit] {
     padding: 5px 10px 5px 10px;
@@ -35,15 +37,37 @@ tr.expanded {
 }
 
 tr.expanded > td {
-    background: #eeeeee;
+    background: var(--color-background-page-widget);
 }
 
 tr.expandable {
     cursor: pointer;
 }
 
+tr.expandable:hover {
+    background: var(--color-background-panel);
+}
+
+tr.expandable:hover > td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+tr.expandable:hover > td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+tr.expandable.first > td:first-child {
+    border-bottom-left-radius: 0;
+}
+
+tr.expandable.first > td:last-child {
+    border-bottom-right-radius: 0;
+}
+
 tr.expanded.first {
-    border-bottom: 5px solid var(--color-background-dividers);
+    border-bottom: 2px solid var(--color-background-dividers);
 }
 
 tr.expanded.first > td:first-child {
@@ -60,10 +84,6 @@ tr.expanded.last > td:first-child {
 
 tr.expanded.last > td:last-child {
     border-bottom-right-radius: 10px;
-}
-
-tr.expanded.last {
-    border-bottom: 10px solid transparent;
 }
 
 tr.expanded:not(.expandable) {

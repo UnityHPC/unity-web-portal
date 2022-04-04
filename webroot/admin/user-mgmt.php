@@ -101,7 +101,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 include config::PATHS["templates"] . "/header.php";
 ?>
 
-<h1>Admin User Panel</h1>
+<h1>User Management</h1>
+<hr>
 
 <table>
     <tr>
@@ -134,37 +135,14 @@ include config::PATHS["templates"] . "/header.php";
         $pi_group = new unityAccount($account, $SERVICE);
         $pi_user = $pi_group->getOwner();
 
-        echo "<tr>";
-        echo "<td>" . $pi_user->getFirstname() . " " . $pi_user->getLastname() . "</td>";
+        echo "<tr class='expandable'>";
+        echo "<td><button class='btnExpand'>&#9654;</button>" . $pi_user->getFirstname() . " " . $pi_user->getLastname() . "</td>";
         echo "<td>" . $pi_group->getPIUID() . "</td>";
         echo "<td><a href='mailto:" . $pi_user->getMail() . "'>" . $pi_user->getMail() . "</a></td>";
         echo "<td>";
         echo "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " . $pi_group->getPIUID() . "? This will also remove associations for all users under this PI - the users themselves will not be deleted, nor will the PI user itself.\");'><input type='hidden' name='form_name' value='remUser'><input type='hidden' name='pi' value='" . $pi_group->getPIUID() . "'><input type='submit' value='Remove'></form>";
         echo "</td>";
         echo "</tr>";
-
-        foreach ($pi_group->getGroupMembers() as $child) {
-            echo "<tr class='tr-pichild'>";
-            echo "<td>" . $child->getFirstname() . " " . $child->getLastname() . "</td>";
-            echo "<td>" . $child->getUID() . "</td>";
-            echo "<td><a href='mailto:" . $child->getMail() . "'>" . $child->getMail() . "</a></td>";
-            echo "<td>";
-            echo "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " . $child->getUID() . " from this group?\");'><input type='hidden' name='form_name' value='remUserChild'><input type='hidden' name='uid' value='" . $child->getUID() . "'><input type='hidden' name='pi' value='" . $account . "'><input type='submit' value='Remove'></form>";
-            echo "</td>";
-            echo "</tr>";
-        }
-
-        foreach ($pi_group->getRequests() as $child_request) {
-            echo "<tr class='tr-pichild'>";
-            echo "<td>" . $child_request->getFirstname() . " " . $child_request->getLastname() . "</td>";
-            echo "<td>" . $child_request->getUID() . "</td>";
-            echo "<td><a href='mailto:" . $child_request->getMail() . "'>" . $child_request->getMail() . "</a></td>";
-            echo "<td>";
-            echo "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to approve " . $child_request->getUID() . "?\");'><input type='hidden' name='form_name' value='approveReqChild'><input type='hidden' name='uid' value='" . $child_request->getUID() . "'><input type='hidden' name='pi' value='" . $account . "'><input type='submit' value='Approve'></form>";
-            echo "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to deny " . $child_request->getUID() . "?\");'><input type='hidden' name='form_name' value='denyReqChild'><input type='hidden' name='uid' value='" . $child_request->getUID() . "'><input type='hidden' name='pi' value='" . $account . "'><input type='submit' value='Deny'></form>";
-            echo "</td>";
-            echo "</tr>";
-        }
     }
     ?>
 </table>
@@ -185,6 +163,8 @@ include config::PATHS["templates"] . "/header.php";
             }
         }
     });
+
+    var ajax_url = "<?php echo config::PREFIX; ?>/admin/ajax/get_group_members.php?pi_uid=";
 </script>
 
 <?php

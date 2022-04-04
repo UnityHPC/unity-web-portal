@@ -226,7 +226,7 @@ footer > * {
     margin: 10px auto 0 auto;
 }
 
-footer #footerLogos > * {
+footer #footerLogos img {
     padding: 0 10px 0 10px;
     width: 120px;
     margin-bottom: 10px;
@@ -251,10 +251,10 @@ footer #footerLogos > * {
 
 /* notices */
 div.notice {
-    background: var(--color-background-panel);
+    background: var(--color-background-page-widget);
     border-radius: 10px;
-    margin-bottom: 20px;
-    border: 1px solid var(--color-background-text);
+    margin: 20px 0 20px 0;
+    padding-bottom: 5px;
 }
 
 div.notice > span.noticeTitle {
@@ -275,5 +275,6 @@ div.notice > span.noticeDate {
 }
 
 div.notice > p {
-    padding: 0 10px 0 10px;
+    margin: 10px 15px 10px 15px;
+    padding: 0;
 }

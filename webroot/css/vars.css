@@ -13,6 +13,7 @@
     --color-background-panel: #fafafa; /* Panel background with --color-background in the background (used on footer, some popup panels) */
     --color-background-panel-active: #dddddd; /* Used when an element in a panel is active (such as hovering over a button) with --color-background-panel as the background */
     --color-background-panel-inactive: #bbbbbb;/* Text/divider/border color for faded/inactive elements, with --color-background-panel as the background */
+    --color-background-page-widget: #e6e6e6;
 
     --color-success: #009933;
     --color-text-failure: #cc0000;
