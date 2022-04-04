@@ -4,10 +4,21 @@ require "../resources/autoload.php";
 require_once config::PATHS["templates"] . "/header.php";
 ?>
 
-<h1><?php echo unity_locale::ABOUT_HEADER_MAIN; ?></h1>
+<h1>Cluster Notices</h1>
 <hr>
 
-<p>This page is in progress. For now, visit our <a target="_blank" href="/docs">documentation</a> for more info.</p>
+<?php
+
+$notices = $SERVICE->sql()->getNotices();
+foreach($notices as $notice) {
+    echo "<div class='notice'>";
+    echo "<span class='noticeTitle'>" . $notice["title"] . "</span>";
+    echo "<span class='noticeDate'>" . date('m-d-Y', strtotime($notice["date"])) . "</span>";
+    echo $notice["message"];
+    echo "</div>";
+}
+
+?>
 
 <?php
 require_once config::PATHS["templates"] . "/footer.php";
