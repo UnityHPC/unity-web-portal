@@ -104,6 +104,7 @@ include config::PATHS["templates"] . "/header.php";
 <h1>User Management</h1>
 <hr>
 
+<h3>Pending PI Requests</h3>
 <table>
     <tr>
         <td>Name</td>
@@ -128,7 +129,21 @@ include config::PATHS["templates"] . "/header.php";
         echo "</td>";
         echo "</tr>";
     }
+?>
 
+</table>
+<hr>
+
+<h3>List of PIs</h3>
+<table>
+    <tr>
+        <td>Name</td>
+        <td>Unity ID</td>
+        <td>Mail</td>
+        <td>Actions</td>
+    </tr>
+
+<?php
     $accounts = $SERVICE->sacctmgr()->getAccounts();
 
     foreach ($accounts as $account) {
