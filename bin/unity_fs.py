@@ -21,10 +21,14 @@ dirname = os.path.dirname(__file__)
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 PORT = 2010        # Port to listen on (non-privileged ports are > 1023)
 
-NAS1_URL = "https://nas1.maas/api/v2.0"
-NAS1_API_KEY = "1-IYQsR0H2riooJKKy8c1kvjhUlBzkejeqoRUwP4PJiKwvtrDEmTZMwmQka9DEOZaC"
+NAS1_URL = "https://nas1.unity.rc.umass.edu/api/v2.0"
+
+NAS1_API_KEY = ""
+with open('apikey', 'r') as file:
+    NAS1_API_KEY = file.read().replace('\n', '')
+print(NAS1_API_KEY)
+
 NAS1_HOME_DATASET = "nas1-pool/home"
-NAS1_PROJECT_DATASET = "nas1-pool/project"
 NAS1_HEADERS = { 'Authorization': 'Bearer ' + NAS1_API_KEY }
 
 TIME_WAIT = 0.01
@@ -78,6 +82,7 @@ def threaded_client(conn):
                 # post request
                 result = requests.post(full_url, json = data, headers = NAS1_HEADERS, verify = False)
                 code = result.status_code
+                print(result)
                 if code != 200 and code != 422:
                     error = "<response code=" + str(code) + ">Error creating dataset</response>"
                     conn.send(error.encode())
@@ -100,6 +105,7 @@ def threaded_client(conn):
                 full_url = NAS1_URL + "/pool/dataset/id/" + dataset_path.replace('/', '%2F') + "/permission"
                 result = requests.post(full_url, json = data, headers = NAS1_HEADERS, verify = False)
                 code = result.status_code
+                print(result)
                 if code != 200 and code != 422:
                     error = "<response code=" + str(code) + ">Error setting dataset permissions</response>"
                     conn.send(error.encode())
@@ -123,12 +129,15 @@ def threaded_client(conn):
                     "maproot_group": "",
                     "mapall_user": "",
                     "mapall_group": "",
-                    "security": [],
+                    "security": [
+                        "SYS"
+                    ],
                     "enabled": True
                 }
 
                 result = requests.post(full_url, json = data, headers = NAS1_HEADERS, verify = False)
                 code = result.status_code
+                print(result)
                 if code != 200 and code != 422:
                     error = "<response code=" + str(code) + ">Error creating NFS export</response>"
                     conn.send(error.encode())
