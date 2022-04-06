@@ -2,22 +2,23 @@
 
 require "../../../resources/autoload.php";
 
-use \phpseclib\Crypt\RSA;
+use \phpseclib3\Crypt\RSA;
+use phpseclib3\Crypt\Common\Formats\Keys\OpenSSH;
 
 echo "<pre>";
 
-$rsa = new RSA();
-$rsa->setPublicKeyFormat(RSA::PUBLIC_FORMAT_OPENSSH);
-if (isset($_GET["type"]) && $_GET["type"] == "ppk") {
-    $rsa->setPrivateKeyFormat(RSA::PRIVATE_FORMAT_PUTTY);  // Set format to putty if requested
-}
-extract($rsa->createKey(2048));
+$private = RSA::createKey(2048);
+$public = $private->getPublicKey();
 
 echo "<section class='pubKey'>";
-echo $publickey;
+echo $public->toString('OpenSSH');
 echo "</section>";
 echo "<section class='privKey'>";
-echo $privatekey;
+if (isset($_GET["type"]) && $_GET["type"] == "ppk") {
+    echo $private->toString('PuTTY');
+} else {
+    echo $private;
+}
 echo "</section>";
 
 echo "</pre>";
