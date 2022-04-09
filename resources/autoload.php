@@ -61,6 +61,7 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SHIB is enabled on this page
 
   $USER = new unityUser($SHIB["netid"], $SERVICE);
   $_SESSION["user_exists"] = $USER->exists();
+  $_SESSION["is_pi"] = $USER->isPI();
   $_SESSION["is_admin"] = $USER->isAdmin();
 } elseif (DEVMODE) {
   // dev environment enabled, now we need to check if the user is currently in /panel, which is the only place remote_user would be set
@@ -77,6 +78,7 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SHIB is enabled on this page
 
     $USER = new unityUser($SHIB["netid"], $SERVICE);
     $_SESSION["user_exists"] = $USER->exists();
+    $_SESSION["is_pi"] = $USER->isPI();
     $_SESSION["is_admin"] = $USER->isAdmin();
   }
 }
