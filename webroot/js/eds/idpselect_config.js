@@ -14,7 +14,7 @@ function IdPSelectUIParms(){
     // Approaching via the Discovery Protocol for example
     //this.defaultReturn = "https://example.org/Shibboleth.sso/DS?SAMLDS=1&target=https://example.org/secure";
     this.defaultReturnIDParam = null;
-    this.returnWhiteList = [ "^https:\/\/unity\.rc\.umass\.edu\/Shibboleth\.sso\/Login.*$", "^https:\/\/netbox\.rc\.umass\.edu\/Shibboleth\.sso\/Login.*$" ];
+    this.returnWhiteList = [ "^https:\/\/unity\.rc\.umass\.edu\/Shibboleth\.sso\/Login.*$", "^https:\/\/unity\.uri\.edu\/Shibboleth\.sso\/Login.*$" ];
     this.helpURL = 'https://wiki.shibboleth.net/confluence/display/SHIB2/DSRoadmap';
     this.ie6Hack = null;             // An array of structures to disable when drawing the pull down (needed to 
     // handle the ie6 z axis problem
