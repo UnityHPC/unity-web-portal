@@ -24,6 +24,11 @@ PORT = 2010        # Port to listen on (non-privileged ports are > 1023)
 NAS1_URL = "https://nas1.unity.rc.umass.edu/api/v2.0"
 
 NAS1_API_KEY = ""
+
+# make sure we are looking for the API key in the bin directory
+if os.getcwd()[-4:] != "/bin":
+    os.chdir("bin")
+
 with open('apikey', 'r') as file:
     NAS1_API_KEY = file.read().replace('\n', '')
 print(NAS1_API_KEY)
