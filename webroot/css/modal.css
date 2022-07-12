@@ -13,7 +13,7 @@ div.modalContent {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: var(--color-background);
+    background: var(--light_background);
     padding: 15px;
     width: calc(100% - 30px);
     box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.4);
@@ -46,7 +46,7 @@ div.modalBody > * {
 
 /* Search Box CSS */
 div.searchWrapper {
-    background: var(--color-background);
+    background: var(--light_background);
     position: absolute;
     top: 34px;
     z-index: 200;
@@ -55,9 +55,9 @@ div.searchWrapper {
     font-size: 11pt;
     user-select: none;
     border-radius: 0 0 5px 5px;
-    border-bottom: 2px solid var(--color-foreground);
-    border-left: 2px solid var(--color-foreground);
-    border-right: 2px solid var(--color-foreground);
+    border-bottom: 2px solid var(--accent);
+    border-left: 2px solid var(--accent);
+    border-right: 2px solid var(--accent);
     width: 100%;
     margin-left: -2px;
 }
@@ -69,7 +69,7 @@ div.searchWrapper > * {
 }
 
 div.searchWrapper > *:hover {
-    background: var(--color-background-panel-active);
+    background: var(--light_background);
 }
 
 .btnClose {

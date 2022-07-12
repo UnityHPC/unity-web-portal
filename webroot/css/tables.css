@@ -37,7 +37,7 @@ tr.expanded {
 }
 
 tr.expanded > td {
-    background: var(--color-background-page-widget);
+    background: var(--light_panel_background);
 }
 
 tr.expandable {
@@ -45,7 +45,7 @@ tr.expandable {
 }
 
 tr.expandable:hover {
-    background: var(--color-background-panel);
+    background: var(--light_footer_background);
 }
 
 tr.expandable:hover > td:first-child {
@@ -67,7 +67,7 @@ tr.expandable.first > td:last-child {
 }
 
 tr.expanded.first {
-    border-bottom: 2px solid var(--color-background-dividers);
+    border-bottom: 2px solid var(--light_borders);
 }
 
 tr.expanded.first > td:first-child {
@@ -104,7 +104,7 @@ button.btnExpand {
     margin: 0 10px 0 0;
     padding: 0;
     background: transparent;
-    color: var(--color-foreground);
+    color: var(--accent);
 }
 
 button.btnExpand:hover {

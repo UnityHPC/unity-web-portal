@@ -1,12 +1,11 @@
 html, body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
-    background: var(--color-background);
-    color: var(--color-text-dark);
+    background: var(--light_background);
+    color: var(--light_foreground);
     height: 100%;
     overscroll-behavior-y: none;
     font-size: 11pt;
-    color: var(--color-text-dark);
     box-sizing: border-box;
 }
 
@@ -22,7 +21,7 @@ body {
 */
 
 a {
-    color: var(--color-foreground);
+    color: var(--accent);
     text-decoration: none;
 }
 
@@ -66,7 +65,7 @@ h4 {
 h5 {
     font-size: 12pt;
     font-weight: unset;
-    color: var(--color-background-text-inactive);
+    color: var(--light_foreground_smallheader);
     display: block;
     padding: 0;
     margin: 0;
@@ -76,7 +75,7 @@ hr {
     border-top: 0;
     border-right: 0;
     border-left: 0;
-    border-bottom: 1px solid var(--color-background-dividers);
+    border-bottom: 1px solid var(--light_borders);
     margin: 10px 0 10px 0;
     display: block;
 }
@@ -95,15 +94,6 @@ button.plusBtn {
     overflow: hidden;
 }
 
-.code {
-    background: var(--color-background-panel-active);
-    display: inline;
-    border-radius: 3px;
-    padding: 3px 6px 3px 6px;
-    white-space: normal;
-    font-family: monospace;
-}
-
 /* Form Elements */
 
 form>* {
@@ -115,7 +105,7 @@ form > *:not(:first-child) {
 }
 
 input:focus, textarea:focus, select:focus {
-    outline: var(--color-foreground) solid 2px;
+    outline: var(--accent) solid 2px;
 }
 
 button:focus, input[type=submit]:focus {
@@ -124,7 +114,7 @@ button:focus, input[type=submit]:focus {
 
 input[type=text], input[type=password] {
     margin: 10px 0 10px 0;
-    border: 1px solid var(--color-background-dividers);
+    border: 1px solid var(--light_borders);
     padding: 5px;
     width: calc(100% - 12px);
     /* Factors in extra border and padding */
@@ -133,8 +123,8 @@ input[type=text], input[type=password] {
 }
 
 input[type=submit], button {
-    background: var(--color-foreground);
-    color: var(--color-foreground-text);
+    background: var(--accent);
+    color: var(--accent_foreground);
     cursor: pointer;
     border: 0;
     padding: 8px 12px 8px 12px;
@@ -143,11 +133,11 @@ input[type=submit], button {
 }
 
 input[type=submit]:hover, button:hover {
-    background: var(--color-foreground-hover);
+    background: var(--accent_hover);
 }
 
 input[type=submit]:disabled, button:disabled {
-    background: var(--color-foreground-disabled);
+    background: var(--accent_disabled);
     cursor: default;
 }
 
@@ -169,7 +159,7 @@ input[type=radio] {
 }
 
 select {
-    border: 1px solid var(--color-background-dividers);
+    border: 1px solid var(--light_borders);
     background: white;
     padding: 5px;
     width: 100%;
@@ -178,7 +168,7 @@ select {
 }
 
 textarea {
-    border: 1px solid var(--color-background-dividers);
+    border: 1px solid var(--light_borders);
     width: calc(100% - 12px);
     min-height: 150px;
     display: block;
@@ -213,11 +203,11 @@ main {
 /* FOOTER */
 
 footer {
-    background: var(--color-background-panel);
+    background: var(--light_footer_background);
     flex-shrink: 0;
     text-align: center;
     font-size: 8pt;
-    color: var(--color-background-panel-inactive);
+    color: var(--light_footer_foreground);
     padding-bottom: 10px;
 }
 
@@ -239,7 +229,7 @@ footer #footerLogos img {
     }
 
     footer #footerLogos>*:not(:last-child) {
-        border-right: 1px solid var(--color-background-panel-inactive);
+        border-right: 1px solid var(--light_footer_foreground);
     }
 }
 
@@ -251,7 +241,7 @@ footer #footerLogos img {
 
 /* notices */
 div.notice {
-    background: var(--color-background-page-widget);
+    background: var(--light_panel_background);
     border-radius: 10px;
     margin: 20px 0 20px 0;
     padding-bottom: 5px;
@@ -259,8 +249,8 @@ div.notice {
 
 div.notice > span.noticeTitle {
     display: block;
-    background: var(--color-foreground);
-    color: var(--color-foreground-text);
+    background: var(--accent);
+    color: var(--accent_foreground);
     border-radius: 8px 8px 0 0;
     padding: 10px 10px 0 10px;
     font-size: 14pt;
@@ -269,8 +259,8 @@ div.notice > span.noticeTitle {
 
 div.notice > span.noticeDate {
     display: block;
-    background: var(--color-foreground);
-    color: var(--color-foreground-text);
+    background: var(--accent);
+    color: var(--accent_foreground);
     padding: 0 10px 10px 10px;
 }
 

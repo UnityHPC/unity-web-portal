@@ -13,7 +13,18 @@ if (isset($SHIB)) {
 
 <head>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="<?php echo config::PREFIX; ?>/css/vars.css">
+
+  <style>
+    <?php
+    // set global css variables
+    echo ":root {";
+    foreach (branding::COLORS as $var_name => $var_value) {
+      echo "--$var_name: $var_value;";
+    }
+    echo "}";
+    ?>
+  </style>
+
   <link rel="stylesheet" type="text/css" href="<?php echo config::PREFIX; ?>/css/global.css">
   <link rel="stylesheet" type="text/css" href="<?php echo config::PREFIX; ?>/css/navbar.css">
   <link rel="stylesheet" type="text/css" href="<?php echo config::PREFIX; ?>/css/modal.css">
