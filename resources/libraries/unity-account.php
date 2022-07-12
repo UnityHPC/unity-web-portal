@@ -40,10 +40,6 @@ class unityAccount
             throw new Exception("sacctmgr is required for the unityUser class");
         }
 
-        if (is_null($service_stack->unityfs())) {
-            throw new Exception("unityfs is required for the unityUser class");
-        }
-
         $this->service_stack = $service_stack;
     }
 

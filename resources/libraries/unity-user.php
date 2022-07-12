@@ -32,10 +32,6 @@ class unityUser
             throw new Exception("sacctmgr is required for the unityUser class");
         }
 
-        if (is_null($service_stack->unityfs())) {
-            throw new Exception("unityfs is required for the unityUser class");
-        }
-
         $this->service_stack = $service_stack;
     }
 
@@ -90,9 +86,6 @@ class unityUser
                 throw new Exception("Failed to create POSIX user for  $this->uid");
             }
         }
-
-        // filesystem
-        $this->initFilesystem();
     }
 
 
@@ -355,12 +348,5 @@ class unityUser
             array_push($out, new unityAccount($group, $this->service_stack));
         }
         return $out;
-    }
-
-    public function initFilesystem() {
-        $this->service_stack->unityfs()->createHomeDirectory($this->getUID(), self::HOME_QUOTA);
-        //$this->service_stack->unityfs()->createScratchDirectory($this->getUID());
-        //$this->service_stack->unityfs()->populateHomeDirectory($this->getUID());
-        //$this->service_stack->unityfs()->populateScratchDirectory($this->getUID());
     }
 }
