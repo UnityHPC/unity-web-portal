@@ -27,10 +27,20 @@ if (config::MAINTENANCE_MODE && !isset($_SESSION["maint"]) && !(strpos($_SERVER[
   die("The Unity Cluster website is undergoing maintenance. The JupyterHub portal is available <a href='/panel/jhub'>here</a>");
 }
 
+// Get current URL
+$current_url = $_SERVER['HTTP_HOST'];
+$branding_file = "branding/" . $current_url . ".php";
+
+if (file_exists($branding_file)) {
+  // a branding file exists for this URL
+  require $branding_file;
+} else {
+  require "branding/" . config::DEFAULT_BRANDING . ".php";
+}
+
 require_once config::PATHS["templates"] . "/globals.php";
 
 require_once config::PATHS["libraries"] . "/slurm.php";
-require_once config::PATHS["libraries"] . "/unityfs.php";
 require_once config::PATHS["libraries"] . "/unity-ldap.php";
 require_once config::PATHS["libraries"] . "/unity-user.php";
 require_once config::PATHS["libraries"] . "/unity-account.php";
@@ -46,7 +56,6 @@ $SERVICE->add_ldap(config::LDAP);
 $SERVICE->add_sql(config::SQL);
 $SERVICE->add_mail(config::MAIL);
 $SERVICE->add_sacctmgr(config::SLURM);
-$SERVICE->add_unityfs(config::UNITYFS);
 
 if (isset($_SERVER["REMOTE_USER"])) {  // Check if SHIB is enabled on this page
   // Set Shibboleth Session Vars - Vars stored in session to be accessible outside shib-controlled areas of the sites (ie contact page)
