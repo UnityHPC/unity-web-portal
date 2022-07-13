@@ -18,7 +18,7 @@ if (isset($SHIB)) {
     <?php
     // set global css variables
     echo ":root {";
-    foreach (branding::COLORS as $var_name => $var_value) {
+    foreach ($BRANDING->getField("colors") as $var_name => $var_value) {
       echo "--$var_name: $var_value;";
     }
     echo "}";

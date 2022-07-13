@@ -13,7 +13,7 @@ nav.mainNav {
 
 nav.mainNav a {
     color: var(--accent_foreground);
-    background: #941e1e;
+    background: var(--accent_1);
     border-radius: 10px;
     display: block;
     margin: 10px 8px 10px 8px;
@@ -25,11 +25,11 @@ nav.mainNav a {
 
 nav.mainNav a:hover {
     text-decoration: none;
-    background: var(--accent_hover);
+    background: var(--accent_2);
 }
 
 nav.mainNav a.active {
-    background: var(--accent_active);
+    background: var(--accent_2);
 }
 
 header {

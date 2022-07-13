@@ -27,16 +27,8 @@ if (config::MAINTENANCE_MODE && !isset($_SESSION["maint"]) && !(strpos($_SERVER[
   die("The Unity Cluster website is undergoing maintenance. The JupyterHub portal is available <a href='/panel/jhub'>here</a>");
 }
 
-// Get current URL
-$current_url = $_SERVER['HTTP_HOST'];
-$branding_file = "branding/" . $current_url . ".php";
-
-if (file_exists($branding_file)) {
-  // a branding file exists for this URL
-  require $branding_file;
-} else {
-  require "branding/" . config::DEFAULT_BRANDING . ".php";
-}
+require_once "branding/branding.php";
+$BRANDING = new branding();
 
 require_once config::PATHS["templates"] . "/globals.php";
 
