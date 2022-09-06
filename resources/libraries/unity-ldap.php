@@ -213,4 +213,15 @@ class unityLDAP extends ldapConn
 
     return $out;
   }
+
+  public function getAllPIGroups($services) {
+    $pi_groups = $this->pi_groupOU->getChildren(true);
+
+    $out = array();
+    foreach ($pi_groups as $pi_group) {
+      array_push($out, new unityAccount($pi_group->getAttribute("cn")[0], $services));
+    }
+
+    return $out;
+  }
 }

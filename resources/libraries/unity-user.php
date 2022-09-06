@@ -1,17 +1,11 @@
 <?php
 
-// REQUIRES config.php
-// REQUIRES unity-ldap.php
-// REQUIRES slurm.php
-// REQUIRED unity-storage.php
-
 /**
  * Class that represents a single user account in the Unity Cluster. This class manages ldap entries as well as slurm account manager entries.
  */
 class unityUser
 {
-    const HOME_DIR = "/home/";  // trailing slash is important
-    const HOME_QUOTA = 10737418240;
+    const HOME_DIR = "/home/";
 
     private $uid;
     private $service_stack;
@@ -28,11 +22,15 @@ class unityUser
             throw new Exception("SQL is required for the unityUser class");
         }
 
-        if (is_null($service_stack->sacctmgr())) {
-            throw new Exception("sacctmgr is required for the unityUser class");
+        $this->service_stack = $service_stack;
+    }
+
+    public function equals($other_user) {
+        if (!is_a($other_user, self::class)) {
+            throw new Exception("Unable to check equality because the parameter is not a " . self::class . " object");
         }
 
-        $this->service_stack = $service_stack;
+        return $this->getUID() == $other_user->getUID();
     }
 
     /**
@@ -286,6 +284,16 @@ class unityUser
         return $ldapUser->getAttribute("loginshell")[0];
     }
 
+    /**
+     * Gets the home directory of the user
+     * 
+     * @return string home directory of the user
+     */
+    public function getHomeDir() {
+        $ldapUser = $this->getLDAPUser();
+        return $ldapUser->getAttribute("homedirectory");
+    }
+
     public function setHomeDir($home)
     {
         $ldapUser = $this->getLDAPUser();
@@ -297,16 +305,6 @@ class unityUser
                 throw new Exception("Failed to modify home directory for $this->uid");
             }
         }
-    }
-
-    /**
-     * Gets the home directory of the user, the home directory is immutable
-     *
-     * @return string path to home directory
-     */
-    public function getHomeDir()
-    {
-        return self::HOME_DIR . $this->netid;
     }
 
     /**
@@ -341,12 +339,15 @@ class unityUser
      */
     public function getGroups()
     {
-        $groups = $this->service_stack->sacctmgr()->getAccountsFromUser($this->uid);
+        $all_pi_groups = $this->service_stack->ldap()->getAllPIGroups($this->service_stack);
 
         $out = array();
-        foreach ($groups as $group) {
-            array_push($out, new unityAccount($group, $this->service_stack));
+        foreach ($all_pi_groups as $pi_group) {
+            if (in_array($this->getUID(), $pi_group->getGroupMemberUIDs())) {
+                array_push($out, $pi_group);
+            }
         }
+
         return $out;
     }
 }

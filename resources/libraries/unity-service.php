@@ -9,9 +9,7 @@ class serviceStack
     private $services = array(
         "ldap" => array(),
         "sql" => array(),
-        "mail" => array(),
-        "unityfs" => array(),
-        "sacctmgr" => array()
+        "mail" => array()
     );
 
     public function __construct($logger)
@@ -100,36 +98,6 @@ class serviceStack
         return $this;
     }
 
-    public function add_sacctmgr($details, $name = self::DEFAULT_KEY)
-    {
-        if (array_key_exists($name, $this->services["sacctmgr"])) {
-            throw new Exception("Service '$name' already exists.");
-        }
-
-        if (!array_key_exists("cluster", $details)) {
-            throw new Exception("Slurm cluster name must be set.");
-        }
-
-        $sacctmgr = new slurm($details["cluster"], $this->logger);
-
-        $this->services["sacctmgr"][$name] = $sacctmgr;
-
-        return $this;
-    }
-
-    public function add_unityfs($details, $name = self::DEFAULT_KEY)
-    {
-        if (array_key_exists($name, $this->services["unityfs"])) {
-            throw new Exception("Service '$name' already exists.");
-        }
-
-        $unityfs = new unityfs($details["host"], $details["port"], $this->logger);
-
-        $this->services["unityfs"][$name] = $unityfs;
-
-        return $this;
-    }
-
     public function ldap($name = self::DEFAULT_KEY)
     {
         if (array_key_exists($name, $this->services["ldap"])) {
@@ -152,24 +120,6 @@ class serviceStack
     {
         if (array_key_exists($name, $this->services["mail"])) {
             return $this->services["mail"][$name];
-        } else {
-            return NULL;
-        }
-    }
-
-    public function sacctmgr($name = self::DEFAULT_KEY)
-    {
-        if (array_key_exists($name, $this->services["sacctmgr"])) {
-            return $this->services["sacctmgr"][$name];
-        } else {
-            return NULL;
-        }
-    }
-
-    public function unityfs($name = self::DEFAULT_KEY)
-    {
-        if (array_key_exists($name, $this->services["unityfs"])) {
-            return $this->services["unityfs"][$name];
         } else {
             return NULL;
         }

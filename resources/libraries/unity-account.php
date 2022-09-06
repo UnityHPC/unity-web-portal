@@ -22,7 +22,6 @@ class unityAccount
      * @param string $pi_uid PI UID in the format <PI_PREFIX><OWNER_UID>
      * @param unityLDAP $unityLDAP LDAP Connection
      * @param unitySQL $unitySQL SQL Connection
-     * @param slurm $sacctmgr Slurm Connection
      */
     public function __construct($pi_uid, $service_stack)
     {
@@ -36,11 +35,15 @@ class unityAccount
             throw new Exception("SQL is required for the unityUser class");
         }
 
-        if (is_null($service_stack->sacctmgr())) {
-            throw new Exception("sacctmgr is required for the unityUser class");
+        $this->service_stack = $service_stack;
+    }
+
+    public function equals($other_group) {
+        if (!is_a($other_group, self::class)) {
+            throw new Exception("Unable to check equality because the parameter is not a " . self::class . " object");
         }
 
-        $this->service_stack = $service_stack;
+        return $this->getPIUID() == $other_group->getPIUID();
     }
 
     /**
@@ -59,7 +62,7 @@ class unityAccount
      */
     public function exists()
     {
-        return $this->service_stack->sacctmgr()->accountExists($this->pi_uid);
+        return $this->getLDAPPiGroup()->exists();
     }
 
     public function createGroup()
@@ -83,10 +86,6 @@ class unityAccount
                 throw new Exception("Failed to create POSIX group for " . $owner->getUID());  // this shouldn't execute
             }
         }
-
-        // (2) Create slurm account
-        $this->createSlurmAccount();
-        $this->addAssociation(self::getUIDfromPIUID($this->pi_uid));  // add owner user
     }
 
     public function removeGroup() {
@@ -108,8 +107,6 @@ class unityAccount
                 throw new Exception("Unable to delete PI ldap group");
             }
         }
-
-        $this->removeSlurmAccount();
     }
 
     public function getOwner() {
@@ -129,83 +126,22 @@ class unityAccount
 
     public function addUserToGroup($new_user)
     {
-        // Create Association
-        $this->addAssociation($new_user->getUID());
-
         // Add to LDAP Group
         $pi_group = $this->getLDAPPiGroup();
         $pi_group->appendAttribute("memberuid", $new_user->getUID());
-        if (!$pi_group->write()) {
-            // failed to write
-            $this->removeAssociation($new_user->getUID());
-        }
     }
 
     public function removeUserFromGroup($old_user)
     {
-        // Remove Association
-        $this->removeAssociation($old_user->getUID());
-
         // Remove from LDAP Group
         $pi_group = $this->getLDAPPiGroup();
         $pi_group->removeAttributeEntryByValue("memberuid", $old_user->getUID());
-        if (!$pi_group->write()) {
-            // failed to write
-            $this->addAssociation($old_user->getUID());
-        }
-    }
-
-    //
-    //  Slurm Related Functions
-    //
-
-    /**
-     * Creates a group based off this user (this user is a PI)
-     */
-    private function createSlurmAccount()
-    {
-        $this->service_stack->sacctmgr()->addAccount($this->pi_uid);
-    }
-
-    private function removeSlurmAccount()
-    {
-        $this->service_stack->sacctmgr()->deleteAccount($this->pi_uid);
-    }
-
-    private function addAssociation($uid)
-    {
-        if (!$this->service_stack->sacctmgr()->accountExists($this->pi_uid)) {
-            throw new Exception("Unable to create an association to a nonexist account $this->pi_uid");
-        }
-
-        // Add Slurm User
-        $this->service_stack->sacctmgr()->addUser($uid, $this->pi_uid);
-    }
-
-    /**
-     * Undocumented function
-     *
-     * @param [type] $netid
-     * @return void
-     */
-    private function removeAssociation($uid)
-    {
-        if (!$this->service_stack->sacctmgr()->userExists($uid, $this->pi_uid)) {
-            throw new Exception("Unable to remove association because an association doesn't exist");
-        }
-
-        $this->service_stack->sacctmgr()->deleteUser($uid, $this->pi_uid);
-    }
-
-
-    public function getAssociations()
-    {
-        return $this->service_stack->sacctmgr()->getUsersFromAccount($this->pi_uid);
     }
 
     public function getGroupMembers()
     {
-        $members = $this->getAssociations();
+        $pi_group = $this->getLDAPPiGroup();
+        $members = $pi_group->getAttribute("memberuid");
 
         $out = array();
         $owner_uid = $this->getOwner()->getUID();
@@ -218,13 +154,11 @@ class unityAccount
         return $out;
     }
 
-    public static function getPIFromPIGroup($pi_netid)
-    {
-        if (substr($pi_netid, 0, strlen(self::PI_PREFIX)) == self::PI_PREFIX) {
-            return substr($pi_netid, strlen(self::PI_PREFIX));
-        } else {
-            throw new Exception("PI netid doesn't have the correct prefix.");
-        }
+    public function getGroupMemberUIDs() {
+        $pi_group = $this->getLDAPPiGroup();
+        $members = $pi_group->getAttribute("memberuid");
+
+        return $members;
     }
 
     public function addRequest($uid)
@@ -247,6 +181,29 @@ class unityAccount
         }
 
         return $out;
+    }
+
+    public function requestExists($user) {
+        foreach ($this->getRequests() as $requester) {
+            if ($requester->getUID() == $user->getUID()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function userExists($user) {
+        return in_array($user->getUID(), $this->getGroupMemberUIDs());
+    }
+
+    public static function getPIFromPIGroup($pi_netid)
+    {
+        if (substr($pi_netid, 0, strlen(self::PI_PREFIX)) == self::PI_PREFIX) {
+            return substr($pi_netid, strlen(self::PI_PREFIX));
+        } else {
+            throw new Exception("PI netid doesn't have the correct prefix.");
+        }
     }
 
     public static function getPIUIDfromUID($uid)

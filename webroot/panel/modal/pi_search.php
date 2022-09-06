@@ -6,12 +6,13 @@ if (empty($search_query)) {
     die("<span>No Results</span>");
 }
 
-$assocs = $SERVICE->sacctmgr()->getAccounts();
+$assocs = $SERVICE->ldap()->getAllPIGroups($SERVICE);
 
 $MAX_COUNT = 10;  // Max results of PI search
 
 $out = array();
-foreach ($assocs as $assoc) {
+foreach ($assocs as $assoc_obj) {
+    $assoc = $assoc_obj->getPIUID();
     // loop through each association
     if (strpos($assoc, $search_query) !== false) {
         array_push($out, $assoc);

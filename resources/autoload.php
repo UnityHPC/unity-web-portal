@@ -32,13 +32,11 @@ $BRANDING = new branding();
 
 require_once config::PATHS["templates"] . "/globals.php";
 
-require_once config::PATHS["libraries"] . "/slurm.php";
 require_once config::PATHS["libraries"] . "/unity-ldap.php";
 require_once config::PATHS["libraries"] . "/unity-user.php";
 require_once config::PATHS["libraries"] . "/unity-account.php";
 require_once config::PATHS["libraries"] . "/unity-sql.php";
 require_once config::PATHS["libraries"] . "/template_mailer.php";
-
 require_once config::PATHS["libraries"] . "/unity-service.php";
 
 $SERVICE = new serviceStack($LOGGER);
@@ -47,7 +45,6 @@ $SERVICE->getLogger()->logInfo("Accepted connection from " . $_SERVER['REMOTE_AD
 $SERVICE->add_ldap(config::LDAP);
 $SERVICE->add_sql(config::SQL);
 $SERVICE->add_mail(config::MAIL);
-$SERVICE->add_sacctmgr(config::SLURM);
 
 if (isset($_SERVER["REMOTE_USER"])) {  // Check if SHIB is enabled on this page
   // Set Shibboleth Session Vars - Vars stored in session to be accessible outside shib-controlled areas of the sites (ie contact page)

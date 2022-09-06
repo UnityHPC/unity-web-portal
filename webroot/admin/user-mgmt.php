@@ -144,10 +144,9 @@ include config::PATHS["templates"] . "/header.php";
     </tr>
 
 <?php
-    $accounts = $SERVICE->sacctmgr()->getAccounts();
+    $accounts = $SERVICE->ldap()->getAllPIGroups($SERVICE);
 
-    foreach ($accounts as $account) {
-        $pi_group = new unityAccount($account, $SERVICE);
+    foreach ($accounts as $pi_group) {
         $pi_user = $pi_group->getOwner();
 
         echo "<tr class='expandable'>";

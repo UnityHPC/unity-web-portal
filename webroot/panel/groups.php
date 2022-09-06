@@ -19,12 +19,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     array_push($modalErrors, "You have not chosen a PI");
                 }
 
-                if (!$SERVICE->sacctmgr()->accountExists($_POST["pi"])) {
+                if (!$pi_account->exists()) {
                     // "\'"  instead of "'", otherwise it will close a single quote used to place the message
                     array_push($modalErrors, "This PI doesn\'t exist");
                 }
 
-                if ($SERVICE->sql()->requestExists($USER->getUID(), $_POST["pi"])) {
+                if ($pi_account->requestExists($USER)) {
                     array_push($modalErrors, "You've already requested this");
                 }
 
@@ -44,11 +44,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 break;
             case "removePIForm":
                 // Remove PI form
-                if (!$SERVICE->sacctmgr()->accountExists($_POST["pi"])) {
+                if (!$pi_account->exists()) {
                     break;
                 }
 
-                if (!$SERVICE->sacctmgr()->userExists($USER->getUID(), $_POST["pi"])) {
+                if (!$pi_account->userExists($USER)) {
                     break;
                 }
 

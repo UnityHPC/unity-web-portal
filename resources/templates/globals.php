@@ -27,7 +27,7 @@ function printMessages(&$errors, $str_success)
 function EPPN_to_uid($eppn) {
   $eppn_output = str_replace(".", "_", $eppn);
   $eppn_output = str_replace("@", "_", $eppn_output);
-  return $eppn_output;
+  return strtolower($eppn_output);
 }
 
 function getGithubKeys($username) {
