@@ -8,6 +8,7 @@ class branding {
         $this->config = include "config.php";
 
         $current_url = $_SERVER['HTTP_HOST'];
+        //$current_url = "unity.uri.edu";
         $branding_override = ROOT . "/resources/branding/overrides/" . $current_url . ".php";
         if (file_exists($branding_override)) {
             $override_config = include $branding_override;
