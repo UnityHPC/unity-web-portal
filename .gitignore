@@ -6,3 +6,5 @@ bin/*.service
 .vscode/
 
 bin/apikey
+
+**/.DS_store
