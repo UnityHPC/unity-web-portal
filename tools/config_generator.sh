@@ -2,13 +2,6 @@
 
 # web portal deploy script
 
-echo "Downloading PHP Libraries..."
-
-composer require phpmailer/phpmailer
-composer require phpseclib/phpseclib
-composer require monolog/monolog
-echo "...Done"
-
 echo "Settings up LDAP Details..."
 
 read -p "Enter LDAP Server Hostname: " ldap_host
