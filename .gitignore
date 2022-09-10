@@ -9,3 +9,4 @@ resources/custom_user_mappings/*.csv
 
 # don't track vendor files from composer
 vendor
+composer.lock
