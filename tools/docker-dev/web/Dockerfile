@@ -10,19 +10,11 @@ RUN apt-get update && apt-get install -y \
     php-mysql \
     php-ldap \
     php-pdo \
-    phpldapadmin \
     phpmyadmin
 COPY htpasswd /etc/apache2/.htpasswd
-COPY unity.conf /etc/apache2/sites-available/unity.conf
+COPY unity-apache.conf /etc/apache2/sites-available/unity.conf
 RUN a2dissite 000-default
 RUN a2ensite unity
-
-# PHPLDAPAdmin Setup
-RUN rm -rf /etc/phpldapadmin/config.php
-COPY phpldapadmin-config.php /etc/phpldapadmin/config.php
-
-# PHPMYadmin Setup
-COPY phpmyadmin-config.php /usr/share/phpmyadmin/config.inc.php
 
 # Start apache2 server
 EXPOSE 80

@@ -3,19 +3,25 @@ services:
   identity:
     hostname: identity
     build: identity
+    ports:
+      - "8010:80"
   web:
     hostname: web
     build: web
     ports:
       - "8000:80"
     volumes:
-      - $PWD/unity-web-portal:/var/www/unity-web-portal
+      - ../../:/var/www/unity-web-portal
   sql:
     hostname: sql
     build: sql
+    ports:
+      - "8020:80"
   smtp:
     hostname: smtp
-    build: smtp
+    image: schickling/mailcatcher
+    ports:
+      - "8030:1080"
 networks:
   default:
     name: unity_dev_network

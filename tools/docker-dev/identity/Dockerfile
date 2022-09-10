@@ -4,28 +4,38 @@ FROM ubuntu:20.04
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     slapd \
-    ldap-utils
+    ldap-utils \
+    apache2 \
+    phpldapadmin
 RUN rm -rf /var/lib/ldap
 RUN mkdir /var/lib/ldap
 RUN chown openldap:openldap /var/lib/ldap
-COPY unity-config.ldif /tmp/unity-config.ldif
 COPY ssh.ldif /etc/ldap/schema/ssh.ldif
-COPY unity-add.ldif /tmp/unity-add.ldif
-COPY initial-objects.ldif /tmp/initial-objects.ldif
+COPY ldap-config.ldif /tmp/ldap-config.ldif
+COPY bootstrap.ldif /tmp/bootstrap.ldif
 
 RUN service slapd start; \
     ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/cosine.ldif; \
     ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/nis.ldif; \
     ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/inetorgperson.ldif; \
     ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ssh.ldif; \
-    ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/unity-config.ldif; \
-    slapadd -l /tmp/unity-add.ldif; \
-    slapadd -l /tmp/initial-objects.ldif;
+    ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/ldap-config.ldif; \
+    slapadd -l /tmp/bootstrap.ldif
 
-RUN rm -rf /tmp/unity-config.ldif
-RUN rm -rf /tmp/unity-add.ldif
-RUN rm -rf /tmp/initial-objects.ldif
+RUN rm -rf /tmp/ldap-config.ldif
+RUN rm -rf /tmp/bootstrap.ldif
 
+# PHPLDAPAdmin Setup
+RUN rm -rf /etc/phpldapadmin/config.php
+COPY phpldapadmin-config.php /etc/phpldapadmin/config.php
+COPY phpldapadmin-apache.conf /etc/apache2/sites-available/phpldapadmin.conf
+RUN a2dissite 000-default
+RUN a2ensite phpldapadmin
+
+COPY process.sh /opt/process.sh
+RUN chmod +x /opt/process.sh
+
+EXPOSE 80
 EXPOSE 389
 
-CMD ["slapd", "-h", "ldap:/// ldapi:///", "-u", "openldap", "-g", "openldap", "-d", "stats"]
+CMD ["/opt/process.sh"]

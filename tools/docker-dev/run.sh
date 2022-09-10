@@ -1,25 +1,5 @@
 #!/bin/bash
 
-docker-compose up -d
+cd "$(dirname "$0")"
 
-echo ""
-echo "You can access the unity web portal environment by navigating to http://127.0.0.1:8000 assuming that 'unity-web-portal' is a clone of the correct branch."
-echo "Reach phpldapadmin at http://127.0.0.1:8000/phpldapadmin, and phpmyadmin at http://127.0.0.1:8000/phpmyadmin."
-echo ""
-echo "Available Test Users (Password for all is 'password'):"
-echo "admin1@domain.edu - admin user who is a member of pi_user1_domain_edu"
-echo "admin2@domain.edu - admin user"
-echo "user1@domain.edu - user who is the owner of pi_user1_domain_edu"
-echo "user2@domain.edu - user who is the owner of pi_user2_domain_edu"
-echo "user3@domain.edu - user who is a member of pi_user1_domain_edu"
-echo "user4@domain.edu - user"
-echo "user5@domain.edu - user who is a member of pi_user2_domain_edu"
-echo "user6@domain.edu - user who is a member of pi_user2_domain_edu"
-echo "user7@domain.edu - user who has no LDAP object"
-echo "user8@domain.edu - user who has no LDAP object"
-echo "user9@domain.edu - user who has no LDAP object"
-echo "user1@domain2.edu - user who is the owner of pi_user1_domain2_edu"
-echo "user2@domain2.edu - user"
-echo "user3@domain2.edu - user who has no LDAP object"
-echo "user4@domain2.edu - user who has no LDAP object"
-echo ""
+docker-compose up
