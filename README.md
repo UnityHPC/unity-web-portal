@@ -3,32 +3,35 @@
 ## Unity Cluster Web Portal ##
 
 ### Installation ###
-1. Prerequisites
-    1. OpenLDAP Server with Admin Credentials, correct schema
-    1. SQL Server, correct schema!
-
-    1. Slurm commands accessible on this host, `www-data` (or whatever the web server user is) should be an operator in `sacctmgr`
-    1. SMTP Server
+1. Web server prerequisites
+    1. Accessible OpenLDAP server
+    1. Accessible MySQL / MariaDB server
+    1. Accessible SMTP Server
     1. Some HTTP Authentication mechanism (such as Shibboleth SP)
-1. Install required PHP Libraries:
-    1. Install composer `apt install composer`
-        1. Create directory and navigate to `resources/libraries/composer`
-        1. Install phpmailer: `composer require phpmailer/phpmailer`
-        1. Install phpseclib: `composer require phpseclib/phpseclib`
-        1. Install monolog: `composer require monolog/monolog`
-    1. Install php-ldap `apt install php-ldap`
-1. Setup config File `resources/config.php`, use the `resoures/config.php.example` as a reference
-1. Apache Configs
+    1. Composer (`apt install composer` on Ubuntu)
+    1. PHP Extensions
+        1. `php-ldap`
+1. Composer packages
+    1. `cd` to this repository
+    1. Install packages `composer update`
+1. Setup config file `resources/config.ini` according to site
+1. Point your web server's document root to `webroot` in this repo
 
-
-
-#### Directory Structure ####
+### Directory Structure ###
 * `/webroot` - Public root of the website (http document root)
 * `/resources` - Private directory containing php files not necessary to be public.
 
 The unity/webroot directory should be the **only** publicly accessible location (DocumentRoot in htdocs). The resources directory contains many php scripts that are referenced absolutely in the config.
 
-#### Server Setup ####
+### Server Setup ###
 This website has a public and private interface. The private interface is authenticated using a shibboleth SP. The following files/directories must be behind a shibboleth SP (configured through apache).
 * `/panel`
 * `/admin` for admins only
+
+### Contributing ###
+
+First, fork this repo, then see the readme in `tools/docker-dev/README.md` to see how to set up a dev environment on your local machine from your fork.
+
+Branch names correspond to version numbers. All commits should be merged via PRs to the version branches during development. Once a version is released the branch cannot be updated.
+
+Be sure to update `CHANGELOG` with any changes by version.
