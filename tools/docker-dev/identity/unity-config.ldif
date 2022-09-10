@@ -1,0 +1,21 @@
+dn: olcDatabase={1}mdb,cn=config
+changeType: modify
+replace: olcSuffix
+olcSuffix: dc=unity,dc=rc,dc=umass,dc=edu
+-
+replace: olcRootDN
+olcRootDN: cn=admin,dc=unity,dc=rc,dc=umass,dc=edu
+-
+replace: olcRootPW
+olcRootPW: {SSHA}d6WBSm5wjlNpMwil1KQY+Uo4o/vc6PnR
+-
+delete: olcAccess
+-
+add: olcAccess
+olcAccess: {0}to attrs=userPassword by anonymous auth by * none
+-
+add: olcAccess
+olcAccess: {1}to * by * read
+-
+add: olcSizeLimit
+olcSizeLimit: unlimited

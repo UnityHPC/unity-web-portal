@@ -1,0 +1,13 @@
+dn: dc=unity,dc=rc,dc=umass,dc=edu
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+structuralObjectClass: organization
+o: unity
+
+dn: cn=admin,dc=unity,dc=rc,dc=umass,dc=edu
+objectClass: top
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+structuralObjectClass: organizationalRole
+userPassword: {SSHA}d6WBSm5wjlNpMwil1KQY+Uo4o/vc6PnR

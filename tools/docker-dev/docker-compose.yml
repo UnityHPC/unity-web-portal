@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  identity:
+    hostname: identity
+    build: identity
+  web:
+    hostname: web
+    build: web
+    ports:
+      - "8000:80"
+    volumes:
+      - $PWD/unity-web-portal:/var/www/unity-web-portal
+  sql:
+    hostname: sql
+    build: sql
+  smtp:
+    hostname: smtp
+    build: smtp
+networks:
+  default:
+    name: unity_dev_network
