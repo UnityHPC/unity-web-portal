@@ -2,6 +2,7 @@
     "require": {
         "monolog/monolog": "2.8.0",
         "phpseclib/phpseclib": "3.0.16",
-        "phpmailer/phpmailer": "6.6.4"
+        "phpmailer/phpmailer": "6.6.4",
+        "hakasapl/phpopenldaper": "1.0.0"
     }
 }
