@@ -65,7 +65,12 @@ if (isset($SSO)) {
         // Admin only pages
         echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/user-mgmt.php'>User Management</a>";
       }
-      echo "<a target='_blank' href='/panel/jhub'>JupyterLab</a>";
+
+      // additional branding items
+      $num_additional_items = count($BRANDING["menuitems"]["labels"]);
+      for ($i = 0; $i < $num_additional_items; $i++) {
+        echo "<a target='_blank' href='" . $BRANDING["menuitems"]["links"][$i] . "'>" . $BRANDING["menuitems"]["labels"][$i] . "</a>";
+      }
     } else {
       echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>Login / Request Account</a>";
     }
