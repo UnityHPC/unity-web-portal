@@ -1,5 +1,7 @@
 <?php
 
+use PHPOpenLDAPer\LDAPEntry;
+
 // REQUIRES config.php
 // REQUIRES unity-ldap.php
 // REQUIRES slurm.php
@@ -7,14 +9,16 @@
 /**
  * Class that represents a single PI group in the Unity Cluster.
  */
-class unityAccount
+class UnityGroup
 {
     const PI_PREFIX = "pi_";
 
     private $pi_uid;
 
     // Services
-    private $service_stack;
+    private $UnityLDAP;
+    private $UnitySQL;
+    private $UnityMailer;
 
     /**
      * Constructor for the object
@@ -23,19 +27,13 @@ class unityAccount
      * @param unityLDAP $unityLDAP LDAP Connection
      * @param unitySQL $unitySQL SQL Connection
      */
-    public function __construct($pi_uid, $service_stack)
+    public function __construct($pi_uid, $UnityLDAP, $UnitySQL, $UnityMailer)
     {
         $this->pi_uid = $pi_uid;
 
-        if (is_null($service_stack->ldap())) {
-            throw new Exception("LDAP is required for the unityUser class");
-        }
-
-        if (is_null($service_stack->sql())) {
-            throw new Exception("SQL is required for the unityUser class");
-        }
-
-        $this->service_stack = $service_stack;
+        $this->UnityLDAP = $UnityLDAP;
+        $this->UnitySQL = $UnitySQL;
+        $this->UnityMailer = $UnityMailer;
     }
 
     public function equals($other_group) {
@@ -74,7 +72,7 @@ class unityAccount
         $ldapPiGroupEntry = $this->getLDAPPiGroup();
 
         if (!$ldapPiGroupEntry->exists()) {
-            $nextGID = $this->service_stack->ldap()->getNextPiGID();
+            $nextGID = $this->UnityLDAP->getNextPiGID();
 
             $ldapPiGroupEntry->setAttribute("objectclass", unityLDAP::POSIX_GROUP_CLASS);
             $ldapPiGroupEntry->setAttribute("gidnumber", strval($nextGID));
@@ -89,7 +87,7 @@ class unityAccount
     }
 
     public function removeGroup() {
-        $this->service_stack->sql()->removeRequests($this->pi_uid);  // remove any lasting requests
+        $this->UnitySQL->removeRequests($this->pi_uid);  // remove any lasting requests
 
         $users = $this->getGroupMembers();
         foreach ($users as $user) {
@@ -110,18 +108,12 @@ class unityAccount
     }
 
     public function getOwner() {
-        return new unityUser(self::getUIDfromPIUID($this->pi_uid), $this->service_stack);
+        return new UnityUser(self::getUIDfromPIUID($this->pi_uid), $this->UnityLDAP, $this->UnitySQL, $this->UnityMailer);
     }
 
     public function getLDAPPiGroup()
     {
-        $group_entries = $this->service_stack->ldap()->pi_groupOU->getChildren(true, "(" . unityLDAP::RDN . "=" . $this->pi_uid . ")");
-
-        if (count($group_entries) > 0) {
-            return $group_entries[0];
-        } else {
-            return new ldapEntry($this->service_stack->ldap()->getConn(), unityLDAP::RDN . "=$this->pi_uid," . unityLDAP::PI_GROUPS);
-        }
+        return $this->UnityLDAP->getPIGroupEntry($this->pi_uid);
     }
 
     public function addUserToGroup($new_user)
@@ -147,7 +139,7 @@ class unityAccount
         $owner_uid = $this->getOwner()->getUID();
         foreach ($members as $member) {
             if ($member != $owner_uid) {
-                array_push($out, new unityUser($member, $this->service_stack));
+                array_push($out, new UnityUser($member, $this->UnityLDAP, $this->UnitySQL, $this->UnityMailer));
             }
         }
 
@@ -163,21 +155,21 @@ class unityAccount
 
     public function addRequest($uid)
     {
-        $this->service_stack->sql()->addRequest($uid, $this->pi_uid);
+        $this->UnitySQL->addRequest($uid, $this->pi_uid);
     }
 
     public function removeRequest($uid)
     {
-        $this->service_stack->sql()->removeRequest($uid, $this->pi_uid);
+        $this->UnitySQL->removeRequest($uid, $this->pi_uid);
     }
 
     public function getRequests()
     {
-        $requests = $this->service_stack->sql()->getRequests($this->pi_uid);
+        $requests = $this->UnitySQL->getRequests($this->pi_uid);
 
         $out = array();
         foreach ($requests as $request) {
-            array_push($out, new unityUser($request["uid"], $this->service_stack));
+            array_push($out, new UnityUser($request["uid"], $this->UnityLDAP, $this->UnitySQL, $this->UnityMailer));
         }
 
         return $out;

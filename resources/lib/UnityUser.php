@@ -1,28 +1,28 @@
 <?php
 
+use PHPOpenLDAPer\LDAPEntry;
+
 /**
  * Class that represents a single user account in the Unity Cluster. This class manages ldap entries as well as slurm account manager entries.
  */
-class unityUser
+class UnityUser
 {
     const HOME_DIR = "/home/";
 
     private $uid;
-    private $service_stack;
 
-    public function __construct($uid, $service_stack)
+    // service stack
+    private $UnityLDAP;
+    private $UnitySQL;
+    private $UnityMailer;
+
+    public function __construct($uid, $UnityLDAP, $UnitySQL, $UnityMailer)
     {
         $this->uid = $uid;
 
-        if (is_null($service_stack->ldap())) {
-            throw new Exception("LDAP is required for the unityUser class");
-        }
-
-        if (is_null($service_stack->sql())) {
-            throw new Exception("SQL is required for the unityUser class");
-        }
-
-        $this->service_stack = $service_stack;
+        $this->UnityLDAP = $UnityLDAP;
+        $this->UnitySQL = $UnitySQL;
+        $this->UnityMailer = $UnityMailer;
     }
 
     public function equals($other_user) {
@@ -48,15 +48,13 @@ class unityUser
         // Create LDAP group
         //
         $ldapGroupEntry = $this->getLDAPGroup();
-        $id = $this->service_stack->ldap()->getUnassignedID($this->getUID());
+        $id = $this->UnityLDAP->getUnassignedID($this->getUID());
 
         if (!$ldapGroupEntry->exists()) {
             $ldapGroupEntry->setAttribute("objectclass", unityLDAP::POSIX_GROUP_CLASS);
             $ldapGroupEntry->setAttribute("gidnumber", strval($id));
 
             if (!$ldapGroupEntry->write()) {
-                $this->logger->logCritical("Failed to create POSIX group for " . $this->uid);
-                $this->logger->killPortal();
                 throw new Exception("Failed to create POSIX group for $this->uid");
             }
         }
@@ -79,8 +77,6 @@ class unityUser
 
             if (!$ldapUserEntry->write()) {
                 $ldapGroupEntry->delete();  // Cleanup previous group
-                $this->logger->logCritical("Failed to create POSIX user for " . $this->uid);
-                $this->logger->killPortal();
                 throw new Exception("Failed to create POSIX user for  $this->uid");
             }
         }
@@ -94,13 +90,7 @@ class unityUser
      */
     public function getLDAPUser()
     {
-        $user_entries = $this->service_stack->ldap()->userOU->getChildren(true, "(" . unityLDAP::RDN . "=$this->uid)");
-
-        if (count($user_entries) > 0) {
-            return $user_entries[0];
-        } else {
-            return new ldapEntry($this->service_stack->ldap()->getConn(), unityLDAP::RDN . "=$this->uid," . unityLDAP::USERS);
-        }
+        return $this->UnityLDAP->getUserEntry($this->uid);
     }
 
     /**
@@ -110,13 +100,7 @@ class unityUser
      */
     public function getLDAPGroup()
     {
-        $group_entries = $this->service_stack->ldap()->groupOU->getChildren(true, "(" . unityLDAP::RDN . "=$this->uid)");
-
-        if (count($group_entries) > 0) {
-            return $group_entries[0];
-        } else {
-            return new ldapEntry($this->service_stack->ldap()->getConn(), unityLDAP::RDN . "=$this->uid," . unityLDAP::GROUPS);
-        }
+        return $this->UnityLDAP->getGroupEntry($this->uid);
     }
 
     public function exists()
@@ -148,8 +132,6 @@ class unityUser
         $this->getLDAPUser()->setAttribute("givenname", $firstname);
 
         if (!$this->getLDAPUser()->write()) {
-            $this->logger->logCritical("Failed to update firstname for user " . $this->uid);
-            $this->logger->killPortal();
             throw new Exception("Error updating LDAP entry $this->uid");
         }
     }
@@ -174,8 +156,6 @@ class unityUser
         $this->getLDAPUser()->setAttribute("sn", $lastname);
 
         if (!$this->getLDAPUser()->write()) {
-            $this->logger->logCritical("Failed to update lastname for user " . $this->uid);
-            $this->logger->killPortal();
             throw new Exception("Error updating LDAP entry $this->uid");
         }
     }
@@ -204,8 +184,6 @@ class unityUser
         $this->getLDAPUser()->setAttribute("mail", $email);
 
         if (!$this->getLDAPUser()->write()) {
-            $this->logger->logCritical("Failed to update mail for user " . $this->uid);
-            $this->logger->killPortal();
             throw new Exception("Error updating LDAP entry $this->uid");
         }
     }
@@ -232,8 +210,6 @@ class unityUser
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("sshpublickey", $keys_filt);
             if (!$ldapUser->write()) {
-                $this->logger->logCritical("Failed to update ssh keys for user " . $this->uid);
-                $this->logger->killPortal();
                 throw new Exception("Failed to modify SSH keys for $this->uid");
             }
         }
@@ -266,8 +242,6 @@ class unityUser
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("loginshell", $shell);
             if (!$ldapUser->write()) {
-                $this->logger->logCritical("Failed to update loginshell for user " . $this->uid);
-                $this->logger->killPortal();
                 throw new Exception("Failed to modify login shell for $this->uid");
             }
         }
@@ -300,8 +274,6 @@ class unityUser
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("homedirectory", $home);
             if (!$ldapUser->write()) {
-                $this->logger->logCritical("Failed to update homedir for user " . $this->uid);
-                $this->logger->killPortal();
                 throw new Exception("Failed to modify home directory for $this->uid");
             }
         }
@@ -314,7 +286,7 @@ class unityUser
      */
     public function isAdmin()
     {
-        $admins = $this->service_stack->ldap()->adminGroup->getAttribute("memberuid");
+        $admins = $this->UnityLDAP->getAdminGroup()->getAttribute("memberuid");
         return in_array($this->uid, $admins);
     }
 
@@ -330,7 +302,7 @@ class unityUser
 
     public function getAccount()
     {
-        return new unityAccount(unityAccount::getPIUIDfromUID($this->uid), $this->service_stack);
+        return new UnityGroup(UnityGroup::getPIUIDfromUID($this->uid), $this->UnityLDAP, $this->UnitySQL, $this->UnityMailer);
     }
 
     /**
@@ -339,7 +311,7 @@ class unityUser
      */
     public function getGroups()
     {
-        $all_pi_groups = $this->service_stack->ldap()->getAllPIGroups($this->service_stack);
+        $all_pi_groups = $this->UnityLDAP->getAllPIGroups($this->UnitySQL, $this->UnityMailer);
 
         $out = array();
         foreach ($all_pi_groups as $pi_group) {

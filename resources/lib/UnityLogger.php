@@ -4,7 +4,7 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\FirePHPHandler;
 
-class unityLogger {
+class UnityLogger {
     private $logger;
     private $printlog;
 
