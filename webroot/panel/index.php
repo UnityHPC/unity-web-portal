@@ -2,6 +2,6 @@
 
 require "../../resources/autoload.php";
 
-redirect(config::PREFIX . "/panel/account.php");
+redirect($CONFIG["site"]["prefix"] . "/panel/account.php");
 
 ?>

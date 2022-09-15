@@ -1,7 +1,7 @@
 <?php
 require "../../resources/autoload.php";
 
-require_once config::PATHS["templates"] . "/header.php";
+require_once LOC_HEADER;
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
@@ -43,11 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $message = "Login shell updated to " . $USER->getLoginShell() . ".";
     } elseif (isset($_POST["pi_request"])) {
         if (!$USER->isPI()) {
-            if (!$SERVICE->sql()->requestExists($USER->getUID())) {
-                $SERVICE->sql()->addRequest($USER->getUID());
+            if (!$SQL->requestExists($USER->getUID())) {
+                $SQL->addRequest($USER->getUID());
 
                 // Send approval email to admins
-                $SERVICE->mail()->send("new_pi_request", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail()));
+                $MAILER->send("new_pi_request", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail()));
                     
                 $message = "A request for a PI account has been sent to admins for review";
             }
@@ -77,7 +77,7 @@ if ($isPI) {
 
 if (!$isPI) {
     echo "<form action='' method='POST' id='piReq'><input type='hidden' name='pi_request' value='yes'></form>";
-    if ($SERVICE->sql()->requestExists($USER->getUID())) {
+    if ($SQL->requestExists($USER->getUID())) {
         echo "<button class='btnReqPI' disabled>Request PI Account</button>";
         echo "<label>Your request has been submitted and is currently pending</label>";
     } else {
@@ -113,7 +113,7 @@ echo "<div class='inline'><form action='' method='POST'><input type='text' name=
 
 <script>
     $("button.btnAddKey").click(function() {
-        openModal("Add New Key", "<?php echo config::PREFIX; ?>/panel/modal/new_key.php");
+        openModal("Add New Key", "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/new_key.php");
     });
 
     <?php
@@ -165,5 +165,5 @@ echo "<div class='inline'><form action='' method='POST'><input type='text' name=
 </style>
 
 <?php
-require_once config::PATHS["templates"] . "/footer.php";
+require_once LOC_FOOTER;
 ?>

@@ -2,10 +2,10 @@
 
 require_once "../../resources/autoload.php";
 
-require_once config::PATHS["templates"] . "/header.php";
+require_once LOC_HEADER;
 
 if ($USER->exists()) {
-	redirect(config::PREFIX . "/panel/index.php");  // Redirect if account already exists
+	redirect($CONFIG["site"]["prefix"] . "/panel/index.php");  // Redirect if account already exists
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		try {
 			$USER->init($SHIB["firstname"],$SHIB["lastname"],$SHIB["mail"]);
 
-			redirect(config::PREFIX . "/panel");
+			redirect($CONFIG["site"]["prefix"] . "/panel");
 		} catch (Exception $e) {
 			array_push($errors, unity_locale::ERR . "\n" . $e->getMessage());
 		}
@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<hr>
 
 	<input type="checkbox" id="chk_eula" name="eula" value="agree">
-	<label for="chk_eula">I have read and accept the <a target="_blank" href="<?php echo config::PREFIX; ?>/priv.php">Unity EULA</a></label>
+	<label for="chk_eula">I have read and accept the <a target="_blank" href="<?php echo $CONFIG["site"]["prefix"]; ?>/priv.php">Unity EULA</a></label>
 	<input style="margin-top: 10px;" type="submit" value="Create Account">
 
 	<?php
@@ -59,5 +59,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </form>
 
 <?php
-require_once config::PATHS["templates"] . "/footer.php";
+require_once LOC_FOOTER;
 ?>

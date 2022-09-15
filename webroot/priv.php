@@ -1,7 +1,7 @@
 <?php
 require "../resources/autoload.php";
 
-require_once config::PATHS["templates"] . "/header.php";
+require_once LOC_HEADER;
 ?>
 
 <h1><?php echo unity_locale::PRIV_HEADER_AUP; ?></h1>
@@ -22,5 +22,5 @@ require_once config::PATHS["templates"] . "/header.php";
 <p>The Unity team reserves the right to restrict access to any individual/group found to be in breach of the above.</p>
 
 <?php
-require_once config::PATHS["templates"] . "/footer.php";
+require_once LOC_FOOTER;
 ?>

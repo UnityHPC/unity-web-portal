@@ -1,7 +1,7 @@
 <?php
 require "../resources/autoload.php";
 
-require_once config::PATHS["templates"] . "/header.php";
+require_once LOC_HEADER;
 ?>
 
 <h1>Cluster Notices</h1>
@@ -9,7 +9,7 @@ require_once config::PATHS["templates"] . "/header.php";
 
 <?php
 
-$notices = $SERVICE->sql()->getNotices();
+$notices = $SQL->getNotices();
 foreach($notices as $notice) {
     echo "<div class='notice'>";
     echo "<span class='noticeTitle'>" . $notice["title"] . "</span>";
@@ -21,5 +21,5 @@ foreach($notices as $notice) {
 ?>
 
 <?php
-require_once config::PATHS["templates"] . "/footer.php";
+require_once LOC_FOOTER;
 ?>

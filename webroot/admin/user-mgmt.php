@@ -8,7 +8,7 @@ if (!$USER->isAdmin()) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST["uid"])) {
-        $form_user = new unityUser($_POST["uid"], $SERVICE);
+        $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER);
     }
 
     switch ($_POST["form_name"]) {
@@ -18,9 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $group->createGroup();
             }
 
-            $SERVICE->sql()->removeRequest($form_user->getUID());
+            $SQL->removeRequest($form_user->getUID());
 
-            $SERVICE->mail()->send("admin_approve_pi", array("to" => $form_user->getMail()));
+            $MAILER->send("admin_approve_pi", array("to" => $form_user->getMail()));
 
             // (1) Create Slurm Account
             // (2) Create LDAP Group
@@ -28,32 +28,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // (4) Send email to new PI
             break;
         case "denyReq":
-            $SERVICE->sql()->removeRequest($form_user->getUID());
+            $SQL->removeRequest($form_user->getUID());
 
-            $SERVICE->mail()->send("admin_deny_pi", array("to" => $form_user->getMail()));
+            $MAILER->send("admin_deny_pi", array("to" => $form_user->getMail()));
 
             // (1) Remove SQL Row request
             // (2) Send email to requestor
             break;
         case "remUser":
-            $remGroup = new unityAccount($_POST["pi"], $SERVICE);
+            $remGroup = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
 
             if ($remGroup->exists()) {
                 foreach ($remGroup->getGroupMembers() as $member) {
                     $remGroup->removeUserFromGroup($member);
                     
-                    $SERVICE->mail()->send("rem_pi", array("to" => $member->getMail(), "group" => $remGroup->getPIUID()));
+                    $MAILER->send("rem_pi", array("to" => $member->getMail(), "group" => $remGroup->getPIUID()));
                 }
             }
             $remGroup->removeGroup();
 
-            $SERVICE->mail()->send("admin_disband_pi", array("to" => $remGroup->getOwner()->getMail()));
+            $MAILER->send("admin_disband_pi", array("to" => $remGroup->getOwner()->getMail()));
 
             // (same as disband PI from pi.php), except also send email to PI
             break;
         case "approveReqChild":
             // approve request button clicked
-            $parent = new unityAccount($_POST["pi"], $SERVICE);
+            $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
 
             $parent->addUserToGroup($form_user);  // Add to group (ldap and slurm)
 
@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo $e->getMessage();  // ! DEBUG
             }
 
-            $SERVICE->mail()->send("join_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
+            $MAILER->send("join_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
 
             // (1) Create slurm association [DONE]
             // (2) Remove SQL Row if (1) succeeded [DONE]
@@ -73,11 +73,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         case "denyReqChild":
             // deny request button clicked
 
-            $parent = new unityAccount($_POST["pi"], $SERVICE);
+            $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
 
             $parent->removeRequest($form_user->getUID());  // remove request from db
 
-            $SERVICE->mail()->send("deny_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
+            $MAILER->send("deny_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
 
             // (1) Remove SQL Row
             // (2) Send email to requestor
@@ -85,12 +85,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         case "remUserChild":
             // remove user button clicked
 
-            $parent = new unityAccount($_POST["pi"], $SERVICE);
+            $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
 
             $parent->removeUserFromGroup($form_user);
 
-            $SERVICE->mail()->send("rem_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
-            $SERVICE->mail()->send("left_user", array("netid" => $form_user->getUID(), "firstname" => $form_user->getFirstname(), "lastname" => $form_user->getLastname(), "mail" => $form_user->getMail(), "to" => $parent->getOwner()->getMail()));
+            $MAILER->send("rem_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
+            $MAILER->send("left_user", array("netid" => $form_user->getUID(), "firstname" => $form_user->getFirstname(), "lastname" => $form_user->getLastname(), "mail" => $form_user->getMail(), "to" => $parent->getOwner()->getMail()));
 
             // (1) Remove slurm association
             // (2) Send email to removed user
@@ -98,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-include config::PATHS["templates"] . "/header.php";
+include LOC_HEADER;
 ?>
 
 <h1>User Management</h1>
@@ -114,10 +114,10 @@ include config::PATHS["templates"] . "/header.php";
     </tr>
 
     <?php
-    $requests = $SERVICE->sql()->getRequests();
+    $requests = $SQL->getRequests();
 
     foreach ($requests as $request) {
-        $request_user = new unityUser($request["uid"], $SERVICE);
+        $request_user = new UnityUser($request["uid"], $LDAP, $SQL, $MAILER);
 
         echo "<tr>";
         echo "<td>" . $request_user->getFirstname() . " " . $request_user->getLastname() . "</td>";
@@ -144,7 +144,7 @@ include config::PATHS["templates"] . "/header.php";
     </tr>
 
 <?php
-    $accounts = $SERVICE->ldap()->getAllPIGroups($SERVICE);
+    $accounts = $LDAP->getAllPIGroups($SQL, $MAILER);
 
     foreach ($accounts as $pi_group) {
         $pi_user = $pi_group->getOwner();
@@ -178,9 +178,9 @@ include config::PATHS["templates"] . "/header.php";
         }
     });
 
-    var ajax_url = "<?php echo config::PREFIX; ?>/admin/ajax/get_group_members.php?pi_uid=";
+    var ajax_url = "<?php echo $CONFIG["site"]["prefix"]; ?>/admin/ajax/get_group_members.php?pi_uid=";
 </script>
 
 <?php
-include config::PATHS["templates"] . "/footer.php";
+include LOC_FOOTER;
 ?>

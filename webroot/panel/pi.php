@@ -1,7 +1,7 @@
 <?php
 require "../../resources/autoload.php";
 
-//$USER = new unityUser("jgriffin_umass_edu", $SERVICE); // ! DEBUG remove later
+//$USER = new UnityUser("jgriffin_umass_edu", $LDAP, $SQL, $MAILER); // ! DEBUG remove later
 $group = $USER->getAccount();
 
 if (!$USER->isPI()) {
@@ -11,7 +11,7 @@ if (!$USER->isPI()) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST["uid"])) {
-        $form_user = new unityUser($_POST["uid"], $SERVICE);
+        $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER);
     }
 
     switch ($_POST["form_name"]) {
@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $group->removeRequest($form_user->getUID());  // remove request from db
 
             // Send approval email to admins
-            $SERVICE->mail()->send("join_pi", array("to" => $form_user->getMail(), "group" => $group->getPIUID()));
+            $MAILER->send("join_pi", array("to" => $form_user->getMail(), "group" => $group->getPIUID()));
 
             // (1) Create slurm association [DONE]
             // (2) Remove SQL Row if (1) succeeded [DONE]
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $group->removeRequest($form_user->getUID());  // remove request from db
 
-            $SERVICE->mail()->send("deny_pi", array("to" => $form_user->getMail(), "group" => $group->getPIUID()));
+            $MAILER->send("deny_pi", array("to" => $form_user->getMail(), "group" => $group->getPIUID()));
 
             // (1) Remove SQL Row
             // (2) Send email to requestor
@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $group->removeUserFromGroup($form_user);
 
-            $SERVICE->mail()->send("rem_pi", array("to" => $form_user->getMail(), "group" => $group->getPIUID()));
+            $MAILER->send("rem_pi", array("to" => $form_user->getMail(), "group" => $group->getPIUID()));
 
             // (1) Remove slurm association
             // (2) Send email to removed user
@@ -56,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-include config::PATHS["templates"] . "/header.php";
+include LOC_HEADER;
 ?>
 
 <h1>My Users</h1>
@@ -67,7 +67,7 @@ $requests = $group->getRequests();
 $assocs = $group->getGroupMembers();
 
 if (count($requests) + count($assocs) == 0) {
-    echo "<p>You do not have any users attached to your PI account. Ask your users to request to join your account on the <a href='" . config::PREFIX . "/panel/groups.php'>My PIs</a> page.</p>";
+    echo "<p>You do not have any users attached to your PI account. Ask your users to request to join your account on the <a href='" . $CONFIG["site"]["prefix"] . "/panel/groups.php'>My PIs</a> page.</p>";
 } else {
     echo "<p>The following users are attached to your PI group and are authorized to use Unity</p>";
 }
@@ -135,5 +135,5 @@ button.btnDeny {
 </style>
 
 <?php
-include config::PATHS["templates"] . "/footer.php";
+include LOC_FOOTER;
 ?>

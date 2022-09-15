@@ -6,7 +6,7 @@ if (!isset($_GET["pi_uid"])) {
     die("PI UID not set");
 }
 
-$group = new unityAccount($_GET["pi_uid"], $SERVICE);
+$group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER);
 $members = $group->getGroupMembers();
 
 // verify that the user querying is actually in the group

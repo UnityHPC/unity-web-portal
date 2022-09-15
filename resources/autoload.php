@@ -1,85 +1,104 @@
 <?php
 //* * This is the main autoload for the site. This file should be the FIRST thing loaded on every page
 
-if (file_exists("config.php")) {
-  die("Config file config.php not found!");
-} else {
-  require_once "config.php";
-}
+// Load Composer Libs
+require_once __DIR__ . "/../vendor/autoload.php";
 
-require "libraries/composer/vendor/autoload.php";
+// Load config file values
+$CONFIG = parse_ini_file(__DIR__ . "/../config/config.ini", true);
 
-require_once config::PATHS["libraries"] . "/unity-logger.php";
-$LOGGER = new unityLogger(config::LOG_PATH, false);
+// Load unity logger program
+require_once __DIR__ . "/lib/UnityLogger.php";
+$LOGGER = new UnityLogger($CONFIG["site"]["log_path"], false);
 
 // set relative path
-if (config::PREFIX == "/") {
+if ($CONFIG["site"]["prefix"] == "") {
   define("REL_PATH", $_SERVER['REQUEST_URI']);
 } else {
-  define("REL_PATH", str_replace(config::PREFIX, "", $_SERVER['REQUEST_URI']));
+  define("REL_PATH", str_replace($CONFIG["site"]["prefix"], "", $_SERVER['REQUEST_URI']));
 }
 
 // Start Session
 session_start();
 
-// DEBUG LOCK
-if (config::MAINTENANCE_MODE && !isset($_SESSION["maint"]) && !(strpos($_SERVER["REQUEST_URI"], "/panel-auth.php") !== false)) {
-  die("The Unity Cluster website is undergoing maintenance. The JupyterHub portal is available <a href='/panel/jhub'>here</a>");
+// load libs
+require_once __DIR__ . "/lib/globals.php";
+require_once __DIR__ . "/lib/UnityLDAP.php";
+require_once __DIR__ . "/lib/UnityUser.php";
+require_once __DIR__ . "/lib/UnityGroup.php";
+require_once __DIR__ . "/lib/UnitySQL.php";
+require_once __DIR__ . "/lib/UnityMailer.php";
+
+// Loading branding
+$branding_file_loc = __DIR__ . "/../config/branding";
+$BRANDING = parse_ini_file($branding_file_loc . "/config.ini", true);
+
+define("DOMAIN", $_SERVER['HTTP_HOST']);
+$branding_override = $branding_file_loc . "/overrides/" . DOMAIN . ".ini";
+if (file_exists($branding_override)) {
+    $override_config = parse_ini_file($branding_override);
+    $BRANDING = array_merge($BRANDING, $override_config);
 }
 
-require_once "branding/branding.php";
-$BRANDING = new branding();
+//
+// Initialize Service Stack
+//
 
-require_once config::PATHS["templates"] . "/globals.php";
+// Creates LDAP service
+$LDAP = new UnityLDAP(
+$CONFIG["ldap"]["uri"],
+$CONFIG["ldap"]["user"],
+$CONFIG["ldap"]["pass"],
+__DIR__ . "/../config/custom_user_mappings",
+$CONFIG["ldap"]["user_ou"],
+$CONFIG["ldap"]["group_ou"],
+$CONFIG["ldap"]["pigroup_ou"],
+$CONFIG["ldap"]["orggroup_ou"],
+$CONFIG["ldap"]["admin_group"],
+$CONFIG["ldap"]["def_user_shell"]
+);
 
-require_once config::PATHS["libraries"] . "/unity-ldap.php";
-require_once config::PATHS["libraries"] . "/unity-user.php";
-require_once config::PATHS["libraries"] . "/unity-account.php";
-require_once config::PATHS["libraries"] . "/unity-sql.php";
-require_once config::PATHS["libraries"] . "/template_mailer.php";
-require_once config::PATHS["libraries"] . "/unity-service.php";
+// Creates SQL service
+$SQL = new UnitySQL(
+$CONFIG["sql"]["host"],
+$CONFIG["sql"]["dbname"],
+$CONFIG["sql"]["user"],
+$CONFIG["sql"]["pass"]
+);
 
-$SERVICE = new serviceStack($LOGGER);
-$SERVICE->getLogger()->logInfo("Accepted connection from " . $_SERVER['REMOTE_ADDR']);
+// Creates SMTP service
+$MAILER = new UnityMailer(
+"templates/mail",
+$CONFIG["smtp"]["host"],
+$CONFIG["smtp"]["port"],
+$CONFIG["smtp"]["security"],
+$CONFIG["smtp"]["user"],
+$CONFIG["smtp"]["pass"],
+$CONFIG["smtp"]["ssl_verify"]
+);
 
-$SERVICE->add_ldap(config::LDAP);
-$SERVICE->add_sql(config::SQL);
-$SERVICE->add_mail(config::MAIL);
+$LOGGER->logInfo("Accepted connection from " . $_SERVER['REMOTE_ADDR']);
 
-if (isset($_SERVER["REMOTE_USER"])) {  // Check if SHIB is enabled on this page
-  // Set Shibboleth Session Vars - Vars stored in session to be accessible outside shib-controlled areas of the sites (ie contact page)
-  $SHIB = array(
-    "netid" => EPPN_to_uid($_SERVER["REMOTE_USER"]),
+if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
+  // Set SSO Session Vars - Vars stored in session to be accessible outside shib-controlled areas of the sites (ie contact page)
+  $SSO = array(
+    "user" => EPPN_to_uid($_SERVER["REMOTE_USER"]),
     "firstname" => $_SERVER["givenName"],
     "lastname" => $_SERVER["sn"],
     "name" => $_SERVER["givenName"] . " " . $_SERVER["sn"],
     "mail" => isset($_SERVER["mail"]) ? $_SERVER["mail"] : $_SERVER["eppn"]  // Fallback to EPPN if mail is not set
   );
-  $_SESSION["SHIB"] = $SHIB;  // Set the session var for non-authenticated pages
+  $_SESSION["SSO"] = $SSO;  // Set the session var for non-authenticated pages
 
-  $USER = new unityUser($SHIB["netid"], $SERVICE);
+  // define user object
+  $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER);
   $_SESSION["user_exists"] = $USER->exists();
   $_SESSION["is_pi"] = $USER->isPI();
   $_SESSION["is_admin"] = $USER->isAdmin();
-} elseif (DEVMODE) {
-  // dev environment enabled, now we need to check if the user is currently in /panel, which is the only place remote_user would be set
-  $panelSearch = "/panel";
-  if (substr(REL_PATH, 0, strlen($panelSearch)) === $panelSearch) {
-    $SHIB = array(
-      "netid" => EPPN_to_uid(DEVUSER["eppn"]),
-      "firstname" => DEVUSER["firstname"],
-      "lastname" => DEVUSER["lastname"],
-      "name" => DEVUSER["firstname"] . " " . DEVUSER["lastname"],
-      "mail" => DEVUSER["mail"]
-    );
-    $_SESSION["SHIB"] = $SHIB;
-
-    $USER = new unityUser($SHIB["netid"], $SERVICE);
-    $_SESSION["user_exists"] = $USER->exists();
-    $_SESSION["is_pi"] = $USER->isPI();
-    $_SESSION["is_admin"] = $USER->isAdmin();
-  }
 }
 
-// Load Locale
-require_once config::PATHS["locale"] . "/" . config::LOCALE . ".php";  // Loads the locale class
+// TODO FIX THIS
+define("LOC_HEADER", __DIR__ . "/templates/header.php");
+define("LOC_FOOTER", __DIR__ . "/templates/footer.php");
+
+require_once "locale/en.php";  // Loads the locale class

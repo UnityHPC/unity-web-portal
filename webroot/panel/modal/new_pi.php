@@ -2,7 +2,7 @@
 require_once "../../../resources/autoload.php";  // Load required libs
 ?>
 
-<form id="newPIform" method="POST" action="<?php echo config::PREFIX; ?>/panel/groups.php">
+<form id="newPIform" method="POST" action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/groups.php">
     <input type="hidden" name="form_name" value="addPIform">
     <div style="position: relative;">
         <input type="text" id="pi_search" name="pi" placeholder="Search PI by NetID">
@@ -15,7 +15,7 @@ require_once "../../../resources/autoload.php";  // Load required libs
     $("input[type=text][name=pi]").keyup(function() {
         var searchWrapper = $("div.searchWrapper");
         $.ajax({
-            url: "<?php echo config::PREFIX; ?>/panel/modal/pi_search.php?search=" + $(this).val(),
+            url: "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/pi_search.php?search=" + $(this).val(),
             success: function(result) {
                 searchWrapper.html(result);
 

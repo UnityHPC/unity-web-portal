@@ -1,7 +1,7 @@
 <?php
 require "../resources/autoload.php";
 
-require_once config::PATHS["templates"] . "/header.php";
+require_once LOC_HEADER;
 ?>
 
 <h1><?php echo unity_locale::AUTH_HEADER_MAIN; ?></h1>
@@ -20,5 +20,5 @@ label {
 </style>
 
 <?php
-require_once config::PATHS["templates"] . "/footer.php";
+require_once LOC_FOOTER;
 ?>

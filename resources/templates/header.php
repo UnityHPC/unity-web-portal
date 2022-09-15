@@ -1,8 +1,8 @@
 <?php
 
-if (isset($SHIB)) {
+if (isset($SSO)) {
   if (!$_SESSION["user_exists"]) {
-    redirect(config::PREFIX . "/panel/new_account.php");
+    redirect($CONFIG["site"]["prefix"] . "/panel/new_account.php");
   }
 }
 
@@ -16,58 +16,58 @@ if (isset($SHIB)) {
 
   <style>
     <?php
-    // set global css variables
+    // set global css variables from branding
     echo ":root {";
-    foreach ($BRANDING->getField("colors") as $var_name => $var_value) {
+    foreach ($BRANDING["colors"] as $var_name => $var_value) {
       echo "--$var_name: $var_value;";
     }
     echo "}";
     ?>
   </style>
 
-  <link rel="stylesheet" type="text/css" href="<?php echo config::PREFIX; ?>/css/global.css">
-  <link rel="stylesheet" type="text/css" href="<?php echo config::PREFIX; ?>/css/navbar.css">
-  <link rel="stylesheet" type="text/css" href="<?php echo config::PREFIX; ?>/css/modal.css">
-  <link rel="stylesheet" type="text/css" href="<?php echo config::PREFIX; ?>/css/tables.css">
+  <link rel="stylesheet" type="text/css" href="<?php echo $CONFIG["site"]["prefix"]; ?>/css/global.css">
+  <link rel="stylesheet" type="text/css" href="<?php echo $CONFIG["site"]["prefix"]; ?>/css/navbar.css">
+  <link rel="stylesheet" type="text/css" href="<?php echo $CONFIG["site"]["prefix"]; ?>/css/modal.css">
+  <link rel="stylesheet" type="text/css" href="<?php echo $CONFIG["site"]["prefix"]; ?>/css/tables.css">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="<?php echo config::CLUSTER["desc"]; ?>">
+  <meta name="description" content="<?php echo $BRANDING["site"]["description"] ?>">
 
-  <title><?php echo config::CLUSTER["name"]; ?> &#8226; <?php echo config::CLUSTER["org"]; ?></title>
+  <title><?php echo $BRANDING["site"]["name"]; ?></title>
 </head>
 
 <body>
 
   <header>
-    <img id="imgLogo" draggable=false src="<?php echo config::PREFIX; ?>/res/logo.png">
-    <a href="<?php echo config::APP["repo"]; ?>" target="_blank" class="unity-state">Beta</a>
-    <button class="hamburger vertical-align"><img draggable="false" src="<?php echo config::PREFIX; ?>/res/menu.png" alt="Menu Button"></button>
+    <img id="imgLogo" draggable=false src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/logo.png">
+    <a href="<?php echo $CONFIG["upstream"]["repo"] ?>" target="_blank" class="unity-state"><?php echo $CONFIG["upstream"]["version"] ?></a>
+    <button class="hamburger vertical-align"><img draggable="false" src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/menu.png" alt="Menu Button"></button>
   </header>
 
   <nav class="mainNav">
     <?php
     // Public Items - Always Visible
-    echo "<a href='" . config::PREFIX . "/index.php'>Home</a>";
-    echo "<a target='_blank' href='" . config::DOCS_URL . "'>Documentation</a>";
+    echo "<a href='" . $CONFIG["site"]["prefix"] . "/index.php'>Home</a>";
+    echo "<a target='_blank' href='" . $BRANDING["site"]["docs_url"] . "'>Documentation</a>";
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
       // Menu Items for Present Users
-      echo "<a href='" . config::PREFIX . "/panel/support.php'>Support</a>";
-      echo "<a href='" . config::PREFIX . "/panel/account.php'>Account Settings</a>";
-      echo "<a href='" . config::PREFIX . "/panel/groups.php'>My PIs</a>";
+      echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/support.php'>Support</a>";
+      echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>Account Settings</a>";
+      echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/groups.php'>My PIs</a>";
 
       if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
         // PI only pages
-        echo "<a href='" . config::PREFIX . "/panel/pi.php'>My Users</a>";
+        echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>My Users</a>";
       }
 
       if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"]) {
         // Admin only pages
-        echo "<a href='" . config::PREFIX . "/admin/user-mgmt.php'>User Management</a>";
+        echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/user-mgmt.php'>User Management</a>";
       }
       echo "<a target='_blank' href='/panel/jhub'>JupyterLab</a>";
     } else {
-      echo "<a href='" . config::PREFIX . "/panel/account.php'>Login / Request Account</a>";
+      echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>Login / Request Account</a>";
     }
     ?>
   </nav>
@@ -86,6 +86,6 @@ if (isset($SHIB)) {
       </div>
     </div>
   </div>
-  <script src="<?php echo config::PREFIX; ?>/js/modal.js"></script>
+  <script src="<?php echo $CONFIG["site"]["prefix"]; ?>/js/modal.js"></script>
 
   <main>

@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors = array();
 
     if (isset($_POST["form_name"])) {
-        $pi_account = new unityAccount($_POST["pi"], $SERVICE);
+        $pi_account = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
         $pi_owner = $pi_account->getOwner();
 
         switch ($_POST["form_name"]) {
@@ -30,10 +30,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Add row to sql
                 if (empty($modalErrors)) {
-                    $SERVICE->sql()->addRequest($USER->getUID(), $_POST["pi"]);
+                    $SQL->addRequest($USER->getUID(), $_POST["pi"]);
 
                     // Send approval email to PI
-                    $SERVICE->mail()->send("new_group_request", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail(), "to" => $pi_owner->getMail()));
+                    $MAILER->send("new_group_request", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail(), "to" => $pi_owner->getMail()));
                 }
 
                 // 1. Check if PI value was submitted (DONE)
@@ -52,10 +52,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     break;
                 }
 
-                $pi_user = new unityAccount($_POST["pi"], $SERVICE);
+                $pi_user = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
                 $pi_user->removeUserFromGroup($USER);
 
-                $SERVICE->mail()->send("left_user", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail(), "to" => $pi_owner->getMail()));
+                $MAILER->send("left_user", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail(), "to" => $pi_owner->getMail()));
 
                 // 1. check if pi group exists (DONE)
                 // 1. Check the selected PI actually belongs to this user (DONE)
@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-include config::PATHS["templates"] . "/header.php";
+include LOC_HEADER;
 ?>
 
 <h1>My Principal Investigators</h1>
@@ -74,7 +74,7 @@ include config::PATHS["templates"] . "/header.php";
 <?php
 $groups = $USER->getGroups();
 
-$requests = $SERVICE->sql()->getRequestsByUser($USER->getUID());
+$requests = $SQL->getRequestsByUser($USER->getUID());
 
 $req_filtered = array();
 foreach ($requests as $request) {
@@ -91,7 +91,7 @@ if (count($req_filtered) > 0) {
     echo "<h3>Pending Requests</h3>";
     echo "<table>";
     foreach ($req_filtered as $request) {
-        $requested_account = new unityAccount($request["request_for"], $SERVICE);
+        $requested_account = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER);
         $requested_owner = $requested_account->getOwner();
         echo "<tr class='pending_request'>";
         echo "<td>" . $requested_owner->getFirstname() . " " . $requested_owner->getLastname() . "</td>";
@@ -138,7 +138,7 @@ echo "</table>";
 
 <script>
     $("button.btnAddPI").click(function() {
-        openModal("Add New PI", "<?php echo config::PREFIX; ?>/panel/modal/new_pi.php");
+        openModal("Add New PI", "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/new_pi.php");
     });
 
     <?php
@@ -149,7 +149,7 @@ echo "</table>";
             $errorHTML .= "<span>$error</span>";
         }
 
-        echo "openModal('Add New PI', '" . config::PREFIX . "/panel/modal/new_pi.php', '" . $errorHTML . "');";
+        echo "openModal('Add New PI', '" . $CONFIG["site"]["prefix"] . "/panel/modal/new_pi.php', '" . $errorHTML . "');";
     }
     ?>
 
@@ -158,7 +158,7 @@ echo "</table>";
         confirmModal("Are you sure you want to leave " + group + "?", "#leave-" + group);
     });
 
-    var ajax_url = "<?php echo config::PREFIX; ?>/panel/ajax/get_group_members.php?pi_uid=";
+    var ajax_url = "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/ajax/get_group_members.php?pi_uid=";
 </script>
 
 <style>
@@ -170,5 +170,5 @@ echo "</table>";
 </style>
 
 <?php
-include config::PATHS["templates"] . "/footer.php";
+include LOC_FOOTER;
 ?>
