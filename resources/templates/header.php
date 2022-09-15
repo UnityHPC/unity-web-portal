@@ -61,15 +61,17 @@ if (isset($SSO)) {
         echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>My Users</a>";
       }
 
-      if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"]) {
-        // Admin only pages
-        echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/user-mgmt.php'>User Management</a>";
-      }
-
       // additional branding items
       $num_additional_items = count($BRANDING["menuitems"]["labels"]);
       for ($i = 0; $i < $num_additional_items; $i++) {
         echo "<a target='_blank' href='" . $BRANDING["menuitems"]["links"][$i] . "'>" . $BRANDING["menuitems"]["labels"][$i] . "</a>";
+      }
+
+      // admin pages
+      if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"]) {
+        echo "<hr>";
+        // Admin only pages
+        echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/user-mgmt.php'>User Management</a>";
       }
     } else {
       echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>Login / Request Account</a>";
