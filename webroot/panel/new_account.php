@@ -16,12 +16,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		array_push($errors, "Accepting the EULA is required");
 	}
 
+	if ($_POST["new_user_sel"] == "not_pi") {
+		$form_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
+		if (!$form_group->exists()) {
+			array_push($errors, "The selected PI does not exist");
+		}
+	}
+
 	// Request Account Form was Submitted
 	if (count($errors) == 0) {
 		try {
-			$USER->init($SHIB["firstname"],$SHIB["lastname"],$SHIB["mail"]);
-
-			redirect($CONFIG["site"]["prefix"] . "/panel");
+			if ($_POST["new_user_sel"] == "pi") {
+				// requesting a PI account
+				$USER->getPIGroup()->requestGroup();
+			} elseif ($_POST["new_user_sel"] == "not_pi") {
+				$form_group->newUserRequest($USER);
+			}
 		} catch (Exception $e) {
 			array_push($errors, unity_locale::ERR . "\n" . $e->getMessage());
 		}
@@ -30,22 +40,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 ?>
 
-<h1><?php echo unity_locale::NEWACC_HEADER_MAIN; ?></h1>
+<h1>Request Account</h1>
 <hr>
 
 <form id="newAccountForm" action="" method="POST">
 	<span>Please verify that the information below is correct before continuing</span>
 	<div>
-		<b>Name&nbsp;&nbsp;</b><?php echo $SHIB["firstname"] . " " . $SHIB["lastname"]; ?><br>
-		<b>Email&nbsp;&nbsp;</b><?php echo $SHIB["mail"]; ?>
+		<b>Name&nbsp;&nbsp;</b><?php echo $SSO["firstname"] . " " . $SSO["lastname"]; ?><br>
+		<b>Email&nbsp;&nbsp;</b><?php echo $SSO["mail"]; ?>
 	</div>
-	<span>Your unity cluster username will be <b><?php echo $SHIB["netid"]; ?></b></span>
+	<span>Your unity cluster username will be <b><?php echo $SSO["user"]; ?></b></span>
+
+	<span>In order to activate your account on the Unity cluster, you must join an existing PI group, or request your own PI group.</span>
 
 	<hr>
 
-	<input type="checkbox" id="chk_eula" name="eula" value="agree">
-	<label for="chk_eula">I have read and accept the <a target="_blank" href="<?php echo $CONFIG["site"]["prefix"]; ?>/priv.php">Unity EULA</a></label>
-	<input style="margin-top: 10px;" type="submit" value="Create Account">
+	<?php
+	$pending_requests = $SQL->getRequestsByUser($USER->getUID());
+	if (count($pending_requests) > 0) {
+		// already has pending requests
+		echo "<span>Your request to activate your account has been submitted. You will receive an email when your account is activated.</span>";
+	} else {
+		echo "<label><input type='radio' name='new_user_sel' value='pi'>Request a PI account (I am a PI)</label>";
+		echo "<br>";
+		echo "<label><input type='radio' name='new_user_sel' value='not_pi' checked>Join an existing PI group</label>";
+
+		echo "<div style='position: relative;' id='piSearchWrapper'>";
+		echo "<input type='text' id='pi_search' name='pi' placeholder='Search PI by NetID'>";
+		echo "<div class='searchWrapper' style='display: none;'></div>";
+		echo "</div>";
+
+		echo "<hr>";
+
+		echo "<label><input type='checkbox' id='chk_eula' name='eula' value='agree'>I have read and accept the <a target='_blank' href='" . $CONFIG["site"]["prefix"] . "/priv.php'>Unity EULA</a></label>";
+
+		echo "<input style='margin-top: 10px;' type='submit' value='Request Account'>";
+	}
+	?>
 
 	<?php
 	if (isset($errors)) {
@@ -57,6 +88,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 	?>
 </form>
+
+<script>
+	$('input[type=radio][name=new_user_sel]').change(function() {
+		let pi_sel_text = $('#piSearchWrapper');
+		if (this.value == 'not_pi') {
+			pi_sel_text.show();
+		} else if (this.value == 'pi') {
+			pi_sel_text.hide();
+		}
+	});
+
+	$("input[type=text][name=pi]").keyup(function() {
+		var searchWrapper = $("div.searchWrapper");
+		$.ajax({
+			url: "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/pi_search.php?search=" + $(this).val(),
+			success: function(result) {
+				searchWrapper.html(result);
+
+				if (result == "") {
+					searchWrapper.hide();
+				} else {
+					searchWrapper.show();
+				}
+			}
+		});
+	});
+
+	$("div.searchWrapper").on("click", "span", function(event) {
+		var textBox = $("input[type=text][name=pi]");
+		textBox.val($(this).html());
+	});
+
+	/**
+	 * Hides the searchresult box on click anywhere
+	 */
+	$(document).click(function() {
+		$("div.searchWrapper").hide();
+	});
+</script>
 
 <?php
 require_once LOC_FOOTER;

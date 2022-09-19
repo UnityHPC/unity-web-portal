@@ -18,40 +18,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         case "approveReq":
             // approve request button clicked
 
-            $group->addUserToGroup($form_user);  // Add to group (ldap and slurm)
-
-            $group->removeRequest($form_user->getUID());  // remove request from db
-
-            // Send approval email to admins
-            $MAILER->send("join_pi", array("to" => $form_user->getMail(), "group" => $group->getPIUID()));
-
-            // (1) Create slurm association [DONE]
-            // (2) Remove SQL Row if (1) succeeded [DONE]
-            // (3) Send email to requestor
+            $group->approveUser($form_user);  // Add to group, this also removes the request and send an email to the user
             break;
         case "denyReq":
             // deny request button clicked
 
-            $group = $USER->getAccount();
-
-            $group->removeRequest($form_user->getUID());  // remove request from db
-
-            $MAILER->send("deny_pi", array("to" => $form_user->getMail(), "group" => $group->getPIUID()));
-
-            // (1) Remove SQL Row
-            // (2) Send email to requestor
+            $group->denyUser($form_user);
             break;
         case "remUser":
             // remove user button clicked
 
-            $group = $USER->getAccount();
-
-            $group->removeUserFromGroup($form_user);
-
-            $MAILER->send("rem_pi", array("to" => $form_user->getMail(), "group" => $group->getPIUID()));
-
-            // (1) Remove slurm association
-            // (2) Send email to removed user
+            $group->removeUser($form_user);
             break;
     }
 }

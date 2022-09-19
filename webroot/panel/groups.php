@@ -30,36 +30,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Add row to sql
                 if (empty($modalErrors)) {
-                    $SQL->addRequest($USER->getUID(), $_POST["pi"]);
-
-                    // Send approval email to PI
-                    $MAILER->send("new_group_request", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail(), "to" => $pi_owner->getMail()));
+                    $pi_account->newUserRequest($USER);
                 }
-
-                // 1. Check if PI value was submitted (DONE)
-                // 2. Check if submitted PI exists (DONE)
-                // 3. Check if PI request exists already (DONE)
-                // 4. Add row to sql table (DONE)
-                // 5. Send email to existing PI
                 break;
             case "removePIForm":
                 // Remove PI form
-                if (!$pi_account->exists()) {
-                    break;
-                }
-
-                if (!$pi_account->userExists($USER)) {
-                    break;
-                }
-
-                $pi_user = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
-                $pi_user->removeUserFromGroup($USER);
-
-                $MAILER->send("left_user", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail(), "to" => $pi_owner->getMail()));
-
-                // 1. check if pi group exists (DONE)
-                // 1. Check the selected PI actually belongs to this user (DONE)
-                // 3. Remove slurm associations (DONE)
+                $pi_account->removeUser($USER);
                 break;
         }
     }

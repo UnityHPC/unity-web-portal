@@ -14,86 +14,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     switch ($_POST["form_name"]) {
         case "approveReq":
             $group = $form_user->getAccount();
-            if (!$form_user->isPI()) {
-                $group->createGroup();
-            }
+            $group->approveGroup();
 
-            $SQL->removeRequest($form_user->getUID());
-
-            $MAILER->send("admin_approve_pi", array("to" => $form_user->getMail()));
-
-            // (1) Create Slurm Account
-            // (2) Create LDAP Group
-            // (3) Remove SQL Row for Request
-            // (4) Send email to new PI
             break;
         case "denyReq":
-            $SQL->removeRequest($form_user->getUID());
+            $group = $form_user->getAccount();
+            $group->denyGroup();
 
-            $MAILER->send("admin_deny_pi", array("to" => $form_user->getMail()));
-
-            // (1) Remove SQL Row request
-            // (2) Send email to requestor
             break;
         case "remUser":
             $remGroup = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
-
-            if ($remGroup->exists()) {
-                foreach ($remGroup->getGroupMembers() as $member) {
-                    $remGroup->removeUserFromGroup($member);
-                    
-                    $MAILER->send("rem_pi", array("to" => $member->getMail(), "group" => $remGroup->getPIUID()));
-                }
-            }
             $remGroup->removeGroup();
 
-            $MAILER->send("admin_disband_pi", array("to" => $remGroup->getOwner()->getMail()));
-
-            // (same as disband PI from pi.php), except also send email to PI
             break;
         case "approveReqChild":
             // approve request button clicked
             $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
+            $parent->approveUser($form_user);  // Add to group (ldap and slurm)
 
-            $parent->addUserToGroup($form_user);  // Add to group (ldap and slurm)
-
-            try {
-                $parent->removeRequest($form_user->getUID());  // remove request from db
-            } catch (Exception $e) {
-                $parent->removeUserFromGroup($form_user); // roll back
-                echo $e->getMessage();  // ! DEBUG
-            }
-
-            $MAILER->send("join_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
-
-            // (1) Create slurm association [DONE]
-            // (2) Remove SQL Row if (1) succeeded [DONE]
-            // (3) Send email to requestor
             break;
         case "denyReqChild":
             // deny request button clicked
-
             $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
+            $parent->denyUser($form_user);
 
-            $parent->removeRequest($form_user->getUID());  // remove request from db
-
-            $MAILER->send("deny_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
-
-            // (1) Remove SQL Row
-            // (2) Send email to requestor
             break;
         case "remUserChild":
             // remove user button clicked
 
             $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
+            $parent->removeUser($form_user);
 
-            $parent->removeUserFromGroup($form_user);
-
-            $MAILER->send("rem_pi", array("to" => $form_user->getMail(), "group" => $parent->getPIUID()));
-            $MAILER->send("left_user", array("netid" => $form_user->getUID(), "firstname" => $form_user->getFirstname(), "lastname" => $form_user->getLastname(), "mail" => $form_user->getMail(), "to" => $parent->getOwner()->getMail()));
-
-            // (1) Remove slurm association
-            // (2) Send email to removed user
             break;
     }
 }
