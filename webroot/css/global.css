@@ -151,7 +151,6 @@ label {
     font-size: 10pt;
     color: var(--color-background-text-inactive);
     overflow: hidden;
-    margin: 0 10px 0 10px;
 }
 
 input[type=radio] {
