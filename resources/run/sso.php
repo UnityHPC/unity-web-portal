@@ -13,7 +13,7 @@ function EPPN_to_org($eppn)
     if (count($parts) != 2) {
         throw new Exception("Malformed remote user detected");
     }
-    
+
     $org = $parts[1];
     $org = str_replace(".", "_", $org);
     return strtolower($org);
@@ -30,6 +30,15 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
         "mail" => isset($_SERVER["mail"]) ? $_SERVER["mail"] : $_SERVER["eppn"]  // Fallback to EPPN if mail is not set
     );
     $_SESSION["SSO"] = $SSO;  // Set the session var for non-authenticated pages
+
+    // add sso login entry to mysql table
+    $SQL->addSSOEntry(
+        $SSO["user"],
+        $SSO["org"],
+        $SSO["firstname"],
+        $SSO["lastname"],
+        $SSO["mail"]
+    );
 
     // define user object
     $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER);
