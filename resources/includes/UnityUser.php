@@ -25,7 +25,8 @@ class UnityUser
         $this->MAILER = $MAILER;
     }
 
-    public function equals($other_user) {
+    public function equals($other_user)
+    {
         if (!is_a($other_user, self::class)) {
             throw new Exception("Unable to check equality because the parameter is not a " . self::class . " object");
         }
@@ -42,7 +43,7 @@ class UnityUser
      * @param bool $isPI boolean value for if the user checked the "I am a PI box"
      * @return void
      */
-    public function init($firstname, $lastname, $email, $org)
+    public function init($firstname, $lastname, $email, $org, $send_mail = true)
     {
         //
         // Create LDAP group
@@ -92,6 +93,17 @@ class UnityUser
         }
 
         $orgEntry->addUser($this);
+
+        //
+        // send email to user
+        //
+        if ($send_mail) {
+            $this->MAILER->sendMail(
+                $this->getMail(),
+                "user_created",
+                array("user" => $this->uid, "org" => $this->getOrg())
+            );
+        }
     }
 
 
@@ -134,7 +146,8 @@ class UnityUser
         return $this->uid;
     }
 
-    public function getOrg() {
+    public function getOrg()
+    {
         return $this->getLDAPUser()->getAttribute("o");
     }
 
@@ -186,7 +199,8 @@ class UnityUser
         return $this->getLDAPUser()->getAttribute("sn")[0];
     }
 
-    public function getFullname() {
+    public function getFullname()
+    {
         return $this->getFirstname() . " " . $this->getLastname();
     }
 
@@ -219,7 +233,7 @@ class UnityUser
      *
      * @param array $keys String array of openssh-style ssh public keys
      */
-    public function setSSHKeys($keys)
+    public function setSSHKeys($keys, $send_mail = true)
     {
         $ldapUser = $this->getLDAPUser();
         $keys_filt = array_values(array_unique($keys));
@@ -228,6 +242,14 @@ class UnityUser
             if (!$ldapUser->write()) {
                 throw new Exception("Failed to modify SSH keys for $this->uid");
             }
+        }
+
+        if ($send_mail) {
+            $this->MAILER->sendMail(
+                $this->getMail(),
+                "user_sshkey",
+                array("keys" => $this->getSSHKeys())
+            );
         }
     }
 
@@ -252,7 +274,7 @@ class UnityUser
      *
      * @param string $shell absolute path to shell
      */
-    public function setLoginShell($shell)
+    public function setLoginShell($shell, $send_mail = true)
     {
         $ldapUser = $this->getLDAPUser();
         if ($ldapUser->exists()) {
@@ -260,6 +282,14 @@ class UnityUser
             if (!$ldapUser->write()) {
                 throw new Exception("Failed to modify login shell for $this->uid");
             }
+        }
+
+        if ($send_mail) {
+            $this->MAILER->sendMail(
+                $this->getMail(),
+                "user_loginshell",
+                array("new_shell" => $this->getLoginShell())
+            );
         }
     }
 
@@ -279,7 +309,8 @@ class UnityUser
      * 
      * @return string home directory of the user
      */
-    public function getHomeDir() {
+    public function getHomeDir()
+    {
         $ldapUser = $this->getLDAPUser();
         return $ldapUser->getAttribute("homedirectory");
     }
@@ -321,7 +352,8 @@ class UnityUser
         return new UnityGroup(UnityGroup::getPIUIDfromUID($this->uid), $this->LDAP, $this->SQL, $this->MAILER);
     }
 
-    public function getOrgGroup() {
+    public function getOrgGroup()
+    {
         return new UnityOrg($this->getOrg(), $this->LDAP, $this->SQL, $this->MAILER);
     }
 
