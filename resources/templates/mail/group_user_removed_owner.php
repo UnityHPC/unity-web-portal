@@ -10,7 +10,7 @@ $this->Subject = "Group Member Removed";
 <p>
 <strong>Username</strong> <?php echo $data["user"]; ?>
 <br>
-<strong>Username</strong> <?php echo $data["email"]; ?>
+<strong>Email</strong> <?php echo $data["email"]; ?>
 </p>
 
 <p>If you believe this to be a mistake, please reply to this email as soon as possible.</p>
