@@ -29,7 +29,6 @@ require_once "../../../resources/autoload.php";  // Load required libs
     });
 
     $("div.searchWrapper").on("click", "span", function (event) {
-        console.log("click!");
         var textBox = $("input[type=text][name=pi]");
         textBox.val($(this).html());
     });
