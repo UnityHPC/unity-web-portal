@@ -69,7 +69,7 @@ if (isset($SSO)) {
 
       // admin pages
       if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"]) {
-        echo "<hr>";
+        echo "<hr class='navHR'>";
         // Admin only pages
         echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/user-mgmt.php'>User Management</a>";
       }

@@ -1,5 +1,10 @@
 /* Navbar */
 
+hr.navHR {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 nav.mainNav {
     background: var(--accent);
     position: fixed;
