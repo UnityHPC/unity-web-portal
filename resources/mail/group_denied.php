@@ -12,3 +12,5 @@ $this->Subject = "PI Account Denied";
     <li>We were not able to verify your PI status. In this case please reply with verification</li>
     <li>Your organization has not been authorized on the Unity Cluster. In this case please reply with more infomration about your request</li>
 </ul>
+
+<p>Feel free to reply to this email with any questions!</p>

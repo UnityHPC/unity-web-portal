@@ -10,6 +10,8 @@ $this->Subject = "Group Member Approved";
 <p>
 <strong>Username</strong> <?php echo $data["user"]; ?>
 <br>
+<strong>Name</strong> <?php echo $data["name"]; ?>
+<br>
 <strong>Email</strong> <?php echo $data["email"]; ?>
 </p>
 
