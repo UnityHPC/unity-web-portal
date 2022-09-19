@@ -36,7 +36,8 @@ class UnityGroup
         $this->MAILER = $MAILER;
     }
 
-    public function equals($other_group) {
+    public function equals($other_group)
+    {
         if (!is_a($other_group, self::class)) {
             throw new Exception("Unable to check equality because the parameter is not a " . self::class . " object");
         }
@@ -49,7 +50,8 @@ class UnityGroup
      *
      * @return string PI UID of the group
      */
-    public function getPIUID() {
+    public function getPIUID()
+    {
         return $this->pi_uid;
     }
 
@@ -67,19 +69,29 @@ class UnityGroup
     // Portal-facing methods, these are the methods called by scripts in webroot
     //
 
-    public function requestGroup($send_mail=true) {
+    public function requestGroup($send_mail = true)
+    {
         // check for edge cases...
         if ($this->exists()) {
             return;
         }
 
         $this->SQL->addRequest($this->getOwner()->getUID());
+
+        if ($send_mail) {
+            // send email to requestor
+            $this->MAILER->sendMail(
+                $this->getOwner()->getMail(),
+                "group_request"
+            );
+        }
     }
 
     /**
      * This method will create the group (this is what is executed when an admin approved the group)
      */
-    public function approveGroup($send_mail=true) {
+    public function approveGroup($send_mail = true)
+    {
         // check for edge cases...
         if ($this->exists()) {
             return;
@@ -94,14 +106,18 @@ class UnityGroup
 
         // send email to the newly approved PI
         if ($send_mail) {
-            $this->MAILER->send("admin_approve_pi", array("to" => $this->getOwner()->getMail()));
+            $this->MAILER->sendMail(
+                $this->getOwner()->getMail(),
+                "group_created"
+            );
         }
     }
 
     /**
      * This method is executed when an admin denys the PI group request
      */
-    public function denyGroup($send_mail=true) {
+    public function denyGroup($send_mail = true)
+    {
         // remove request - this will fail silently if the request doesn't exist
         $this->SQL->removeRequest($this->getOwner()->getUID());
 
@@ -112,14 +128,18 @@ class UnityGroup
 
         // send email to the requestor
         if ($send_mail) {
-            $this->MAILER->send("admin_deny_pi", array("to" => $this->getOwner()->getMail()));
+            $this->MAILER->sendMail(
+                $this->getOwner()->getMail(),
+                "group_denied"
+            );
         }
     }
 
     /**
      * This method will delete the group, either by admin action or PI action
      */
-    public function removeGroup($send_mail=true) {
+    public function removeGroup($send_mail = true)
+    {
         // remove any pending requests
         // this will silently fail if the request doesn't exist (which is what we want)
         $this->SQL->removeRequests($this->pi_uid);
@@ -142,8 +162,11 @@ class UnityGroup
 
         // send email to every user of the now deleted PI group
         if ($send_mail) {
-            foreach($users as $user) {
-                $this->MAILER->send("disband_pi_group", array("to" => $user->getMail()));
+            foreach ($users as $user) {
+                $this->MAILER->sendMail(
+                    $user->getMail(),
+                    "group_disband"
+                );
             }
         }
     }
@@ -151,47 +174,85 @@ class UnityGroup
     /**
      * This method is executed when a user is approved to join the group (either by admin or the group owner)
      */
-    public function approveUser($new_user, $send_mail=true) {
+    public function approveUser($new_user, $send_mail = true)
+    {
         // add user to the LDAP object
         $this->addUserToGroup($new_user);
-        
+
         // remove request, this will fail silently if the request doesn't exist
         $this->removeRequest($new_user->getUID());
 
         // send email to the requestor
         if ($send_mail) {
-            $this->MAILER->send("join_pi", array("to" => $new_user->getMail(), "group" => $this->pi_uid));
-            //TODO $this->MAILER->send("user_joined_group", array(""));  // this one goes to the PI
+            // send email to the user
+            $this->MAILER->sendMail(
+                $new_user->getMail(),
+                "group_user_added",
+                array("group" => $this->pi_uid)
+            );
+            // send email to the PI
+            $this->MAILER->sendMail(
+                $this->getOwner()->getMail(),
+                "group_user_added_owner",
+                array("group" => $this->pi_uid)
+            );
         }
     }
 
-    public function denyUser($new_user, $send_mail=true) {
+    public function denyUser($new_user, $send_mail = true)
+    {
         if (!$this->requestExists($new_user)) {
             return;
         }
 
+        // remove request, this will fail silently if the request doesn't exist
         $this->removeRequest($new_user->getUID());
 
         if ($send_mail) {
-            $this->MAILER->send("deny_pi", array("to" => $new_user->getMail(), "group" => $this->pi_uid));
-            //TODO $this->MAILER->send("user_joined_group", array(""));  // this one goes to the PI
+            // send email to the user
+            $this->MAILER->sendMail(
+                $new_user->getMail(),
+                "group_user_denied",
+                array("group" => $this->pi_uid)
+            );
+
+            // send email to the PI
+            $this->MAILER->sendMail(
+                $this->getOwner()->getMail(),
+                "group_user_denied_owner",
+                array("group" => $this->pi_uid, "user" => $new_user->getUID(), "email" => $new_user->getEmail())
+            );
         }
     }
 
-    public function removeUser($new_user, $send_mail=true) {
+    public function removeUser($new_user, $send_mail = true)
+    {
         if (!$this->userExists($new_user)) {
             return;
         }
 
+        // remove request, this will fail silently if the request doesn't exist
         $this->removeUserFromGroup($new_user);
 
         if ($send_mail) {
-            $this->MAILER->send("rem_pi", array("to" => $new_user->getMail(), "group" => $this->pi_uid));
-            $this->MAILER->send("left_user", array("netid" => $new_user->getUID(), "firstname" => $new_user->getFirstname(), "lastname" => $new_user->getLastname(), "mail" => $new_user->getMail(), "to" => $this->getOwner()->getMail()));
+            // send email to the user
+            $this->MAILER->sendMail(
+                $new_user->getMail(),
+                "group_user_removed",
+                array("group" => $this->pi_uid)
+            );
+
+            // send email to the PI
+            $this->MAILER->sendMail(
+                $this->getOwner()->getMail(),
+                "group_user_removed_owner",
+                array("group" => $this->pi_uid, "user" => $new_user->getUID(), "email" => $new_user->getEmail())
+            );
         }
     }
 
-    public function newUserRequest($new_user, $send_mail=true) {
+    public function newUserRequest($new_user, $send_mail = true)
+    {
         if ($this->userExists($new_user)) {
             return;
         }
@@ -203,7 +264,19 @@ class UnityGroup
         $this->addRequest($new_user->getUID());
 
         if ($send_mail) {
-            $this->MAILER->send("new_group_request", array("netid" => $new_user->getUID(), "firstname" => $new_user->getFirstname(), "lastname" => $new_user->getLastname(), "mail" => $new_user->getMail(), "to" => $this->getOwner()->getMail()));
+            // send email to user
+            $this->MAILER->sendMail(
+                $new_user->getEmail(),
+                "group_user_request",
+                array("group" => $this->pi_uid)
+            );
+
+            // send email to PI
+            $this->MAILER->sendMail(
+                $this->getOwner()->getMail(),
+                "group_user_request_owner",
+                array("group" => $this->pi_uid, "user" => $new_user->getUID(), "email" => $new_user->getMail())
+            );
         }
     }
 
@@ -235,14 +308,16 @@ class UnityGroup
         return $out;
     }
 
-    public function getGroupMemberUIDs() {
+    public function getGroupMemberUIDs()
+    {
         $pi_group = $this->getLDAPPiGroup();
         $members = $pi_group->getAttribute("memberuid");
 
         return $members;
     }
 
-    public function requestExists($user) {
+    public function requestExists($user)
+    {
         foreach ($this->getRequests() as $requester) {
             if ($requester->getUID() == $user->getUID()) {
                 return true;
@@ -291,7 +366,8 @@ class UnityGroup
         $pi_group->removeAttributeEntryByValue("memberuid", $old_user->getUID());
     }
 
-    private function userExists($user) {
+    private function userExists($user)
+    {
         return in_array($user->getUID(), $this->getGroupMemberUIDs());
     }
 
@@ -309,7 +385,8 @@ class UnityGroup
     // Public helper functions
     //
 
-    public function getOwner() {
+    public function getOwner()
+    {
         return new UnityUser(self::getUIDfromPIUID($this->pi_uid), $this->LDAP, $this->SQL, $this->MAILER);
     }
 

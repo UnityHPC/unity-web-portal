@@ -5,7 +5,7 @@ $this->Subject = "Group Member Denied";
 
 <p>Hello,</p>
 
-<p>A user has been denied from joining your PI group, <?php echo $data["group_name"]; ?>. The details of the denied user are below:</p>
+<p>A user has been denied from joining your PI group, <?php echo $data["group"]; ?>. The details of the denied user are below:</p>
 
 <p>
 <strong>Username</strong> <?php echo $data["user"]; ?>

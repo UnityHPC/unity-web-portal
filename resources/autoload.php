@@ -64,7 +64,7 @@ $CONFIG["sql"]["pass"]
 
 // Creates SMTP service
 $MAILER = new UnityMailer(
-"templates/mail",
+__DIR__ . "/mail",
 $CONFIG["smtp"]["host"],
 $CONFIG["smtp"]["port"],
 $CONFIG["smtp"]["security"],
