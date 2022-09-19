@@ -87,6 +87,7 @@ class UnityMailer extends PHPMailer {
 
             ob_start();
             include $this->template_dir . "/" . $template . ".php";
+            include $this->template_dir . "/footer.php";
             $mes_html = ob_get_clean();
             $this->msgHTML($mes_html);
 
