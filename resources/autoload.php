@@ -27,11 +27,12 @@ if ($CONFIG["site"]["prefix"] == "") {
 session_start();
 
 // load libs
-require_once __DIR__ . "/lib/UnityLDAP.php";
-require_once __DIR__ . "/lib/UnityUser.php";
-require_once __DIR__ . "/lib/UnityGroup.php";
-require_once __DIR__ . "/lib/UnitySQL.php";
-require_once __DIR__ . "/lib/UnityMailer.php";
+require_once __DIR__ . "/includes/UnityLDAP.php";
+require_once __DIR__ . "/includes/UnityUser.php";
+require_once __DIR__ . "/includes/UnityGroup.php";
+require_once __DIR__ . "/includes/UnityOrg.php";
+require_once __DIR__ . "/includes/UnitySQL.php";
+require_once __DIR__ . "/includes/UnityMailer.php";
 
 // initialize branding
 require_once __DIR__ . "/run/branding.php";

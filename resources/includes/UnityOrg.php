@@ -9,6 +9,8 @@ class UnityOrg {
 
     public function __construct($orgid, $LDAP, $SQL, $MAILER)
     {
+        $this->orgid = $orgid;
+
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
@@ -38,13 +40,27 @@ class UnityOrg {
         return $this->LDAP->getOrgGroupEntry($this->orgid);
     }
 
+    public function inOrg($user) {
+        $org_group = $this->getLDAPOrgGroup();
+        $members = $org_group->getAttribute("memberuid");
+        return in_array($user, $members);
+    }
+
     public function addUser($user) {
         $org_group = $this->getLDAPOrgGroup();
         $org_group->appendAttribute("memberuid", $user->getUID());
+
+        if (!$org_group->write()) {
+            throw new Exception("Unable to write to org group");
+        }
     }
 
     public function removeUser($user) {
         $org_group = $this->getLDAPOrgGroup();
         $org_group->removeAttributeEntryByValue("memberuid", $user->getUID());
+
+        if (!$org_group->write()) {
+            throw new Exception("Unable to write to org group");
+        }
     }
 }

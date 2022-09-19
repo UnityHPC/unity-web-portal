@@ -43,7 +43,7 @@ class UnityUser
      * @param bool $isPI boolean value for if the user checked the "I am a PI box"
      * @return void
      */
-    public function init($firstname, $lastname, $email, $org, $send_mail = true)
+    public function init($send_mail = true)
     {
         //
         // Create LDAP group
@@ -68,10 +68,10 @@ class UnityUser
         if (!$ldapUserEntry->exists()) {
             $ldapUserEntry->setAttribute("objectclass", UnityLDAP::POSIX_ACCOUNT_CLASS);
             $ldapUserEntry->setAttribute("uid", $this->uid);
-            $ldapUserEntry->setAttribute("givenname", $firstname);
-            $ldapUserEntry->setAttribute("sn", $lastname);
-            $ldapUserEntry->setAttribute("mail", $email);
-            $ldapUserEntry->setAttribute("o", $org);
+            $ldapUserEntry->setAttribute("givenname", $this->getFirstname());
+            $ldapUserEntry->setAttribute("sn", $this->getLastname());
+            $ldapUserEntry->setAttribute("mail", $this->getMail());
+            $ldapUserEntry->setAttribute("o", $this->getOrg());
             $ldapUserEntry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
             $ldapUserEntry->setAttribute("loginshell", UnityLDAP::DEFAULT_SHELL);
             $ldapUserEntry->setAttribute("uidnumber", strval($id));
@@ -92,7 +92,9 @@ class UnityUser
             $orgEntry->init();
         }
 
-        $orgEntry->addUser($this);
+        if (!$orgEntry->inOrg($this->uid)) {
+            $orgEntry->addUser($this);
+        }
 
         //
         // send email to user
@@ -148,7 +150,11 @@ class UnityUser
 
     public function getOrg()
     {
-        return $this->getLDAPUser()->getAttribute("o");
+        if ($this->exists()) {
+            return $this->getLDAPUser()->getAttribute("o")[0];
+        } else {
+            return $this->SQL->getStoredOrg($this->uid);
+        }
     }
 
     /**
@@ -172,7 +178,11 @@ class UnityUser
      */
     public function getFirstname()
     {
-        return $this->getLDAPUser()->getAttribute("givenname")[0];
+        if ($this->exists()) {
+            return $this->getLDAPUser()->getAttribute("givenname")[0];
+        } else {
+            return $this->SQL->getStoredFirstname($this->uid);
+        }
     }
 
     /**
@@ -196,7 +206,11 @@ class UnityUser
      */
     public function getLastname()
     {
-        return $this->getLDAPUser()->getAttribute("sn")[0];
+        if ($this->exists()) {
+            return $this->getLDAPUser()->getAttribute("sn")[0];
+        } else {
+            return $this->SQL->getStoredLastname($this->uid);
+        }
     }
 
     public function getFullname()
@@ -225,7 +239,11 @@ class UnityUser
      */
     public function getMail()
     {
-        return $this->getLDAPUser()->getAttribute("mail")[0];
+        if ($this->exists()) {
+            return $this->getLDAPUser()->getAttribute("mail")[0];
+        } else {
+            return $this->SQL->getStoredMail($this->uid);
+        }
     }
 
     /**

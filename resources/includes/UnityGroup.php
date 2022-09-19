@@ -97,6 +97,11 @@ class UnityGroup
             return;
         }
 
+        // check if owner exists
+        if (!$this->getOwner()->exists()) {
+            throw new Exception("Owner of PI group is not initialized");
+        }
+
         // initialize ldap objects, if this fails the script will crash, but nothing will persistently break
         $this->init();
 
@@ -194,7 +199,7 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_user_added_owner",
-                array("group" => $this->pi_uid)
+                array("group" => $this->pi_uid, "user" => $new_user->getUID(), "name" => $new_user->getFullName(), "email" => $new_user->getMail())
             );
         }
     }
@@ -220,7 +225,7 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_user_denied_owner",
-                array("group" => $this->pi_uid, "user" => $new_user->getUID(), "email" => $new_user->getEmail())
+                array("group" => $this->pi_uid, "user" => $new_user->getUID(), "name" => $new_user->getFullName(), "email" => $new_user->getMail())
             );
         }
     }
@@ -246,7 +251,7 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_user_removed_owner",
-                array("group" => $this->pi_uid, "user" => $new_user->getUID(), "email" => $new_user->getEmail())
+                array("group" => $this->pi_uid, "user" => $new_user->getUID(), "name" => $new_user->getFullName(), "email" => $new_user->getMail())
             );
         }
     }
@@ -266,7 +271,7 @@ class UnityGroup
         if ($send_mail) {
             // send email to user
             $this->MAILER->sendMail(
-                $new_user->getEmail(),
+                $new_user->getMail(),
                 "group_user_request",
                 array("group" => $this->pi_uid)
             );
@@ -275,7 +280,7 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_user_request_owner",
-                array("group" => $this->pi_uid, "user" => $new_user->getUID(), "email" => $new_user->getMail())
+                array("group" => $this->pi_uid, "user" => $new_user->getUID(), "name" => $new_user->getFullName(), "email" => $new_user->getMail())
             );
         }
     }
@@ -340,7 +345,7 @@ class UnityGroup
         $ldapPiGroupEntry = $this->getLDAPPiGroup();
 
         if (!$ldapPiGroupEntry->exists()) {
-            $nextGID = $this->LDAP->getNextPiGID();
+            $nextGID = $this->LDAP->getNextPiGIDNumber();
 
             $ldapPiGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
             $ldapPiGroupEntry->setAttribute("gidnumber", strval($nextGID));
@@ -357,6 +362,10 @@ class UnityGroup
         // Add to LDAP Group
         $pi_group = $this->getLDAPPiGroup();
         $pi_group->appendAttribute("memberuid", $new_user->getUID());
+
+        if (!$pi_group->write()) {
+            throw new Exception("Unable to write PI group");
+        }
     }
 
     private function removeUserFromGroup($old_user)
@@ -364,6 +373,10 @@ class UnityGroup
         // Remove from LDAP Group
         $pi_group = $this->getLDAPPiGroup();
         $pi_group->removeAttributeEntryByValue("memberuid", $old_user->getUID());
+
+        if (!$pi_group->write()) {
+            throw new Exception("Unable to write PI group");
+        }
     }
 
     private function userExists($user)
