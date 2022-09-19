@@ -3,6 +3,39 @@ require "../../resources/autoload.php";
 
 require_once LOC_HEADER;
 
+function removeTrailingWhitespace($arr)
+{
+    $out = array();
+    foreach ($arr as $str) {
+        $new_string = rtrim($str);
+        array_push($out, $new_string);
+    }
+
+    return $out;
+}
+
+function getGithubKeys($username)
+{
+    $url = "https://api.github.com/users/$username/keys";
+    $headers = array(
+        "User-Agent: Unity Cluster User Portal"
+    );
+
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    $output = json_decode(curl_exec($curl), true);
+    curl_close($curl);
+
+    $out = array();
+    foreach ($output as $value) {
+        array_push($out, $value["key"]);
+    }
+
+    return $out;
+}
+
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     if (isset($_POST["add_type"])) {
@@ -44,11 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     } elseif (isset($_POST["pi_request"])) {
         if (!$USER->isPI()) {
             if (!$SQL->requestExists($USER->getUID())) {
-                $SQL->addRequest($USER->getUID());
+                $USER->getPIGroup()->requestGroup();
 
-                // Send approval email to admins
-                $MAILER->send("new_pi_request", array("netid" => $USER->getUID(), "firstname" => $USER->getFirstname(), "lastname" => $USER->getLastname(), "mail" => $USER->getMail()));
-                    
                 $message = "A request for a PI account has been sent to admins for review";
             }
         }

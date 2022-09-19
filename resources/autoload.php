@@ -1,6 +1,15 @@
 <?php
 //* * This is the main autoload for the site. This file should be the FIRST thing loaded on every page
 
+// helper functions
+function redirect($destination)
+{
+  if ($_SERVER["PHP_SELF"] != $destination) {
+    header("Location: $destination");
+    die("Redirect failed, click <a href='$destination'>here</a> to continue.");
+  }
+}
+
 // Load Composer Libs
 require_once __DIR__ . "/../vendor/autoload.php";
 
@@ -18,7 +27,6 @@ if ($CONFIG["site"]["prefix"] == "") {
 session_start();
 
 // load libs
-require_once __DIR__ . "/lib/globals.php";
 require_once __DIR__ . "/lib/UnityLDAP.php";
 require_once __DIR__ . "/lib/UnityUser.php";
 require_once __DIR__ . "/lib/UnityGroup.php";
