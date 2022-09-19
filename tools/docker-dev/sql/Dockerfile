@@ -23,6 +23,7 @@ COPY phpmyadmin-config.php /usr/share/phpmyadmin/config.inc.php
 COPY phpmyadmin-apache.conf /etc/apache2/sites-available/phpmyadmin.conf
 RUN a2dissite 000-default
 RUN a2ensite phpmyadmin
+RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
 
 COPY process.sh /opt/process.sh
 RUN chmod +x /opt/process.sh

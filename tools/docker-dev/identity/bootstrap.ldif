@@ -39,6 +39,12 @@ objectClass: top
 ou: groups
 structuralObjectClass: organizationalUnit
 
+dn: ou=org_groups,dc=unity,dc=rc,dc=umass,dc=edu
+objectClass: organizationalUnit
+objectClass: top
+ou: groups
+structuralObjectClass: organizationalUnit
+
 dn: cn=admin1_domain_edu,ou=groups,dc=unity,dc=rc,dc=umass,dc=edu
 cn: admin1_domain_edu
 gidNumber: 1000
@@ -294,3 +300,27 @@ gidNumber: 10002
 structuralObjectClass: posixGroup
 cn: pi_user1_domain2_edu
 memberUid: user1_domain2_edu
+
+dn: cn=domain_edu,ou=org_groups,dc=unity,dc=rc,dc=umass,dc=edu
+objectClass: posixGroup
+objectClass: top
+gidNumber: 20000
+structuralObjectClass: posixGroup
+cn: domain_edu
+memberUid: admin1_domain_edu
+memberUid: admin2_domain_edu
+memberUid: user1_domain_edu
+memberUid: user2_domain_edu
+memberUid: user3_domain_edu
+memberUid: user4_domain_edu
+memberUid: user5_domain_edu
+memberUid: user6_domain_edu
+
+dn: cn=domain2_edu,ou=org_groups,dc=unity,dc=rc,dc=umass,dc=edu
+objectClass: posixGroup
+objectClass: top
+gidNumber: 20001
+structuralObjectClass: posixGroup
+cn: domain2_edu
+memberUid: user1_domain2_edu
+memberUid: user2_domain2_edu

@@ -31,6 +31,7 @@ COPY phpldapadmin-config.php /etc/phpldapadmin/config.php
 COPY phpldapadmin-apache.conf /etc/apache2/sites-available/phpldapadmin.conf
 RUN a2dissite 000-default
 RUN a2ensite phpldapadmin
+RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
 
 COPY process.sh /opt/process.sh
 RUN chmod +x /opt/process.sh
