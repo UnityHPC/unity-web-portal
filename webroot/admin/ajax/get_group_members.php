@@ -23,7 +23,13 @@ foreach ($members as $member) {
     echo "<td>" . $member->getUID() . "</td>";
     echo "<td><a href='mailto:" . $member->getMail() . "'>" . $member->getMail() . "</a></td>";
     echo "<td>";
-    echo "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " . $member->getUID() . " from this group?\");'><input type='hidden' name='form_name' value='remUserChild'><input type='hidden' name='uid' value='" . $member->getUID() . "'><input type='hidden' name='pi' value='" . $group->getPIUID() . "'><input type='submit' value='Remove'></form>";
+    echo 
+    "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " . $member->getUID() . " from this group?\");'>
+    <input type='hidden' name='form_name' value='remUserChild'>
+    <input type='hidden' name='uid' value='" . $member->getUID() . "'>
+    <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
+    <input type='submit' value='Remove'>
+    </form>";
     echo "</td>";
     echo "</tr>";
 
@@ -41,8 +47,13 @@ foreach ($requests as $key=>$request) {
     echo "<td>" . $request->getUID() . "</td>";
     echo "<td><a href='mailto:" . $request->getMail() . "'>" . $request->getMail() . "</a></td>";
     echo "<td>";
-    echo "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to approve " . $request->getUID() . "?\");'><input type='hidden' name='form_name' value='approveReqChild'><input type='hidden' name='uid' value='" . $request->getUID() . "'><input type='hidden' name='pi' value='" . $group->getPIUID() . "'><input type='submit' value='Approve'></form>";
-    echo "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to deny " . $request->getUID() . "?\");'><input type='hidden' name='form_name' value='denyReqChild'><input type='hidden' name='uid' value='" . $request->getUID() . "'><input type='hidden' name='pi' value='" . $group->getPIUID() . "'><input type='submit' value='Deny'></form>";
+    echo 
+    "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to approve " . $request->getUID() . "?\");'>
+    <input type='hidden' name='form_name' value='reqChild'>
+    <input type='hidden' name='uid' value='" . $request->getUID() . "'>
+    <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
+    <input type='submit' name='action' value='Approve'>
+    <input type='submit' name='action' value='Deny'></form>";
     echo "</td>";
     echo "</tr>";
 

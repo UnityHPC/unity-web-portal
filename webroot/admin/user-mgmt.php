@@ -12,36 +12,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     switch ($_POST["form_name"]) {
-        case "approveReq":
-            $group = $form_user->getAccount();
-            $group->approveGroup();
+        case "req":
+            if ($_POST["action"] == "Approve") {
+                // approve group
+
+                // initialize user if not initialized
+                if (!$form_user->exists()) {
+                    $form_user->init();
+                }
+    
+                $group = $form_user->getPIGroup();
+                $group->approveGroup();
+            } elseif ($_POST["action"] == "Deny") {
+                // deny group
+                $group = $form_user->getPIGroup();
+                $group->denyGroup();
+            }
 
             break;
-        case "denyReq":
-            $group = $form_user->getAccount();
-            $group->denyGroup();
-
-            break;
-        case "remUser":
+        case "remGroup":
             $remGroup = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
             $remGroup->removeGroup();
 
             break;
-        case "approveReqChild":
-            // approve request button clicked
-            $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
-            $parent->approveUser($form_user);  // Add to group (ldap and slurm)
+        case "reqChild":
+            $parent_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
+            if ($_POST["action"] == "Approve") {
+                // initialize user if not initialized
+                if (!$form_user->exists()) {
+                    $form_user->init();
+                }
 
-            break;
-        case "denyReqChild":
-            // deny request button clicked
-            $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
-            $parent->denyUser($form_user);
-
+                // approve request button clicked
+                $parent_group->approveUser($form_user);  // Add to group (ldap and slurm)
+            } elseif ($_POST["action"] == "Deny") {
+                $parent_group->denyUser($form_user);
+            }
+            
             break;
         case "remUserChild":
             // remove user button clicked
-
             $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
             $parent->removeUser($form_user);
 
@@ -75,8 +85,13 @@ include LOC_HEADER;
         echo "<td>" . $request_user->getUID() . "</td>";
         echo "<td><a href='mailto:" . $request_user->getMail() . "'>" . $request_user->getMail() . "</a></td>";
         echo "<td>";
-        echo "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to approve " . $request_user->getUID() . "?\");'><input type='hidden' name='form_name' value='approveReq'><input type='hidden' name='uid' value='" . $request_user->getUID() . "'><input type='submit' value='Approve'></form>";
-        echo "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to deny " . $request_user->getUID() . "?\");'><input type='hidden' name='form_name' value='denyReq'><input type='hidden' name='uid' value='" . $request_user->getUID() . "'><input type='submit' value='Deny'></form>";
+        echo 
+        "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to approve " . $request_user->getUID() . "?\");'>
+        <input type='hidden' name='form_name' value='req'>
+        <input type='hidden' name='uid' value='" . $request_user->getUID() . "'>
+        <input type='submit' name='action' value='Approve'>
+        <input type='submit' name='action' value='Deny'>
+        </form>";
         echo "</td>";
         echo "</tr>";
     }
@@ -105,7 +120,12 @@ include LOC_HEADER;
         echo "<td>" . $pi_group->getPIUID() . "</td>";
         echo "<td><a href='mailto:" . $pi_user->getMail() . "'>" . $pi_user->getMail() . "</a></td>";
         echo "<td>";
-        echo "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " . $pi_group->getPIUID() . "? This will also remove associations for all users under this PI - the users themselves will not be deleted, nor will the PI user itself.\");'><input type='hidden' name='form_name' value='remUser'><input type='hidden' name='pi' value='" . $pi_group->getPIUID() . "'><input type='submit' value='Remove'></form>";
+        echo 
+        "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " . $pi_group->getPIUID() . "? This will also remove associations for all users under this PI - the users themselves will not be deleted, nor will the PI user itself.\");'>
+        <input type='hidden' name='form_name' value='remGroup'>
+        <input type='hidden' name='pi' value='" . $pi_group->getPIUID() . "'>
+        <input type='submit' value='Remove'>
+        </form>";
         echo "</td>";
         echo "</tr>";
     }
