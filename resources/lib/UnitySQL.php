@@ -25,7 +25,7 @@ class UnitySQL
     //
     public function addRequest($requestor, $dest = self::REQUEST_ADMIN) {
         if ($this->requestExists($requestor, $dest)) {
-            throw new Exception("This request already exists");
+            return;
         }
 
         $stmt = $this->conn->prepare("INSERT INTO " . self::TABLE_REQS . " (uid, request_for) VALUES (:uid, :request_for)");
@@ -37,7 +37,7 @@ class UnitySQL
 
     public function removeRequest($requestor, $dest = self::REQUEST_ADMIN) {
         if (!$this->requestExists($requestor, $dest)) {
-            throw new Exception("This request doesn't exist");
+            return;
         }
 
         $stmt = $this->conn->prepare("DELETE FROM " . self::TABLE_REQS . " WHERE uid=:uid and request_for=:request_for");

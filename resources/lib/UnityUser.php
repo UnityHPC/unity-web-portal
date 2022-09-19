@@ -12,17 +12,17 @@ class UnityUser
     private $uid;
 
     // service stack
-    private $UnityLDAP;
-    private $UnitySQL;
-    private $UnityMailer;
+    private $LDAP;
+    private $SQL;
+    private $MAILER;
 
-    public function __construct($uid, $UnityLDAP, $UnitySQL, $UnityMailer)
+    public function __construct($uid, $LDAP, $SQL, $MAILER)
     {
         $this->uid = $uid;
 
-        $this->UnityLDAP = $UnityLDAP;
-        $this->UnitySQL = $UnitySQL;
-        $this->UnityMailer = $UnityMailer;
+        $this->LDAP = $LDAP;
+        $this->SQL = $SQL;
+        $this->MAILER = $MAILER;
     }
 
     public function equals($other_user) {
@@ -42,16 +42,16 @@ class UnityUser
      * @param bool $isPI boolean value for if the user checked the "I am a PI box"
      * @return void
      */
-    public function init($firstname, $lastname, $email)
+    public function init($firstname, $lastname, $email, $org)
     {
         //
         // Create LDAP group
         //
         $ldapGroupEntry = $this->getLDAPGroup();
-        $id = $this->UnityLDAP->getUnassignedID($this->getUID());
+        $id = $this->LDAP->getUnassignedID($this->getUID());
 
         if (!$ldapGroupEntry->exists()) {
-            $ldapGroupEntry->setAttribute("objectclass", unityLDAP::POSIX_GROUP_CLASS);
+            $ldapGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
             $ldapGroupEntry->setAttribute("gidnumber", strval($id));
 
             if (!$ldapGroupEntry->write()) {
@@ -65,13 +65,14 @@ class UnityUser
         $ldapUserEntry = $this->getLDAPUser();
 
         if (!$ldapUserEntry->exists()) {
-            $ldapUserEntry->setAttribute("objectclass", unityLDAP::POSIX_ACCOUNT_CLASS);
+            $ldapUserEntry->setAttribute("objectclass", UnityLDAP::POSIX_ACCOUNT_CLASS);
             $ldapUserEntry->setAttribute("uid", $this->uid);
             $ldapUserEntry->setAttribute("givenname", $firstname);
             $ldapUserEntry->setAttribute("sn", $lastname);
             $ldapUserEntry->setAttribute("mail", $email);
+            $ldapUserEntry->setAttribute("o", $org);
             $ldapUserEntry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
-            $ldapUserEntry->setAttribute("loginshell", unityLDAP::DEFAULT_SHELL);
+            $ldapUserEntry->setAttribute("loginshell", UnityLDAP::DEFAULT_SHELL);
             $ldapUserEntry->setAttribute("uidnumber", strval($id));
             $ldapUserEntry->setAttribute("gidnumber", strval($id));
 
@@ -80,6 +81,17 @@ class UnityUser
                 throw new Exception("Failed to create POSIX user for  $this->uid");
             }
         }
+
+        //
+        // add to org group
+        //
+        $orgEntry = $this->getOrgGroup();
+        // create organization if it doesn't exist
+        if (!$orgEntry->exists()) {
+            $orgEntry->init();
+        }
+
+        $orgEntry->addUser($this);
     }
 
 
@@ -90,7 +102,7 @@ class UnityUser
      */
     public function getLDAPUser()
     {
-        return $this->UnityLDAP->getUserEntry($this->uid);
+        return $this->LDAP->getUserEntry($this->uid);
     }
 
     /**
@@ -100,7 +112,7 @@ class UnityUser
      */
     public function getLDAPGroup()
     {
-        return $this->UnityLDAP->getGroupEntry($this->uid);
+        return $this->LDAP->getGroupEntry($this->uid);
     }
 
     public function exists()
@@ -120,6 +132,10 @@ class UnityUser
     public function getUID()
     {
         return $this->uid;
+    }
+
+    public function getOrg() {
+        return $this->getLDAPUser()->getAttribute("o");
     }
 
     /**
@@ -286,7 +302,7 @@ class UnityUser
      */
     public function isAdmin()
     {
-        $admins = $this->UnityLDAP->getAdminGroup()->getAttribute("memberuid");
+        $admins = $this->LDAP->getAdminGroup()->getAttribute("memberuid");
         return in_array($this->uid, $admins);
     }
 
@@ -297,12 +313,16 @@ class UnityUser
      */
     public function isPI()
     {
-        return $this->getAccount()->exists();
+        return $this->getPIGroup()->exists();
     }
 
-    public function getAccount()
+    public function getPIGroup()
     {
-        return new UnityGroup(UnityGroup::getPIUIDfromUID($this->uid), $this->UnityLDAP, $this->UnitySQL, $this->UnityMailer);
+        return new UnityGroup(UnityGroup::getPIUIDfromUID($this->uid), $this->LDAP, $this->SQL, $this->MAILER);
+    }
+
+    public function getOrgGroup() {
+        return new UnityOrg($this->getOrg(), $this->LDAP, $this->SQL, $this->MAILER);
     }
 
     /**
@@ -311,7 +331,7 @@ class UnityUser
      */
     public function getGroups()
     {
-        $all_pi_groups = $this->UnityLDAP->getAllPIGroups($this->UnitySQL, $this->UnityMailer);
+        $all_pi_groups = $this->LDAP->getAllPIGroups($this->SQL, $this->MAILER);
 
         $out = array();
         foreach ($all_pi_groups as $pi_group) {
