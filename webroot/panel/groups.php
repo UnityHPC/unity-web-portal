@@ -94,10 +94,16 @@ foreach ($groups as $group) {
     }
 
     echo "<tr class='expandable'>";
-    echo "<td><button class='btnExpand'>&#9654;</button>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
+    echo 
+    "<td>
+    <button class='btnExpand'>&#9654;</button>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
     echo "<td>" . $group->getPIUID() . "</td>";
     echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
-    echo "<td><button class='leaveGroupBtn' data-group='" . $group->getPIUID() . "'>Leave Group</button><form action='' method='POST' id='leave-" . $group->getPIUID() . "'><input type='hidden' name='form_name' value='removePIForm'><input type='hidden' name='pi' value='" . $group->getPIUID() . "'></form></td>";
+    echo "<td><button class='leaveGroupBtn' data-group='" . $group->getPIUID() . "'>Leave Group</button>
+    <form action='' method='POST' id='leave-" . $group->getPIUID() . "'>
+    <input type='hidden' name='form_name' value='removePIForm'>
+    <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
+    </form></td>";
     echo "</tr>";
 }
 

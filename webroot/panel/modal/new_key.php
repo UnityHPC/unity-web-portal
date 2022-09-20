@@ -8,6 +8,8 @@ require_once "../../../resources/autoload.php";  // Load required libs
     <div class='inline'><input type="radio" id="generate" name="add_type" value="generate"><label for="generate">Generate Key</label></div>
     <div class='inline'><input type="radio" id="github" name="add_type" value="github"><label for="github">Import from GitHub</label></div>
 
+    <hr>
+
     <div id="key_paste">
         <textarea placeholder="ssh-rsa AAARs1..." form="newKeyform" name="key"></textarea>
 
@@ -22,8 +24,8 @@ require_once "../../../resources/autoload.php";  // Load required libs
 
     <div style="display: none;" id="key_generate">
         <input type="hidden" name="gen_key">
-        <button type="button" class="btnWin">PuTTY (Windows)</button>
-        <button type="button" class="btnLin">OpenSSH (Mac/Linux)</button>
+        <button type="button" class="btnLin">OpenSSH</button>
+        <button type="button" class="btnWin">PuTTY</button>
     </div>
 
     <div style="display: none;" id="key_github">

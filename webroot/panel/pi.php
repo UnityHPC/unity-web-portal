@@ -2,7 +2,7 @@
 require "../../resources/autoload.php";
 
 //$USER = new UnityUser("jgriffin_umass_edu", $LDAP, $SQL, $MAILER); // ! DEBUG remove later
-$group = $USER->getAccount();
+$group = $USER->getPIGroup();
 
 if (!$USER->isPI()) {
     die();
