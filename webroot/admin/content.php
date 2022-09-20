@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 include LOC_HEADER;
 ?>
 
-<h1>User Management</h1>
+<h1>Page Content Management</h1>
 <hr>
 
 
