@@ -93,8 +93,6 @@ class UnitySQL
             $stmt->bindParam(":mail", $mail);
 
             $stmt->execute();
-        } else {
-            // already exists, update only
         }
     }
 
