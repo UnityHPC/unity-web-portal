@@ -90,6 +90,18 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 <hr>
 
+<h5>Account Details</h5>
+
+<p>
+    <strong>Username</strong> <code><?php echo $USER->getUID(); ?></code>
+    <br>
+    <strong>Organization</strong> <code><?php echo $USER->getOrg(); ?></code>
+    <br>
+    <strong>Email</strong> <code><?php echo $USER->getMail(); ?></code>
+</p>
+
+<hr>
+
 <h5>Account Status</h5>
 
 <?php
