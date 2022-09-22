@@ -210,7 +210,13 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_user_added_owner",
-                array("group" => $this->pi_uid, "user" => $new_user->getUID(), "name" => $new_user->getFullName(), "email" => $new_user->getMail())
+                array(
+                    "group" => $this->pi_uid,
+                    "user" => $new_user->getUID(),
+                    "name" => $new_user->getFullName(),
+                    "email" => $new_user->getMail(),
+                    "org" => $new_user->getOrg()
+                    )
             );
         }
     }
@@ -236,7 +242,13 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_user_denied_owner",
-                array("group" => $this->pi_uid, "user" => $new_user->getUID(), "name" => $new_user->getFullName(), "email" => $new_user->getMail())
+                array(
+                    "group" => $this->pi_uid,
+                    "user" => $new_user->getUID(),
+                    "name" => $new_user->getFullName(),
+                    "email" => $new_user->getMail(),
+                    "org" => $new_user->getOrg()
+                    )
             );
         }
     }
@@ -262,7 +274,13 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_user_removed_owner",
-                array("group" => $this->pi_uid, "user" => $new_user->getUID(), "name" => $new_user->getFullName(), "email" => $new_user->getMail())
+                array(
+                    "group" => $this->pi_uid,
+                    "user" => $new_user->getUID(),
+                    "name" => $new_user->getFullName(),
+                    "email" => $new_user->getMail(),
+                    "org" => $new_user->getOrg()
+                    )
             );
         }
     }
@@ -291,7 +309,13 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_user_request_owner",
-                array("group" => $this->pi_uid, "user" => $new_user->getUID(), "name" => $new_user->getFullName(), "email" => $new_user->getMail())
+                array(
+                    "group" => $this->pi_uid,
+                    "user" => $new_user->getUID(),
+                    "name" => $new_user->getFullName(),
+                    "email" => $new_user->getMail(),
+                    "org" => $new_user->getOrg()
+                    )
             );
         }
     }

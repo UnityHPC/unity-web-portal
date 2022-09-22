@@ -10,6 +10,8 @@ $this->Subject = "Group Member Request";
 <p>
 <strong>Username</strong> <?php echo $data["user"]; ?>
 <br>
+<strong>Organization</strong> <?php echo $data["org"]; ?>
+<br>
 <strong>Name</strong> <?php echo $data["name"]; ?>
 <br>
 <strong>Email</strong> <?php echo $data["email"]; ?>
