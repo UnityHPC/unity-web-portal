@@ -10,9 +10,11 @@ $this->Subject = "PI Group Request";
 <p>
     <strong>Username</strong> <?php echo $data["user"]; ?>
     <br>
+    <strong>Organization</strong> <?php echo $data["org"]; ?>
+    <br>
     <strong>Name</strong> <?php echo $data["name"]; ?>
     <br>
     <strong>Email</strong> <?php echo $data["email"]; ?>
 </p>
 
-<p>You can approve this account <a href="<?php echo $this->MSG_LINKREF; ?>/admin/user-mgmt.php">here</a>.</p>
+<p>You can approve this account <a href="<?php echo $this->MSG_LINKREF; ?>/admin/pi-mgmt.php">here</a>.</p>

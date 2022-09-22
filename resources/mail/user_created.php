@@ -13,6 +13,6 @@ $this->Subject = "User Created";
 <strong>Organization</strong> <?php echo $data["org"]; ?>
 </p>
 
-<p>Please login to the web portal to access Unity. If you need console access, you will need to set your SSH keys in the <a href="<?php echo $this->MSG_LINKREF; ?>/panel/account.php">Account Settings</a> page.</p>
+<p>Please login to the web portal to access Unity. If you need console access, you will need to set your SSH keys in the <a href="<?php echo $this->MSG_LINKREF; ?>/panel/account.php">account settings</a> page.</p>
 
 <p>If you believe this to be a mistake, please reply to this email as soon as possible.</p>

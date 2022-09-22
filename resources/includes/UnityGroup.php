@@ -84,6 +84,17 @@ class UnityGroup
                 $this->getOwner()->getMail(),
                 "group_request"
             );
+
+            $this->MAILER->sendMail(
+                "admin",
+                "group_request_admin",
+                array(
+                    "user" => $this->getOwner()->getUID(), 
+                    "org" => $this->getOwner()->getOrg(), 
+                    "name" => $this->getOwner()->getFullname(),
+                    "email" => $this->getOwner()->getMail()
+                )
+            );
         }
     }
 
@@ -379,7 +390,7 @@ class UnityGroup
         }
     }
 
-    private function userExists($user)
+    public function userExists($user)
     {
         return in_array($user->getUID(), $this->getGroupMemberUIDs());
     }
