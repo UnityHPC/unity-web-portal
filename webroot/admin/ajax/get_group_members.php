@@ -2,6 +2,10 @@
 
 require "../../../resources/autoload.php";
 
+if (!$USER->isAdmin()) {
+    die();
+}
+
 if (!isset($_GET["pi_uid"])) {
     die("PI UID not set");
 }
