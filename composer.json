@@ -1,6 +1,5 @@
 {
     "require": {
-        "monolog/monolog": "2.8.0",
         "psr/log": "1.1.4",
         "phpseclib/phpseclib": "3.0.16",
         "phpmailer/phpmailer": "6.6.4",
