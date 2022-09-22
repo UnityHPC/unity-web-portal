@@ -69,7 +69,7 @@ if (isset($SSO)) {
       }
 
       // admin pages
-      if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"]) {
+      if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] && !isset($_SESSION["viewUser"])) {
         echo "<hr class='navHR'>";
         // Admin only pages
         echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/user-mgmt.php'>User Management</a>";
@@ -108,11 +108,9 @@ if (isset($SSO)) {
       redirect($CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
     }
   
-    if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
-      $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER);
-  
+    if (isset($_SESSION["viewUser"])) {
       echo "<div id='viewAsBar'>";
-      echo "<span>You are viewing the web portal as the user <strong>" . $_SESSION["viewUser"] . "</strong></span>";
+      echo "<span>You are accessing the web portal as the user <strong>" . $_SESSION["viewUser"] . "</strong></span>";
       echo 
       "<form method='POST' action=''>
       <input type='hidden' name='form_name' value='clearView'>

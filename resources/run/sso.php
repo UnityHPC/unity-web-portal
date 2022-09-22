@@ -42,7 +42,12 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
 
     // define user object
     $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER);
+    $_SESSION["is_admin"] = $USER->isAdmin();
+
+    if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
+        $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER);
+    }
+
     $_SESSION["user_exists"] = $USER->exists();
     $_SESSION["is_pi"] = $USER->isPI();
-    $_SESSION["is_admin"] = $USER->isAdmin();
 }
