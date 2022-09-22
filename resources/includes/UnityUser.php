@@ -108,7 +108,7 @@ class UnityUser
         }
     }
 
-    public function deleteUser() {
+    public function deleteUser($send_mail=true) {
         // THIS IS DANGEROUS!
 
         // remove any requests
@@ -128,6 +128,14 @@ class UnityUser
 
         // delete posix group
         $this->getLDAPGroup()->delete();
+
+        // send email
+        if ($send_mail) {
+            $this->MAILER->sendMail(
+                $this->getMail(),
+                "user_delete"
+            );
+        }
     }
 
 
