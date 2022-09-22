@@ -6,6 +6,7 @@ class UnitySQL
     const TABLE_REQS = "requests";
     const TABLE_NOTICES = "notices";
     const TABLE_SSOLOG = "sso_log";
+    const TABLE_PAGES = "pages";
 
     const REQUEST_ADMIN = "admin";
 
@@ -81,6 +82,13 @@ class UnitySQL
         $stmt->execute();
 
         return $stmt->fetchAll();
+    }
+
+    public function deleteRequestsByUser($user) {
+        $stmt = $this->conn->prepare("DELETE FROM " . self::TABLE_REQS . " WHERE uid=:uid");
+        $stmt->bindParam(":uid", $user);
+
+        $stmt->execute();
     }
 
     public function addSSOEntry($uid, $org, $firstname, $lastname, $mail) {
@@ -166,10 +174,69 @@ class UnitySQL
         }
     }
 
+    public function addNotice($title, $date, $content) {
+        $stmt = $this->conn->prepare("INSERT INTO " . self::TABLE_NOTICES . " (date, title, message) VALUES (:date, :title, :message)");
+        $stmt->bindParam(":date", $date);
+        $stmt->bindParam(":title", $title);
+        $stmt->bindParam(":message", $content);
+
+        $stmt->execute();
+    }
+
+    public function editNotice($id, $title, $date, $content) {
+        $stmt = $this->conn->prepare("UPDATE " . self::TABLE_NOTICES . " SET date=:date, title=:title, message=:message WHERE id=:id");
+        $stmt->bindParam(":date", $date);
+        $stmt->bindParam(":title", $title);
+        $stmt->bindParam(":message", $content);
+        $stmt->bindParam(":id", $id);
+        
+        $stmt->execute();
+    }
+
+    public function deleteNotice($id) {
+        $stmt = $this->conn->prepare("DELETE FROM " . self::TABLE_NOTICES . " WHERE id=:id");
+        $stmt->bindParam(":id", $id);
+
+        $stmt->execute();
+    }
+
+    public function getNotice($id) {
+        $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_NOTICES . " WHERE id=:id");
+        $stmt->bindParam(":id", $id);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll()[0];
+    }
+
     public function getNotices() {
         $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_NOTICES . " ORDER BY date DESC");
         $stmt->execute();
 
         return $stmt->fetchAll();
+    }
+
+    public function getPages() {
+        $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_PAGES);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function getPage($id) {
+        $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_PAGES . " WHERE page=:id");
+        $stmt->bindParam(":id", $id);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll()[0];
+    }
+
+    public function editPage($id, $content) {
+        $stmt = $this->conn->prepare("UPDATE " . self::TABLE_PAGES . " SET content=:content WHERE page=:id");
+        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":content", $content);
+
+        $stmt->execute();
     }
 }
