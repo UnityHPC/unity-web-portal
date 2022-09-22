@@ -76,12 +76,12 @@ $BRANDING["site"]["url"] . $CONFIG["site"]["prefix"],
 $BRANDING["mail"]["sender"],
 $BRANDING["mail"]["sender_name"],
 $BRANDING["mail"]["support"],
-$BRANDING["mail"]["support_name"]
+$BRANDING["mail"]["support_name"],
+$BRANDING["mail"]["admin"],
+$BRANDING["mail"]["admin_name"]
 );
 
 require_once __DIR__ . "/run/sso.php";
 
 define("LOC_HEADER", __DIR__ . "/templates/header.php");
 define("LOC_FOOTER", __DIR__ . "/templates/footer.php");
-
-require_once "locale/en.php";  // Loads the locale class
