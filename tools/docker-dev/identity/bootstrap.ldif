@@ -129,6 +129,7 @@ objectClass: ldapPublicKey
 sn: One
 uid: admin1_domain_edu
 uidNumber: 1000
+o: domain_edu
 structuralObjectClass: inetOrgPerson
 
 dn: cn=admin2_domain_edu,ou=users,dc=unity,dc=rc,dc=umass,dc=edu
@@ -145,6 +146,7 @@ objectClass: ldapPublicKey
 sn: Two
 uid: admin2_domain_edu
 uidNumber: 1001
+o: domain_edu
 structuralObjectClass: inetOrgPerson
 
 dn: cn=user1_domain_edu,ou=users,dc=unity,dc=rc,dc=umass,dc=edu
@@ -160,6 +162,7 @@ objectClass: top
 objectClass: ldapPublicKey
 sn: One
 uid: user1_domain_edu
+o: domain_edu
 uidNumber: 1002
 
 dn: cn=user2_domain_edu,ou=users,dc=unity,dc=rc,dc=umass,dc=edu
@@ -175,6 +178,7 @@ objectClass: top
 objectClass: ldapPublicKey
 sn: Two
 uid: user2_domain_edu
+o: domain_edu
 uidNumber: 1003
 
 dn: cn=user3_domain_edu,ou=users,dc=unity,dc=rc,dc=umass,dc=edu
@@ -191,6 +195,7 @@ objectClass: ldapPublicKey
 sn: Three
 uid: user3_domain_edu
 uidNumber: 1004
+o: domain_edu
 structuralObjectClass: inetOrgPerson
 
 dn: cn=user4_domain_edu,ou=users,dc=unity,dc=rc,dc=umass,dc=edu
@@ -207,6 +212,7 @@ objectClass: ldapPublicKey
 sn: Four
 uid: user4_domain_edu
 uidNumber: 1005
+o: domain_edu
 structuralObjectClass: inetOrgPerson
 
 dn: cn=user5_domain_edu,ou=users,dc=unity,dc=rc,dc=umass,dc=edu
@@ -223,6 +229,7 @@ objectClass: ldapPublicKey
 sn: Five
 uid: user5_domain_edu
 uidNumber: 1006
+o: domain_edu
 structuralObjectClass: inetOrgPerson
 
 dn: cn=user6_domain_edu,ou=users,dc=unity,dc=rc,dc=umass,dc=edu
@@ -239,6 +246,7 @@ objectClass: ldapPublicKey
 sn: Six
 uid: user6_domain_edu
 uidNumber: 1007
+o: domain_edu
 structuralObjectClass: inetOrgPerson
 
 dn: cn=user1_domain2_edu,ou=users,dc=unity,dc=rc,dc=umass,dc=edu
@@ -255,6 +263,7 @@ objectClass: ldapPublicKey
 sn: One
 uid: user1_domain2_edu
 uidNumber: 1008
+o: domain2_edu
 structuralObjectClass: inetOrgPerson
 
 dn: cn=user2_domain2_edu,ou=users,dc=unity,dc=rc,dc=umass,dc=edu
@@ -271,6 +280,7 @@ objectClass: ldapPublicKey
 sn: Two
 uid: user2_domain2_edu
 uidNumber: 1009
+o: domain2_edu
 structuralObjectClass: inetOrgPerson
 
 dn: cn=pi_user1_domain_edu,ou=pi_groups,dc=unity,dc=rc,dc=umass,dc=edu

@@ -100,3 +100,26 @@ if (isset($SSO)) {
   <script src="<?php echo $CONFIG["site"]["prefix"]; ?>/js/modal.js"></script>
 
   <main>
+
+  <?php
+  if ($_SESSION["is_admin"]) {
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["form_name"]) && $_POST["form_name"] == "clearView") {
+      unset($_SESSION["viewUser"]);
+      redirect($CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
+    }
+  
+    if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
+      $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER);
+  
+      echo "<div id='viewAsBar'>";
+      echo "<span>You are viewing the web portal as the user <strong>" . $_SESSION["viewUser"] . "</strong></span>";
+      echo 
+      "<form method='POST' action=''>
+      <input type='hidden' name='form_name' value='clearView'>
+      <input type='hidden' name='uid' value='" . $_SESSION["viewUser"] . "'>
+      <input type='submit' value='Stop Viewing as User'>
+      </form>";
+      echo "</div>";
+    }
+  }
+  ?>
