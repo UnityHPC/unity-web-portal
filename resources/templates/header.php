@@ -50,6 +50,11 @@ if (isset($SSO)) {
     // Public Items - Always Visible
     echo "<a href='" . $CONFIG["site"]["prefix"] . "/index.php'>Home</a>";
 
+    $num_additional_items = count($BRANDING["menuitems"]["labels"]);
+    for ($i = 0; $i < $num_additional_items; $i++) {
+      echo "<a target='_blank' href='" . $BRANDING["menuitems"]["links"][$i] . "'>" . $BRANDING["menuitems"]["labels"][$i] . "</a>";
+    }
+
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
       // Menu Items for Present Users
       echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/support.php'>Support</a>";
@@ -62,7 +67,7 @@ if (isset($SSO)) {
       }
 
       // additional branding items
-      $num_additional_items = count($BRANDING["menuitems"]["labels"]);
+      $num_additional_items = count($BRANDING["menuitems_secure"]["labels"]);
       for ($i = 0; $i < $num_additional_items; $i++) {
         echo "<a target='_blank' href='" . $BRANDING["menuitems"]["links"][$i] . "'>" . $BRANDING["menuitems"]["labels"][$i] . "</a>";
       }
@@ -101,7 +106,7 @@ if (isset($SSO)) {
   <main>
 
   <?php
-  if ($_SESSION["is_admin"]) {
+  if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"]) {
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["form_name"]) && $_POST["form_name"] == "clearView") {
       unset($_SESSION["viewUser"]);
       redirect($CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
