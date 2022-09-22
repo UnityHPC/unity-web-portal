@@ -112,7 +112,7 @@ button:focus, input[type=submit]:focus {
     outline: none;
 }
 
-input[type=text], input[type=password] {
+input[type=text], input[type=password], input[type=date] {
     margin: 10px 0 10px 0;
     border: 1px solid var(--light_borders);
     padding: 5px;
@@ -266,4 +266,27 @@ div.notice > span.noticeDate {
 div.notice > p {
     margin: 10px 15px 10px 15px;
     padding: 0;
+}
+
+div.notice > div.noticeText {
+    padding: 0 10px 0 10px;
+}
+
+div.notice > button {
+    margin: 0 0 5px 10px;
+}
+
+#viewAsBar {
+    background: orange;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+#viewAsBar > * {
+    display: inline-block;
+}
+
+#viewAsBar input[type=submit] {
+    margin: 0 0 0 20px;
 }
