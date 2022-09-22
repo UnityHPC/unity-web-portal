@@ -28,6 +28,7 @@ include LOC_HEADER;
     <tr>
         <td>Name</td>
         <td>Unity ID</td>
+        <td>Org</td>
         <td>Mail</td>
         <td>Actions</td>
     </tr>
@@ -39,6 +40,7 @@ foreach ($users as $user) {
     echo "<tr>";
     echo "<td>" . $user->getFirstname() . " " . $user->getLastname() . "</td>";
     echo "<td>" . $user->getUID() . "</td>";
+    echo "<td>" . $user->getOrg() . "</td>";
     echo "<td><a href='mailto:" . $user->getMail() . "'>" . $user->getMail() . "</a></td>";
     echo "<td>";
 
