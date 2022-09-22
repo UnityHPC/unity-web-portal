@@ -69,7 +69,7 @@ if (isset($SSO)) {
       // additional branding items
       $num_additional_items = count($BRANDING["menuitems_secure"]["labels"]);
       for ($i = 0; $i < $num_additional_items; $i++) {
-        echo "<a target='_blank' href='" . $BRANDING["menuitems"]["links"][$i] . "'>" . $BRANDING["menuitems"]["labels"][$i] . "</a>";
+        echo "<a target='_blank' href='" . $BRANDING["menuitems_secure"]["links"][$i] . "'>" . $BRANDING["menuitems_secure"]["labels"][$i] . "</a>";
       }
 
       // admin pages
@@ -119,7 +119,7 @@ if (isset($SSO)) {
       "<form method='POST' action=''>
       <input type='hidden' name='form_name' value='clearView'>
       <input type='hidden' name='uid' value='" . $_SESSION["viewUser"] . "'>
-      <input type='submit' value='Stop Viewing as User'>
+      <input type='submit' value='Return to My User'>
       </form>";
       echo "</div>";
     }
