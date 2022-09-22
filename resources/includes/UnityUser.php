@@ -129,6 +129,11 @@ class UnityUser
         // delete posix group
         $this->getLDAPGroup()->delete();
 
+        // unset session vars
+        unset($_SESSION["user_exists"]);
+        unset($_SESSION["is_pi"]);
+        unset($_SESSION["is_admin"]);
+
         // send email
         if ($send_mail) {
             $this->MAILER->sendMail(
