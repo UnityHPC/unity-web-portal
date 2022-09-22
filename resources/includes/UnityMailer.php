@@ -13,6 +13,8 @@ class UnityMailer extends PHPMailer {
     private $MSG_SENDER_NAME;
     private $MSG_SUPPORT_EMAIL;
     private $MSG_SUPPORT_NAME;
+    private $MSG_ADMIN_EMAIL;
+    private $MSG_ADMIN_NAME;
 
     public function __construct($template_dir,
                                 $hostname,
@@ -25,7 +27,9 @@ class UnityMailer extends PHPMailer {
                                 $msg_sender_email,
                                 $msg_sender_name,
                                 $msg_support_email,
-                                $msg_support_name
+                                $msg_support_name,
+                                $msg_admin_email,
+                                $msg_admin_name
                                 ) {
         parent::__construct();
         $this->isSMTP();
@@ -76,6 +80,8 @@ class UnityMailer extends PHPMailer {
         $this->MSG_SENDER_NAME = $msg_sender_name;
         $this->MSG_SUPPORT_EMAIL = $msg_support_email;
         $this->MSG_SUPPORT_NAME = $msg_support_name;
+        $this->MSG_ADMIN_EMAIL = $msg_admin_email;
+        $this->MSG_ADMIN_NAME = $msg_admin_name;
     }
 
     public function sendMail($recipients, $template = null, $data = null) {
@@ -91,12 +97,16 @@ class UnityMailer extends PHPMailer {
             $mes_html = ob_get_clean();
             $this->msgHTML($mes_html);
 
-            if (is_array($recipients)) {
-                foreach ($recipients as $addr) {
-                    $this->addBCC($addr);
-                }
+            if ($recipients == "admin") {
+                $this->addBCC($this->MSG_ADMIN_EMAIL, $this->MSG_ADMIN_NAME);
             } else {
-                $this->addBCC($recipients);
+                if (is_array($recipients)) {
+                    foreach ($recipients as $addr) {
+                        $this->addBCC($addr);
+                    }
+                } else {
+                    $this->addBCC($recipients);
+                }
             }
         }
 
