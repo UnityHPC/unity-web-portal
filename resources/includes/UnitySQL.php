@@ -7,6 +7,7 @@ class UnitySQL
     const TABLE_NOTICES = "notices";
     const TABLE_SSOLOG = "sso_log";
     const TABLE_PAGES = "pages";
+    const TABLE_EVENTS = "events";
 
     const REQUEST_ADMIN = "admin";
 
@@ -236,6 +237,15 @@ class UnitySQL
         $stmt = $this->conn->prepare("UPDATE " . self::TABLE_PAGES . " SET content=:content WHERE page=:id");
         $stmt->bindParam(":id", $id);
         $stmt->bindParam(":content", $content);
+
+        $stmt->execute();
+    }
+
+    public function addEvent($operator, $action, $entity) {
+        $stmt = $this->conn->prepare("INSERT INTO " . self::TABLE_EVENTS . " (operator, action, entity) VALUE (:operator, :action, :entity)");
+        $stmt->bindParam(":operator", $operator);
+        $stmt->bindParam(":action", $action);
+        $stmt->bindParam(":entity", $entity);
 
         $stmt->execute();
     }

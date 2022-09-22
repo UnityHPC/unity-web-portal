@@ -5,9 +5,10 @@ require_once LOC_HEADER;
 ?>
 
 <h1>Unity Cluster Site Policy</h1>
+<hr>
 
 <?php
-echo $SQL->getPage($BRANDING["page"]["priv"])["content"];
+echo $SQL->getPage($BRANDING["page"]["policy"])["content"];
 ?>
 
 <?php
