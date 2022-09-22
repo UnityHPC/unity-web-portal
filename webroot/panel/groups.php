@@ -6,26 +6,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors = array();
 
     if (isset($_POST["form_name"])) {
-        $pi_account = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
-        $pi_owner = $pi_account->getOwner();
+        if (isset($_POST["pi"])) {
+            $pi_account = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
+            if (!$pi_account->exists()) {
+                // "\'"  instead of "'", otherwise it will close a single quote used to place the message
+                array_push($modalErrors, "This PI doesn\'t exist");
+            }
+        }
 
         switch ($_POST["form_name"]) {
             case "addPIform":
                 // The new PI modal was submitted
                 // existing PI request
 
-                if (!isset($_POST["pi"]) || empty($_POST["pi"])) {
-                    // PI was not set
-                    array_push($modalErrors, "You have not chosen a PI");
-                }
-
-                if (!$pi_account->exists()) {
-                    // "\'"  instead of "'", otherwise it will close a single quote used to place the message
-                    array_push($modalErrors, "This PI doesn\'t exist");
-                }
-
                 if ($pi_account->requestExists($USER)) {
-                    array_push($modalErrors, "You've already requested this");
+                    array_push($modalErrors, "You\'ve already requested this");
+                }
+
+                if ($pi_account->userExists($USER)) {
+                    array_push($modalErrors, "You\'re already in this PI group");
                 }
 
                 // Add row to sql
@@ -64,7 +63,7 @@ if (count($groups) + count($req_filtered) == 0) {
 }
 
 if (count($req_filtered) > 0) {
-    echo "<h3>Pending Requests</h3>";
+    echo "<h5>Pending Requests</h5>";
     echo "<table>";
     foreach ($req_filtered as $request) {
         $requested_account = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER);
@@ -83,6 +82,9 @@ if (count($req_filtered) > 0) {
     }
 }
 
+if (count($groups) > 0) {
+    echo "<h5>Current Groups</h5>";
+}
 
 echo "<table>";
 
@@ -99,11 +101,14 @@ foreach ($groups as $group) {
     <button class='btnExpand'>&#9654;</button>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
     echo "<td>" . $group->getPIUID() . "</td>";
     echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
-    echo "<td><button class='leaveGroupBtn' data-group='" . $group->getPIUID() . "'>Leave Group</button>
-    <form action='' method='POST' id='leave-" . $group->getPIUID() . "'>
+    echo
+    "<td>
+    <form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to leave the PI group " . $group->getPIUID() . "?\")'>
     <input type='hidden' name='form_name' value='removePIForm'>
     <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
-    </form></td>";
+    <input type='submit' value='Leave Group'>
+    </form>
+    </td>";
     echo "</tr>";
 }
 
@@ -134,11 +139,6 @@ echo "</table>";
         echo "openModal('Add New PI', '" . $CONFIG["site"]["prefix"] . "/panel/modal/new_pi.php', '" . $errorHTML . "');";
     }
     ?>
-
-    $("button.leaveGroupBtn").click(function() {
-        var group = $(this).attr("data-group");
-        confirmModal("Are you sure you want to leave " + group + "?", "#leave-" + group);
-    });
 
     var ajax_url = "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/ajax/get_group_members.php?pi_uid=";
 </script>

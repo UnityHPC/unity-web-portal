@@ -38,55 +38,59 @@ function getGithubKeys($username)
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
-    if (isset($_POST["add_type"])) {
-        //form was submitted
-        $added_keys = array();
+    switch($_POST["form_type"]) {
+        case "addKey":
+            $added_keys = array();
 
-        switch ($_POST["add_type"]) {
-            case "paste":
-                array_push($added_keys, $_POST["key"]);
-                break;
-            case "import":
-                array_push($added_keys, file_get_contents($_FILES['keyfile']['tmp_name']));
-                break;
-            case "generate":
-                array_push($added_keys, $_POST["gen_key"]);
-                break;
-            case "github":
-                $gh_user = $_POST["gh_user"];
-                $keys = getGithubKeys($gh_user);
-                $added_keys = $keys;
-                break;
-        }
-
-        if (!empty($added_keys)) {
-            $added_keys = removeTrailingWhitespace($added_keys);
-            $totalKeys = array_merge($USER->getSSHKeys(), $added_keys);
-            $USER->setSSHKeys($totalKeys);
-        }
-    } elseif (isset($_POST["delIndex"])) {
-        $keys = $USER->getSSHKeys();
-        unset($keys[intval($_POST["delIndex"])]);  // remove key from array
-        $keys = array_values($keys);
-
-        $USER->setSSHKeys($keys);  // Update user keys
-    } elseif (isset($_POST["loginshell"])) {
-        $USER->setLoginShell($_POST["loginshell"]);
-
-        $message = "Login shell updated to " . $USER->getLoginShell() . ".";
-    } elseif (isset($_POST["pi_request"])) {
-        if (!$USER->isPI()) {
-            if (!$SQL->requestExists($USER->getUID())) {
-                $USER->getPIGroup()->requestGroup();
-
-                $message = "A request for a PI account has been sent to admins for review";
+            switch ($_POST["add_type"]) {
+                case "paste":
+                    array_push($added_keys, $_POST["key"]);
+                    break;
+                case "import":
+                    array_push($added_keys, file_get_contents($_FILES['keyfile']['tmp_name']));
+                    break;
+                case "generate":
+                    array_push($added_keys, $_POST["gen_key"]);
+                    break;
+                case "github":
+                    $gh_user = $_POST["gh_user"];
+                    $keys = getGithubKeys($gh_user);
+                    $added_keys = $keys;
+                    break;
             }
-        }
+
+            if (!empty($added_keys)) {
+                $added_keys = removeTrailingWhitespace($added_keys);
+                $totalKeys = array_merge($USER->getSSHKeys(), $added_keys);
+                $USER->setSSHKeys($totalKeys);
+            }
+            break;
+        case "delKey":
+            $keys = $USER->getSSHKeys();
+            unset($keys[intval($_POST["delIndex"])]);  // remove key from array
+            $keys = array_values($keys);
+
+            $USER->setSSHKeys($keys);  // Update user keys
+            break;
+        case "loginshell":
+            $USER->setLoginShell($_POST["loginshell"]);
+            break;
+        case "pi_request":
+            if (!$USER->isPI()) {
+                if (!$SQL->requestExists($USER->getUID())) {
+                    $USER->getPIGroup()->requestGroup();
+                }
+            }
+            break;
+        case "delAccount":
+            $USER->deleteUser();
+            redirect($CONFIG["site"]["prefix"] . "/");
+            break;
     }
 }
 ?>
 
-<h1><?php echo unity_locale::ACCOUNT_HEADER_MAIN; ?></h1>
+<h1>Account Settings</h1>
 
 <hr>
 
@@ -118,13 +122,16 @@ if ($isPI) {
 }
 
 if (!$isPI) {
-    echo "<form action='' method='POST' id='piReq'><input type='hidden' name='pi_request' value='yes'></form>";
+    echo
+    "<form action='' method='POST' id='piReq' onsubmit='return confirm(\"Are you sure you want to request a PI account? You must be a principal investigator at your organization to have a PI account.\");'>
+    <input type='hidden' name='form_type' value='pi_request'>";
     if ($SQL->requestExists($USER->getUID())) {
-        echo "<button class='btnReqPI' disabled>Request PI Account</button>";
+        echo "<input type='submit' value='Request PI Account' disabled>";
         echo "<label>Your request has been submitted and is currently pending</label>";
     } else {
-        echo "<button class='btnReqPI'>Request PI Account</button>";
+        echo "<input type='submit' value='Request PI Account'>";
     }
+    echo "</form>";
 }
 ?>
 
@@ -133,8 +140,21 @@ if (!$isPI) {
 <h5>SSH Keys</h5>
 <?php
 $sshPubKeys = $USER->getSSHKeys();  // Get ssh public key attr
+
+if (count($sshPubKeys) == 0) {
+    echo "<span>You do not have any SSH public keys, press the button below to add one.";
+}
+
 for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop through keys
-    echo "<div class='key-box'><textarea spellcheck='false' readonly>" . $sshPubKeys[$i] . "</textarea><button class='btnRemove' data-id='" . $i . "'>&times;</button><form action='' id='del-" . $i . "' method='POST'><input type='hidden' name='delIndex' value='$i'></form></div>";
+    echo 
+    "<div class='key-box'>
+    <textarea spellcheck='false' readonly>" . $sshPubKeys[$i] . "</textarea>
+    <form action='' id='del-" . $i . "' onsubmit='return confirm(\"Are you sure you want to delete this SSH key?\");' method='POST'>
+    <input type='hidden' name='delIndex' value='$i'>
+    <input type='hidden' name='form_type' value='delKey'>
+    <input type='submit' value='&times;'>
+    </form>
+    </div>";
 }
 ?>
 
@@ -144,33 +164,34 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 
 <?php
 echo "<h5>Login Shell</h5>";
-echo "<div class='inline'><form action='' method='POST'><input type='text' name='loginshell' placeholder='Login Shell (ie. /bin/bash)' value=" . $USER->getLoginShell() . "><input type='submit' value='Set Login Shell'></form></div>";
+echo
+"<div class='inline'>
+<form action='' method='POST'>
+<input type='hidden' name='form_type' value='loginshell'>
+<input type='text' name='loginshell' placeholder='Login Shell (ie. /bin/bash)' value=" . $USER->getLoginShell() . " required>
+<input type='submit' value='Set Login Shell'>
+</form>
+</div>";
 ?>
 
+<hr>
+<h5>Danger Zone</h5>
+
 <?php
-// GYPSUM GOES HERE
-//echo "<label>Cluster Access</label><br>";
-//echo "";
+if ($USER->isPI()) {
+    echo "<form action='javascript:void(0);'>";
+    echo "<input type='submit' value='PI Group Exists - Cannot Delete Account' disabled>";
+} else {
+    echo "<form method='POST' action='' onsubmit='return confirm(\"Are you sure you want to delete your account? You will no longer be able to access Unity.\")'>";
+    echo "<input type='hidden' name='form_type' value='delAccount'>";
+    echo "<input type='submit' value='Delete My Account'>";
+}
+echo "</form>";
 ?>
 
 <script>
     $("button.btnAddKey").click(function() {
         openModal("Add New Key", "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/new_key.php");
-    });
-
-    <?php
-    if (isset($message)) {
-        echo "messageModal('$message');";
-    }
-    ?>
-
-    $("button.btnReqPI").click(function() {
-        confirmModal("Are you sure you want to request a PI account? <strong>You need to be a PI to be approved</strong>", "#piReq");
-    });
-
-    $("button.btnRemove").click(function() {
-        var id = $(this).attr("data-id");
-        confirmModal("Are you sure you want to delete this SSH key?", "#del-" + id);
     });
 </script>
 
@@ -182,7 +203,7 @@ echo "<div class='inline'><form action='' method='POST'><input type='text' name=
         max-width: 700px;
     }
 
-    .key-box button {
+    .key-box input[type=submit] {
         position: absolute;
         right: 0;
         top: 0;

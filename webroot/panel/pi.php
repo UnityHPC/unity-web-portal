@@ -1,7 +1,6 @@
 <?php
 require "../../resources/autoload.php";
 
-//$USER = new UnityUser("jgriffin_umass_edu", $LDAP, $SQL, $MAILER); // ! DEBUG remove later
 $group = $USER->getPIGroup();
 
 if (!$USER->isPI()) {
@@ -15,20 +14,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     switch ($_POST["form_name"]) {
-        case "approveReq":
-            // approve request button clicked
+        case "userReq":
+            if ($_POST["action"] == "Approve") {
+                $group->approveUser($form_user);
 
-            $group->approveUser($form_user);  // Add to group, this also removes the request and send an email to the user
-            break;
-        case "denyReq":
-            // deny request button clicked
+            } elseif ($_POST["action"] == "Deny") {
+                $group->denyUser($form_user);
+            }
 
-            $group->denyUser($form_user);
             break;
         case "remUser":
             // remove user button clicked
-
             $group->removeUser($form_user);
+
             break;
     }
 }
@@ -59,8 +57,13 @@ if (count($requests) > 0) {
         echo "<td>" . $request->getUID() . "</td>";
         echo "<td><a href='mailto:" . $request->getMail() . "'>" . $request->getMail() . "</a></td>";
         echo "<td>";
-        echo "<button class='btnApprove' data-uid='" . $request->getUID() . "'>Approve</button><form action='' method='POST' id='approve-" . $request->getUID() . "'><input type='hidden' name='form_name' value='approveReq'><input type='hidden' name='uid' value='" . $request->getUID() . "'></form>";
-        echo "<button class='btnDeny' data-uid='" . $request->getUID() . "'>Deny</button><form action='' method='POST' id='deny-" . $request->getUID() . "'><input type='hidden' name='form_name' value='denyReq'><input type='hidden' name='uid' value='" . $request->getUID() . "'></form>";
+        echo 
+        "<form action='' method='POST' id='approve-" . $request->getUID() . "'>
+        <input type='hidden' name='form_name' value='userReq'>
+        <input type='hidden' name='uid' value='" . $request->getUID() . "'>
+        <input type='submit' name='action' value='Approve'>
+        <input type='submit' name='action' value='Deny'>
+        </form>";
         echo "</td>";
         echo "</tr>";
     }
@@ -79,7 +82,12 @@ foreach ($assocs as $assoc) {
     echo "<td>" . $assoc->getUID() . "</td>";
     echo "<td><a href='mailto:" . $assoc->getMail() . "'>" . $assoc->getMail() . "</a></td>";
     echo "<td>";
-    echo "<button class='btnRemove' data-uid='" . $assoc->getUID() . "'>Remove</button><form action='' method='POST' id='remove-" . $assoc->getUID() . "'><input type='hidden' name='form_name' value='remUser'><input type='hidden' name='uid' value='" . $assoc->getUID() . "'></form>";
+    echo
+    "<form action='' method='POST' id='remove-" . $assoc->getUID() . "'>
+    <input type='hidden' name='form_name' value='remUser'>
+    <input type='hidden' name='uid' value='" . $assoc->getUID() . "'>
+    <input type='submit' value='Remove'>
+    </form>";
     echo "</td>";
     echo "</tr>";
 }
@@ -87,29 +95,6 @@ foreach ($assocs as $assoc) {
 echo "</table>";
 ?>
 </table>
-
-<script>
-    $("button.btnApprove").click(function() {
-        var uid = $(this).attr("data-uid");
-        confirmModal("Are you sure you want to approve " + uid + "? They will be allowed to use the cluster with your endorsement.", "#approve-" + uid);
-    });
-
-    $("button.btnDeny").click(function() {
-        var uid = $(this).attr("data-uid");
-        confirmModal("Are you sure you want to deny " + uid + "?", "#deny-" + uid);
-    });
-
-    $("button.btnRemove").click(function() {
-        var uid = $(this).attr("data-uid");
-        confirmModal("Are you sure you want to remove " + uid + " from your group?", "#remove-" + uid);
-    });
-</script>
-
-<style>
-button.btnDeny {
-    margin-right: 10px;
-}
-</style>
 
 <?php
 include LOC_FOOTER;

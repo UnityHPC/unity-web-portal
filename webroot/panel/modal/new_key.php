@@ -3,6 +3,8 @@ require_once "../../../resources/autoload.php";  // Load required libs
 ?>
 
 <form id="newKeyform" enctype="multipart/form-data" method="POST" action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/account.php">
+    <input type='hidden' name='form_type' value='addKey'>
+
     <div class='inline'><input type="radio" id="paste" name="add_type" value="paste" checked><label for="paste">Paste Key</label></div>
     <div class='inline'><input type="radio" id="import" name="add_type" value="import"><label for="import">Local File</label></div>
     <div class='inline'><input type="radio" id="generate" name="add_type" value="generate"><label for="generate">Generate Key</label></div>

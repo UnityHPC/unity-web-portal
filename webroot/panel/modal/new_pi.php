@@ -5,7 +5,7 @@ require_once "../../../resources/autoload.php";  // Load required libs
 <form id="newPIform" method="POST" action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/groups.php">
     <input type="hidden" name="form_name" value="addPIform">
     <div style="position: relative;">
-        <input type="text" id="pi_search" name="pi" placeholder="Search PI by NetID">
+        <input type="text" id="pi_search" name="pi" placeholder="Search PI by NetID" required>
         <div class="searchWrapper" style="display: none;"></div>
     </div>
     <input type="submit" value="Send Request">

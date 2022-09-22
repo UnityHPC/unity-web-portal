@@ -25,15 +25,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	// Request Account Form was Submitted
 	if (count($errors) == 0) {
-		try {
-			if ($_POST["new_user_sel"] == "pi") {
-				// requesting a PI account
-				$USER->getPIGroup()->requestGroup();
-			} elseif ($_POST["new_user_sel"] == "not_pi") {
-				$form_group->newUserRequest($USER);
-			}
-		} catch (Exception $e) {
-			array_push($errors, unity_locale::ERR . "\n" . $e->getMessage());
+		if ($_POST["new_user_sel"] == "pi") {
+			// requesting a PI account
+			$USER->getPIGroup()->requestGroup();
+		} elseif ($_POST["new_user_sel"] == "not_pi") {
+			$form_group->newUserRequest($USER);
 		}
 	}
 }
