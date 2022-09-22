@@ -1,5 +1,7 @@
 <?php
 
+namespace UnityWebPortal\lib;
+
 class UnitySQL
 {
 

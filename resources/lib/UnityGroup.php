@@ -1,17 +1,13 @@
 <?php
 
-use PHPOpenLDAPer\LDAPEntry;
-
-// REQUIRES config.php
-// REQUIRES unity-ldap.php
-// REQUIRES slurm.php
+namespace UnityWebPortal\lib;
 
 /**
  * Class that represents a single PI group in the Unity Cluster.
  */
 class UnityGroup
 {
-    const PI_PREFIX = "pi_";
+    public const PI_PREFIX = "pi_";
 
     private $pi_uid;
 
@@ -39,7 +35,7 @@ class UnityGroup
     public function equals($other_group)
     {
         if (!is_a($other_group, self::class)) {
-            throw new Exception("Unable to check equality because the parameter is not a " . self::class . " object");
+            throw new \Exception("Unable to check equality because the parameter is not a " . self::class . " object");
         }
 
         return $this->getPIUID() == $other_group->getPIUID();
@@ -89,8 +85,8 @@ class UnityGroup
                 "admin",
                 "group_request_admin",
                 array(
-                    "user" => $this->getOwner()->getUID(), 
-                    "org" => $this->getOwner()->getOrg(), 
+                    "user" => $this->getOwner()->getUID(),
+                    "org" => $this->getOwner()->getOrg(),
                     "name" => $this->getOwner()->getFullname(),
                     "email" => $this->getOwner()->getMail()
                 )
@@ -137,7 +133,6 @@ class UnityGroup
         // remove request - this will fail silently if the request doesn't exist
         $this->SQL->removeRequest($this->getOwner()->getUID());
 
-        // no need to go on if this exists (this can only happen from a race condition of two admins clicked approve and deny at the same time, approve is executed)
         if ($this->exists()) {
             return;
         }
@@ -172,7 +167,7 @@ class UnityGroup
         $ldapPiGroupEntry = $this->getLDAPPiGroup();
         if ($ldapPiGroupEntry->exists()) {
             if (!$ldapPiGroupEntry->delete()) {
-                throw new Exception("Unable to delete PI ldap group");
+                throw new \Exception("Unable to delete PI ldap group");
             }
         }
 
@@ -389,10 +384,10 @@ class UnityGroup
 
             $ldapPiGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
             $ldapPiGroupEntry->setAttribute("gidnumber", strval($nextGID));
-            $ldapPiGroupEntry->setAttribute("memberuid", array($owner->getUID()));  // add current user as the first memberuid
+            $ldapPiGroupEntry->setAttribute("memberuid", array($owner->getUID()));
 
             if (!$ldapPiGroupEntry->write()) {
-                throw new Exception("Failed to create POSIX group for " . $owner->getUID());  // this shouldn't execute
+                throw new \Exception("Failed to create POSIX group for " . $owner->getUID());  // this shouldn't execute
             }
         }
     }
@@ -404,7 +399,7 @@ class UnityGroup
         $pi_group->appendAttribute("memberuid", $new_user->getUID());
 
         if (!$pi_group->write()) {
-            throw new Exception("Unable to write PI group");
+            throw new \Exception("Unable to write PI group");
         }
     }
 
@@ -415,7 +410,7 @@ class UnityGroup
         $pi_group->removeAttributeEntryByValue("memberuid", $old_user->getUID());
 
         if (!$pi_group->write()) {
-            throw new Exception("Unable to write PI group");
+            throw new \Exception("Unable to write PI group");
         }
     }
 
@@ -458,7 +453,7 @@ class UnityGroup
         if (substr($pi_uid, 0, strlen(self::PI_PREFIX)) == self::PI_PREFIX) {
             return substr($pi_uid, strlen(self::PI_PREFIX));
         } else {
-            throw new Exception("PI netid doesn't have the correct prefix.");
+            throw new \Exception("PI netid doesn't have the correct prefix.");
         }
     }
 }

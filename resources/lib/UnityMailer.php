@@ -1,5 +1,7 @@
 <?php
 
+namespace UnityWebPortal\lib;
+
 use PHPMailer\PHPMailer\PHPMailer;
 
 /**
