@@ -327,6 +327,7 @@ div.searchWrapper {
     width: 100%;
     margin-left: -2px;
     border: 1px solid var(--light_borders);
+    border-radius: 5px;
 }
 
 div.searchWrapper > * {

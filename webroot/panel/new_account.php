@@ -62,13 +62,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		echo "<label><input type='radio' name='new_user_sel' value='not_pi' checked>Join an existing PI group</label>";
 
 		echo "<div style='position: relative;' id='piSearchWrapper'>";
-		echo "<input type='text' id='pi_search' name='pi' placeholder='Search PI by NetID'>";
+		echo "<input type='text' id='pi_search' name='pi' placeholder='Search PI by NetID' required>";
 		echo "<div class='searchWrapper' style='display: none;'></div>";
 		echo "</div>";
 
 		echo "<hr>";
 
-		echo "<label><input type='checkbox' id='chk_eula' name='eula' value='agree'>I have read and accept the <a target='_blank' href='" . $CONFIG["site"]["prefix"] . "/priv.php'>Unity EULA</a></label>";
+		echo "<label><input type='checkbox' id='chk_eula' name='eula' value='agree' required>I have read and accept the <a target='_blank' href='" . $CONFIG["site"]["prefix"] . "/priv.php'>Unity EULA</a></label>";
 
 		echo "<br>";
 		echo "<input style='margin-top: 10px;' type='submit' value='Request Account'>";
@@ -91,8 +91,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		let pi_sel_text = $('#piSearchWrapper');
 		if (this.value == 'not_pi') {
 			pi_sel_text.show();
+			$("#pi_search").prop("required", true);
 		} else if (this.value == 'pi') {
 			pi_sel_text.hide();
+			$("#pi_search").prop("required", false);
 		}
 	});
 
