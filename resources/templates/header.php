@@ -49,7 +49,6 @@ if (isset($SSO)) {
     <?php
     // Public Items - Always Visible
     echo "<a href='" . $CONFIG["site"]["prefix"] . "/index.php'>Home</a>";
-    echo "<a target='_blank' href='" . $BRANDING["site"]["docs_url"] . "'>Documentation</a>";
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
       // Menu Items for Present Users
