@@ -17,4 +17,4 @@ $this->Subject = "Group Member Request";
 <strong>Email</strong> <?php echo $data["email"]; ?>
 </p>
 
-<p>You can approve or deny this user on the <a href="<?php echo $this->MSG_LINKREF; ?>/panel/pi.php">My Users</a> page</p>
+<p>You can approve or deny this user on the <a href="<?php echo $this->MSG_LINKREF; ?>/panel/pi.php">my users</a> page</p>
