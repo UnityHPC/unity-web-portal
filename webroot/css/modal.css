@@ -44,34 +44,6 @@ div.modalBody > * {
     margin: 0;
 }
 
-/* Search Box CSS */
-div.searchWrapper {
-    background: var(--light_background);
-    position: absolute;
-    top: 34px;
-    z-index: 200;
-    width: calc(100% - 4px);
-    overflow: hidden;
-    font-size: 11pt;
-    user-select: none;
-    border-radius: 0 0 5px 5px;
-    border-bottom: 2px solid var(--accent);
-    border-left: 2px solid var(--accent);
-    border-right: 2px solid var(--accent);
-    width: 100%;
-    margin-left: -2px;
-}
-
-div.searchWrapper > * {
-    display: block;
-    cursor: pointer;
-    padding: 4px 10px 4px 10px;
-}
-
-div.searchWrapper > *:hover {
-    background: var(--light_background);
-}
-
 .btnClose {
     width: 30px;
     height: 30px;

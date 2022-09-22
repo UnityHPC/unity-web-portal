@@ -1,20 +1,18 @@
 table {
     border-collapse: collapse;
-    width: 100%;
     max-width: 1000px;
     margin-bottom: 10px;
 }
 
 table tr, table td {
-    padding: 8px 10px 8px 10px;
+    padding: 8px 20px 8px 0px;
     overflow: hidden;
     white-space: nowrap;
 }
 
-/*
-table tr {
-    border-bottom: 5px solid transparent;
-}*/
+table tr:not(:last-child) {
+    border-bottom: 1px solid var(--light_borders);
+}
 
 table button, table input[type=submit] {
     padding: 5px 10px 5px 10px;

@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     background: var(--light_background);
@@ -20,6 +21,13 @@ body {
 -------------
 */
 
+code {
+    background: var(--light_panel_background);
+    border-radius: 5px;
+    padding: 3px 8px;
+    line-height: 22pt;
+}
+
 a {
     color: var(--accent);
     text-decoration: none;
@@ -34,7 +42,7 @@ h1 {
     font-weight: bold;
     padding-bottom: 5px;
     display: block;
-    margin: 0;
+    margin: 0 0 10px 0;
 }
 
 h2 {
@@ -42,7 +50,7 @@ h2 {
     font-weight: bold;
     padding-bottom: 5px;
     display: block;
-    margin: 0;
+    margin: 0 0 10px 0;
 }
 
 h3 {
@@ -50,7 +58,7 @@ h3 {
     font-weight: unset;
     padding-bottom: 5px;
     display: block;
-    margin: 0;
+    margin: 0 0 10px 0;
 }
 
 h4 {
@@ -59,7 +67,7 @@ h4 {
     padding-bottom: 5px;
     font-style: italic;
     display: block;
-    margin: 0;
+    margin: 0 0 10px 0;
 }
 
 h5 {
@@ -68,7 +76,7 @@ h5 {
     color: var(--light_foreground_smallheader);
     display: block;
     padding: 0;
-    margin: 0;
+    margin: 0 0 10px 0;
 }
 
 hr {
@@ -78,6 +86,10 @@ hr {
     border-bottom: 1px solid var(--light_borders);
     margin: 10px 0 10px 0;
     display: block;
+}
+
+p {
+    margin: 0;
 }
 
 .vertical-align {
@@ -90,8 +102,10 @@ button.plusBtn {
     font-size: 24pt;
     display: block;
     width: 100%;
+    max-width: 200px;
     padding: 0;
     overflow: hidden;
+    margin-top: 10px;
 }
 
 /* Form Elements */
@@ -100,19 +114,24 @@ form>* {
     display: block;
 }
 
-form > *:not(:first-child) {
+form>*:not(:first-child) {
     margin-top: 5px;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
     outline: var(--accent) solid 2px;
 }
 
-button:focus, input[type=submit]:focus {
+button:focus,
+input[type=submit]:focus {
     outline: none;
 }
 
-input[type=text], input[type=password], input[type=date] {
+input[type=text],
+input[type=password],
+input[type=date] {
     margin: 10px 0 10px 0;
     border: 1px solid var(--light_borders);
     padding: 5px;
@@ -122,7 +141,8 @@ input[type=text], input[type=password], input[type=date] {
     border-radius: 5px;
 }
 
-input[type=submit], button {
+input[type=submit],
+button {
     background: var(--accent);
     color: var(--accent_foreground);
     cursor: pointer;
@@ -130,18 +150,22 @@ input[type=submit], button {
     padding: 8px 12px 8px 12px;
     border-radius: 5px;
     transition: background 0.1s;
+    display: inline-block;
 }
 
-input[type=submit]:hover, button:hover {
+input[type=submit]:hover,
+button:hover {
     background: var(--accent_2);
 }
 
-input[type=submit]:disabled, button:disabled {
+input[type=submit]:disabled,
+button:disabled {
     background: var(--accent_disabled);
     cursor: default;
 }
 
-input[type=checkbox], input[type=radio] {
+input[type=checkbox],
+input[type=radio] {
     display: inline-block;
 }
 
@@ -210,7 +234,7 @@ footer {
     padding-bottom: 10px;
 }
 
-footer > * {
+footer>* {
     display: table;
     margin: 10px auto 0 auto;
 }
@@ -223,7 +247,7 @@ footer #footerLogos img {
 }
 
 @media only screen and (min-width: 501px) {
-    footer #footerLogos > * {
+    footer #footerLogos>* {
         display: inline-block;
     }
 
@@ -233,7 +257,7 @@ footer #footerLogos img {
 }
 
 @media only screen and (max-width: 500px) {
-    footer #footerLogos > * {
+    footer #footerLogos>* {
         display: block;
     }
 }
@@ -246,7 +270,7 @@ div.notice {
     padding-bottom: 5px;
 }
 
-div.notice > span.noticeTitle {
+div.notice>span.noticeTitle {
     display: block;
     background: var(--accent);
     color: var(--accent_foreground);
@@ -256,23 +280,23 @@ div.notice > span.noticeTitle {
     font-weight: bold;
 }
 
-div.notice > span.noticeDate {
+div.notice>span.noticeDate {
     display: block;
     background: var(--accent);
     color: var(--accent_foreground);
     padding: 0 10px 10px 10px;
 }
 
-div.notice > p {
+div.notice>p {
     margin: 10px 15px 10px 15px;
     padding: 0;
 }
 
-div.notice > div.noticeText {
+div.notice>div.noticeText {
     padding: 0 10px 0 10px;
 }
 
-div.notice > button {
+div.notice>button {
     margin: 0 0 5px 10px;
 }
 
@@ -283,10 +307,34 @@ div.notice > button {
     margin-bottom: 20px;
 }
 
-#viewAsBar > * {
+#viewAsBar>* {
     display: inline-block;
 }
 
 #viewAsBar input[type=submit] {
     margin: 0 0 0 20px;
+}
+
+/* Search Box CSS */
+div.searchWrapper {
+    background: var(--light_background);
+    position: absolute;
+    top: 50px;
+    z-index: 200;
+    overflow: hidden;
+    font-size: 11pt;
+    user-select: none;
+    width: 100%;
+    margin-left: -2px;
+    border: 1px solid var(--light_borders);
+}
+
+div.searchWrapper > * {
+    display: block;
+    cursor: pointer;
+    padding: 4px 10px 4px 10px;
+}
+
+div.searchWrapper > *:hover {
+    background: var(--light_panel_background);
 }
