@@ -15,12 +15,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         case "req":
             if ($_POST["action"] == "Approve") {
                 // approve group
-
-                // initialize user if not initialized
-                if (!$form_user->exists()) {
-                    $form_user->init();
-                }
-    
                 $group = $form_user->getPIGroup();
                 $group->approveGroup();
             } elseif ($_POST["action"] == "Deny") {

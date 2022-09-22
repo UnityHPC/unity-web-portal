@@ -110,7 +110,7 @@ class UnityGroup
 
         // check if owner exists
         if (!$this->getOwner()->exists()) {
-            throw new Exception("Owner of PI group is not initialized");
+            $this->getOwner()->init();
         }
 
         // initialize ldap objects, if this fails the script will crash, but nothing will persistently break
@@ -192,6 +192,11 @@ class UnityGroup
      */
     public function approveUser($new_user, $send_mail = true)
     {
+        // check if user exists
+        if (!$new_user->exists()) {
+            $new_user->init();
+        }
+
         // add user to the LDAP object
         $this->addUserToGroup($new_user);
 
