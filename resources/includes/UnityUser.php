@@ -108,6 +108,28 @@ class UnityUser
         }
     }
 
+    public function deleteUser() {
+        // THIS IS DANGEROUS!
+
+        // remove any requests
+        $this->SQL->deleteRequestsByUser($this->uid);
+
+        // leave any groups
+        $groups = $this->getGroups();
+        foreach ($groups as $group) {
+            $group->removeUser($this);
+        }
+
+        // remove from org group
+        $this->getOrgGroup()->removeUser($this);
+
+        // delete posix user
+        $this->getLDAPUser()->delete();
+
+        // delete posix group
+        $this->getLDAPGroup()->delete();
+    }
+
 
     /**
      * Returns the ldap account entry corresponding to the user
