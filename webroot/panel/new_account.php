@@ -40,14 +40,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <hr>
 
 <form id="newAccountForm" action="" method="POST">
-	<span>Please verify that the information below is correct before continuing</span>
+	<p>Please verify that the information below is correct before continuing</p>
 	<div>
-		<b>Name&nbsp;&nbsp;</b><?php echo $SSO["firstname"] . " " . $SSO["lastname"]; ?><br>
-		<b>Email&nbsp;&nbsp;</b><?php echo $SSO["mail"]; ?>
+		<strong>Name&nbsp;&nbsp;</strong><?php echo $SSO["firstname"] . " " . $SSO["lastname"]; ?><br>
+		<strong>Email&nbsp;&nbsp;</strong><?php echo $SSO["mail"]; ?>
 	</div>
-	<span>Your unity cluster username will be <b><?php echo $SSO["user"]; ?></b></span>
+	<p>Your unity cluster username will be <strong><?php echo $SSO["user"]; ?></strong></p>
 
-	<span>In order to activate your account on the Unity cluster, you must join an existing PI group, or request your own PI group.</span>
+	<p>In order to activate your account on the Unity cluster, you must join an existing PI group, or request your own PI group.</p>
 
 	<hr>
 
@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$pending_requests = $SQL->getRequestsByUser($USER->getUID());
 	if (count($pending_requests) > 0) {
 		// already has pending requests
-		echo "<span>Your request to activate your account has been submitted. You will receive an email when your account is activated.</span>";
+		echo "<p>Your request to activate your account has been submitted. You will receive an email when your account is activated.</p>";
 	} else {
 		echo "<label><input type='radio' name='new_user_sel' value='pi'>Request a PI account (I am a PI)</label>";
 		echo "<br>";
@@ -70,6 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 		echo "<label><input type='checkbox' id='chk_eula' name='eula' value='agree'>I have read and accept the <a target='_blank' href='" . $CONFIG["site"]["prefix"] . "/priv.php'>Unity EULA</a></label>";
 
+		echo "<br>";
 		echo "<input style='margin-top: 10px;' type='submit' value='Request Account'>";
 	}
 	?>
@@ -78,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	if (isset($errors)) {
 		echo "<div class='message'>";
 		foreach ($errors as $err) {
-			echo "<span class='message-failure'>" . $err . "</span>";
+			echo "<p class='message-failure'>" . $err . "</p>";
 		}
 		echo "</div>";
 	}

@@ -58,10 +58,6 @@ foreach ($requests as $request) {
     }
 }
 
-if (count($groups) + count($req_filtered) == 0) {
-    echo "<p>You do not have any PIs attached to your account. You need at least one to use the cluster. Click the button below to request.</p>";
-}
-
 if (count($req_filtered) > 0) {
     echo "<h5>Pending Requests</h5>";
     echo "<table>";
@@ -82,8 +78,14 @@ if (count($req_filtered) > 0) {
     }
 }
 
-if (count($groups) > 0) {
-    echo "<h5>Current Groups</h5>";
+echo "<h5>Current Groups</h5>";
+
+if ($USER->isPI() && count($groups) == 1) {
+    echo "You are only a member of your own PI group. Navigate to the <a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>my users</a> page to see your group.";
+}
+
+if (count($groups) == 0) {
+    echo "You are not a member of any groups. Request to join a PI using the button below, or request your own PI account on the <a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>account settings</a> page";
 }
 
 echo "<table>";

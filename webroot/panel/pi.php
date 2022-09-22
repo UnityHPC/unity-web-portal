@@ -43,12 +43,10 @@ $assocs = $group->getGroupMembers();
 
 if (count($requests) + count($assocs) == 0) {
     echo "<p>You do not have any users attached to your PI account. Ask your users to request to join your account on the <a href='" . $CONFIG["site"]["prefix"] . "/panel/groups.php'>My PIs</a> page.</p>";
-} else {
-    echo "<p>The following users are attached to your PI group and are authorized to use Unity</p>";
 }
 
 if (count($requests) > 0) {
-    echo "<h3>Pending Requests</h3>";
+    echo "<h5>Pending Requests</h5>";
     echo "<table>";
 
     foreach ($requests as $request) {
@@ -58,7 +56,7 @@ if (count($requests) > 0) {
         echo "<td><a href='mailto:" . $request->getMail() . "'>" . $request->getMail() . "</a></td>";
         echo "<td>";
         echo 
-        "<form action='' method='POST' id='approve-" . $request->getUID() . "'>
+        "<form action='' method='POST' id='approve-" . $request->getUID() . "' onsubmit='return confirm(\"Are you sure you want to take action on " . $request->getUID() . "?\")'>
         <input type='hidden' name='form_name' value='userReq'>
         <input type='hidden' name='uid' value='" . $request->getUID() . "'>
         <input type='submit' name='action' value='Approve'>
@@ -74,21 +72,23 @@ if (count($requests) > 0) {
     }
 }
 
+echo "<h5>Users in Group</h5>";
+
 echo "<table>";
 
 foreach ($assocs as $assoc) {
     echo "<tr>";
-    echo "<td>" . $assoc->getFirstname() . " " . $assoc->getLastname() . "</td>";
-    echo "<td>" . $assoc->getUID() . "</td>";
-    echo "<td><a href='mailto:" . $assoc->getMail() . "'>" . $assoc->getMail() . "</a></td>";
     echo "<td>";
     echo
-    "<form action='' method='POST' id='remove-" . $assoc->getUID() . "'>
+    "<form action='' method='POST' id='remove-" . $assoc->getUID() . "' onsubmit='return confirm(\"Are you sure you want to remove " . $assoc->getUID() . " from your PI group? Their jobs will be cancelled and they will no longer have access to shared storage.\")'>
     <input type='hidden' name='form_name' value='remUser'>
     <input type='hidden' name='uid' value='" . $assoc->getUID() . "'>
     <input type='submit' value='Remove'>
     </form>";
     echo "</td>";
+    echo "<td>" . $assoc->getFirstname() . " " . $assoc->getLastname() . "</td>";
+    echo "<td>" . $assoc->getUID() . "</td>";
+    echo "<td><a href='mailto:" . $assoc->getMail() . "'>" . $assoc->getMail() . "</a></td>";
     echo "</tr>";
 }
 

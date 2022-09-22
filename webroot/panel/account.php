@@ -142,7 +142,7 @@ if (!$isPI) {
 $sshPubKeys = $USER->getSSHKeys();  // Get ssh public key attr
 
 if (count($sshPubKeys) == 0) {
-    echo "<span>You do not have any SSH public keys, press the button below to add one.";
+    echo "<p>You do not have any SSH public keys, press the button below to add one.</p>";
 }
 
 for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop through keys
@@ -220,10 +220,6 @@ echo "</form>";
         word-break: break-all;
         width: calc(100% - 44px);
         border-radius: 3px 0 0 3px;
-    }
-
-    button.plusBtn {
-        max-width: 700px;
     }
 </style>
 
