@@ -59,9 +59,11 @@ include LOC_HEADER;
 <h1>PI Management</h1>
 <hr>
 
-<h3>Pending PI Requests</h3>
-<table>
-    <tr>
+<input type="text" id="tableSearch" placeholder="Search...">
+
+<h5>Pending PI Requests</h5>
+<table class="searchable">
+    <tr class="key">
         <td>Name</td>
         <td>Unity ID</td>
         <td>Mail</td>
@@ -80,7 +82,7 @@ include LOC_HEADER;
         echo "<td><a href='mailto:" . $request_user->getMail() . "'>" . $request_user->getMail() . "</a></td>";
         echo "<td>";
         echo 
-        "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to approve " . $request_user->getUID() . "?\");'>
+        "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to perform action on " . $request_user->getUID() . "?\");'>
         <input type='hidden' name='form_name' value='req'>
         <input type='hidden' name='uid' value='" . $request_user->getUID() . "'>
         <input type='submit' name='action' value='Approve'>
@@ -92,11 +94,11 @@ include LOC_HEADER;
 ?>
 
 </table>
-<hr>
 
-<h3>List of PIs</h3>
-<table>
-    <tr>
+<h5>List of PIs</h5>
+
+<table class="searchable">
+    <tr class="key">
         <td>Name</td>
         <td>Unity ID</td>
         <td>Mail</td>

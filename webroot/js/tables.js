@@ -44,3 +44,11 @@ $("button.btnExpand").click(function() {
         piRow.addClass("first");
     }
 });
+
+$('#tableSearch').keyup(function() {
+    var value = $(this).val().toLowerCase();
+
+    $("table.searchable tr:not(:first-child)").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+});
