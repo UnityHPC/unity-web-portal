@@ -6,13 +6,15 @@ table {
     max-width: 100%;
 }
 
-table tr, table td {
+table tr,
+table td {
     padding: 8px 20px 8px 4px;
     overflow: hidden;
     white-space: nowrap;
 }
 
-table button, table input[type=submit] {
+table button,
+table input[type=submit] {
     padding: 5px 10px 5px 10px;
 }
 
@@ -32,7 +34,7 @@ tr.expanded {
     border: 0;
 }
 
-tr.expanded > td {
+tr.expanded>td {
     background: var(--light_panel_background);
 }
 
@@ -44,21 +46,21 @@ tr.expandable:hover {
     background: var(--light_footer_background);
 }
 
-tr.expandable:hover > td:first-child {
+tr.expandable:hover>td:first-child {
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
 }
 
-tr.expandable:hover > td:last-child {
+tr.expandable:hover>td:last-child {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 }
 
-tr.expandable.first > td:first-child {
+tr.expandable.first>td:first-child {
     border-bottom-left-radius: 0;
 }
 
-tr.expandable.first > td:last-child {
+tr.expandable.first>td:last-child {
     border-bottom-right-radius: 0;
 }
 
@@ -66,19 +68,19 @@ tr.expanded.first {
     border-bottom: 2px solid var(--light_borders);
 }
 
-tr.expanded.first > td:first-child {
+tr.expanded.first>td:first-child {
     border-top-left-radius: 10px;
 }
 
-tr.expanded.first > td:last-child {
+tr.expanded.first>td:last-child {
     border-top-right-radius: 10px;
 }
 
-tr.expanded.last > td:first-child {
+tr.expanded.last>td:first-child {
     border-bottom-left-radius: 10px;
 }
 
-tr.expanded.last > td:last-child {
+tr.expanded.last>td:last-child {
     border-bottom-right-radius: 10px;
 }
 
@@ -87,7 +89,7 @@ tr.expanded:not(.expandable) {
     padding-bottom: 0;
 }
 
-tr.expanded:not(.expandable) > td:first-child {
+tr.expanded:not(.expandable)>td:first-child {
     padding-left: 30px;
 }
 
@@ -111,7 +113,7 @@ button.btnExpanded {
     transform: rotate(90deg);
 }
 
-td:last-child > button {
+td:last-child>button {
     float: right;
 }
 
@@ -121,12 +123,12 @@ tr.key {
     font-weight: bold;
 }
 
-tr.key > td:first-child {
+tr.key>td:first-child {
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
 }
 
-tr.key > td:last-child {
+tr.key>td:last-child {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 }

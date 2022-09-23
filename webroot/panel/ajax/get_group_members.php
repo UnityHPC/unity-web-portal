@@ -1,6 +1,8 @@
 <?php
 
-require "../../../resources/autoload.php";
+require_once "../../../resources/autoload.php";
+
+use UnityWebPortal\lib\UnityGroup;
 
 if (!isset($_GET["pi_uid"])) {
     die("PI UID not set");
@@ -23,7 +25,7 @@ if (!$found) {
 }
 
 $count = count($members);
-foreach ($members as $key=>$member) {
+foreach ($members as $key => $member) {
     if ($key >= $count - 1) {
         echo "<tr class='expanded $key last'>";
     } else {

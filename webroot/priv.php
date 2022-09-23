@@ -1,5 +1,6 @@
 <?php
-require "../resources/autoload.php";
+
+require_once "../resources/autoload.php";
 
 require_once $LOC_HEADER;
 ?>
@@ -13,4 +14,3 @@ echo $SQL->getPage($BRANDING["page"]["policy"])["content"];
 
 <?php
 require_once $LOC_FOOTER;
-?>

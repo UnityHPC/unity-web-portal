@@ -1,6 +1,6 @@
 <?php
 
-require "../../resources/autoload.php";
+require_once "../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityGroup;
 

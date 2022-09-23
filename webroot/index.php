@@ -1,5 +1,6 @@
 <?php
-require "../resources/autoload.php";
+
+require_once "../resources/autoload.php";
 
 require_once $LOC_HEADER;
 ?>
@@ -10,7 +11,7 @@ require_once $LOC_HEADER;
 <?php
 
 $notices = $SQL->getNotices();
-foreach($notices as $notice) {
+foreach ($notices as $notice) {
     echo "<div class='notice'>";
     echo "<span class='noticeTitle'>" . $notice["title"] . "</span>";
     echo "<span class='noticeDate'>" . date('m-d-Y', strtotime($notice["date"])) . "</span>";
@@ -22,4 +23,3 @@ foreach($notices as $notice) {
 
 <?php
 require_once $LOC_FOOTER;
-?>

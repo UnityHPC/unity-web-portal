@@ -2,8 +2,7 @@
 
 require "../../../resources/autoload.php";
 
-use \phpseclib3\Crypt\RSA;
-use phpseclib3\Crypt\Common\Formats\Keys\OpenSSH;
+use phpseclib3\Crypt\RSA;
 
 echo "<pre>";
 

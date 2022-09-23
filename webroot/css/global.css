@@ -330,12 +330,12 @@ div.searchWrapper {
     border-radius: 5px;
 }
 
-div.searchWrapper > * {
+div.searchWrapper>* {
     display: block;
     cursor: pointer;
     padding: 4px 10px 4px 10px;
 }
 
-div.searchWrapper > *:hover {
+div.searchWrapper>*:hover {
     background: var(--light_panel_background);
 }

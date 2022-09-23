@@ -1,4 +1,5 @@
 <?php
+
 require_once "../../../resources/autoload.php";  // Load required libs
 ?>
 

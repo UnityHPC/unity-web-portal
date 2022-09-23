@@ -1,7 +1,8 @@
 <?php
+
 header('Content-type: text/plain');
 
-require "../../../resources/autoload.php";
+require_once "../../../resources/autoload.php";
 
 if (isset($_GET["line_wrap"])) {
     $CHAR_WRAP = $_GET["line_wrap"];
@@ -10,7 +11,7 @@ if (isset($_GET["line_wrap"])) {
 }
 
 $notices = $SQL->getNotices();
-foreach($notices as $notice) {
+foreach ($notices as $notice) {
     echo $notice["title"] . "\r\n";
     echo date('m-d-Y', strtotime($notice["date"])) . "\r\n";
 

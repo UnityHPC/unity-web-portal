@@ -87,9 +87,11 @@ header>button.hamburger>img {
     nav.mainNav {
         right: 0;
     }
+
     header {
         width: 100%;
     }
+
     main {
         /* Header element height + 2*element padding */
         margin-top: 45px;
@@ -103,12 +105,15 @@ header>button.hamburger>img {
         bottom: 0;
         width: 250px;
     }
+
     header>button.hamburger {
         display: none;
     }
+
     main {
         margin-left: 250px;
     }
+
     footer {
         margin-left: 250px;
     }

@@ -1,4 +1,5 @@
 <?php
+
 require_once "../../../resources/autoload.php";  // Load required libs
 
 $search_query = $_GET["search"];  // Search is passed as a get var
@@ -17,7 +18,7 @@ foreach ($assocs as $assoc_obj) {
     if (strpos($assoc, $search_query) !== false) {
         array_push($out, $assoc);
         if (count($out) >= $MAX_COUNT) {
-        break;
+            break;
         }
     }
 }

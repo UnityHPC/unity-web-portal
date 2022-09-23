@@ -1,4 +1,5 @@
 <?php
+
 require "../../resources/autoload.php";
 
 require_once $LOC_HEADER;
@@ -13,4 +14,3 @@ echo $SQL->getPage($BRANDING["page"]["support"])["content"];
 
 <?php
 require_once $LOC_FOOTER;
-?>
