@@ -1,4 +1,5 @@
 <?php
+
 // this template is sent when a user adds an SSH key
 $this->Subject = "Account Deleted";
 ?>

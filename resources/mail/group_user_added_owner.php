@@ -1,4 +1,5 @@
 <?php
+
 // This template is sent to all users of a group when that group is disbanded (deleted)
 $this->Subject = "Group Member Approved";
 ?>
