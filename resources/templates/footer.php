@@ -9,8 +9,8 @@
     $footer_titles = $BRANDING["footer"]["title"];
     for ($i = 0; $i < count($footer_logos); $i++) {
         echo
-        "<a href='" . $footer_links[$i] . "'>
-        <img src='" . $CONFIG["site"]["prefix"] . "/res/" . $footer_logos[$i] . "' 
+        "<a target='_blank' href='" . $footer_links[$i] . "'>
+        <img src='" . $CONFIG["site"]["prefix"] . "/res/footer_logos/" . $footer_logos[$i] . "' 
         draggable='false' title='" . $footer_titles[$i] . "'></a>";
     }
     ?>
