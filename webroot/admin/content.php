@@ -1,4 +1,5 @@
 <?php
+
 require "../../resources/autoload.php";
 
 if (!$USER->isAdmin()) {
@@ -45,7 +46,8 @@ include $LOC_HEADER;
         });
 
     $("#pageForm > select[name=pageSel]").change(function(e) {
-        $.ajax({url: "<?php echo $CONFIG["site"]["prefix"] ?>/admin/ajax/get_page_contents.php?pageid=" + $(this).val(), success: function(result) {
+        $.ajax({url: "<?php echo $CONFIG["site"]["prefix"] ?>/admin/ajax/get_page_contents.php?pageid="
+            + $(this).val(), success: function(result) {
             mainEditor.setData(result);
         }});
     });
@@ -59,4 +61,3 @@ include $LOC_HEADER;
 
 <?php
 include $LOC_FOOTER;
-?>

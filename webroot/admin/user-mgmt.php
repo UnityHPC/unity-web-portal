@@ -1,5 +1,8 @@
 <?php
+
 require "../../resources/autoload.php";
+
+use UnityWebPortal\lib\UnitySite;
 
 if (!$USER->isAdmin()) {
     die();
@@ -13,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             break;
         case "viewAsUser":
             $_SESSION["viewUser"] = $_POST["uid"];
-            redirect($CONFIG["site"]["prefix"] . "/panel");
+            UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel");
             break;
     }
 }
@@ -46,11 +49,12 @@ include $LOC_HEADER;
         echo "<td><a href='mailto:" . $user->getMail() . "'>" . $user->getMail() . "</a></td>";
         echo "<td>";
 
-        echo "<form class='viewAsUserForm' action='' method='POST' onsubmit='return confirm(\"Are you sure you want to switch to the user " . $user->getUID() . "?\");'>
-    <input type='hidden' name='form_name' value='viewAsUser'>
-    <input type='hidden' name='uid' value='" . $user->getUID() . "'>
-    <input type='submit' name='action' value='Access'>
-    </form>";
+        echo "<form class='viewAsUserForm' action='' method='POST' 
+        onsubmit='return confirm(\"Are you sure you want to switch to the user " . $user->getUID() . "?\");'>
+        <input type='hidden' name='form_name' value='viewAsUser'>
+        <input type='hidden' name='uid' value='" . $user->getUID() . "'>
+        <input type='submit' name='action' value='Access'>
+        </form>";
 
         if ($user->isPI()) {
             echo
@@ -59,11 +63,12 @@ include $LOC_HEADER;
         </form>";
         } else {
             echo
-            "<form class='delUserForm' action='' method='POST' onsubmit='return confirm(\"Are you sure you want to delete " . $user->getUID() . "?\");'>
-        <input type='hidden' name='form_name' value='remUser'>
-        <input type='hidden' name='uid' value='" . $user->getUID() . "'>
-        <input type='submit' name='action' value='Delete'>
-        </form>";
+            "<form class='delUserForm' action='' method='POST' 
+            onsubmit='return confirm(\"Are you sure you want to delete " . $user->getUID() . "?\");'>
+            <input type='hidden' name='form_name' value='remUser'>
+            <input type='hidden' name='uid' value='" . $user->getUID() . "'>
+            <input type='submit' name='action' value='Delete'>
+            </form>";
         }
         echo "</td>";
         echo "</tr>";
@@ -74,4 +79,3 @@ include $LOC_HEADER;
 
 <?php
 include $LOC_FOOTER;
-?>

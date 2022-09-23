@@ -1,4 +1,5 @@
 <?php
+
 require "../../resources/autoload.php";
 
 if (!$USER->isAdmin()) {
@@ -59,7 +60,7 @@ foreach ($notices as $notice) {
     echo "<span class='noticeDate'>" . date('Y-m-d', strtotime($notice["date"])) . "</span>";
     echo "<div class='noticeText'>" . $notice["message"] . "</div>";
     echo "<button class='btnEdit'>Edit</button>";
-    echo 
+    echo
     "<form style='display: inline-block; margin-left: 10px;' method='POST' action=''>
     <input type='hidden' name='form_type' value='delNotice'>
     <input type='hidden' name='id' value='" . $notice["id"] . "'>
@@ -151,4 +152,3 @@ foreach ($notices as $notice) {
 
 <?php
 include $LOC_FOOTER;
-?>

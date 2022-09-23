@@ -1,12 +1,14 @@
 <?php
+
 require "../../resources/autoload.php";
+
+use UnityWebPortal\lib\UnityGroup;
 
 if (!$USER->isAdmin()) {
     die();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
     if (isset($_POST["uid"])) {
         $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER);
     }
@@ -42,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } elseif ($_POST["action"] == "Deny") {
                 $parent_group->denyUser($form_user);
             }
-            
+
             break;
         case "remUserChild":
             // remove user button clicked
@@ -81,8 +83,9 @@ include $LOC_HEADER;
         echo "<td>" . $request_user->getUID() . "</td>";
         echo "<td><a href='mailto:" . $request_user->getMail() . "'>" . $request_user->getMail() . "</a></td>";
         echo "<td>";
-        echo 
-        "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to perform action on " . $request_user->getUID() . "?\");'>
+        echo
+        "<form action='' method='POST' 
+        onsubmit='return confirm(\"Are you sure you want to perform action on " . $request_user->getUID() . "?\");'>
         <input type='hidden' name='form_name' value='req'>
         <input type='hidden' name='uid' value='" . $request_user->getUID() . "'>
         <input type='submit' name='action' value='Approve'>
@@ -91,7 +94,7 @@ include $LOC_HEADER;
         echo "</td>";
         echo "</tr>";
     }
-?>
+    ?>
 
 </table>
 
@@ -108,24 +111,28 @@ include $LOC_HEADER;
 <?php
     $accounts = $LDAP->getAllPIGroups($SQL, $MAILER);
 
-    foreach ($accounts as $pi_group) {
-        $pi_user = $pi_group->getOwner();
+foreach ($accounts as $pi_group) {
+    $pi_user = $pi_group->getOwner();
 
-        echo "<tr class='expandable'>";
-        echo "<td><button class='btnExpand'>&#9654;</button>" . $pi_user->getFirstname() . " " . $pi_user->getLastname() . "</td>";
-        echo "<td>" . $pi_group->getPIUID() . "</td>";
-        echo "<td><a href='mailto:" . $pi_user->getMail() . "'>" . $pi_user->getMail() . "</a></td>";
-        echo "<td>";
-        echo 
-        "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " . $pi_group->getPIUID() . "? This will also remove associations for all users under this PI - the users themselves will not be deleted, nor will the PI user itself.\");'>
+    echo "<tr class='expandable'>";
+    echo "<td><button class='btnExpand'>&#9654;</button>" . $pi_user->getFirstname() .
+    " " . $pi_user->getLastname() . "</td>";
+    echo "<td>" . $pi_group->getPIUID() . "</td>";
+    echo "<td><a href='mailto:" . $pi_user->getMail() . "'>" . $pi_user->getMail() . "</a></td>";
+    echo "<td>";
+    echo
+    "<form action='' method='POST' 
+    onsubmit='return confirm(\"Are you sure you want to remove " . $pi_group->getPIUID() . "? 
+    This will also remove associations for all users under this PI - 
+    the users themselves will not be deleted, nor will the PI user itself.\");'>
         <input type='hidden' name='form_name' value='remGroup'>
         <input type='hidden' name='pi' value='" . $pi_group->getPIUID() . "'>
         <input type='submit' value='Remove'>
         </form>";
-        echo "</td>";
-        echo "</tr>";
-    }
-    ?>
+    echo "</td>";
+    echo "</tr>";
+}
+?>
 </table>
 
 <script>
@@ -150,4 +157,3 @@ include $LOC_HEADER;
 
 <?php
 include $LOC_FOOTER;
-?>

@@ -1,6 +1,8 @@
 <?php
 
-require "../../../resources/autoload.php";
+require_once "../../../resources/autoload.php";
+
+use UnityWebPortal\lib\UnityGroup;
 
 if (!$USER->isAdmin()) {
     die();
@@ -27,8 +29,9 @@ foreach ($members as $member) {
     echo "<td>" . $member->getUID() . "</td>";
     echo "<td><a href='mailto:" . $member->getMail() . "'>" . $member->getMail() . "</a></td>";
     echo "<td>";
-    echo 
-    "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " . $member->getUID() . " from this group?\");'>
+    echo
+    "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " .
+    $member->getUID() . " from this group?\");'>
     <input type='hidden' name='form_name' value='remUserChild'>
     <input type='hidden' name='uid' value='" . $member->getUID() . "'>
     <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
@@ -40,19 +43,20 @@ foreach ($members as $member) {
     $key++;
 }
 
-foreach ($requests as $key=>$request) {
+foreach ($requests as $key => $request) {
     if ($key >= $count - 1) {
         echo "<tr class='expanded $key last'>";
     } else {
         echo "<tr class='expanded $key'>";
     }
-    
+
     echo "<td>" . $request->getFirstname() . " " . $request->getLastname() . "</td>";
     echo "<td>" . $request->getUID() . "</td>";
     echo "<td><a href='mailto:" . $request->getMail() . "'>" . $request->getMail() . "</a></td>";
     echo "<td>";
-    echo 
-    "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to approve " . $request->getUID() . "?\");'>
+    echo
+    "<form action='' method='POST' 
+    onsubmit='return confirm(\"Are you sure you want to approve " . $request->getUID() . "?\");'>
     <input type='hidden' name='form_name' value='reqChild'>
     <input type='hidden' name='uid' value='" . $request->getUID() . "'>
     <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
