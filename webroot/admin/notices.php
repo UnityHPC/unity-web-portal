@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-include LOC_HEADER;
+include $LOC_HEADER;
 ?>
 
 <h1>Cluster Notice Management</h1>
@@ -150,5 +150,5 @@ foreach ($notices as $notice) {
 </script>
 
 <?php
-include LOC_FOOTER;
+include $LOC_FOOTER;
 ?>

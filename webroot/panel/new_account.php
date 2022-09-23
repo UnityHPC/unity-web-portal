@@ -2,7 +2,7 @@
 
 require_once "../../resources/autoload.php";
 
-require_once LOC_HEADER;
+require_once $LOC_HEADER;
 
 if ($USER->exists()) {
 	redirect($CONFIG["site"]["prefix"] . "/panel/index.php");  // Redirect if account already exists
@@ -128,5 +128,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </script>
 
 <?php
-require_once LOC_FOOTER;
+require_once $LOC_FOOTER;
 ?>

@@ -1,9 +1,11 @@
 <?php
 
+use UnityWebPortal\lib\UnitySite;
+
 if (isset($SSO)) {
-  if (!$_SESSION["user_exists"]) {
-    redirect($CONFIG["site"]["prefix"] . "/panel/new_account.php");
-  }
+    if (!$_SESSION["user_exists"]) {
+        UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/new_account.php");
+    }
 }
 
 ?>
@@ -20,7 +22,7 @@ if (isset($SSO)) {
     // set global css variables from branding
     echo ":root {";
     foreach ($BRANDING["colors"] as $var_name => $var_value) {
-      echo "--$var_name: $var_value;";
+        echo "--$var_name: $var_value;";
     }
     echo "}";
     ?>
@@ -41,8 +43,12 @@ if (isset($SSO)) {
 
   <header>
     <img id="imgLogo" draggable=false src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/logo.png">
-    <a href="<?php echo $CONFIG["upstream"]["repo"] ?>" target="_blank" class="unity-state"><?php echo $CONFIG["upstream"]["version"] ?></a>
-    <button class="hamburger vertical-align"><img draggable="false" src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/menu.png" alt="Menu Button"></button>
+    <a href="<?php echo $CONFIG["upstream"]["repo"] ?>" target="_blank" class="unity-state">
+      <?php echo $CONFIG["upstream"]["version"] ?>
+    </a>
+    <button class="hamburger vertical-align">
+      <img draggable="false" src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/menu.png" alt="Menu Button">
+    </button>
   </header>
 
   <nav class="mainNav">
@@ -52,37 +58,39 @@ if (isset($SSO)) {
 
     $num_additional_items = count($BRANDING["menuitems"]["labels"]);
     for ($i = 0; $i < $num_additional_items; $i++) {
-      echo "<a target='_blank' href='" . $BRANDING["menuitems"]["links"][$i] . "'>" . $BRANDING["menuitems"]["labels"][$i] . "</a>";
+        echo "<a target='_blank' href='" . $BRANDING["menuitems"]["links"][$i] . "'>" .
+        $BRANDING["menuitems"]["labels"][$i] . "</a>";
     }
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
       // Menu Items for Present Users
-      echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/support.php'>Support</a>";
-      echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>Account Settings</a>";
-      echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/groups.php'>My PIs</a>";
+        echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/support.php'>Support</a>";
+        echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>Account Settings</a>";
+        echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/groups.php'>My PIs</a>";
 
-      if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
-        // PI only pages
-        echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>My Users</a>";
-      }
+        if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
+          // PI only pages
+            echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>My Users</a>";
+        }
 
       // additional branding items
-      $num_additional_items = count($BRANDING["menuitems_secure"]["labels"]);
-      for ($i = 0; $i < $num_additional_items; $i++) {
-        echo "<a target='_blank' href='" . $BRANDING["menuitems_secure"]["links"][$i] . "'>" . $BRANDING["menuitems_secure"]["labels"][$i] . "</a>";
-      }
+        $num_additional_items = count($BRANDING["menuitems_secure"]["labels"]);
+        for ($i = 0; $i < $num_additional_items; $i++) {
+            echo "<a target='_blank' href='" . $BRANDING["menuitems_secure"]["links"][$i] . "'>" .
+            $BRANDING["menuitems_secure"]["labels"][$i] . "</a>";
+        }
 
       // admin pages
-      if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] && !isset($_SESSION["viewUser"])) {
-        echo "<hr class='navHR'>";
-        // Admin only pages
-        echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/user-mgmt.php'>User Management</a>";
-        echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/pi-mgmt.php'>PI Management</a>";
-        echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/notices.php'>Cluster Notices</a>";
-        echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/content.php'>Content Management</a>";
-      }
+        if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] && !isset($_SESSION["viewUser"])) {
+            echo "<hr class='navHR'>";
+          // Admin only pages
+            echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/user-mgmt.php'>User Management</a>";
+            echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/pi-mgmt.php'>PI Management</a>";
+            echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/notices.php'>Cluster Notices</a>";
+            echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/content.php'>Content Management</a>";
+        }
     } else {
-      echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>Login / Request Account</a>";
+        echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>Login / Request Account</a>";
     }
     ?>
   </nav>
@@ -97,7 +105,10 @@ if (isset($SSO)) {
       <div class="modalMessages"></div>
       <div class="modalButtons">
         <div class='buttonList messageButtons' style='display: none;'><button class='btnOkay'>Okay</button></div>
-        <div class='buttonList yesnoButtons' style='display: none;'><button class='btnYes'>Yes</button><button class='btnNo'>No</button></div>
+        <div class='buttonList yesnoButtons' style='display: none;'>
+        <button class='btnYes'>Yes</button>
+        <button class='btnNo'>No</button>
+      </div>
       </div>
     </div>
   </div>
@@ -106,22 +117,23 @@ if (isset($SSO)) {
   <main>
 
   <?php
-  if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"]) {
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["form_name"]) && $_POST["form_name"] == "clearView") {
-      unset($_SESSION["viewUser"]);
-      redirect($CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
-    }
-  
-    if (isset($_SESSION["viewUser"])) {
-      echo "<div id='viewAsBar'>";
-      echo "<span>You are accessing the web portal as the user <strong>" . $_SESSION["viewUser"] . "</strong></span>";
-      echo 
-      "<form method='POST' action=''>
+    if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"]) {
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["form_name"]) && $_POST["form_name"] == "clearView") {
+            unset($_SESSION["viewUser"]);
+            UnitySite::redirect($CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
+        }
+
+        if (isset($_SESSION["viewUser"])) {
+            echo "<div id='viewAsBar'>";
+            echo "<span>You are accessing the web portal as the user <strong>" .
+            $_SESSION["viewUser"] . "</strong></span>";
+            echo
+            "<form method='POST' action=''>
       <input type='hidden' name='form_name' value='clearView'>
       <input type='hidden' name='uid' value='" . $_SESSION["viewUser"] . "'>
       <input type='submit' value='Return to My User'>
       </form>";
-      echo "</div>";
+            echo "</div>";
+        }
     }
-  }
-  ?>
+    ?>

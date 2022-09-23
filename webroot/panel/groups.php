@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-include LOC_HEADER;
+include $LOC_HEADER;
 ?>
 
 <h1>My Principal Investigators</h1>
@@ -154,5 +154,5 @@ echo "</table>";
 </style>
 
 <?php
-include LOC_FOOTER;
+include $LOC_FOOTER;
 ?>

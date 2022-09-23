@@ -1,7 +1,7 @@
 <?php
 require "../../resources/autoload.php";
 
-require_once LOC_HEADER;
+require_once $LOC_HEADER;
 
 function removeTrailingWhitespace($arr)
 {
@@ -224,5 +224,5 @@ echo "</form>";
 </style>
 
 <?php
-require_once LOC_FOOTER;
+require_once $LOC_FOOTER;
 ?>

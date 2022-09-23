@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-include LOC_HEADER;
+include $LOC_HEADER;
 ?>
 
 <h1>PI Management</h1>
@@ -149,5 +149,5 @@ include LOC_HEADER;
 </script>
 
 <?php
-include LOC_FOOTER;
+include $LOC_FOOTER;
 ?>

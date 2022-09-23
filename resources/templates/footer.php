@@ -2,12 +2,23 @@
 
 <footer>
   <div id="footerLogos">
-    <a href="https://www.umass.edu/" target="_blank"><img draggable="false" title="University of Massachusetts Amherst" src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/umass.png"></a>
-    <a href="https://www.uri.edu/" target="_blank"><img draggable="false" title="University of Rhode Island" src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/uri.png"></a>
-    <a href="https://www.mghpcc.org/" target="_blank"><img draggable="false" title="Massachusetts Green High Performance Computing Center" src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/mghpcc.png"></a>
+    <?php
+
+    $footer_logos = $BRANDING["footer"]["logos"];
+    $footer_links = $BRANDING["footer"]["links"];
+    $footer_titles = $BRANDING["footer"]["title"];
+    for ($i = 0; $i < count($footer_logos); $i++) {
+        echo
+        "<a href='" . $footer_links[$i] . "'>
+        <img src='" . $CONFIG["site"]["prefix"] . "/res/" . $footer_logos[$i] . "' 
+        draggable='false' title='" . $footer_titles[$i] . "'></a>";
+    }
+    ?>
+
   </div>
   <div class="footerBlock">
-    <span><?php echo $BRANDING["footer"]["text"] ?></span>&nbsp;&nbsp;<a href="<?php echo $CONFIG["site"]["prefix"]; ?>/priv.php">Site Policy</a>
+    <span><?php echo $BRANDING["footer"]["text"] ?></span>&nbsp;&nbsp;
+    <a href="<?php echo $CONFIG["site"]["prefix"]; ?>/priv.php">Site Policy</a>
   </div>
 </footer>
 

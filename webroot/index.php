@@ -1,7 +1,7 @@
 <?php
 require "../resources/autoload.php";
 
-require_once LOC_HEADER;
+require_once $LOC_HEADER;
 ?>
 
 <h1>Cluster Notices</h1>
@@ -21,5 +21,5 @@ foreach($notices as $notice) {
 ?>
 
 <?php
-require_once LOC_FOOTER;
+require_once $LOC_FOOTER;
 ?>

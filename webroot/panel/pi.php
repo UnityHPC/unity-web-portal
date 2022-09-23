@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-include LOC_HEADER;
+include $LOC_HEADER;
 ?>
 
 <h1>My Users</h1>
@@ -97,5 +97,5 @@ echo "</table>";
 </table>
 
 <?php
-include LOC_FOOTER;
+include $LOC_FOOTER;
 ?>
