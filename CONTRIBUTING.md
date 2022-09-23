@@ -6,6 +6,10 @@ Each release version has its own branch. Once that version is released, the bran
 
 When submitting pull requests, the pull request should be made to the version you are targetting, assuming it is not already released.
 
+## Conventions
+
+This code base is currently using PHP version 7.4. All files are required to be linted with PSR-12 standard. This repository will automatically check PRs for linting compliance.
+
 ## Development Environment
 
 ### Setting up your Environment
