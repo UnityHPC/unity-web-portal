@@ -3,13 +3,11 @@
 namespace UnityWebPortal\lib;
 
 use PHPOpenLDAPer\LDAPEntry;
+use Exception;
 
-/**
- * Class that represents a single user account in the Unity Cluster. This class manages ldap entries as well as slurm account manager entries.
- */
 class UnityUser
 {
-    const HOME_DIR = "/home/";
+    private const HOME_DIR = "/home/";
 
     private $uid;
 
@@ -75,7 +73,7 @@ class UnityUser
             $ldapUserEntry->setAttribute("mail", $this->getMail());
             $ldapUserEntry->setAttribute("o", $this->getOrg());
             $ldapUserEntry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
-            $ldapUserEntry->setAttribute("loginshell", UnityLDAP::DEFAULT_SHELL);
+            $ldapUserEntry->setAttribute("loginshell", $this->LDAP->getDefUserShell());
             $ldapUserEntry->setAttribute("uidnumber", strval($id));
             $ldapUserEntry->setAttribute("gidnumber", strval($id));
 
@@ -110,7 +108,8 @@ class UnityUser
         }
     }
 
-    public function deleteUser($send_mail=true) {
+    public function deleteUser($send_mail = true)
+    {
         // THIS IS DANGEROUS!
 
         // remove any requests
@@ -361,7 +360,7 @@ class UnityUser
 
     /**
      * Gets the home directory of the user
-     * 
+     *
      * @return string home directory of the user
      */
     public function getHomeDir()

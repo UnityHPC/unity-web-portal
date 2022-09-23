@@ -2,7 +2,10 @@
 
 namespace UnityWebPortal\lib;
 
-class UnityOrg {
+use Exception;
+
+class UnityOrg
+{
     private $orgid;
 
     private $MAILER;
@@ -18,7 +21,8 @@ class UnityOrg {
         $this->MAILER = $MAILER;
     }
 
-    public function init() {
+    public function init()
+    {
         $org_group = $this->getLDAPOrgGroup();
 
         if (!$org_group->exists()) {
@@ -33,7 +37,8 @@ class UnityOrg {
         }
     }
 
-    public function exists() {
+    public function exists()
+    {
         return $this->getLDAPOrgGroup()->exists();
     }
 
@@ -42,13 +47,15 @@ class UnityOrg {
         return $this->LDAP->getOrgGroupEntry($this->orgid);
     }
 
-    public function inOrg($user) {
+    public function inOrg($user)
+    {
         $org_group = $this->getLDAPOrgGroup();
         $members = $org_group->getAttribute("memberuid");
         return in_array($user, $members);
     }
 
-    public function addUser($user) {
+    public function addUser($user)
+    {
         $org_group = $this->getLDAPOrgGroup();
         $org_group->appendAttribute("memberuid", $user->getUID());
 
@@ -57,7 +64,8 @@ class UnityOrg {
         }
     }
 
-    public function removeUser($user) {
+    public function removeUser($user)
+    {
         $org_group = $this->getLDAPOrgGroup();
         $org_group->removeAttributeEntryByValue("memberuid", $user->getUID());
 

@@ -2,6 +2,8 @@
 
 namespace UnityWebPortal\lib;
 
+use Exception;
+
 /**
  * Class that represents a single PI group in the Unity Cluster.
  */
@@ -35,7 +37,7 @@ class UnityGroup
     public function equals($other_group)
     {
         if (!is_a($other_group, self::class)) {
-            throw new \Exception("Unable to check equality because the parameter is not a " . self::class . " object");
+            throw new Exception("Unable to check equality because the parameter is not a " . self::class . " object");
         }
 
         return $this->getPIUID() == $other_group->getPIUID();
@@ -167,7 +169,7 @@ class UnityGroup
         $ldapPiGroupEntry = $this->getLDAPPiGroup();
         if ($ldapPiGroupEntry->exists()) {
             if (!$ldapPiGroupEntry->delete()) {
-                throw new \Exception("Unable to delete PI ldap group");
+                throw new Exception("Unable to delete PI ldap group");
             }
         }
 
@@ -387,7 +389,7 @@ class UnityGroup
             $ldapPiGroupEntry->setAttribute("memberuid", array($owner->getUID()));
 
             if (!$ldapPiGroupEntry->write()) {
-                throw new \Exception("Failed to create POSIX group for " . $owner->getUID());  // this shouldn't execute
+                throw new Exception("Failed to create POSIX group for " . $owner->getUID());  // this shouldn't execute
             }
         }
     }
@@ -399,7 +401,7 @@ class UnityGroup
         $pi_group->appendAttribute("memberuid", $new_user->getUID());
 
         if (!$pi_group->write()) {
-            throw new \Exception("Unable to write PI group");
+            throw new Exception("Unable to write PI group");
         }
     }
 
@@ -410,7 +412,7 @@ class UnityGroup
         $pi_group->removeAttributeEntryByValue("memberuid", $old_user->getUID());
 
         if (!$pi_group->write()) {
-            throw new \Exception("Unable to write PI group");
+            throw new Exception("Unable to write PI group");
         }
     }
 
@@ -453,7 +455,7 @@ class UnityGroup
         if (substr($pi_uid, 0, strlen(self::PI_PREFIX)) == self::PI_PREFIX) {
             return substr($pi_uid, strlen(self::PI_PREFIX));
         } else {
-            throw new \Exception("PI netid doesn't have the correct prefix.");
+            throw new Exception("PI netid doesn't have the correct prefix.");
         }
     }
 }

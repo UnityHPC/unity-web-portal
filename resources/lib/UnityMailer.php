@@ -3,11 +3,13 @@
 namespace UnityWebPortal\lib;
 
 use PHPMailer\PHPMailer\PHPMailer;
+use Exception;
 
 /**
  * This is a class that uses PHPmailer to send emails based on templates
  */
-class UnityMailer extends PHPMailer {
+class UnityMailer extends PHPMailer
+{
     private $template_dir;  // location of all email templates
 
     private $MSG_LINKREF;
@@ -18,21 +20,22 @@ class UnityMailer extends PHPMailer {
     private $MSG_ADMIN_EMAIL;
     private $MSG_ADMIN_NAME;
 
-    public function __construct($template_dir,
-                                $hostname,
-                                $port,
-                                $security,
-                                $user,
-                                $pass,
-                                $ssl_verify,
-                                $msg_linkref,
-                                $msg_sender_email,
-                                $msg_sender_name,
-                                $msg_support_email,
-                                $msg_support_name,
-                                $msg_admin_email,
-                                $msg_admin_name
-                                ) {
+    public function __construct(
+        $template_dir,
+        $hostname,
+        $port,
+        $security,
+        $user,
+        $pass,
+        $ssl_verify,
+        $msg_linkref,
+        $msg_sender_email,
+        $msg_sender_name,
+        $msg_support_email,
+        $msg_support_name,
+        $msg_admin_email,
+        $msg_admin_name
+    ) {
         parent::__construct();
         $this->isSMTP();
 
@@ -86,7 +89,8 @@ class UnityMailer extends PHPMailer {
         $this->MSG_ADMIN_NAME = $msg_admin_name;
     }
 
-    public function sendMail($recipients, $template = null, $data = null) {
+    public function sendMail($recipients, $template = null, $data = null)
+    {
         if (isset($template)) {
             // set addresses
             $this->setFrom($this->MSG_SENDER_EMAIL, $this->MSG_SENDER_NAME);
@@ -121,5 +125,3 @@ class UnityMailer extends PHPMailer {
         }
     }
 }
-
-?>
