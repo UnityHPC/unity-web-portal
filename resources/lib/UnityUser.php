@@ -184,6 +184,16 @@ class UnityUser
         return $this->uid;
     }
 
+    public function setOrg($org)
+    {
+        $ldap_user = $this->getLDAPUser();
+        $ldap_user->setAttribute("o", $org);
+
+        if (!$ldap_user->write()) {
+            throw new Exception("Error updating LDAP entry $this->uid");
+        }
+    }
+
     public function getOrg()
     {
         if ($this->exists()) {
@@ -200,9 +210,10 @@ class UnityUser
      */
     public function setFirstname($firstname)
     {
-        $this->getLDAPUser()->setAttribute("givenname", $firstname);
+        $ldap_user = $this->getLDAPUser();
+        $ldap_user->setAttribute("givenname", $firstname);
 
-        if (!$this->getLDAPUser()->write()) {
+        if (!$ldap_user->write()) {
             throw new Exception("Error updating LDAP entry $this->uid");
         }
     }
@@ -228,7 +239,8 @@ class UnityUser
      */
     public function setLastname($lastname)
     {
-        $this->getLDAPUser()->setAttribute("sn", $lastname);
+        $ldap_user = $this->getLDAPUser();
+        $ldap_user->setAttribute("sn", $lastname);
 
         if (!$this->getLDAPUser()->write()) {
             throw new Exception("Error updating LDAP entry $this->uid");
@@ -261,7 +273,8 @@ class UnityUser
      */
     public function setMail($email)
     {
-        $this->getLDAPUser()->setAttribute("mail", $email);
+        $ldap_user = $this->getLDAPUser();
+        $ldap_user->setAttribute("mail", $email);
 
         if (!$this->getLDAPUser()->write()) {
             throw new Exception("Error updating LDAP entry $this->uid");
