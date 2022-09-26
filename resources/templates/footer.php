@@ -17,7 +17,8 @@
 
   </div>
   <div class="footerBlock">
-    <span><?php echo $BRANDING["footer"]["text"] ?></span>&nbsp;&nbsp;
+    <span>Unity Web Portal Version <a target="_blank" href="<?php echo $CONFIG["upstream"]["repo"]; ?>">
+    <?php echo $CONFIG["upstream"]["version"]; ?></a></span>&nbsp;|
     <a href="<?php echo $CONFIG["site"]["prefix"]; ?>/priv.php">Site Policy</a>
   </div>
 </footer>
