@@ -51,10 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 }
             }
             break;
-        case "delAccount":
-            $USER->deleteUser();
-            UnitySite::redirect($CONFIG["site"]["prefix"] . "/");
-            break;
     }
 }
 ?>
@@ -146,22 +142,6 @@ value=" . $USER->getLoginShell() . " required>
 <input type='submit' value='Set Login Shell'>
 </form>
 </div>";
-?>
-
-<hr>
-<h5>Danger Zone</h5>
-
-<?php
-if ($USER->isPI()) {
-    echo "<form action='javascript:void(0);'>";
-    echo "<input type='submit' value='PI Group Exists - Cannot Delete Account' disabled>";
-} else {
-    echo "<form method='POST' action='' onsubmit='return confirm(
-        \"Are you sure you want to delete your account? You will no longer be able to access Unity.\")'>";
-    echo "<input type='hidden' name='form_type' value='delAccount'>";
-    echo "<input type='submit' value='Delete My Account'>";
-}
-echo "</form>";
 ?>
 
 <script>

@@ -108,43 +108,6 @@ class UnityUser
         }
     }
 
-    public function deleteUser($send_mail = true)
-    {
-        // THIS IS DANGEROUS!
-
-        // remove any requests
-        $this->SQL->deleteRequestsByUser($this->uid);
-
-        // leave any groups
-        $groups = $this->getGroups();
-        foreach ($groups as $group) {
-            $group->removeUser($this);
-        }
-
-        // remove from org group
-        $this->getOrgGroup()->removeUser($this);
-
-        // delete posix user
-        $this->getLDAPUser()->delete();
-
-        // delete posix group
-        $this->getLDAPGroup()->delete();
-
-        // unset session vars
-        unset($_SESSION["user_exists"]);
-        unset($_SESSION["is_pi"]);
-        unset($_SESSION["is_admin"]);
-
-        // send email
-        if ($send_mail) {
-            $this->MAILER->sendMail(
-                $this->getMail(),
-                "user_delete"
-            );
-        }
-    }
-
-
     /**
      * Returns the ldap account entry corresponding to the user
      *

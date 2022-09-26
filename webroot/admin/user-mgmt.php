@@ -10,10 +10,6 @@ if (!$USER->isAdmin()) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     switch ($_POST["form_name"]) {
-        case "remUser":
-            $deleted_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER);
-            $deleted_user->deleteUser();
-            break;
         case "viewAsUser":
             $_SESSION["viewUser"] = $_POST["uid"];
             UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel");
@@ -55,21 +51,6 @@ include $LOC_HEADER;
         <input type='hidden' name='uid' value='" . $user->getUID() . "'>
         <input type='submit' name='action' value='Access'>
         </form>";
-
-        if ($user->isPI()) {
-            echo
-            "<form action='javascript:void(0);'>
-        <input type='submit' name='action' value='PI Group Exists' disabled>
-        </form>";
-        } else {
-            echo
-            "<form class='delUserForm' action='' method='POST' 
-            onsubmit='return confirm(\"Are you sure you want to delete " . $user->getUID() . "?\");'>
-            <input type='hidden' name='form_name' value='remUser'>
-            <input type='hidden' name='uid' value='" . $user->getUID() . "'>
-            <input type='submit' name='action' value='Delete'>
-            </form>";
-        }
         echo "</td>";
         echo "</tr>";
     }

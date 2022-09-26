@@ -109,7 +109,7 @@ class UnityLDAP extends ldapConn
 
     public function getDefUserShell()
     {
-        return $this->getDefUserShell();
+        return $this->def_user_shell;
     }
 
   //

@@ -42,11 +42,8 @@ if (isset($SSO)) {
 <body>
 
   <header>
-    <img id="imgLogo" draggable=false src="<?php echo $CONFIG["site"]["prefix"]; ?>/res
-    /<?php echo $BRANDING["site"]["logo"]; ?>">
-    <a href="<?php echo $CONFIG["upstream"]["repo"] ?>" target="_blank" class="unity-state">
-      <?php echo $CONFIG["upstream"]["version"] ?>
-    </a>
+    <img id="imgLogo" draggable=false 
+    src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/<?php echo $BRANDING["site"]["logo"]; ?>">
     <button class="hamburger vertical-align">
       <img draggable="false" src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/menu.png" alt="Menu Button">
     </button>
