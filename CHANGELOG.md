@@ -1,5 +1,6 @@
 ## 1.0.0-RC2
 * [BugFix] Fixed Unity Branding where Array were not being merged
+* [Project] Bumped phpopenldaper version from composer
 
 ## 1.0.0-RC1
 * [Feature] Admins can now access the web portal as a separate user
