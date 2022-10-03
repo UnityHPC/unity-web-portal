@@ -1,3 +1,20 @@
+#### 1.0.0-RC1 ####
+* [Feature] Admins can now access the web portal as a separate user
+* [Feature] Added account details to account settings page
+* [Feature] Added branding configuration
+* [Feature] Added search for admin pages
+* [Feature] Added cluster notice management page
+* [Frontend] Styling changes
+* [Frontend] Removed version from header
+* [Backend] Slurm accounting is no longer in the scope of the project
+* [Backend] Changed entire project folder structure
+* [Backend] Content pages are now sql backed instead of hard coded
+* [Backend] Removed locale for now
+* [Backend] Changed all emails
+* [Backend] LDAP objects are now not created until the user is approved for at least one group
+* [Project] Project now adheres to PHP PSR-12 standards
+
+
 #### 0.6.0-BETA ####
 * [Feature] Added cluster notices - hakan
 * [Feature] Added development environment features - hakan
