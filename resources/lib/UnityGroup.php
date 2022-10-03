@@ -178,7 +178,8 @@ class UnityGroup
             foreach ($users as $user) {
                 $this->MAILER->sendMail(
                     $user->getMail(),
-                    "group_disband"
+                    "group_disband",
+                    array("group_name" => $this->pi_uid)
                 );
             }
         }

@@ -3,6 +3,7 @@
 require_once "../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityUser;
+use UnityWebPortal\lib\UnitySite;
 
 $group = $USER->getPIGroup();
 
@@ -27,6 +28,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         case "remUser":
             // remove user button clicked
             $group->removeUser($form_user);
+
+            break;
+        case "disband":
+            $group->removeGroup();
+            UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/account.php");
 
             break;
     }
@@ -99,6 +105,15 @@ foreach ($assocs as $assoc) {
 }
 
 echo "</table>";
+
+echo "<h5>Danger Zone</h5>";
+
+echo
+"<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to disband your PI group?\")'>
+<input type='hidden' name='form_name' value='disband'>
+<input type='submit' value='Disband PI Account'>
+</form>
+";
 ?>
 </table>
 

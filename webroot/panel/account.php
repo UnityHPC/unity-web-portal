@@ -90,8 +90,7 @@ if ($isPI) {
 if (!$isPI) {
     echo
     "<form action='' method='POST' id='piReq' 
-    onsubmit='return confirm(\"Are you sure you want to request a PI account? 
-    You must be a principal investigator at your organization to have a PI account.\");'>
+    onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'>
     <input type='hidden' name='form_type' value='pi_request'>";
     if ($SQL->requestExists($USER->getUID())) {
         echo "<input type='submit' value='Request PI Account' disabled>";
