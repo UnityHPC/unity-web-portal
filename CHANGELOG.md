@@ -1,3 +1,6 @@
+## 1.0.0-RC2
+* [BugFix] Fixed Unity Branding where Array were not being merged
+
 ## 1.0.0-RC1
 * [Feature] Admins can now access the web portal as a separate user
 * [Feature] Added account details to account settings page

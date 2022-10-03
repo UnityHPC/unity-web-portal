@@ -11,8 +11,8 @@ class UnityBranding
 
         $branding_override = $branding_loc . "/overrides/" . $_SERVER['HTTP_HOST'] . ".ini";
         if (file_exists($branding_override)) {
-            $override_config = parse_ini_file($branding_override);
-            $BRANDING = array_merge($BRANDING, $override_config);
+            $override_config = parse_ini_file($branding_override, true);
+            $BRANDING = array_replace_recursive($BRANDING, $override_config);
         }
 
         return $BRANDING;
