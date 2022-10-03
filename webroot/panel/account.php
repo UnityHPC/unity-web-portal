@@ -95,7 +95,7 @@ if (!$isPI) {
     <input type='hidden' name='form_type' value='pi_request'>";
     if ($SQL->requestExists($USER->getUID())) {
         echo "<input type='submit' value='Request PI Account' disabled>";
-        echo "<label>Your request has been submitted and is currently pending</label>";
+        echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
     } else {
         echo "<input type='submit' value='Request PI Account'>";
     }

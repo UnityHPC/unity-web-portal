@@ -158,7 +158,7 @@ class UnityGroup
         $this->SQL->removeRequests($this->pi_uid);
 
         // we don't need to do anything extra if the group is already deleted
-        if (!$this->exists) {
+        if (!$this->exists()) {
             return;
         }
 

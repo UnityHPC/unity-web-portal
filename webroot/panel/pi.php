@@ -2,6 +2,8 @@
 
 require_once "../../resources/autoload.php";
 
+use UnityWebPortal\lib\UnityUser;
+
 $group = $USER->getPIGroup();
 
 if (!$USER->isPI()) {
@@ -57,12 +59,13 @@ if (count($requests) > 0) {
         echo "<td><a href='mailto:" . $request->getMail() . "'>" . $request->getMail() . "</a></td>";
         echo "<td>";
         echo
-        "<form action='' method='POST' id='approve-" . $request->getUID() . "' 
-        onsubmit='return confirm(\"Are you sure you want to take action on " . $request->getUID() . "?\")'>
+        "<form action='' method='POST'>
         <input type='hidden' name='form_name' value='userReq'>
         <input type='hidden' name='uid' value='" . $request->getUID() . "'>
-        <input type='submit' name='action' value='Approve'>
-        <input type='submit' name='action' value='Deny'>
+        <input type='submit' name='action' value='Approve' 
+        onclick='return confirm(\"Are you sure you want to approve " . $request->getUID() . "?\")'>
+        <input type='submit' name='action' value='Deny' 
+        onclick='return confirm(\"Are you sure you want to deny " . $request->getUID() . "?\")'>
         </form>";
         echo "</td>";
         echo "</tr>";
@@ -82,13 +85,11 @@ foreach ($assocs as $assoc) {
     echo "<tr>";
     echo "<td>";
     echo
-    "<form action='' method='POST' id='remove-" . $assoc->getUID() . "' 
-    onsubmit='return confirm(\"Are you sure you want to remove " .
-    $assoc->getUID() . " from your PI group? 
-    Their jobs will be cancelled and they will no longer have access to shared storage.\")'>
+    "<form action='' method='POST'>
     <input type='hidden' name='form_name' value='remUser'>
     <input type='hidden' name='uid' value='" . $assoc->getUID() . "'>
-    <input type='submit' value='Remove'>
+    <input type='submit' value='Remove' 
+    onclick='return confirm(\"Are you sure you want to remove " . $assoc->getUID() . " from your PI group?\")'>
     </form>";
     echo "</td>";
     echo "<td>" . $assoc->getFirstname() . " " . $assoc->getLastname() . "</td>";
