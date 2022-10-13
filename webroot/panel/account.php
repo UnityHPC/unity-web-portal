@@ -146,12 +146,17 @@ echo
 </select>
 <br>
 
-<input id="," placeholder="," style="," value='loginshell'> 
+<input id="," placeholder="," style="," value='submit'> 
 <value=" . $USER->getLoginShell() . " required>
 <input type='submit' value='Set Login Shell'>
+
 </form>
 </div>"
 ?>
+<script>
+$USER = $_POST['loginshell'];
+echo("[".$USER."]");
+</script>
 
 <script>
 document.querySelector("#choose").addEventListener('change', function() {
