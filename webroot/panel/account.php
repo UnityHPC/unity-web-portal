@@ -136,12 +136,34 @@ echo
 "<div class='inline'>
 <form action='' method='POST'>
 <input type='hidden' name='form_type' value='loginshell'>
-<input type='text' name='loginshell' placeholder='Login Shell (ie. /bin/bash)' 
-value=" . $USER->getLoginShell() . " required>
+<select id=",">
+  <option>/bin/bash</option>
+  <option>/bin/zsh</option>
+  <option>/bin/csh</option>
+  <option>/bin/tcsh</option>
+  <option>/bin/fish</option>
+  <option>custom</option>
+</select>
+<br>
+
+<input id="," placeholder="," style="," value='loginshell'> 
+<value=" . $USER->getLoginShell() . " required>
 <input type='submit' value='Set Login Shell'>
 </form>
-</div>";
+</div>"
 ?>
+
+<script>
+document.querySelector("#choose").addEventListener('change', function() {
+  var textarea = document.querySelector("#custom-text");
+  if (this.value == 'custom') {
+    textarea.style.display = 'block';
+  } else {
+    textarea.style.display = 'none';
+  }
+
+});
+</script>
 
 <script>
     $("button.btnAddKey").click(function() {
