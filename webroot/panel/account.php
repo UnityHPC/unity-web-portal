@@ -146,7 +146,7 @@ echo
 </select>
 <br>
 
-<input id="," placeholder="," style="," value='submit'> 
+<input id="," placeholder="," style="," value='custom'> 
 <value=" . $USER->getLoginShell() . " required>
 <input type='submit' value='Set Login Shell'>
 
