@@ -146,8 +146,8 @@ echo
 </select>
 <br>
 
-<input id="," placeholder="," style="," value='custom'> 
-<value=" . $USER->getLoginShell() . " required>
+<input id="," placeholder="," style="," value='custom'
+<value=". $USER->getLoginShell() . " required>
 <input type='submit' value='Set Login Shell'>
 
 </form>
@@ -162,9 +162,9 @@ echo("[".$USER."]");
 document.querySelector("#choose").addEventListener('change', function() {
   var textarea = document.querySelector("#custom-text");
   if (this.value == 'custom') {
-    textarea.style.display = 'block';
-  } else {
     textarea.style.display = 'none';
+  } else {
+    textarea.style.display = 'block';
   }
 
 });
