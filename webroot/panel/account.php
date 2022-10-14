@@ -140,7 +140,7 @@ echo
 
 "<div class='inline'>
 <form action='' method='get'>
-<input type='submit' name='form_type' value='Submit'>
+<name='form_type' value='Submit'>
 <select id=",">
   <option>/bin/bash</option>
   <option>/bin/zsh</option>
@@ -151,8 +151,7 @@ echo
 </select>
 <br>
 
-<input id="," placeholder="," style="," value='custom'
-<value=". $USER->getLoginShell() . " required>
+<input id="," placeholder="," style="," " . $USER->getLoginShell() . " >
 <input type='submit' value='Set Login Shell'>
 
 </form>
