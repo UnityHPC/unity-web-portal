@@ -132,10 +132,15 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 
 <?php
 echo "<h5>Login Shell</h5>";
+if (isset($_GET["loginshell"])) {
+    header("Location: " . $_GET["loginshell"] . ".php");
+    exit();
+} 
 echo
+
 "<div class='inline'>
-<form action='' method='POST'>
-<input type='hidden' name='form_type' value='loginshell'>
+<form action='' method='get'>
+<input type='submit' name='form_type' value='Submit'>
 <select id=",">
   <option>/bin/bash</option>
   <option>/bin/zsh</option>
@@ -153,10 +158,6 @@ echo
 </form>
 </div>"
 ?>
-<script>
-$USER = $_POST['loginshell'];
-echo("[".$USER."]");
-</script>
 
 <script>
 document.querySelector("#choose").addEventListener('change', function() {
