@@ -159,7 +159,7 @@ echo
 ?>
 
 <script>
-document.querySelector("#choose").addEventListener('change', function() {
+document.querySelector("loginshell").addEventListener('change', function() {
   var textarea = document.querySelector("#custom-text");
   if (this.value == 'custom') {
     textarea.style.display = 'none';
