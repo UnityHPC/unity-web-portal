@@ -144,9 +144,6 @@ echo
 <select id=",">
   <option>/bin/bash</option>
   <option>/bin/zsh</option>
-  <option>/bin/csh</option>
-  <option>/bin/tcsh</option>
-  <option>/bin/fish</option>
   <option>custom</option>
 </select>
 <br>
