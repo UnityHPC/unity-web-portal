@@ -130,42 +130,20 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 
 <hr>
 
+<select>
 <?php
-echo "<h5>Login Shell</h5>";
-if (isset($_GET["loginshell"])) {
-    header("Location: " . $_GET["loginshell"] . ".php");
-    exit();
-} 
-echo
-
-"<div class='inline'>
-<form action='' method='get'>
-<name='form_type' value='Submit'>
-<select id=",">
-  <option>/bin/bash</option>
-  <option>/bin/zsh</option>
-  <option>custom</option>
+foreach ($BRANDING["loginshell"]["shell"] as $shell) {
+echo "<option>$shell</option>";
+}
+?>
 </select>
+
 <br>
 
-<input id="," placeholder="," style="," " . $USER->getLoginShell() . " >
+<input id=" " placeholder=" " style=" ">
 <input type='submit' value='Set Login Shell'>
 
-</form>
-</div>"
-?>
-
-<script>
-document.querySelector("loginshell").addEventListener('change', function() {
-  var textarea = document.querySelector("#custom-text");
-  if (this.value == 'custom') {
-    textarea.style.display = 'none';
-  } else {
-    textarea.style.display = 'block';
-  }
-
-});
-</script>
+</div>
 
 <script>
     $("button.btnAddKey").click(function() {
