@@ -135,18 +135,15 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 foreach ($BRANDING["loginshell"]["shell"] as $shell) {
 echo "<option>$shell</option>";
 }
-if($_POST['submit'])
-{
-$shell=$_POST['shell'];
+if($_POST['shell']) {
+$shell=$_POST['custom'];
 }
 ?>
+
 </select>
 
 <br>
 
-
-
-<select id="loginshell" placeholder=" " style=" " name="shell">
 <input type='submit' value='Set Login Shell'>
 
 </div>
