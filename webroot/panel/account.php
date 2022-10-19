@@ -135,11 +135,11 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 foreach ($BRANDING["loginshell"]["shell"] as $shell) {
 echo "<option>$shell</option>";
 }
-if($_POST['shell']) {
+if(isset($_POST['shell'])) {
 $shell=$_POST['custom'];
 }
 ?>
-
+<input type="text" value="">;
 </select>
 
 <br>
