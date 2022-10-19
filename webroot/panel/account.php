@@ -139,14 +139,22 @@ if(isset($_POST['shell'])) {
 $shell=$_POST['custom'];
 }
 ?>
-<input type="text" value="">
+<div id="field"><input type="text" name="shell"></div>
+
 </select>
 
+<script type="text/javascript">
+$(document).ready(function(){
+
+$('input[name="custom"]').change(function(){
+var v = $('input[name="custom"]').val();
+if(v=="custom") $('#field').show();
+else $('#field').hide();
+})
+})
+
 <br>
-
 <input type='submit' value='Set Login Shell'>
-
-</div>
 
 <script>
     $("button.btnAddKey").click(function() {
