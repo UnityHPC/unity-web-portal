@@ -139,7 +139,7 @@ if(isset($_POST['shell'])) {
 $shell=$_POST['custom'];
 }
 ?>
-<input type="text" value="">;
+<input type="text" value="">
 </select>
 
 <br>
