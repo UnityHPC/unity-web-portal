@@ -42,7 +42,6 @@ include $LOC_HEADER;
         echo "<tr>";
         echo "<td>" . $user->getFirstname() . " " . $user->getLastname() . "</td>";
         echo "<td>" . $user->getUID() . "</td>";
-        echo "<td>" . $user->getPIGroup() . "</td>";
         echo "<td>" . $user->getOrg() . "</td>";
         echo "<td><a href='mailto:" . $user->getMail() . "'>" . $user->getMail() . "</a></td>";
         echo "<td>";
