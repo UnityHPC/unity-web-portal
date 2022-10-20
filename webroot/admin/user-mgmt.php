@@ -30,7 +30,7 @@ include $LOC_HEADER;
         <td>Name</td>
         <td>Unity ID</td>
         <td>Org</td>
-        <td>PIGroup</td>
+        <td>PIGroups</td>
         <td>Mail</td>
         <td>Actions</td>
     </tr>
