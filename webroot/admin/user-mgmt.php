@@ -30,6 +30,7 @@ include $LOC_HEADER;
         <td>Name</td>
         <td>Unity ID</td>
         <td>Org</td>
+        <td>PIGroups</td>
         <td>Mail</td>
         <td>Actions</td>
     </tr>
@@ -42,6 +43,7 @@ include $LOC_HEADER;
         echo "<td>" . $user->getFirstname() . " " . $user->getLastname() . "</td>";
         echo "<td>" . $user->getUID() . "</td>";
         echo "<td>" . $user->getOrg() . "</td>";
+        echo "<td>" . $user->getAllPIGroups() . "</td>";
         echo "<td><a href='mailto:" . $user->getMail() . "'>" . $user->getMail() . "</a></td>";
         echo "<td>";
 
