@@ -43,7 +43,8 @@ include $LOC_HEADER;
         echo "<td>" . $user->getFirstname() . " " . $user->getLastname() . "</td>";
         echo "<td>" . $user->getUID() . "</td>";
         echo "<td>" . $user->getOrg() . "</td>";
-        echo "<td>" . $user->getAllPIGroups() . "</td>";
+        echo "<td>" . $LDAP->getAllPIGroups($SQL, $MAILER) . "</td>";
+
         echo "<td><a href='mailto:" . $user->getMail() . "'>" . $user->getMail() . "</a></td>";
         echo "<td>";
 
