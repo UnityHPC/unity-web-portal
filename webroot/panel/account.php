@@ -3,8 +3,19 @@
 require_once "../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnitySite;
+use phpseclib3\Crypt\PublicKeyLoader;
 
 require_once $LOC_HEADER;
+
+$invalid_ssh_dialogue = 
+"<div>
+<form action='' id='invalid-key' 
+onsubmit='return confirm(\"Invalid SSH Key\");'>
+<input type='hidden' name='delIndex' value='1>
+<input type='hidden' name='form_type' value='delKey'>
+<input type='submit' value='&times;'>
+</form>
+</div>";
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     switch ($_POST["form_type"]) {
@@ -12,8 +23,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $added_keys = array();
 
             switch ($_POST["add_type"]) {
-                case "paste":
-                    array_push($added_keys, $_POST["key"]);
+                case "paste":                                       
+                    try{
+                        PublicKeyLoader::load($_POST["key"], $password = false);
+                        array_push($added_keys, $_POST["key"]);
+                    } catch (Exception $e) {
+                        echo $invalid_ssh_dialogue;                        
+                    }                                        
                     break;
                 case "import":
                     array_push($added_keys, file_get_contents($_FILES['keyfile']['tmp_name']));
@@ -144,37 +160,37 @@ value=" . $USER->getLoginShell() . " required>
 ?>
 
 <script>
-    $("button.btnAddKey").click(function() {
-        openModal("Add New Key", "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/new_key.php");
-    });
+$("button.btnAddKey").click(function() {
+    openModal("Add New Key", "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/new_key.php");
+});
 </script>
 
 <style>
-    .key-box {
-        position: relative;
-        width: auto;
-        height: auto;
-        max-width: 700px;
-    }
+.key-box {
+    position: relative;
+    width: auto;
+    height: auto;
+    max-width: 700px;
+}
 
-    .key-box input[type=submit] {
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        padding: 5px;
-        width: 32px;
-        border-radius: 0 3px 3px 0;
-        font-size: 20pt;
-        margin: 0;
-    }
+.key-box input[type=submit] {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 5px;
+    width: 32px;
+    border-radius: 0 3px 3px 0;
+    font-size: 20pt;
+    margin: 0;
+}
 
-    .key-box textarea {
-        word-wrap: break-word;
-        word-break: break-all;
-        width: calc(100% - 44px);
-        border-radius: 3px 0 0 3px;
-    }
+.key-box textarea {
+    word-wrap: break-word;
+    word-break: break-all;
+    width: calc(100% - 44px);
+    border-radius: 3px 0 0 3px;
+}
 </style>
 
 <?php
