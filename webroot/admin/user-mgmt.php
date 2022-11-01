@@ -43,10 +43,8 @@ include $LOC_HEADER;
         echo "<td>" . $user->getFirstname() . " " . $user->getLastname() . "</td>";
         echo "<td>" . $user->getUID() . "</td>";
         echo "<td>" . $user->getOrg() . "</td>";
-        echo "<td>" . $LDAP->getAllPIGroups($SQL, $MAILER) . "</td>";
-        // echo json_encode($LDAP->getAllPIGroups($SQL, $MAILER));
-        echo "<td><a href='mailto:" . $user->getMail() . "'>" . $user->getMail() . "</a></td>";
-        echo "<td>";
+        echo "<td>" . $cur_user_groups = $user->getGroups() . "</td>";
+         
 
         echo "<form class='viewAsUserForm' action='' method='POST' 
         onsubmit='return confirm(\"Are you sure you want to switch to the user " . $user->getUID() . "?\");'>
@@ -57,7 +55,11 @@ include $LOC_HEADER;
         echo "</td>";
         echo "</tr>";
     }
+    foreach ($cur_user_groups as $cur_group) {
+        echo "<a href='mailto:" . $cur_group->getOwner()->getMail() . "'>" . $cur_group->getPIUID() . "</a>";
+        }
     ?>
+     
 
 </table>
 
