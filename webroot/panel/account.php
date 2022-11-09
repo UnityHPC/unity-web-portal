@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $USER->setSSHKeys($keys);  // Update user keys
             break;
         case "loginshell":
-            $USER->setLoginShell($_POST["loginshell"]);
+            //$USER->setLoginShell($_POST["loginshell"]);
             break;
         case "pi_request":
             if (!$USER->isPI()) {
@@ -130,35 +130,47 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 
 <hr>
 
-<select>
-<?php
-foreach ($BRANDING["loginshell"]["shell"] as $shell) {
-echo "<option>$shell</option>";
-}
-if(isset($_POST['shell'])) {
-$shell=$_POST['custom'];
-}
-?>
-<div id="field"><input type="text" name="shell"></div>
+<form action="" method="POST">
 
-</select>
+    <input type="hidden" name="form_type" value="loginshell">
 
-<script type="text/javascript">
-$(document).ready(function(){
+    <select id="loginSelector">
 
-$('input[name="custom"]').change(function(){
-var v = $('input[name="custom"]').val();
-if(v=="custom") $('#field').show();
-else $('#field').hide();
-})
-})
+        <option value="" disabled selected hidden>Select Login Shell...</option>
 
-<br>
-<input type='submit' value='Set Login Shell'>
+        <?php
+        foreach ($BRANDING["loginshell"]["shell"] as $shell) {
+            echo "<option>$shell</option>";
+        }
+        
+        if(isset($_POST['shell'])) {
+        }
+        ?>
+
+        <option value = "custom">Custom</option>
+        
+    </select>
+
+    <input id="customLoginBox" type="text" name="shell">
+
+    <input type='submit' value='Set Login Shell'>
+
+</form>
 
 <script>
     $("button.btnAddKey").click(function() {
         openModal("Add New Key", "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/new_key.php");
+    });
+
+    $("#customLoginBox").hide();
+
+    $("#loginSelector").change(function() {
+        var customBox = $("#customLoginBox");
+        if($(this).val() == "custom") {
+            customBox.show();
+        } else {
+            customBox.hide();
+        }
     });
 </script>
 
