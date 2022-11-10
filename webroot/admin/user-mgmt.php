@@ -65,7 +65,6 @@ include $LOC_HEADER;
         echo "</tr>";
 
     }
-    
     ?>
      
 </table>
