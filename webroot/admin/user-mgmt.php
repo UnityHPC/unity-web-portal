@@ -66,7 +66,6 @@ include $LOC_HEADER;
 
     }
     ?>
-     
 </table>
 
 <?php
