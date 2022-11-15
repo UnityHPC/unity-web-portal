@@ -43,7 +43,7 @@ include $LOC_HEADER;
         echo "<td>" . $user->getFirstname() . " " . $user->getLastname() . "</td>";
         echo "<td>" . $user->getUID() . "</td>";
         echo "<td>" . $user->getOrg() . "</td>";
-        echo "<td><a href ='mailto:" . $user->getMail() . "'>" . $user->getMail() . "</a></td>";
+        echo "<td><a href='mailto:" . $user->getMail() . "'>" . $user->getMail() . "</a></td>";
         echo "<td>";
         $cur_user_groups = $user->getGroups();
         foreach($cur_user_groups as $cur_group) {
