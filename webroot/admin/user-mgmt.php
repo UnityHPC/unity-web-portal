@@ -62,7 +62,6 @@ include $LOC_HEADER;
         </form>";
         echo "</td>";
         echo "</tr>";
-
     }
     ?>
 </table>
