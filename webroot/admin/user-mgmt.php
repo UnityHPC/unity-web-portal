@@ -31,6 +31,7 @@ include $LOC_HEADER;
         <td>Unity ID</td>
         <td>Org</td>
         <td>Mail</td>
+        <td>PIGroups</td>
         <td>Actions</td>
     </tr>
 
@@ -44,7 +45,15 @@ include $LOC_HEADER;
         echo "<td>" . $user->getOrg() . "</td>";
         echo "<td><a href='mailto:" . $user->getMail() . "'>" . $user->getMail() . "</a></td>";
         echo "<td>";
-
+        $cur_user_groups = $user->getGroups();
+        foreach($cur_user_groups as $cur_group) {
+            echo "<a href='mailto:" . $cur_group->getOwner()->getMail() . "'>" . $cur_group->getPIUID() . "</a>";
+            if ($cur_group !== array_key_last($cur_user_groups)) {
+                echo '<br>';
+            }
+        }
+        echo "</td>";
+        echo "<td>";
         echo "<form class='viewAsUserForm' action='' method='POST' 
         onsubmit='return confirm(\"Are you sure you want to switch to the user " . $user->getUID() . "?\");'>
         <input type='hidden' name='form_name' value='viewAsUser'>
@@ -55,7 +64,6 @@ include $LOC_HEADER;
         echo "</tr>";
     }
     ?>
-
 </table>
 
 <?php
