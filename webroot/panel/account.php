@@ -42,6 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $USER->setSSHKeys($keys);  // Update user keys
             break;
         case "loginshell":
+            if ($_POST["shellSelect"] == "custom"){
+                $USER->setLoginShell($_POST["shell"]);
+            } else {
+                $USER->setLoginShell($_POST["shellSelect"]);
+            }
             //$USER->setLoginShell($_POST["loginshell"]);
             break;
         case "pi_request":
@@ -134,28 +139,45 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 
     <input type="hidden" name="form_type" value="loginshell">
 
-    <select id="loginSelector">
+    <select id="loginSelector" name= "shellSelect"> 
 
-        <option value="" disabled selected hidden>Select Login Shell...</option>
+        <option value="" disabled hidden>Select Login Shell...</option>
 
         <?php
+        $cur_shell = $USER->getLoginShell();
+        $found_selector = false;
         foreach ($BRANDING["loginshell"]["shell"] as $shell) {
-            echo "<option>$shell</option>";
+            if ($cur_shell == $shell){
+                echo "<option selected>$shell</option>";
+                $found_selector = true;
+            } else {
+                echo "<option>$shell</option>";
+            }
         }
-        
-        if(isset($_POST['shell'])) {
+
+        if ($found_selector) {
+            echo "<option value = 'custom'> Custom </option>";
+        } else {
+            echo "<option value = 'custom' selected> Custom </option>";
         }
         ?>
 
-        <option value = "custom">Custom</option>
+        
         
     </select>
+<?php
 
-    <input id="customLoginBox" type="text" name="shell">
-
+    if ($found_selector) {
+        echo "<input id='customLoginBox' type='text' name='shell'>";
+    } else {
+        echo "<input id='customLoginBox' type='text' name='shell' value= '$cur_shell'>";
+    }
+?>
     <input type='submit' value='Set Login Shell'>
 
 </form>
+
+
 
 <script>
     $("button.btnAddKey").click(function() {
@@ -172,6 +194,10 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
             customBox.hide();
         }
     });
+
+    if ($("#loginSelector").val() == "custom") {
+        $("#customLoginBox").show();
+    }
 </script>
 
 <style>
