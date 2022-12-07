@@ -329,7 +329,7 @@ class UnityGroup
 
         $out = array();
         foreach ($requests as $request) {
-            array_push($out, new UnityUser($request["uid"], $this->LDAP, $this->SQL, $this->MAILER));
+            array_push($out, [new UnityUser($request["uid"], $this->LDAP, $this->SQL, $this->MAILER), $request["timestamp"]]);
         }
 
         return $out;
@@ -361,9 +361,13 @@ class UnityGroup
 
     public function requestExists($user)
     {
-        foreach ($this->getRequests() as $requester) {
-            if ($requester->getUID() == $user->getUID()) {
-                return true;
+        $requesters = $this->getRequests();
+        if (count($requesters) > 0) {
+            $requesters = $requesters[0];
+            foreach ($requesters as $requester) {
+                if ($requester->getUID() == $user->getUID()) {
+                    return true;
+                }
             }
         }
 

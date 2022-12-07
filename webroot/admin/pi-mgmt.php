@@ -70,6 +70,7 @@ include $LOC_HEADER;
         <td>Name</td>
         <td>Unity ID</td>
         <td>Mail</td>
+        <td>Requested On</td>
         <td>Actions</td>
     </tr>
 
@@ -83,6 +84,7 @@ include $LOC_HEADER;
         echo "<td>" . $request_user->getFirstname() . " " . $request_user->getLastname() . "</td>";
         echo "<td>" . $request_user->getUID() . "</td>";
         echo "<td><a href='mailto:" . $request_user->getMail() . "'>" . $request_user->getMail() . "</a></td>";
+        echo "<td>" . date("jS F, Y",strtotime($request['timestamp'])) . "</td>";
         echo "<td>";
         echo
         "<form action='' method='POST'>
