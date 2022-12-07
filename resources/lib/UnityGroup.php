@@ -329,7 +329,8 @@ class UnityGroup
 
         $out = array();
         foreach ($requests as $request) {
-            array_push($out, [new UnityUser($request["uid"], $this->LDAP, $this->SQL, $this->MAILER), $request["timestamp"]]);
+            $user = new UnityUser($request["uid"], $this->LDAP, $this->SQL, $this->MAILER);
+            array_push($out, [$user, $request["timestamp"]]);
         }
 
         return $out;
