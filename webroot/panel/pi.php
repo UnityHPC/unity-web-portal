@@ -63,7 +63,7 @@ if (count($requests) > 0) {
         echo "<td>" . $request[0]->getFirstname() . " " . $request[0]->getLastname() . "</td>";
         echo "<td>" . $request[0]->getUID() . "</td>";
         echo "<td><a href='mailto:" . $request[0]->getMail() . "'>" . $request[0]->getMail() . "</a></td>";
-        echo "<td>" . date("jS F, Y",strtotime($request[1])) . "</td>";
+        echo "<td>" . date("jS F, Y", strtotime($request[1])) . "</td>";
         echo "<td>";
         echo
         "<form action='' method='POST'>
