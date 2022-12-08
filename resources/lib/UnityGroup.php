@@ -364,9 +364,8 @@ class UnityGroup
     {
         $requesters = $this->getRequests();
         if (count($requesters) > 0) {
-            $requesters = $requesters[0];
             foreach ($requesters as $requester) {
-                if ($requester->getUID() == $user->getUID()) {
+                if ($requester[0]->getUID() == $user->getUID()) {
                     return true;
                 }
             }
