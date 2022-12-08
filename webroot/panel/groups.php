@@ -71,6 +71,7 @@ if (count($req_filtered) > 0) {
         echo "<td>" . $requested_owner->getFirstname() . " " . $requested_owner->getLastname() . "</td>";
         echo "<td>" . $requested_account->getPIUID() . "</td>";
         echo "<td><a href='mailto:" . $requested_owner->getMail() . "'>" . $requested_owner->getMail() . "</a></td>";
+        echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
         echo "<td></td>";
         echo "</tr>";
     }
