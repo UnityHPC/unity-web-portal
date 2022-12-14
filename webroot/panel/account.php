@@ -47,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             } else {
                 $USER->setLoginShell($_POST["shellSelect"]);
             }
-            //$USER->setLoginShell($_POST["loginshell"]);
             break;
         case "pi_request":
             if (!$USER->isPI()) {
