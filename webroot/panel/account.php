@@ -156,7 +156,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
         }
 
         if ($found_selector) {
-            echo "<option value = 'custom'> Custom </option>";
+            echo "<option value='custom'>Custom</option>";
         } else {
             echo "<option value = 'custom' selected> Custom </option>";
         }
