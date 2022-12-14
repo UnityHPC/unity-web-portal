@@ -178,7 +178,13 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
         openModal("Add New Key", "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/new_key.php");
     });
 
-    $("#customLoginBox").hide();
+    var customLoginBox = $("#customLoginBox");
+    if (customLoginBox.val() == "") {
+        // login box is empty, so we hide it by default
+        // if the login box had a value, that means it would be a custom shell
+        // and should not hide by default
+        customLoginBox.hide();
+    }
 
     $("#loginSelector").change(function() {
         var customBox = $("#customLoginBox");
