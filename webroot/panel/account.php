@@ -161,9 +161,6 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
             echo "<option value='custom' selected>Custom</option>";
         }
         ?>
-
-        
-        
     </select>
 <?php
 
