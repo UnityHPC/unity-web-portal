@@ -174,8 +174,6 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 
 </form>
 
-
-
 <script>
     $("button.btnAddKey").click(function() {
         openModal("Add New Key", "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/new_key.php");
