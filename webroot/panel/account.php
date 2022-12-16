@@ -128,6 +128,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
     </form>
     </div>";
 }
+
 ?>
 
 <button type="button" class="plusBtn btnAddKey">&#43;</button>
@@ -167,7 +168,8 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 if ($found_selector) {
     echo "<input id='customLoginBox' type='text' placeholder='Enter login shell path (ie. /bin/bash)' name='shell'>";
 } else {
-    echo "<input id='customLoginBox' type='text' placeholder='Enter login shell path (ie. /bin/bash)' name='shell' value='$cur_shell'>";
+    echo "<input id='customLoginBox' type='text' 
+    placeholder='Enter login shell path (ie. /bin/bash)' name='shell' value='$cur_shell'>";
 }
 
 ?>
