@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $USER->setSSHKeys($keys);  // Update user keys
             break;
         case "loginshell":
-            if ($_POST["shellSelect"] == "custom"){
+            if ($_POST["shellSelect"] == "custom") {
                 $USER->setLoginShell($_POST["shell"]);
             } else {
                 $USER->setLoginShell($_POST["shellSelect"]);
@@ -128,6 +128,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
     </form>
     </div>";
 }
+
 ?>
 
 <button type="button" class="plusBtn btnAddKey">&#43;</button>
@@ -146,7 +147,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
         $cur_shell = $USER->getLoginShell();
         $found_selector = false;
         foreach ($BRANDING["loginshell"]["shell"] as $shell) {
-            if ($cur_shell == $shell){
+            if ($cur_shell == $shell) {
                 echo "<option selected>$shell</option>";
                 $found_selector = true;
             } else {
@@ -161,13 +162,16 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
         }
         ?>
     </select>
+
 <?php
 
-    if ($found_selector) {
-        echo "<input id='customLoginBox' type='text' placeholder='Enter login shell path (ie. /bin/bash)' name='shell'>";
-    } else {
-        echo "<input id='customLoginBox' type='text' placeholder='Enter login shell path (ie. /bin/bash)' name='shell' value='$cur_shell'>";
-    }
+if ($found_selector) {
+    echo "<input id='customLoginBox' type='text' placeholder='Enter login shell path (ie. /bin/bash)' name='shell'>";
+} else {
+    echo "<input id='customLoginBox' type='text' 
+    placeholder='Enter login shell path (ie. /bin/bash)' name='shell' value='$cur_shell'>";
+}
+
 ?>
     <input type='submit' value='Set Login Shell'>
 
