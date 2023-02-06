@@ -5,7 +5,6 @@ require_once "../resources/autoload.php";
 require_once $LOC_HEADER;
 ?>
 
-<br><br>
 
 <?php
 echo $SQL->getPage($BRANDING["page"]["home"])["content"];
