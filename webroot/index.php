@@ -10,7 +10,6 @@ require_once $LOC_HEADER;
 echo $SQL->getPage($BRANDING["page"]["home"])["content"];
 ?>
 
-<br>
 <h1>Cluster Notices</h1>
 <hr>
 
