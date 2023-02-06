@@ -5,6 +5,11 @@ require_once "../resources/autoload.php";
 require_once $LOC_HEADER;
 ?>
 
+
+<?php
+echo $SQL->getPage($BRANDING["page"]["home"])["content"];
+?>
+
 <h1>Cluster Notices</h1>
 <hr>
 
