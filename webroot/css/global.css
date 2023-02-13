@@ -241,7 +241,8 @@ footer>* {
 
 footer #footerLogos img {
     padding: 0 10px 0 10px;
-    width: 120px;
+    max-width: 120px;
+    max-height: 90px;
     margin-bottom: 10px;
     vertical-align: middle;
 }
