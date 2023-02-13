@@ -250,10 +250,6 @@ footer #footerLogos img {
     footer #footerLogos>* {
         display: inline-block;
     }
-
-    footer #footerLogos>*:not(:last-child) {
-        border-right: 1px solid var(--light_footer_foreground);
-    }
 }
 
 @media only screen and (max-width: 500px) {
