@@ -43,7 +43,7 @@ if (isset($SSO)) {
 
   <header>
     <img id="imgLogo" draggable=false 
-    src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/<?php echo $BRANDING["site"]["logo"]; ?>">
+    src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/branding/<?php echo $BRANDING["site"]["logo"]; ?>">
     <button class="hamburger vertical-align">
       <img draggable="false" src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/menu.png" alt="Menu Button">
     </button>
