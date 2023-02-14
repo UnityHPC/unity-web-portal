@@ -3,8 +3,12 @@
 require_once "../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnitySite;
+use phpseclib3\Crypt\PublicKeyLoader;
 
 require_once $LOC_HEADER;
+
+$invalid_ssh_dialogue = 
+"<script type='text/javascript'>alert('Invalid SSH Key. Try again.');</script>";
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     switch ($_POST["form_type"]) {
@@ -13,10 +17,22 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
             switch ($_POST["add_type"]) {
                 case "paste":
-                    array_push($added_keys, $_POST["key"]);
+                    try{
+                        PublicKeyLoader::load($_POST["key"], $password = false);
+                        array_push($added_keys, $_POST["key"]);
+                    } catch (Exception $e) {
+                        echo $invalid_ssh_dialogue;                        
+                    }
                     break;
                 case "import":
-                    array_push($added_keys, file_get_contents($_FILES['keyfile']['tmp_name']));
+                    $keyfile = $_FILES["keyfile"]["tmp_name"];
+                    $key = file_get_contents($keyfile);
+                    try{
+                        PublicKeyLoader::load($key, $password = false);
+                        array_push($added_keys, $key);
+                    } catch (Exception $e) {
+                        echo $invalid_ssh_dialogue;
+                    }
                     break;
                 case "generate":
                     array_push($added_keys, $_POST["gen_key"]);
