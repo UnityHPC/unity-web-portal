@@ -1,17 +1,5 @@
 <?php
 
-use phpseclib3\Crypt\PublicKeyLoader;
-
-function testValidSSHKey($key_str)
-{
-    try {
-        PublicKeyLoader::load($key_str, $password = false);
-        return true;
-    } catch (Exception $e) {
-        return false;
-    }
-}
-
 require_once "../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnitySite;
@@ -30,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             switch ($_POST["add_type"]) {
                 case "paste":
                     $key = $_POST["key"];
-                    if (testValidSSHKey($key)) {
+                    if (UnitySite::testValidSSHKey($key)) {
                         array_push($added_keys, $key);
                     } else {
                         echo $invalid_ssh_dialogue;
@@ -39,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 case "import":
                     $keyfile = $_FILES["keyfile"]["tmp_name"];
                     $key = file_get_contents($keyfile);
-                    if (testValidSSHKey($key)) {
+                    if (UnitySite::testValidSSHKey($key)) {
                         array_push($added_keys, $key);
                     } else {
                         echo $invalid_ssh_dialogue;

@@ -1,6 +1,7 @@
 <?php
 
 namespace UnityWebPortal\lib;
+use phpseclib3\Crypt\PublicKeyLoader;
 
 class UnitySite
 {
@@ -49,5 +50,15 @@ class UnitySite
     {
         $arr = parse_ini_file($conf_path, true);
         return $arr;
+    }
+
+    public static function testValidSSHKey($key_str)
+    {
+        try {
+            PublicKeyLoader::load($key_str);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }
