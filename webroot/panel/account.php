@@ -11,7 +11,8 @@ $invalid_ssh_dialogue = "<script type='text/javascript'>
 alert('Invalid SSH key. Please verify your public key file is valid.');
 </script>";
 
-function testValidSSHKey($key_str) {
+function testValidSSHKey($key_str) 
+{
     try {
         PublicKeyLoader::load($key_str, $password = false);
         return true;
