@@ -8,7 +8,7 @@ use phpseclib3\Crypt\PublicKeyLoader;
 require_once $LOC_HEADER;
 
 $invalid_ssh_dialogue = "<script type='text/javascript'>
-alert('Invalid SSH Key. Try again.');
+alert('Invalid SSH key. Please verify your public key file is valid.');
 </script>";
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
