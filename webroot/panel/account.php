@@ -1,15 +1,6 @@
 <?php
 
-require_once "../../resources/autoload.php";
-
-use UnityWebPortal\lib\UnitySite;
 use phpseclib3\Crypt\PublicKeyLoader;
-
-require_once $LOC_HEADER;
-
-$invalid_ssh_dialogue = "<script type='text/javascript'>
-alert('Invalid SSH key. Please verify your public key file is valid.');
-</script>";
 
 function testValidSSHKey($key_str)
 {
@@ -20,6 +11,16 @@ function testValidSSHKey($key_str)
         return false;
     }
 }
+
+require_once "../../resources/autoload.php";
+
+use UnityWebPortal\lib\UnitySite;
+
+require_once $LOC_HEADER;
+
+$invalid_ssh_dialogue = "<script type='text/javascript'>
+alert('Invalid SSH key. Please verify your public key file is valid.');
+</script>";
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     switch ($_POST["form_type"]) {
