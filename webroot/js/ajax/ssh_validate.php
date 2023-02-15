@@ -10,5 +10,3 @@ try {
 } catch (Exception $e) {
     echo "false";
 }
-
-

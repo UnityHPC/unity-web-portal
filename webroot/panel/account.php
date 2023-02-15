@@ -7,8 +7,9 @@ use phpseclib3\Crypt\PublicKeyLoader;
 
 require_once $LOC_HEADER;
 
-$invalid_ssh_dialogue = 
-"<script type='text/javascript'>alert('Invalid SSH Key. Try again.');</script>";
+$invalid_ssh_dialogue = "<script type='text/javascript'>
+alert('Invalid SSH Key. Try again.');
+</script>";
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     switch ($_POST["form_type"]) {
@@ -17,17 +18,17 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
             switch ($_POST["add_type"]) {
                 case "paste":
-                    try{
+                    try {
                         PublicKeyLoader::load($_POST["key"], $password = false);
                         array_push($added_keys, $_POST["key"]);
                     } catch (Exception $e) {
-                        echo $invalid_ssh_dialogue;                        
+                        echo $invalid_ssh_dialogue;
                     }
                     break;
                 case "import":
                     $keyfile = $_FILES["keyfile"]["tmp_name"];
                     $key = file_get_contents($keyfile);
-                    try{
+                    try {
                         PublicKeyLoader::load($key, $password = false);
                         array_push($added_keys, $key);
                     } catch (Exception $e) {
