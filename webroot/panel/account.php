@@ -11,6 +11,15 @@ $invalid_ssh_dialogue = "<script type='text/javascript'>
 alert('Invalid SSH key. Please verify your public key file is valid.');
 </script>";
 
+function testValidSSHKey($key_str) {
+    try {
+        PublicKeyLoader::load($key_str, $password = false);
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     switch ($_POST["form_type"]) {
         case "addKey":
@@ -18,20 +27,19 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
             switch ($_POST["add_type"]) {
                 case "paste":
-                    try {
-                        PublicKeyLoader::load($_POST["key"], $password = false);
-                        array_push($added_keys, $_POST["key"]);
-                    } catch (Exception $e) {
+                    $key = $_POST["key"];
+                    if (testValidSSHKey($key)) {
+                        array_push($added_keys, $key);
+                    } else {
                         echo $invalid_ssh_dialogue;
                     }
                     break;
                 case "import":
                     $keyfile = $_FILES["keyfile"]["tmp_name"];
                     $key = file_get_contents($keyfile);
-                    try {
-                        PublicKeyLoader::load($key, $password = false);
+                    if (testValidSSHKey($key)) {
                         array_push($added_keys, $key);
-                    } catch (Exception $e) {
+                    } else {
                         echo $invalid_ssh_dialogue;
                     }
                     break;
