@@ -95,7 +95,7 @@ class UnityGroup
             );
 
             $this->MAILER->sendMail(
-                "pi_approve_email",
+                "pi_approve",
                 "group_request_admin",
                 array(
                     "user" => $this->getOwner()->getUID(),
