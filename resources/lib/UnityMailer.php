@@ -19,6 +19,8 @@ class UnityMailer extends PHPMailer
     private $MSG_SUPPORT_NAME;
     private $MSG_ADMIN_EMAIL;
     private $MSG_ADMIN_NAME;
+    private $MSG_PI_APPROVAL_EMAIL;
+    private $MSG_PI_APPROVAL_NAME;
 
     public function __construct(
         $template_dir,
@@ -34,7 +36,9 @@ class UnityMailer extends PHPMailer
         $msg_support_email,
         $msg_support_name,
         $msg_admin_email,
-        $msg_admin_name
+        $msg_admin_name,
+        $msg_pi_approval_email,
+        $msg_pi_approval_name
     ) {
         parent::__construct();
         $this->isSMTP();
@@ -87,6 +91,8 @@ class UnityMailer extends PHPMailer
         $this->MSG_SUPPORT_NAME = $msg_support_name;
         $this->MSG_ADMIN_EMAIL = $msg_admin_email;
         $this->MSG_ADMIN_NAME = $msg_admin_name;
+        $this->MSG_PI_APPROVAL_EMAIL = $msg_pi_approval_email;
+        $this->MSG_PI_APPROVAL_NAME = $msg_pi_approval_name;
     }
 
     public function sendMail($recipients, $template = null, $data = null)
@@ -105,6 +111,8 @@ class UnityMailer extends PHPMailer
 
             if ($recipients == "admin") {
                 $this->addBCC($this->MSG_ADMIN_EMAIL, $this->MSG_ADMIN_NAME);
+            } elseif ($recipients == "pi_approve_email") {
+                $this->addBCC($this->MSG_PI_APPROVAL_EMAIL, $this->MSG_PI_APPROVAL_NAME);
             } else {
                 if (is_array($recipients)) {
                     foreach ($recipients as $addr) {

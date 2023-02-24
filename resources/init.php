@@ -66,7 +66,9 @@ $MAILER = new UnityMailer(
     $BRANDING["mail"]["support"],
     $BRANDING["mail"]["support_name"],
     $BRANDING["mail"]["admin"],
-    $BRANDING["mail"]["admin_name"]
+    $BRANDING["mail"]["admin_name"],
+    $BRANDING["mail"]["pi_approve_email"],
+    $BRANDING["mail"]["pi_approve_name"]
 );
 
 //
