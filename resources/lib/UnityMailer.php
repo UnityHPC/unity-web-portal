@@ -111,7 +111,7 @@ class UnityMailer extends PHPMailer
 
             if ($recipients == "admin") {
                 $this->addBCC($this->MSG_ADMIN_EMAIL, $this->MSG_ADMIN_NAME);
-            } elseif ($recipients == "pi_approve_email") {
+            } elseif ($recipients == "pi_approve") {
                 $this->addBCC($this->MSG_PI_APPROVAL_EMAIL, $this->MSG_PI_APPROVAL_NAME);
             } else {
                 if (is_array($recipients)) {
