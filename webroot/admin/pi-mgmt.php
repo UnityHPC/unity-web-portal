@@ -115,6 +115,14 @@ include $LOC_HEADER;
 <?php
     $accounts = $LDAP->getAllPIGroups($SQL, $MAILER);
 
+    function cmp($a, $b) {
+        return strcmp($a->name, $b->name);
+        return strcmp($a->getPIUID(), $b->getPIUID());
+    }
+    
+    
+    usort($accounts, "cmp");
+
 foreach ($accounts as $pi_group) {
     $pi_user = $pi_group->getOwner();
 

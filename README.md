@@ -1,7 +1,7 @@
 ![alt text](https://user-images.githubusercontent.com/40907639/137608695-2d914da2-1ecc-480b-a47e-a9e33b2b1b45.png)
 
 # Unity Web Portal
-Unity Web Portal is a PHP application built in top of MariaDB and LDAP which acts as a central user portal for high-performance-computing clusters. Features include:
+Unity Web Portal is a PHP application built on top of MariaDB and LDAP which acts as a central user portal for high-performance-computing clusters. Features include:
 * Automation of LDAP object/user creation with SSH public key configurations
 * Custom user group creation in LDAP
 * Cluster notices

@@ -38,6 +38,13 @@ include $LOC_HEADER;
     <?php
     $users = $LDAP->getAllUsers($SQL, $MAILER);
 
+function cmp($a, $b) {
+    return strcmp($a->getUID(), $b->getUID());
+    
+}
+
+usort($users, "cmp");
+
     foreach ($users as $user) {
         echo "<tr>";
         echo "<td>" . $user->getFirstname() . " " . $user->getLastname() . "</td>";
