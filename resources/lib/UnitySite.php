@@ -49,7 +49,15 @@ class UnitySite
 
     public static function getConfig($conf_path)
     {
-        $arr = parse_ini_file($conf_path, true);
+        // load default conf values
+        $arr = parse_ini_file($conf_path . "/config.ini.default", true);
+
+        if (file_exists($conf_path . "/config.ini")) {
+            // check if there is an override
+            $arr_override = parse_ini_file($conf_path . "/config.ini", true);
+            array_replace_recursive($arr, $arr_override);
+        }
+
         return $arr;
     }
 

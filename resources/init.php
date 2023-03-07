@@ -22,7 +22,7 @@ session_start();
 //
 // Config INIT
 //
-$CONFIG = UnitySite::getConfig(__DIR__ . "/../config/config.ini");
+$CONFIG = UnitySite::getConfig(__DIR__ . "/../config");
 $BRANDING = UnityBranding::getBranding(__DIR__ . "/../config/branding");
 
 //
@@ -54,6 +54,7 @@ $SQL = new UnitySQL(
 // Creates SMTP service
 $MAILER = new UnityMailer(
     __DIR__ . "/mail",
+    __DIR__ . "/../config/mail_overrides",
     $CONFIG["smtp"]["host"],
     $CONFIG["smtp"]["port"],
     $CONFIG["smtp"]["security"],

@@ -11,6 +11,7 @@ use Exception;
 class UnityMailer extends PHPMailer
 {
     private $template_dir;  // location of all email templates
+    private $override_template_dir;
 
     private $MSG_LINKREF;
     private $MSG_SENDER_EMAIL;
@@ -24,6 +25,7 @@ class UnityMailer extends PHPMailer
 
     public function __construct(
         $template_dir,
+        $override_template_dir,
         $hostname,
         $port,
         $security,
@@ -83,6 +85,7 @@ class UnityMailer extends PHPMailer
         }
 
         $this->template_dir = $template_dir;
+        $this->override_template_dir = $override_template_dir;
 
         $this->MSG_LINKREF = $msg_linkref;
         $this->MSG_SENDER_EMAIL = $msg_sender_email;
@@ -102,10 +105,24 @@ class UnityMailer extends PHPMailer
             $this->setFrom($this->MSG_SENDER_EMAIL, $this->MSG_SENDER_NAME);
             $this->addReplyTo($this->MSG_SUPPORT_EMAIL, $this->MSG_SUPPORT_NAME);
 
+            // find mail template
+            $template_filename = $template . ".php";
+            if (file_exists($this->override_template_dir . "/" . $template_filename)) {
+                $template_path = $this->override_template_dir . "/" . $template_filename;
+            } else {
+                $template_path = $this->template_dir . "/" . $template_filename;
+            }
+
+            // find footer template
+            if (file_exists($this->override_template_dir . "/footer.php")) {
+                $footer_template_path = $this->override_template_dir . "/footer.php";
+            } else {
+                $footer_template_path = $this->template_dir . "/footer.php";
+            }
 
             ob_start();
-            include $this->template_dir . "/" . $template . ".php";
-            include $this->template_dir . "/footer.php";
+            include $template_path;
+            include $footer_template_path;
             $mes_html = ob_get_clean();
             $this->msgHTML($mes_html);
 
