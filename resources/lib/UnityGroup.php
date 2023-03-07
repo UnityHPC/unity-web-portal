@@ -93,6 +93,17 @@ class UnityGroup
                     "email" => $this->getOwner()->getMail()
                 )
             );
+
+            $this->MAILER->sendMail(
+                "pi_approve",
+                "group_request_admin",
+                array(
+                    "user" => $this->getOwner()->getUID(),
+                    "org" => $this->getOwner()->getOrg(),
+                    "name" => $this->getOwner()->getFullname(),
+                    "email" => $this->getOwner()->getMail()
+                )
+            );
         }
     }
 

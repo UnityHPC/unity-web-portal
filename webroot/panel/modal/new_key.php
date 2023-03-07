@@ -32,7 +32,7 @@ action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/account.php">
     <div id="key_paste">
         <textarea placeholder="ssh-rsa AAARs1..." form="newKeyform" name="key"></textarea>
 
-        <input type="submit" value="Add Key">
+        <input type="submit" value="Add Key" id="add-key">
     </div>
 
     <div style="display: none;" id="key_import">
@@ -90,4 +90,26 @@ action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/account.php">
             }
         });
     });
+
+    $("textarea[name=key]").on("input", function() {
+        var key = $(this).val();
+        $.ajax({
+            url: "<?php echo $CONFIG["site"]["prefix"]; ?>/js/ajax/ssh_validate.php",
+            type: "POST",
+            data: {
+                key: key
+            },
+            success: function(result) {
+                const res = result.replace(key, "");
+                if (res == "true") {
+                    $("input[id=add-key]").prop("disabled", false);
+                    $("textarea[name=key]").css("box-shadow", "none");
+                } else {
+                    $("input[id=add-key]").prop("disabled", true);
+                    $("textarea[name=key]").css("box-shadow", "0 0 0 0.3rem rgba(220, 53, 69, 0.25)");
+                }
+            }
+        });
+    });
+
 </script>
