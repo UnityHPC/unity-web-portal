@@ -22,8 +22,8 @@ accent_3 = "#a92323"  ; Active element color for element using accent color
 accent_disabled = "#e48181"  ; Disabled element color for element using accent color
 accent_foreground = "#ffffff"  ; Text color when accent color is background
 
-[footer]
-logos[] = "testLongFooter.png"  ; Footer logos (add new lines for each)
+[footer]  ; Footer logos (add new lines for each)
+logos[] = "testLongFooter.png"
 links[] = "https://github.com/"
 title[] = "Test Long Footer"
 logos[] = "testMedFooter.png"
@@ -36,7 +36,7 @@ logos[] = "testMedFooter.png"
 links[] = "https://github.com/"
 title[] = "Test Medium Footer"
 
-[loginshell] ; menu items, Login Shells
+[loginshell]  ; Login shells that show up as options in the account settings page
 shell[] = "/bin/bash"
 shell[] = "/bin/zsh"
 
@@ -49,13 +49,13 @@ labels[] = "Secure Menuitem 1"
 links[] = "https://github.com/"
 
 [mail]  ; mail addresses
-support = "support-email@unitywebportal.test"
+support = "support-email@unitywebportal.test"  ; Email for user support
 support_name = "Unity Support"
-admin = "admin-email@unitywebportal.test"
+admin = "admin-email@unitywebportal.test"  ; Email that goes to admins about site messages
 admin_name = "Unity Admins"
-sender = "sender-email@unitywebportal.test"
+sender = "sender-email@unitywebportal.test"  ; The "from" email for all messages sent from the portal
 sender_name = "Unity Sender"
-pi_approve = "piapproval@unitywebportal.test"
+pi_approve = "piapproval@unitywebportal.test"  ; Only PI approval messages will go to this email
 pi_approve_name = "Unity PI Approval"
 
 [page]  ; which sql objects to use for the content on these pages
