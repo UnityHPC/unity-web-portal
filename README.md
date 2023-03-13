@@ -64,3 +64,4 @@ Below you will find specific instructions for moving between version:
    1. `pi_approve*` in the `mail` section
    2. `home` in the `page` section
    3. The entire `loginshell` section
+1. In SQL db be sure to add the `home` content management row
