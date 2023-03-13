@@ -14,6 +14,7 @@
 * [Bug] Fixed footer lookup PHP error for sending emails
 * [Bug] Fixed changelog format
 * [Bug] Fixed styling on content management page (#20)
+* [API] Added API call for getting content management text
 * [Project] Footers in the project are now generic
 * [Project] Default configs do not reference UMA labels anymore
 
