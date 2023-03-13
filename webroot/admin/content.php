@@ -30,10 +30,15 @@ include $LOC_HEADER;
         ?>
     </select>
 
+    <br><br>
+
     <textarea name="content" id="editor" form="pageForm"></textarea>
+
+    <br><br>
 
     <input type="submit" value="Edit Page">
 </form>
+
 
 <script>
     ClassicEditor

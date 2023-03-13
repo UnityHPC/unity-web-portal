@@ -115,26 +115,30 @@ include $LOC_HEADER;
 <?php
     $accounts = $LDAP->getAllPIGroups($SQL, $MAILER);
 
-foreach ($accounts as $pi_group) {
-    $pi_user = $pi_group->getOwner();
+    usort($accounts, function ($a, $b) {
+        return strcmp($a->getPIUID(), $b->getPIUID());
+    });
 
-    echo "<tr class='expandable'>";
-    echo "<td><button class='btnExpand'>&#9654;</button>" . $pi_user->getFirstname() .
-    " " . $pi_user->getLastname() . "</td>";
-    echo "<td>" . $pi_group->getPIUID() . "</td>";
-    echo "<td><a href='mailto:" . $pi_user->getMail() . "'>" . $pi_user->getMail() . "</a></td>";
-    echo "<td>";
-    echo
-    "<form action='' method='POST' 
+    foreach ($accounts as $pi_group) {
+        $pi_user = $pi_group->getOwner();
+
+        echo "<tr class='expandable'>";
+        echo "<td><button class='btnExpand'>&#9654;</button>" . $pi_user->getFirstname() .
+        " " . $pi_user->getLastname() . "</td>";
+        echo "<td>" . $pi_group->getPIUID() . "</td>";
+        echo "<td><a href='mailto:" . $pi_user->getMail() . "'>" . $pi_user->getMail() . "</a></td>";
+        echo "<td>";
+        echo
+        "<form action='' method='POST' 
     onsubmit='return confirm(\"Are you sure you want to remove " . $pi_group->getPIUID() . "?\")'>
         <input type='hidden' name='form_name' value='remGroup'>
         <input type='hidden' name='pi' value='" . $pi_group->getPIUID() . "'>
         <input type='submit' value='Remove'>
     </form>";
-    echo "</td>";
-    echo "</tr>";
-}
-?>
+        echo "</td>";
+        echo "</tr>";
+    }
+    ?>
 </table>
 
 <script>

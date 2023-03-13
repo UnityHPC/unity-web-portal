@@ -22,11 +22,13 @@ Unity Web Portal is a PHP application built in top of MariaDB and LDAP which act
     1. Composer (`apt install composer` on Ubuntu)
     1. PHP Extensions
         1. `php-ldap`
-1. Composer packages
+        2. `php-curl`
+2. Composer packages
     1. `cd` to this repository
-    1. Install packages `composer update`
-1. Setup config file `config/config.ini` according to your site deployment
-1. Point your web server's document root to `webroot` in this repo
+    2. Install packages `composer update`
+3. Setup config file `config/config.ini` according to your site deployment
+4. Setup branding file `config/branding/config.ini` according to your site deployment
+5. Point your web server's document root to `webroot` in this repo
 
 The scope of this project ends at being responsible for the LDAP user database. We recommend production deployments to set up scripts which detect changes in LDAP and then perform further actions. For example, a script can be used to create Slurm scheduler accounting roles based on the LDAP information created by this website.
 
@@ -34,3 +36,31 @@ The scope of this project ends at being responsible for the LDAP user database. 
 External to this codebase, you must configure authentication using your web server. You must retrict the following:
 * `/panel` - users who are signed in
 * `/admin` - admins who are signed in
+
+## Updating
+The update process is similar to the installation process:
+
+1. Clone the release and follow installation instructions 1 and 2 from above.
+2. Copy the following folders from the old installation to the new one:
+    1. `config`
+    2. `webroot/res/footer_logos`
+
+We recommend a deployment where each version of the portal is its own clone, then just change a symlink to point to the new version. This way a rollback is much easier.
+
+Example folder structure, where `->` indicates a symlink:
+```
+unity-web-portal
+    unity-web-portal -> unity-web-portal-1.1.0
+    unity-web-portal-1.0.0-RC1
+    unity-web-portal-1.0.0-RC2
+    unity-web-portal-1.1.0
+```
+
+Below you will find specific instructions for moving between version:
+
+### 1.0.0-RC2 > 1.1.0
+
+1. `config/branding/config.ini.default` has some new fields that will need to be overriden by the site config if needed:
+   1. `pi_approve*` in the `mail` section
+   2. `home` in the `page` section
+   3. The entire `loginshell` section
