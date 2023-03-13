@@ -1,8 +1,31 @@
-## 1.0.0-RC2
+# 1.1.0
+
+2023-3-13
+
+* [Feature] Added alternate config email for PI emails (#35)
+* [Feature] Pasted and Uploaded SSH Keys are now validated (#17)
+* [Feature] Added request date for requests on admin/pi pages (#40)
+* [Feature] Added conf options and login selector to user accounts page (#15)
+* [Feature] Added PIGroups in User for view for admins (#29)
+* [Feature] It is now possible to override mail templates
+* [Frontend] Removed borders in between footer logos (#46)
+* [Frontend] Added a new content management field for home page (#45)
+* [Bug] Admin pages are now sorted alphabetically by UID (#52)
+* [Bug] Fixed footer lookup PHP error for sending emails
+* [Bug] Fixed changelog format
+* [Bug] Fixed styling on content management page (#20)
+* [Project] Footers in the project are now generic
+* [Project] Default configs do not reference UMA labels anymore
+
+# 1.0.0-RC2
+
+2022-10-03
+
 * [BugFix] Fixed Unity Branding where Array were not being merged
 * [Project] Bumped phpopenldaper version from composer
 
-## 1.0.0-RC1
+# 1.0.0-RC1
+
 * [Feature] Admins can now access the web portal as a separate user
 * [Feature] Added account details to account settings page
 * [Feature] Added branding configuration
@@ -21,7 +44,8 @@
 * [Project] Project now adheres to PHP PSR-12 standards
 
 
-## 0.6.0-BETA
+# 0.6.0-BETA
+
 * [Feature] Added cluster notices - hakan
 * [Feature] Added development environment features - hakan
 * [Feature] Added universal logging support - hakan
@@ -31,7 +55,8 @@
 * [Bug] Fixed issue which caused PI already exists message to not display correctly - calvin
 * [UI] Added URI branding - hakan
 
-## 0.5.0-BETA
+# 0.5.0-BETA
+
 * [Feature] Added notices for inactive account
 * [Locale] New XML based locale for easier dynamic lang switching
 * [Feature] Added VAST storage and Truenas Core storage integration for automatic storage creation
@@ -41,9 +66,11 @@
 * [Style] General style changes
 * [Feature] Added unityfs service, which is a socket service responsible for provisioning storage on Unity
 
-## 0.4.0HF1-BETA
+# 0.4.0HF1-BETA
+
 * [Bug] Fixed issue where some users account wasn't activating
 
-## 0.4.0-BETA
+# 0.4.0-BETA
+
 * [Feature] Added Multiple PI Support
 * [Backend] Users and PI Groups are treated as different entities
