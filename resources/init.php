@@ -6,6 +6,7 @@
 
 use UnityWebPortal\lib\{
     UnityBranding,
+    UnityConfig,
     UnitySite,
     UnityLDAP,
     UnityMailer,
@@ -22,8 +23,7 @@ session_start();
 //
 // Config INIT
 //
-$CONFIG = UnitySite::getConfig(__DIR__ . "/../config");
-$BRANDING = UnityBranding::getBranding(__DIR__ . "/../config/branding");
+$CONFIG = UnityConfig::getConfig(__DIR__ . "/../defaults", __DIR__ . "/../deployment");
 
 //
 // Service Init
@@ -61,15 +61,15 @@ $MAILER = new UnityMailer(
     $CONFIG["smtp"]["user"],
     $CONFIG["smtp"]["pass"],
     $CONFIG["smtp"]["ssl_verify"],
-    $BRANDING["site"]["url"] . $CONFIG["site"]["prefix"],
-    $BRANDING["mail"]["sender"],
-    $BRANDING["mail"]["sender_name"],
-    $BRANDING["mail"]["support"],
-    $BRANDING["mail"]["support_name"],
-    $BRANDING["mail"]["admin"],
-    $BRANDING["mail"]["admin_name"],
-    $BRANDING["mail"]["pi_approve"],
-    $BRANDING["mail"]["pi_approve_name"]
+    $CONFIG["site"]["url"] . $CONFIG["site"]["prefix"],
+    $CONFIG["mail"]["sender"],
+    $CONFIG["mail"]["sender_name"],
+    $CONFIG["mail"]["support"],
+    $CONFIG["mail"]["support_name"],
+    $CONFIG["mail"]["admin"],
+    $CONFIG["mail"]["admin_name"],
+    $CONFIG["mail"]["pi_approve"],
+    $CONFIG["mail"]["pi_approve_name"]
 );
 
 //

@@ -161,7 +161,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
         <?php
         $cur_shell = $USER->getLoginShell();
         $found_selector = false;
-        foreach ($BRANDING["loginshell"]["shell"] as $shell) {
+        foreach ($CONFIG["loginshell"]["shell"] as $shell) {
             if ($cur_shell == $shell) {
                 echo "<option selected>$shell</option>";
                 $found_selector = true;

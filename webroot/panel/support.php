@@ -9,7 +9,7 @@ require_once $LOC_HEADER;
 <hr>
 
 <?php
-echo $SQL->getPage($BRANDING["page"]["support"])["content"];
+echo $SQL->getPage($CONFIG["page"]["support"])["content"];
 ?>
 
 <?php
