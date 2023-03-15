@@ -9,14 +9,25 @@ class UnityRedis
 {
     private $client;
 
+    private $enabled;
+
     public function __construct($host, $port)
     {
-        $this->client = new Redis();
-        $this->client->connect($host, $port);
+        if (empty($host)) {
+            $this->enabled = false;
+        } else {
+            $this->enabled = true;
+            $this->client = new Redis();
+            $this->client->connect($host, $port);
+        }
     }
 
     public function setCache($object, $key, $data)
     {
+        if (!$this->enabled) {
+            return;
+        }
+
         if (!empty($key)) {
             $keyStr = $object . "_" . $key;
         } else {
@@ -28,6 +39,10 @@ class UnityRedis
 
     public function getCache($object, $key)
     {
+        if (!$this->enabled) {
+            return null;
+        }
+
         if (!empty($key)) {
             $keyStr = $object . "_" . $key;
         } else {
@@ -44,6 +59,10 @@ class UnityRedis
 
     public function appendCacheArray($object, $key, $value)
     {
+        if (!$this->enabled) {
+            return;
+        }
+
         $cached_val = $this->getCache($object, $key);
         if (is_null($cached_val)) {
             $this->setCache($object, $key, array($value));
@@ -60,6 +79,10 @@ class UnityRedis
 
     public function removeCacheArray($object, $key, $value)
     {
+        if (!$this->enabled) {
+            return null;
+        }
+
         $cached_val = $this->getCache($object, $key);
         if (is_null($cached_val)) {
             $this->setCache($object, $key, array());
