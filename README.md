@@ -43,7 +43,7 @@ The update process is similar to the installation process:
 1. Clone the release and follow installation instructions 1 and 2 from above.
 2. Copy the following folders from the old installation to the new one:
     1. `config`
-    2. `webroot/res/footer_logos`
+    2. `webroot/assets/footer_logos`
 
 We recommend a deployment where each version of the portal is its own clone, then just change a symlink to point to the new version. This way a rollback is much easier.
 

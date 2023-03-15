@@ -10,7 +10,7 @@
     for ($i = 0; $i < count($footer_logos); $i++) {
         echo
         "<a target='_blank' href='" . $footer_links[$i] . "'>
-        <img src='" . $CONFIG["site"]["prefix"] . "/res/footer_logos/" . $footer_logos[$i] . "' 
+        <img src='" . $CONFIG["site"]["prefix"] . "/assets/" . $footer_logos[$i] . "' 
         draggable='false' title='" . $footer_titles[$i] . "'></a>";
     }
     ?>

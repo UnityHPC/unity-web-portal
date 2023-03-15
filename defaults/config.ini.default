@@ -10,7 +10,7 @@ prefix = ""  ; prefix of website, no ending / should be included
 name = "Unity Cluster"  ; Name of the website
 url = "https://127.0.0.1:8000/"  ; URL of the website
 description = "The Unity Web Portal is a lightweight HPC cluster front-end"  ; Description of the website
-logo = "logo.png"  ; path to logo file, in the webroot/res/branding folder
+logo = "logo.png"  ; path to logo file, in the webroot/assets/branding folder
 
 [ldap]
 uri = "ldap://identity"  ; URI of remote LDAP server
