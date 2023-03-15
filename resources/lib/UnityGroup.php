@@ -184,6 +184,11 @@ class UnityGroup
             if (!$ldapPiGroupEntry->delete()) {
                 throw new Exception("Unable to delete PI ldap group");
             }
+
+            $this->REDIS->removeCacheArray("groups_sorted", "", $this->getPIUID());
+            foreach ($users as $user) {
+                $this->REDIS->removeCacheArray($user->getUID(), "groups", $this->getPIUID());
+            }
         }
 
         // send email to every user of the now deleted PI group
@@ -342,7 +347,13 @@ class UnityGroup
 
         $out = array();
         foreach ($requests as $request) {
-            $user = new UnityUser($request["uid"], $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS);
+            $user = new UnityUser(
+                $request["uid"],
+                $this->LDAP,
+                $this->SQL,
+                $this->MAILER,
+                $this->REDIS
+            );
             array_push($out, [$user, $request["timestamp"]]);
         }
 
@@ -358,17 +369,33 @@ class UnityGroup
             }
         }
 
+        $updatecache = false;
         if (!isset($members)) {
             $pi_group = $this->getLDAPPiGroup();
             $members = $pi_group->getAttribute("memberuid");
+            $updatecache = true;
         }
 
         $out = array();
+        $cache_arr = array();
         $owner_uid = $this->getOwner()->getUID();
         foreach ($members as $member) {
             if ($member != $owner_uid) {
-                array_push($out, new UnityUser($member, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS));
+                $user_obj = new UnityUser(
+                    $member,
+                    $this->LDAP,
+                    $this->SQL,
+                    $this->MAILER,
+                    $this->REDIS
+                );
+                array_push($out, $user_obj);
+                array_push($cache_arr, $user_obj->getUID());
             }
+        }
+
+        if (!$ignorecache && $updatecache) {
+            sort($cache_arr);
+            $this->REDIS->setCache($this->getPIUID(), "members", $cache_arr);
         }
 
         return $out;
@@ -420,14 +447,7 @@ class UnityGroup
             }
         }
 
-        $cached_val = $this->REDIS->getCache("sorted_groups", "");
-        if (is_null($cached_val)) {
-            $this->REDIS->setCache("sorted_groups", "", array($this->getPIUID()));
-        } else {
-            array_push($cached_val, $this->getPIUID());
-            sort($cached_val);
-            $this->REDIS->setCache("sorted_groups", "", $cached_val);
-        }
+        $this->REDIS->appendCacheArray("sorted_groups", "", $this->getPIUID());
 
         // TODO if we ever make this project based, we need to update the cache here with the memberuid
     }
@@ -442,13 +462,8 @@ class UnityGroup
             throw new Exception("Unable to write PI group");
         }
 
-        $cached_val = $this->REDIS->getCache($this->getPIUID(), "members");
-        if (is_null($cached_val)) {
-            $this->REDIS->setCache($this->getPIUID(), "members", array($new_user->getUID()));
-        } else {
-            array_push($cached_val, $new_user->getUID());
-            $this->REDIS->setCache($this->getPIUID(), "members", $cached_val);
-        }
+        $this->REDIS->appendCacheArray($this->getPIUID(), "members", $new_user->getUID());
+        $this->REDIS->appendCacheArray($new_user->getUID(), "groups", $this->getPIUID());
     }
 
     private function removeUserFromGroup($old_user)
@@ -461,13 +476,8 @@ class UnityGroup
             throw new Exception("Unable to write PI group");
         }
 
-        $cached_val = $this->REDIS->getCache($this->getPIUID(), "members");
-        if (is_null($cached_val)) {
-            $this->REDIS->setCache($this->getPIUID(), "members", array());
-        } else {
-            $cached_val = array_diff($cached_val, $old_user->getUID());
-            $this->REDIS->setCache($this->getPIUID(), "members", $cached_val);
-        }
+        $this->REDIS->removeCacheArray($this->getPIUID(), "members", $old_user->getUID());
+        $this->REDIS->removeCacheArray($old_user->getUID(), "groups", $this->getPIUID());
     }
 
     public function userExists($user)
@@ -491,7 +501,13 @@ class UnityGroup
 
     public function getOwner()
     {
-        return new UnityUser(self::getUIDfromPIUID($this->pi_uid), $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS);
+        return new UnityUser(
+            self::getUIDfromPIUID($this->pi_uid),
+            $this->LDAP,
+            $this->SQL,
+            $this->MAILER,
+            $this->REDIS
+        );
     }
 
     public function getLDAPPiGroup()

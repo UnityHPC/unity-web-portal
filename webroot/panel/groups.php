@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST["form_name"])) {
         if (isset($_POST["pi"])) {
-            $pi_account = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
+            $pi_account = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS);
             if (!$pi_account->exists()) {
                 // "\'"  instead of "'", otherwise it will close a single quote used to place the message
                 array_push($modalErrors, "This PI doesn\'t exist");
@@ -65,7 +65,7 @@ if (count($req_filtered) > 0) {
     echo "<h5>Pending Requests</h5>";
     echo "<table>";
     foreach ($req_filtered as $request) {
-        $requested_account = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER);
+        $requested_account = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER, $REDIS);
         $requested_owner = $requested_account->getOwner();
         echo "<tr class='pending_request'>";
         echo "<td>" . $requested_owner->getFirstname() . " " . $requested_owner->getLastname() . "</td>";

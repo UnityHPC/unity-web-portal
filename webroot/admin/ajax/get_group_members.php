@@ -12,7 +12,7 @@ if (!isset($_GET["pi_uid"])) {
     die("PI UID not set");
 }
 
-$group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER);
+$group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER, $REDIS);
 $members = $group->getGroupMembers();
 $requests = $group->getRequests();
 

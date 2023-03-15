@@ -38,14 +38,7 @@ class UnityOrg
             }
         }
 
-        $cached_val = $this->REDIS->getCache("sorted_orgs", "");
-        if (is_null($cached_val)) {
-            $this->REDIS->setCache("sorted_orgs", "", array($this->getOrgID()));
-        } else {
-            array_push($cached_val, $this->getOrgID());
-            sort($cached_val);
-            $this->REDIS->setCache("sorted_orgs", "", $cached_val);
-        }
+        $this->REDIS->appendCacheArray("sorted_orgs", "", $this->getOrgID());
     }
 
     public function exists()
@@ -79,14 +72,24 @@ class UnityOrg
             }
         }
 
+        $updatecache = false;
         if (!isset($members)) {
             $org_group = $this->getLDAPOrgGroup();
             $members = $org_group->getAttribute("memberuid");
+            $updatecache = true;
         }
 
         $out = array();
+        $cache_arr = array();
         foreach ($members as $member) {
-            array_push($out, new UnityUser($member, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS));
+            $user_obj = new UnityUser($member, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS);
+            array_push($out, $user_obj);
+            array_push($cache_arr, $user_obj->getUID());
+        }
+
+        if (!$ignorecache && $updatecache) {
+            sort($cache_arr);
+            $this->REDIS->setCache($this->getOrgID(), "members", $cache_arr);
         }
 
         return $out;
@@ -101,14 +104,7 @@ class UnityOrg
             throw new Exception("Unable to write to org group");
         }
 
-        $cached_val = $this->REDIS->getCache($this->getOrgID(), "members");
-        if (is_null($cached_val)) {
-            $this->REDIS->setCache($this->getOrgID(), "members", array($user->getUID()));
-        } else {
-            array_push($cached_val, $user->getUID());
-            sort($cached_val);
-            $this->REDIS->setCache($this->getOrgID(), "members", $cached_val);
-        }
+        $this->REDIS->appendCacheArray($this->getOrgID(), "members", $user->getUID());
     }
 
     public function removeUser($user)
@@ -120,12 +116,6 @@ class UnityOrg
             throw new Exception("Unable to write to org group");
         }
 
-        $cached_val = $this->REDIS->getCache($this->getOrgID(), "members");
-        if (is_null($cached_val)) {
-            $this->REDIS->setCache($this->getOrgID(), "members", array());
-        } else {
-            $cached_val = array_diff($cached_val, $user->getUID());
-            $this->REDIS->setCache($this->getOrgID(), "members", $cached_val);
-        }
+        $this->REDIS->removeCacheArray($this->getOrgID(), "members", $user->getUID());
     }
 }

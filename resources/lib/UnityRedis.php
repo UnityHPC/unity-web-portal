@@ -2,13 +2,16 @@
 
 namespace UnityWebPortal\lib;
 
+use Redis;
+use Exception;
+
 class UnityRedis
 {
     private $client;
 
     public function __construct($host, $port)
     {
-        $this->client = new \Redis();
+        $this->client = new Redis();
         $this->client->connect($host, $port);
     }
 
@@ -37,5 +40,36 @@ class UnityRedis
         }
 
         return null;
+    }
+
+    public function appendCacheArray($object, $key, $value)
+    {
+        $cached_val = $this->getCache($object, $key);
+        if (is_null($cached_val)) {
+            $this->setCache($object, $key, array($value));
+        } else {
+            if (!is_array($cached_val)) {
+                throw new Exception("This cache value is not an array");
+            }
+
+            array_push($cached_val, $value);
+            sort($cached_val);
+            $this->setCache($object, $key, $cached_val);
+        }
+    }
+
+    public function removeCacheArray($object, $key, $value)
+    {
+        $cached_val = $this->getCache($object, $key);
+        if (is_null($cached_val)) {
+            $this->setCache($object, $key, array());
+        } else {
+            if (!is_array($cached_val)) {
+                throw new Exception("This cache value is not an array");
+            }
+
+            $cached_val = array_diff($cached_val, array($value));
+            $this->setCache($object, $key, $cached_val);
+        }
     }
 }

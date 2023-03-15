@@ -39,7 +39,7 @@ $LDAP = new UnityLDAP(
     $CONFIG["ldap"]["uri"],
     $CONFIG["ldap"]["user"],
     $CONFIG["ldap"]["pass"],
-    __DIR__ . "/../config/custom_user_mappings",
+    __DIR__ . "/../deployment/custom_user_mappings",
     $CONFIG["ldap"]["user_ou"],
     $CONFIG["ldap"]["group_ou"],
     $CONFIG["ldap"]["pigroup_ou"],
@@ -86,15 +86,6 @@ if (!is_null($SSO)) {
     // SSO is available
     $_SESSION["SSO"] = $SSO;
 
-// add sso login entry to mysql table
-    $SQL->addSSOEntry(
-        $SSO["user"],
-        $SSO["org"],
-        $SSO["firstname"],
-        $SSO["lastname"],
-        $SSO["mail"]
-    );
-
     $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $REDIS);
     $_SESSION["is_admin"] = $USER->isAdmin();
 
@@ -104,6 +95,14 @@ if (!is_null($SSO)) {
 
     $_SESSION["user_exists"] = $USER->exists();
     $_SESSION["is_pi"] = $USER->isPI();
+
+    if (!$_SESSION["user_exists"]) {
+        // populate cache
+        $REDIS->setCache($SSO["user"], "org", $SSO["org"]);
+        $REDIS->setCache($SSO["user"], "firstname", $SSO["firstname"]);
+        $REDIS->setCache($SSO["user"], "lastname", $SSO["lastname"]);
+        $REDIS->setCache($SSO["user"], "mail", $SSO["mail"]);
+    }
 }
 
 //

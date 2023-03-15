@@ -101,27 +101,10 @@ class UnityUser
         // create organization if it doesn't exist
         if (!$orgEntry->exists()) {
             $orgEntry->init();
-
-            $cache_val = $this->REDIS->getCache("orgs_sorted", "");
-            if (is_null($cache_val)) {
-                $this->REDIS->setCache("orgs_sorted", "", array($orgEntry->getOrgID()));
-            } else {
-                array_push($cache_val, $orgEntry->getOrgID());
-                sort($cache_val);
-                $this->REDIS->setCache("orgs_sorted", "", $cache_val);
-            }
         }
 
         if (!$orgEntry->inOrg($this->uid)) {
             $orgEntry->addUser($this);
-
-            $cache_val = $this->REDIS->getCache($orgEntry->getOrgID(), "members");
-            if (is_null($cache_val)) {
-                $this->REDIS->setCache($this->getOrgGroup()->getOrgID(), "members", array($this->uid));
-            } else {
-                array_push($cache_val, $this->uid);
-                $this->REDIS->setCache($this->getOrgGroup()->getOrgID(), "members", $cache_val);
-            }
         }
 
         //
@@ -197,6 +180,12 @@ class UnityUser
         }
 
         if ($this->exists()) {
+            $org = $this->getLDAPUser()->getAttribute("o")[0];
+
+            if (!$ignorecache) {
+                $this->REDIS->setCache($this->getUID(), "org", $org);
+            }
+
             return $this->getLDAPUser()->getAttribute("o")[0];
         }
 
@@ -235,7 +224,13 @@ class UnityUser
         }
 
         if ($this->exists()) {
-            return $this->getLDAPUser()->getAttribute("givenname")[0];
+            $firstname = $this->getLDAPUser()->getAttribute("givenname")[0];
+
+            if (!$ignorecache) {
+                $this->REDIS->setCache($this->getUID(), "firstname", $firstname);
+            }
+
+            return $firstname;
         }
 
         return null;
@@ -273,7 +268,13 @@ class UnityUser
         }
 
         if ($this->exists()) {
-            return $this->getLDAPUser()->getAttribute("sn")[0];
+            $lastname = $this->getLDAPUser()->getAttribute("sn")[0];
+
+            if (!$ignorecache) {
+                $this->REDIS->setCache($this->getUID(), "lastname", $lastname);
+            }
+
+            return $lastname;
         }
 
         return null;
@@ -316,7 +317,13 @@ class UnityUser
         }
 
         if ($this->exists()) {
-            return $this->getLDAPUser()->getAttribute("mail")[0];
+            $mail = $this->getLDAPUser()->getAttribute("mail")[0];
+
+            if (!$ignorecache) {
+                $this->REDIS->setCache($this->getUID(), "mail", $mail);
+            }
+
+            return $mail;
         }
 
         return null;
@@ -367,10 +374,16 @@ class UnityUser
             $ldapUser = $this->getLDAPUser();
             $result = $ldapUser->getAttribute("sshpublickey");
             if (is_null($result)) {
-                return array();
+                $keys = array();
             } else {
-                return $result;
+                $keys = $result;
             }
+
+            if (!$ignorecache) {
+                $this->REDIS->setCache($this->getUID(), "sshkeys", $keys);
+            }
+
+            return $keys;
         }
 
         return null;
@@ -418,7 +431,14 @@ class UnityUser
 
         if ($this->exists()) {
             $ldapUser = $this->getLDAPUser();
-            return $ldapUser->getAttribute("loginshell")[0];
+
+            $loginshell = $ldapUser->getAttribute("loginshell")[0];
+
+            if (!$ignorecache) {
+                $this->REDIS->setCache($this->getUID(), "loginshell", $loginshell);
+            }
+
+            return $loginshell;
         }
 
         return null;
@@ -453,7 +473,14 @@ class UnityUser
 
         if ($this->exists()) {
             $ldapUser = $this->getLDAPUser();
-            return $ldapUser->getAttribute("homedirectory");
+
+            $homedir = $ldapUser->getAttribute("homedirectory");
+
+            if (!$ignorecache) {
+                $this->REDIS->setCache($this->getUID(), "homedir", $homedir);
+            }
+
+            return $homedir;
         }
 
         return null;
@@ -482,12 +509,24 @@ class UnityUser
 
     public function getPIGroup()
     {
-        return new UnityGroup(UnityGroup::getPIUIDfromUID($this->uid), $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS);
+        return new UnityGroup(
+            UnityGroup::getPIUIDfromUID($this->uid),
+            $this->LDAP,
+            $this->SQL,
+            $this->MAILER,
+            $this->REDIS
+        );
     }
 
     public function getOrgGroup()
     {
-        return new UnityOrg($this->getOrg(), $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS);
+        return new UnityOrg(
+            $this->getOrg(),
+            $this->LDAP,
+            $this->SQL,
+            $this->MAILER,
+            $this->REDIS
+        );
     }
 
     /**
@@ -503,19 +542,33 @@ class UnityUser
             if (!is_null($cached_val)) {
                 $groups = $cached_val;
                 foreach ($groups as $group) {
-                    array_push($out, new UnityGroup($group, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS));
+                    $group_obj = new UnityGroup(
+                        $group,
+                        $this->LDAP,
+                        $this->SQL,
+                        $this->MAILER,
+                        $this->REDIS
+                    );
+                    array_push($out, $group_obj);
                 }
 
                 return $out;
             }
         }
 
-        $all_pi_groups = $this->LDAP->getAllPIGroups($this->SQL, $this->MAILER, $this->REDIS);
+        $all_pi_groups = $this->LDAP->getAllPIGroups($this->SQL, $this->MAILER, $this->REDIS, $ignorecache);
+
+        $cache_arr = array();
 
         foreach ($all_pi_groups as $pi_group) {
             if (in_array($this->getUID(), $pi_group->getGroupMemberUIDs())) {
                 array_push($out, $pi_group);
+                array_push($cache_arr, $pi_group->getPIUID());
             }
+        }
+
+        if (!$ignorecache) {
+            $this->REDIS->setCache($this->getUID(), "groups", $cache_arr);
         }
 
         return $out;
