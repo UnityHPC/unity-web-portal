@@ -5,14 +5,13 @@
  */
 
 use UnityWebPortal\lib\{
-    UnityBranding,
     UnityConfig,
-    UnitySite,
     UnityLDAP,
     UnityMailer,
     UnitySQL,
     UnitySSO,
-    UnityUser
+    UnityUser,
+    UnityRedis
 };
 
 //
@@ -28,6 +27,12 @@ $CONFIG = UnityConfig::getConfig(__DIR__ . "/../defaults", __DIR__ . "/../deploy
 //
 // Service Init
 //
+
+// Creates REDIS service
+$REDIS = new UnityRedis(
+    $CONFIG["redis"]["host"],
+    $CONFIG["redis"]["port"]
+);
 
 // Creates LDAP service
 $LDAP = new UnityLDAP(
@@ -90,11 +95,11 @@ if (!is_null($SSO)) {
         $SSO["mail"]
     );
 
-    $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER);
+    $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $REDIS);
     $_SESSION["is_admin"] = $USER->isAdmin();
 
     if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
-        $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER);
+        $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $REDIS);
     }
 
     $_SESSION["user_exists"] = $USER->exists();

@@ -11,14 +11,16 @@ class UnityOrg
     private $MAILER;
     private $SQL;
     private $LDAP;
+    private $REDIS;
 
-    public function __construct($orgid, $LDAP, $SQL, $MAILER)
+    public function __construct($orgid, $LDAP, $SQL, $MAILER, $REDIS)
     {
         $this->orgid = $orgid;
 
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
+        $this->REDIS = $REDIS;
     }
 
     public function init()
@@ -47,11 +49,38 @@ class UnityOrg
         return $this->LDAP->getOrgGroupEntry($this->orgid);
     }
 
+    public function getOrgID()
+    {
+        return $this->orgid;
+    }
+
     public function inOrg($user)
     {
         $org_group = $this->getLDAPOrgGroup();
         $members = $org_group->getAttribute("memberuid");
         return in_array($user, $members);
+    }
+
+    public function getOrgMembers($ignorecache = false)
+    {
+        if (!$ignorecache) {
+            $cached_val = $this->REDIS->getCache($this->getOrgID(), "members");
+            if (!is_null($cached_val)) {
+                $members = $cached_val;
+            }
+        }
+
+        if (!isset($members)) {
+            $org_group = $this->getLDAPOrgGroup();
+            $members = $org_group->getAttribute("memberuid");
+        }
+
+        $out = array();
+        foreach ($members as $member) {
+            array_push($out, new UnityUser($member, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS));
+        }
+
+        return $out;
     }
 
     public function addUser($user)

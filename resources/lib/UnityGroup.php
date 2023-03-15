@@ -17,6 +17,7 @@ class UnityGroup
     private $LDAP;
     private $SQL;
     private $MAILER;
+    private $REDIS;
 
     /**
      * Constructor for the object
@@ -25,13 +26,14 @@ class UnityGroup
      * @param LDAP $LDAP LDAP Connection
      * @param SQL $SQL SQL Connection
      */
-    public function __construct($pi_uid, $LDAP, $SQL, $MAILER)
+    public function __construct($pi_uid, $LDAP, $SQL, $MAILER, $REDIS)
     {
         $this->pi_uid = $pi_uid;
 
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
+        $this->REDIS = $REDIS;
     }
 
     public function equals($other_group)
@@ -340,23 +342,32 @@ class UnityGroup
 
         $out = array();
         foreach ($requests as $request) {
-            $user = new UnityUser($request["uid"], $this->LDAP, $this->SQL, $this->MAILER);
+            $user = new UnityUser($request["uid"], $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS);
             array_push($out, [$user, $request["timestamp"]]);
         }
 
         return $out;
     }
 
-    public function getGroupMembers()
+    public function getGroupMembers($ignorecache = false)
     {
-        $pi_group = $this->getLDAPPiGroup();
-        $members = $pi_group->getAttribute("memberuid");
+        if (!$ignorecache) {
+            $cached_val = $this->REDIS->getCache($this->getPIUID(), "members");
+            if (!is_null($cached_val)) {
+                $members = $cached_val;
+            }
+        }
+
+        if (!isset($members)) {
+            $pi_group = $this->getLDAPPiGroup();
+            $members = $pi_group->getAttribute("memberuid");
+        }
 
         $out = array();
         $owner_uid = $this->getOwner()->getUID();
         foreach ($members as $member) {
             if ($member != $owner_uid) {
-                array_push($out, new UnityUser($member, $this->LDAP, $this->SQL, $this->MAILER));
+                array_push($out, new UnityUser($member, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS));
             }
         }
 
@@ -453,7 +464,7 @@ class UnityGroup
 
     public function getOwner()
     {
-        return new UnityUser(self::getUIDfromPIUID($this->pi_uid), $this->LDAP, $this->SQL, $this->MAILER);
+        return new UnityUser(self::getUIDfromPIUID($this->pi_uid), $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS);
     }
 
     public function getLDAPPiGroup()

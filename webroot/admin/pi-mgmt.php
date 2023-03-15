@@ -11,7 +11,7 @@ if (!$USER->isAdmin()) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["uid"])) {
-        $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER);
+        $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $REDIS);
     }
 
     switch ($_POST["form_name"]) {
@@ -28,12 +28,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             break;
         case "remGroup":
-            $remGroup = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
+            $remGroup = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS);
             $remGroup->removeGroup();
 
             break;
         case "reqChild":
-            $parent_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
+            $parent_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS);
             if ($_POST["action"] == "Approve") {
                 // initialize user if not initialized
                 if (!$form_user->exists()) {
@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             break;
         case "remUserChild":
             // remove user button clicked
-            $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
+            $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS);
             $parent->removeUser($form_user);
 
             break;
@@ -78,7 +78,7 @@ include $LOC_HEADER;
     $requests = $SQL->getRequests();
 
     foreach ($requests as $request) {
-        $request_user = new UnityUser($request["uid"], $LDAP, $SQL, $MAILER);
+        $request_user = new UnityUser($request["uid"], $LDAP, $SQL, $MAILER, $REDIS);
 
         echo "<tr>";
         echo "<td>" . $request_user->getFirstname() . " " . $request_user->getLastname() . "</td>";
@@ -113,7 +113,7 @@ include $LOC_HEADER;
     </tr>
 
 <?php
-    $accounts = $LDAP->getAllPIGroups($SQL, $MAILER);
+    $accounts = $LDAP->getAllPIGroups($SQL, $MAILER, $REDIS);
 
     usort($accounts, function ($a, $b) {
         return strcmp($a->getPIUID(), $b->getPIUID());

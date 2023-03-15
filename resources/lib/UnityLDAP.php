@@ -234,25 +234,73 @@ class UnityLDAP extends ldapConn
   //
   // Functions that return user/group objects
   //
-    public function getAllUsers($UnitySQL, $UnityMailer)
+    public function getAllUsers($UnitySQL, $UnityMailer, $UnityRedis, $ignorecache = false)
     {
+        $out = array();
+
+        if (!$ignorecache) {
+            $users = $UnityRedis->getCache("sorted_users", "");
+            if (!is_null($users)) {
+                foreach ($users as $user) {
+                    array_push($out, new UnityUser($user, $this, $UnitySQL, $UnityMailer, $UnityRedis));
+                }
+
+                return $out;
+            }
+        }
+
         $users = $this->userOU->getChildren(true);
 
-        $out = array();
         foreach ($users as $user) {
-            array_push($out, new UnityUser($user->getAttribute("cn")[0], $this, $UnitySQL, $UnityMailer));
+            array_push($out, new UnityUser($user->getAttribute("cn")[0], $this, $UnitySQL, $UnityMailer, $UnityRedis));
         }
 
         return $out;
     }
 
-    public function getAllPIGroups($UnitySQL, $UnityMailer)
+    public function getAllPIGroups($UnitySQL, $UnityMailer, $UnityRedis, $ignorecache = false)
     {
+        $out = array();
+
+        if (!$ignorecache) {
+            $groups = $UnityRedis->getCache("sorted_groups", "");
+            if (!is_null($groups)) {
+                foreach ($groups as $group) {
+                    array_push($out, new UnityGroup($group, $this, $UnitySQL, $UnityMailer, $UnityRedis));
+                }
+
+                return $out;
+            }
+        }
+
         $pi_groups = $this->pi_groupOU->getChildren(true);
 
-        $out = array();
         foreach ($pi_groups as $pi_group) {
-            array_push($out, new UnityGroup($pi_group->getAttribute("cn")[0], $this, $UnitySQL, $UnityMailer));
+            array_push($out, new UnityGroup($pi_group->getAttribute("cn")[0], $this, $UnitySQL, $UnityMailer, $UnityRedis));
+        }
+
+        return $out;
+    }
+
+    public function getAllOrgGroups($UnitySQL, $UnityMailer, $UnityRedis, $ignorecache = false)
+    {
+        $out = array();
+
+        if (!$ignorecache) {
+            $orgs = $UnityRedis->getCache("sorted_orgs", "");
+            if (!is_null($orgs)) {
+                foreach ($orgs as $org) {
+                    array_push($out, new UnityOrg($org, $this, $UnitySQL, $UnityMailer, $UnityRedis));
+                }
+
+                return $out;
+            }
+        }
+
+        $org_groups = $this->org_groupOU->getChildren(true);
+
+        foreach ($org_groups as $org_group) {
+            array_push($out, new UnityOrg($org_group->getAttribute("cn")[0], $this, $UnitySQL, $UnityMailer, $UnityRedis));
         }
 
         return $out;
