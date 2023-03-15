@@ -25,7 +25,7 @@ include $LOC_HEADER;
 
 <input type="text" id="tableSearch" placeholder="Search...">
 
-<table class="searchable">
+<table class="searchable longTable">
     <tr class="key">
         <td>Name</td>
         <td>UID</td>

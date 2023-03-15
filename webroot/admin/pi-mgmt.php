@@ -104,7 +104,7 @@ include $LOC_HEADER;
 
 <h5>List of PIs</h5>
 
-<table class="searchable">
+<table class="searchable longTable">
     <tr class="key">
         <td>Name</td>
         <td>Unity ID</td>
