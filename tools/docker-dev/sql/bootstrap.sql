@@ -94,19 +94,6 @@ CREATE TABLE `requests` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sso_log`
---
-
-CREATE TABLE `sso_log` (
-  `id` int(10) NOT NULL,
-  `uid` varchar(300) NOT NULL,
-  `firstname` varchar(300) NOT NULL,
-  `lastname` varchar(300) NOT NULL,
-  `mail` varchar(300) NOT NULL,
-  `org` varchar(300) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
 -- Indexes for dumped tables
 --
 
