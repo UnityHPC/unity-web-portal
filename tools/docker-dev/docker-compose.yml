@@ -22,6 +22,9 @@ services:
     image: schickling/mailcatcher
     ports:
       - "8030:1080"
+  redis:
+    hostname: redis
+    image: redis
 networks:
   default:
     name: unity_dev_network
