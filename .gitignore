@@ -13,4 +13,6 @@ vendor
 composer.lock
 
 # don't track site configs
-config/**/*.ini
+deployment/*
+!deployment/**/README.md
+!deployment/deploy.sh
