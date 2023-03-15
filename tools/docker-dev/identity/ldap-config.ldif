@@ -1,10 +1,10 @@
 dn: olcDatabase={1}mdb,cn=config
 changeType: modify
 replace: olcSuffix
-olcSuffix: dc=example,dc=com
+olcSuffix: dc=unityhpc,dc=test
 -
 replace: olcRootDN
-olcRootDN: cn=admin,dc=example,dc=com
+olcRootDN: cn=admin,dc=unityhpc,dc=test
 -
 replace: olcRootPW
 olcRootPW: {SSHA}d6WBSm5wjlNpMwil1KQY+Uo4o/vc6PnR
