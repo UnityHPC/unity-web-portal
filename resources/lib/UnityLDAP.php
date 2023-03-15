@@ -276,7 +276,13 @@ class UnityLDAP extends ldapConn
         $pi_groups = $this->pi_groupOU->getChildren(true);
 
         foreach ($pi_groups as $pi_group) {
-            array_push($out, new UnityGroup($pi_group->getAttribute("cn")[0], $this, $UnitySQL, $UnityMailer, $UnityRedis));
+            array_push($out, new UnityGroup(
+                $pi_group->getAttribute("cn")[0],
+                $this,
+                $UnitySQL,
+                $UnityMailer,
+                $UnityRedis
+            ));
         }
 
         return $out;
@@ -300,7 +306,13 @@ class UnityLDAP extends ldapConn
         $org_groups = $this->org_groupOU->getChildren(true);
 
         foreach ($org_groups as $org_group) {
-            array_push($out, new UnityOrg($org_group->getAttribute("cn")[0], $this, $UnitySQL, $UnityMailer, $UnityRedis));
+            array_push($out, new UnityOrg(
+                $org_group->getAttribute("cn")[0],
+                $this,
+                $UnitySQL,
+                $UnityMailer,
+                $UnityRedis
+            ));
         }
 
         return $out;
