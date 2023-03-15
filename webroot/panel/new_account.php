@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if ($_POST["new_user_sel"] == "not_pi") {
-        $form_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER);
+        $form_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS);
         if (!$form_group->exists()) {
             array_push($errors, "The selected PI does not exist");
         }

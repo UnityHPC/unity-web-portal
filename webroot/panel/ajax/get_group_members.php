@@ -8,7 +8,7 @@ if (!isset($_GET["pi_uid"])) {
     die("PI UID not set");
 }
 
-$group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER);
+$group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER, $REDIS);
 $members = $group->getGroupMembers();
 
 // verify that the user querying is actually in the group
@@ -26,6 +26,10 @@ if (!$found) {
 
 $count = count($members);
 foreach ($members as $key => $member) {
+    if ($member->getUID() == $group->getOwner()->getUID()) {
+        continue;
+    }
+
     if ($key >= $count - 1) {
         echo "<tr class='expanded $key last'>";
     } else {

@@ -21,7 +21,7 @@ if (isset($SSO)) {
     <?php
     // set global css variables from branding
     echo ":root {";
-    foreach ($BRANDING["colors"] as $var_name => $var_value) {
+    foreach ($CONFIG["colors"] as $var_name => $var_value) {
         echo "--$var_name: $var_value;";
     }
     echo "}";
@@ -34,18 +34,18 @@ if (isset($SSO)) {
   <link rel="stylesheet" type="text/css" href="<?php echo $CONFIG["site"]["prefix"]; ?>/css/tables.css">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="<?php echo $BRANDING["site"]["description"] ?>">
+  <meta name="description" content="<?php echo $CONFIG["site"]["description"] ?>">
 
-  <title><?php echo $BRANDING["site"]["name"]; ?></title>
+  <title><?php echo $CONFIG["site"]["name"]; ?></title>
 </head>
 
 <body>
 
   <header>
     <img id="imgLogo" draggable=false 
-    src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/branding/<?php echo $BRANDING["site"]["logo"]; ?>">
+    src="<?php echo $CONFIG["site"]["prefix"]; ?>/assets/<?php echo $CONFIG["site"]["logo"]; ?>">
     <button class="hamburger vertical-align">
-      <img draggable="false" src="<?php echo $CONFIG["site"]["prefix"]; ?>/res/menu.png" alt="Menu Button">
+      <img draggable="false" src="<?php echo $CONFIG["site"]["prefix"]; ?>/assets/menu.png" alt="Menu Button">
     </button>
   </header>
 
@@ -54,10 +54,10 @@ if (isset($SSO)) {
     // Public Items - Always Visible
     echo "<a href='" . $CONFIG["site"]["prefix"] . "/index.php'>Home</a>";
 
-    $num_additional_items = count($BRANDING["menuitems"]["labels"]);
+    $num_additional_items = count($CONFIG["menuitems"]["labels"]);
     for ($i = 0; $i < $num_additional_items; $i++) {
-        echo "<a target='_blank' href='" . $BRANDING["menuitems"]["links"][$i] . "'>" .
-        $BRANDING["menuitems"]["labels"][$i] . "</a>";
+        echo "<a target='_blank' href='" . $CONFIG["menuitems"]["links"][$i] . "'>" .
+        $CONFIG["menuitems"]["labels"][$i] . "</a>";
     }
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
@@ -72,10 +72,10 @@ if (isset($SSO)) {
         }
 
       // additional branding items
-        $num_additional_items = count($BRANDING["menuitems_secure"]["labels"]);
+        $num_additional_items = count($CONFIG["menuitems_secure"]["labels"]);
         for ($i = 0; $i < $num_additional_items; $i++) {
-            echo "<a target='_blank' href='" . $BRANDING["menuitems_secure"]["links"][$i] . "'>" .
-            $BRANDING["menuitems_secure"]["labels"][$i] . "</a>";
+            echo "<a target='_blank' href='" . $CONFIG["menuitems_secure"]["links"][$i] . "'>" .
+            $CONFIG["menuitems_secure"]["labels"][$i] . "</a>";
         }
 
       // admin pages

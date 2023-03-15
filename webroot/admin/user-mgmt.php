@@ -25,18 +25,18 @@ include $LOC_HEADER;
 
 <input type="text" id="tableSearch" placeholder="Search...">
 
-<table class="searchable">
+<table class="searchable longTable">
     <tr class="key">
         <td>Name</td>
-        <td>Unity ID</td>
+        <td>UID</td>
         <td>Org</td>
         <td>Mail</td>
-        <td>PIGroups</td>
+        <td>Groups</td>
         <td>Actions</td>
     </tr>
 
     <?php
-    $users = $LDAP->getAllUsers($SQL, $MAILER);
+    $users = $LDAP->getAllUsers($SQL, $MAILER, $REDIS);
 
     usort($users, function ($a, $b) {
         return strcmp($a->getUID(), $b->getUID());

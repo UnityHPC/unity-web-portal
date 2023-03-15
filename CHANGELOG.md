@@ -1,3 +1,13 @@
+# 1.1.1
+
+2023-3-15
+
+* [Feature] Added Redis support for caching
+* [Feature] Added new deployment folder
+* [Feature] Added workers folder with flush cache script
+* [Dev] Added many more test users
+* [Bug] Fixes admin page styles
+
 # 1.1.0
 
 2023-3-13

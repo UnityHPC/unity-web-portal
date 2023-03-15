@@ -15,14 +15,16 @@ class UnityUser
     private $LDAP;
     private $SQL;
     private $MAILER;
+    private $REDIS;
 
-    public function __construct($uid, $LDAP, $SQL, $MAILER)
+    public function __construct($uid, $LDAP, $SQL, $MAILER, $REDIS)
     {
         $this->uid = $uid;
 
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
+        $this->REDIS = $REDIS;
     }
 
     public function equals($other_user)
@@ -82,6 +84,15 @@ class UnityUser
                 throw new Exception("Failed to create POSIX user for  $this->uid");
             }
         }
+
+        // update cache
+        //$this->REDIS->setCache($this->uid, "firstname", $this->getFirstname());
+        //$this->REDIS->setCache($this->uid, "lastname", $this->getLastname());
+        //$this->REDIS->setCache($this->uid, "mail", $this->getMail());
+        //$this->REDIS->setCache($this->uid, "org", $this->getOrg());
+        $this->REDIS->setCache($this->uid, "homedir", self::HOME_DIR . $this->uid);
+        $this->REDIS->setCache($this->uid, "loginshell", $this->LDAP->getDefUserShell());
+        $this->REDIS->setCache($this->uid, "sshkeys", array());
 
         //
         // add to org group
@@ -155,15 +166,30 @@ class UnityUser
         if (!$ldap_user->write()) {
             throw new Exception("Error updating LDAP entry $this->uid");
         }
+
+        $this->REDIS->setCache($this->uid, "org", $org);
     }
 
-    public function getOrg()
+    public function getOrg($ignorecache = false)
     {
-        if ($this->exists()) {
-            return $this->getLDAPUser()->getAttribute("o")[0];
-        } else {
-            return $this->SQL->getStoredOrg($this->uid);
+        if (!$ignorecache) {
+            $cached_val = $this->REDIS->getCache($this->getUID(), "org");
+            if (!is_null($cached_val)) {
+                return $cached_val;
+            }
         }
+
+        if ($this->exists()) {
+            $org = $this->getLDAPUser()->getAttribute("o")[0];
+
+            if (!$ignorecache) {
+                $this->REDIS->setCache($this->getUID(), "org", $org);
+            }
+
+            return $this->getLDAPUser()->getAttribute("o")[0];
+        }
+
+        return null;
     }
 
     /**
@@ -179,6 +205,8 @@ class UnityUser
         if (!$ldap_user->write()) {
             throw new Exception("Error updating LDAP entry $this->uid");
         }
+
+        $this->REDIS->setCache($this->uid, "firstname", $firstname);
     }
 
     /**
@@ -186,13 +214,26 @@ class UnityUser
      *
      * @return string firstname
      */
-    public function getFirstname()
+    public function getFirstname($ignorecache = false)
     {
-        if ($this->exists()) {
-            return $this->getLDAPUser()->getAttribute("givenname")[0];
-        } else {
-            return $this->SQL->getStoredFirstname($this->uid);
+        if (!$ignorecache) {
+            $cached_val = $this->REDIS->getCache($this->getUID(), "firstname");
+            if (!is_null($cached_val)) {
+                return $cached_val;
+            }
         }
+
+        if ($this->exists()) {
+            $firstname = $this->getLDAPUser()->getAttribute("givenname")[0];
+
+            if (!$ignorecache) {
+                $this->REDIS->setCache($this->getUID(), "firstname", $firstname);
+            }
+
+            return $firstname;
+        }
+
+        return null;
     }
 
     /**
@@ -208,6 +249,8 @@ class UnityUser
         if (!$this->getLDAPUser()->write()) {
             throw new Exception("Error updating LDAP entry $this->uid");
         }
+
+        $this->REDIS->setCache($this->uid, "lastname", $lastname);
     }
 
     /**
@@ -215,13 +258,26 @@ class UnityUser
      *
      * @return string lastname
      */
-    public function getLastname()
+    public function getLastname($ignorecache = false)
     {
-        if ($this->exists()) {
-            return $this->getLDAPUser()->getAttribute("sn")[0];
-        } else {
-            return $this->SQL->getStoredLastname($this->uid);
+        if (!$ignorecache) {
+            $cached_val = $this->REDIS->getCache($this->getUID(), "lastname");
+            if (!is_null($cached_val)) {
+                return $cached_val;
+            }
         }
+
+        if ($this->exists()) {
+            $lastname = $this->getLDAPUser()->getAttribute("sn")[0];
+
+            if (!$ignorecache) {
+                $this->REDIS->setCache($this->getUID(), "lastname", $lastname);
+            }
+
+            return $lastname;
+        }
+
+        return null;
     }
 
     public function getFullname()
@@ -242,6 +298,8 @@ class UnityUser
         if (!$this->getLDAPUser()->write()) {
             throw new Exception("Error updating LDAP entry $this->uid");
         }
+
+        $this->REDIS->setCache($this->uid, "mail", $email);
     }
 
     /**
@@ -249,13 +307,26 @@ class UnityUser
      *
      * @return string email address
      */
-    public function getMail()
+    public function getMail($ignorecache = false)
     {
-        if ($this->exists()) {
-            return $this->getLDAPUser()->getAttribute("mail")[0];
-        } else {
-            return $this->SQL->getStoredMail($this->uid);
+        if (!$ignorecache) {
+            $cached_val = $this->REDIS->getCache($this->getUID(), "mail");
+            if (!is_null($cached_val)) {
+                return $cached_val;
+            }
         }
+
+        if ($this->exists()) {
+            $mail = $this->getLDAPUser()->getAttribute("mail")[0];
+
+            if (!$ignorecache) {
+                $this->REDIS->setCache($this->getUID(), "mail", $mail);
+            }
+
+            return $mail;
+        }
+
+        return null;
     }
 
     /**
@@ -274,6 +345,8 @@ class UnityUser
             }
         }
 
+        $this->REDIS->setCache($this->uid, "sshkeys", $keys_filt);
+
         if ($send_mail) {
             $this->MAILER->sendMail(
                 $this->getMail(),
@@ -288,15 +361,32 @@ class UnityUser
      *
      * @return array String array of ssh keys
      */
-    public function getSSHKeys()
+    public function getSSHKeys($ignorecache = false)
     {
-        $ldapUser = $this->getLDAPUser();
-        $result = $ldapUser->getAttribute("sshpublickey");
-        if (is_null($result)) {
-            return array();
-        } else {
-            return $result;
+        if (!$ignorecache) {
+            $cached_val = $this->REDIS->getCache($this->getUID(), "sshkeys");
+            if (!is_null($cached_val)) {
+                return $cached_val;
+            }
         }
+
+        if ($this->exists()) {
+            $ldapUser = $this->getLDAPUser();
+            $result = $ldapUser->getAttribute("sshpublickey");
+            if (is_null($result)) {
+                $keys = array();
+            } else {
+                $keys = $result;
+            }
+
+            if (!$ignorecache) {
+                $this->REDIS->setCache($this->getUID(), "sshkeys", $keys);
+            }
+
+            return $keys;
+        }
+
+        return null;
     }
 
     /**
@@ -314,6 +404,8 @@ class UnityUser
             }
         }
 
+        $this->REDIS->setCache($this->uid, "loginshell", $shell);
+
         if ($send_mail) {
             $this->MAILER->sendMail(
                 $this->getMail(),
@@ -328,21 +420,28 @@ class UnityUser
      *
      * @return string absolute path to login shell
      */
-    public function getLoginShell()
+    public function getLoginShell($ignorecache = false)
     {
-        $ldapUser = $this->getLDAPUser();
-        return $ldapUser->getAttribute("loginshell")[0];
-    }
+        if (!$ignorecache) {
+            $cached_val = $this->REDIS->getCache($this->getUID(), "loginshell");
+            if (!is_null($cached_val)) {
+                return $cached_val;
+            }
+        }
 
-    /**
-     * Gets the home directory of the user
-     *
-     * @return string home directory of the user
-     */
-    public function getHomeDir()
-    {
-        $ldapUser = $this->getLDAPUser();
-        return $ldapUser->getAttribute("homedirectory");
+        if ($this->exists()) {
+            $ldapUser = $this->getLDAPUser();
+
+            $loginshell = $ldapUser->getAttribute("loginshell")[0];
+
+            if (!$ignorecache) {
+                $this->REDIS->setCache($this->getUID(), "loginshell", $loginshell);
+            }
+
+            return $loginshell;
+        }
+
+        return null;
     }
 
     public function setHomeDir($home)
@@ -353,7 +452,38 @@ class UnityUser
             if (!$ldapUser->write()) {
                 throw new Exception("Failed to modify home directory for $this->uid");
             }
+
+            $this->REDIS->setCache($this->uid, "homedir", $home);
         }
+    }
+
+    /**
+     * Gets the home directory of the user
+     *
+     * @return string home directory of the user
+     */
+    public function getHomeDir($ignorecache = false)
+    {
+        if (!$ignorecache) {
+            $cached_val = $this->REDIS->getCache($this->getUID(), "homedir");
+            if (!is_null($cached_val)) {
+                return $cached_val;
+            }
+        }
+
+        if ($this->exists()) {
+            $ldapUser = $this->getLDAPUser();
+
+            $homedir = $ldapUser->getAttribute("homedirectory");
+
+            if (!$ignorecache) {
+                $this->REDIS->setCache($this->getUID(), "homedir", $homedir);
+            }
+
+            return $homedir;
+        }
+
+        return null;
     }
 
     /**
@@ -379,27 +509,66 @@ class UnityUser
 
     public function getPIGroup()
     {
-        return new UnityGroup(UnityGroup::getPIUIDfromUID($this->uid), $this->LDAP, $this->SQL, $this->MAILER);
+        return new UnityGroup(
+            UnityGroup::getPIUIDfromUID($this->uid),
+            $this->LDAP,
+            $this->SQL,
+            $this->MAILER,
+            $this->REDIS
+        );
     }
 
     public function getOrgGroup()
     {
-        return new UnityOrg($this->getOrg(), $this->LDAP, $this->SQL, $this->MAILER);
+        return new UnityOrg(
+            $this->getOrg(),
+            $this->LDAP,
+            $this->SQL,
+            $this->MAILER,
+            $this->REDIS
+        );
     }
 
     /**
      * Gets the groups this user is assigned to, can be more than one
      * @return [type]
      */
-    public function getGroups()
+    public function getGroups($ignorecache = false)
     {
-        $all_pi_groups = $this->LDAP->getAllPIGroups($this->SQL, $this->MAILER);
-
         $out = array();
+
+        if (!$ignorecache) {
+            $cached_val = $this->REDIS->getCache($this->getUID(), "groups");
+            if (!is_null($cached_val)) {
+                $groups = $cached_val;
+                foreach ($groups as $group) {
+                    $group_obj = new UnityGroup(
+                        $group,
+                        $this->LDAP,
+                        $this->SQL,
+                        $this->MAILER,
+                        $this->REDIS
+                    );
+                    array_push($out, $group_obj);
+                }
+
+                return $out;
+            }
+        }
+
+        $all_pi_groups = $this->LDAP->getAllPIGroups($this->SQL, $this->MAILER, $this->REDIS, $ignorecache);
+
+        $cache_arr = array();
+
         foreach ($all_pi_groups as $pi_group) {
             if (in_array($this->getUID(), $pi_group->getGroupMemberUIDs())) {
                 array_push($out, $pi_group);
+                array_push($cache_arr, $pi_group->getPIUID());
             }
+        }
+
+        if (!$ignorecache) {
+            $this->REDIS->setCache($this->getUID(), "groups", $cache_arr);
         }
 
         return $out;

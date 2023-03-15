@@ -4,13 +4,13 @@
   <div id="footerLogos">
     <?php
 
-    $footer_logos = $BRANDING["footer"]["logos"];
-    $footer_links = $BRANDING["footer"]["links"];
-    $footer_titles = $BRANDING["footer"]["title"];
+    $footer_logos = $CONFIG["footer"]["logos"];
+    $footer_links = $CONFIG["footer"]["links"];
+    $footer_titles = $CONFIG["footer"]["title"];
     for ($i = 0; $i < count($footer_logos); $i++) {
         echo
         "<a target='_blank' href='" . $footer_links[$i] . "'>
-        <img src='" . $CONFIG["site"]["prefix"] . "/res/footer_logos/" . $footer_logos[$i] . "' 
+        <img src='" . $CONFIG["site"]["prefix"] . "/assets/" . $footer_logos[$i] . "' 
         draggable='false' title='" . $footer_titles[$i] . "'></a>";
     }
     ?>

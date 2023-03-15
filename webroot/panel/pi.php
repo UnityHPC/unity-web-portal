@@ -13,7 +13,7 @@ if (!$USER->isPI()) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["uid"])) {
-        $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER);
+        $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $REDIS);
     }
 
     switch ($_POST["form_name"]) {
@@ -48,7 +48,7 @@ include $LOC_HEADER;
 $requests = $group->getRequests();
 $assocs = $group->getGroupMembers();
 
-if (count($requests) + count($assocs) == 0) {
+if (count($requests) + count($assocs) == 1) {
     echo "<p>You do not have any users attached to your PI account. 
     Ask your users to request to join your account on the <a href='" . $CONFIG["site"]["prefix"] .
     "/panel/groups.php'>My PIs</a> page.</p>";
@@ -89,6 +89,10 @@ echo "<h5>Users in Group</h5>";
 echo "<table>";
 
 foreach ($assocs as $assoc) {
+    if ($assoc->getUID() == $USER->getUID()) {
+        continue;
+    }
+
     echo "<tr>";
     echo "<td>";
     echo

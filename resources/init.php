@@ -5,13 +5,13 @@
  */
 
 use UnityWebPortal\lib\{
-    UnityBranding,
-    UnitySite,
+    UnityConfig,
     UnityLDAP,
     UnityMailer,
     UnitySQL,
     UnitySSO,
-    UnityUser
+    UnityUser,
+    UnityRedis
 };
 
 //
@@ -22,19 +22,24 @@ session_start();
 //
 // Config INIT
 //
-$CONFIG = UnitySite::getConfig(__DIR__ . "/../config");
-$BRANDING = UnityBranding::getBranding(__DIR__ . "/../config/branding");
+$CONFIG = UnityConfig::getConfig(__DIR__ . "/../defaults", __DIR__ . "/../deployment");
 
 //
 // Service Init
 //
+
+// Creates REDIS service
+$REDIS = new UnityRedis(
+    $CONFIG["redis"]["host"],
+    $CONFIG["redis"]["port"]
+);
 
 // Creates LDAP service
 $LDAP = new UnityLDAP(
     $CONFIG["ldap"]["uri"],
     $CONFIG["ldap"]["user"],
     $CONFIG["ldap"]["pass"],
-    __DIR__ . "/../config/custom_user_mappings",
+    __DIR__ . "/../deployment/custom_user_mappings",
     $CONFIG["ldap"]["user_ou"],
     $CONFIG["ldap"]["group_ou"],
     $CONFIG["ldap"]["pigroup_ou"],
@@ -54,22 +59,22 @@ $SQL = new UnitySQL(
 // Creates SMTP service
 $MAILER = new UnityMailer(
     __DIR__ . "/mail",
-    __DIR__ . "/../config/mail_overrides",
+    __DIR__ . "/../deployment/mail_overrides",
     $CONFIG["smtp"]["host"],
     $CONFIG["smtp"]["port"],
     $CONFIG["smtp"]["security"],
     $CONFIG["smtp"]["user"],
     $CONFIG["smtp"]["pass"],
     $CONFIG["smtp"]["ssl_verify"],
-    $BRANDING["site"]["url"] . $CONFIG["site"]["prefix"],
-    $BRANDING["mail"]["sender"],
-    $BRANDING["mail"]["sender_name"],
-    $BRANDING["mail"]["support"],
-    $BRANDING["mail"]["support_name"],
-    $BRANDING["mail"]["admin"],
-    $BRANDING["mail"]["admin_name"],
-    $BRANDING["mail"]["pi_approve"],
-    $BRANDING["mail"]["pi_approve_name"]
+    $CONFIG["site"]["url"] . $CONFIG["site"]["prefix"],
+    $CONFIG["mail"]["sender"],
+    $CONFIG["mail"]["sender_name"],
+    $CONFIG["mail"]["support"],
+    $CONFIG["mail"]["support_name"],
+    $CONFIG["mail"]["admin"],
+    $CONFIG["mail"]["admin_name"],
+    $CONFIG["mail"]["pi_approve"],
+    $CONFIG["mail"]["pi_approve_name"]
 );
 
 //
@@ -81,24 +86,23 @@ if (!is_null($SSO)) {
     // SSO is available
     $_SESSION["SSO"] = $SSO;
 
-// add sso login entry to mysql table
-    $SQL->addSSOEntry(
-        $SSO["user"],
-        $SSO["org"],
-        $SSO["firstname"],
-        $SSO["lastname"],
-        $SSO["mail"]
-    );
-
-    $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER);
+    $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $REDIS);
     $_SESSION["is_admin"] = $USER->isAdmin();
 
     if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
-        $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER);
+        $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $REDIS);
     }
 
     $_SESSION["user_exists"] = $USER->exists();
     $_SESSION["is_pi"] = $USER->isPI();
+
+    if (!$_SESSION["user_exists"]) {
+        // populate cache
+        $REDIS->setCache($SSO["user"], "org", $SSO["org"]);
+        $REDIS->setCache($SSO["user"], "firstname", $SSO["firstname"]);
+        $REDIS->setCache($SSO["user"], "lastname", $SSO["lastname"]);
+        $REDIS->setCache($SSO["user"], "mail", $SSO["mail"]);
+    }
 }
 
 //

@@ -16,7 +16,8 @@ require_once __DIR__ . "/lib/UnitySQL.php";
 require_once __DIR__ . "/lib/UnityMailer.php";
 require_once __DIR__ . "/lib/UnitySSO.php";
 require_once __DIR__ . "/lib/UnitySite.php";
-require_once __DIR__ . "/lib/UnityBranding.php";
+require_once __DIR__ . "/lib/UnityConfig.php";
+require_once __DIR__ . "/lib/UnityRedis.php";
 
 // run init script
 require __DIR__ . "/init.php";
