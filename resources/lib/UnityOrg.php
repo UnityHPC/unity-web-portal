@@ -37,6 +37,15 @@ class UnityOrg
                 throw new Exception("Failed to create POSIX group for " . $this->orgid);  // this shouldn't execute
             }
         }
+
+        $cached_val = $this->REDIS->getCache("sorted_orgs", "");
+        if (is_null($cached_val)) {
+            $this->REDIS->setCache("sorted_orgs", "", array($this->getOrgID()));
+        } else {
+            array_push($cached_val, $this->getOrgID());
+            sort($cached_val);
+            $this->REDIS->setCache("sorted_orgs", "", $cached_val);
+        }
     }
 
     public function exists()
@@ -91,6 +100,15 @@ class UnityOrg
         if (!$org_group->write()) {
             throw new Exception("Unable to write to org group");
         }
+
+        $cached_val = $this->REDIS->getCache($this->getOrgID(), "members");
+        if (is_null($cached_val)) {
+            $this->REDIS->setCache($this->getOrgID(), "members", array($user->getUID()));
+        } else {
+            array_push($cached_val, $user->getUID());
+            sort($cached_val);
+            $this->REDIS->setCache($this->getOrgID(), "members", $cached_val);
+        }
     }
 
     public function removeUser($user)
@@ -100,6 +118,14 @@ class UnityOrg
 
         if (!$org_group->write()) {
             throw new Exception("Unable to write to org group");
+        }
+
+        $cached_val = $this->REDIS->getCache($this->getOrgID(), "members");
+        if (is_null($cached_val)) {
+            $this->REDIS->setCache($this->getOrgID(), "members", array());
+        } else {
+            $cached_val = array_diff($cached_val, $user->getUID());
+            $this->REDIS->setCache($this->getOrgID(), "members", $cached_val);
         }
     }
 }

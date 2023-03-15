@@ -419,6 +419,17 @@ class UnityGroup
                 throw new Exception("Failed to create POSIX group for " . $owner->getUID());  // this shouldn't execute
             }
         }
+
+        $cached_val = $this->REDIS->getCache("sorted_groups", "");
+        if (is_null($cached_val)) {
+            $this->REDIS->setCache("sorted_groups", "", array($this->getPIUID()));
+        } else {
+            array_push($cached_val, $this->getPIUID());
+            sort($cached_val);
+            $this->REDIS->setCache("sorted_groups", "", $cached_val);
+        }
+
+        // TODO if we ever make this project based, we need to update the cache here with the memberuid
     }
 
     private function addUserToGroup($new_user)
@@ -430,6 +441,14 @@ class UnityGroup
         if (!$pi_group->write()) {
             throw new Exception("Unable to write PI group");
         }
+
+        $cached_val = $this->REDIS->getCache($this->getPIUID(), "members");
+        if (is_null($cached_val)) {
+            $this->REDIS->setCache($this->getPIUID(), "members", array($new_user->getUID()));
+        } else {
+            array_push($cached_val, $new_user->getUID());
+            $this->REDIS->setCache($this->getPIUID(), "members", $cached_val);
+        }
     }
 
     private function removeUserFromGroup($old_user)
@@ -440,6 +459,14 @@ class UnityGroup
 
         if (!$pi_group->write()) {
             throw new Exception("Unable to write PI group");
+        }
+
+        $cached_val = $this->REDIS->getCache($this->getPIUID(), "members");
+        if (is_null($cached_val)) {
+            $this->REDIS->setCache($this->getPIUID(), "members", array());
+        } else {
+            $cached_val = array_diff($cached_val, $old_user->getUID());
+            $this->REDIS->setCache($this->getPIUID(), "members", $cached_val);
         }
     }
 

@@ -85,6 +85,15 @@ class UnityUser
             }
         }
 
+        // update cache
+        //$this->REDIS->setCache($this->uid, "firstname", $this->getFirstname());
+        //$this->REDIS->setCache($this->uid, "lastname", $this->getLastname());
+        //$this->REDIS->setCache($this->uid, "mail", $this->getMail());
+        //$this->REDIS->setCache($this->uid, "org", $this->getOrg());
+        $this->REDIS->setCache($this->uid, "homedir", self::HOME_DIR . $this->uid);
+        $this->REDIS->setCache($this->uid, "loginshell", $this->LDAP->getDefUserShell());
+        $this->REDIS->setCache($this->uid, "sshkeys", array());
+
         //
         // add to org group
         //
@@ -92,10 +101,27 @@ class UnityUser
         // create organization if it doesn't exist
         if (!$orgEntry->exists()) {
             $orgEntry->init();
+
+            $cache_val = $this->REDIS->getCache("orgs_sorted", "");
+            if (is_null($cache_val)) {
+                $this->REDIS->setCache("orgs_sorted", "", array($orgEntry->getOrgID()));
+            } else {
+                array_push($cache_val, $orgEntry->getOrgID());
+                sort($cache_val);
+                $this->REDIS->setCache("orgs_sorted", "", $cache_val);
+            }
         }
 
         if (!$orgEntry->inOrg($this->uid)) {
             $orgEntry->addUser($this);
+
+            $cache_val = $this->REDIS->getCache($orgEntry->getOrgID(), "members");
+            if (is_null($cache_val)) {
+                $this->REDIS->setCache($this->getOrgGroup()->getOrgID(), "members", array($this->uid));
+            } else {
+                array_push($cache_val, $this->uid);
+                $this->REDIS->setCache($this->getOrgGroup()->getOrgID(), "members", $cache_val);
+            }
         }
 
         //
@@ -157,6 +183,8 @@ class UnityUser
         if (!$ldap_user->write()) {
             throw new Exception("Error updating LDAP entry $this->uid");
         }
+
+        $this->REDIS->setCache($this->uid, "org", $org);
     }
 
     public function getOrg($ignorecache = false)
@@ -188,6 +216,8 @@ class UnityUser
         if (!$ldap_user->write()) {
             throw new Exception("Error updating LDAP entry $this->uid");
         }
+
+        $this->REDIS->setCache($this->uid, "firstname", $firstname);
     }
 
     /**
@@ -224,6 +254,8 @@ class UnityUser
         if (!$this->getLDAPUser()->write()) {
             throw new Exception("Error updating LDAP entry $this->uid");
         }
+
+        $this->REDIS->setCache($this->uid, "lastname", $lastname);
     }
 
     /**
@@ -265,6 +297,8 @@ class UnityUser
         if (!$this->getLDAPUser()->write()) {
             throw new Exception("Error updating LDAP entry $this->uid");
         }
+
+        $this->REDIS->setCache($this->uid, "mail", $email);
     }
 
     /**
@@ -303,6 +337,8 @@ class UnityUser
                 throw new Exception("Failed to modify SSH keys for $this->uid");
             }
         }
+
+        $this->REDIS->setCache($this->uid, "sshkeys", $keys_filt);
 
         if ($send_mail) {
             $this->MAILER->sendMail(
@@ -355,6 +391,8 @@ class UnityUser
             }
         }
 
+        $this->REDIS->setCache($this->uid, "loginshell", $shell);
+
         if ($send_mail) {
             $this->MAILER->sendMail(
                 $this->getMail(),
@@ -394,6 +432,8 @@ class UnityUser
             if (!$ldapUser->write()) {
                 throw new Exception("Failed to modify home directory for $this->uid");
             }
+
+            $this->REDIS->setCache($this->uid, "homedir", $home);
         }
     }
 
