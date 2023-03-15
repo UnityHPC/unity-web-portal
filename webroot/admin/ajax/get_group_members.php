@@ -19,6 +19,10 @@ $requests = $group->getRequests();
 $key = 0;
 $count = count($members) + count($requests);
 foreach ($members as $member) {
+    if ($member->getUID() == $group->getOwner()->getUID()) {
+        continue;
+    }
+
     if ($key >= $count - 1) {
         echo "<tr class='expanded $key last'>";
     } else {

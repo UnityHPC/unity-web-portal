@@ -26,6 +26,10 @@ if (!$found) {
 
 $count = count($members);
 foreach ($members as $key => $member) {
+    if ($member->getUID() == $group->getOwner()->getUID()) {
+        continue;
+    }
+
     if ($key >= $count - 1) {
         echo "<tr class='expanded $key last'>";
     } else {

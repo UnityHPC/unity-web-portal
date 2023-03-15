@@ -3,7 +3,7 @@ table {
     margin-bottom: 10px;
     table-layout: fixed;
     word-wrap: break-word;
-    max-width: 100%;
+    width: 100%;
 }
 
 table tr,
@@ -11,6 +11,10 @@ table td {
     padding: 8px 20px 8px 4px;
     overflow: hidden;
     white-space: nowrap;
+}
+
+table tr:not(:last-child) {
+    border-bottom: 1px solid var(--light_borders);
 }
 
 table button,

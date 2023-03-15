@@ -280,6 +280,10 @@ class UnityGroup
             return;
         }
 
+        if ($new_user->getUID() == $this->getOwner()->getUID()) {
+            throw new Exception("Cannot delete group owner from group. Disband group instead");
+        }
+
         // remove request, this will fail silently if the request doesn't exist
         $this->removeUserFromGroup($new_user);
 
@@ -380,7 +384,6 @@ class UnityGroup
         $cache_arr = array();
         $owner_uid = $this->getOwner()->getUID();
         foreach ($members as $member) {
-            if ($member != $owner_uid) {
                 $user_obj = new UnityUser(
                     $member,
                     $this->LDAP,
@@ -390,7 +393,6 @@ class UnityGroup
                 );
                 array_push($out, $user_obj);
                 array_push($cache_arr, $user_obj->getUID());
-            }
         }
 
         if (!$ignorecache && $updatecache) {

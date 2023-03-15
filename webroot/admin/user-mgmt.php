@@ -28,10 +28,10 @@ include $LOC_HEADER;
 <table class="searchable">
     <tr class="key">
         <td>Name</td>
-        <td>Unity ID</td>
+        <td>UID</td>
         <td>Org</td>
         <td>Mail</td>
-        <td>PIGroups</td>
+        <td>Groups</td>
         <td>Actions</td>
     </tr>
 
