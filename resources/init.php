@@ -59,7 +59,7 @@ $SQL = new UnitySQL(
 // Creates SMTP service
 $MAILER = new UnityMailer(
     __DIR__ . "/mail",
-    __DIR__ . "/../config/mail_overrides",
+    __DIR__ . "/../deployment/mail_overrides",
     $CONFIG["smtp"]["host"],
     $CONFIG["smtp"]["port"],
     $CONFIG["smtp"]["security"],
