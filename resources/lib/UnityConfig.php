@@ -12,10 +12,12 @@ class UnityConfig
         $CONFIG = self::pullConfig($CONFIG, $deploy_loc);
 
         // URL-based override
-        $cur_url = $_SERVER['HTTP_HOST'];
-        $url_override_path = $deploy_loc . "/overrides/" . $cur_url;
-        if (is_dir($url_override_path)) {
-            $CONFIG = self::pullConfig($CONFIG, $url_override_path);
+        if (array_key_exists("HTTP_HOST", $_SERVER)) {
+            $cur_url = $_SERVER['HTTP_HOST'];
+            $url_override_path = $deploy_loc . "/overrides/" . $cur_url;
+            if (is_dir($url_override_path)) {
+                $CONFIG = self::pullConfig($CONFIG, $url_override_path);
+            }
         }
 
         return $CONFIG;
