@@ -8,8 +8,6 @@ For example, if the primary virtual host is `example.com`, but you wanted to hos
 <override_hostname>
     config
         config.ini
-    mail_overrides
-        <mail_template>.php
 ```
 
 Everything else in the deployment folder cannot be overridden.
