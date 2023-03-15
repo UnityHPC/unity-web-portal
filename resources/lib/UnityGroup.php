@@ -185,7 +185,7 @@ class UnityGroup
                 throw new Exception("Unable to delete PI ldap group");
             }
 
-            $this->REDIS->removeCacheArray("groups_sorted", "", $this->getPIUID());
+            $this->REDIS->removeCacheArray("sorted_groups", "", $this->getPIUID());
             foreach ($users as $user) {
                 $this->REDIS->removeCacheArray($user->getUID(), "groups", $this->getPIUID());
             }
