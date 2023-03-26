@@ -28,17 +28,18 @@ class UnityWebhook
         $italic = '/<i\b[^>]*>(.*?)<\/i>/s';
         $strikethrough = '/<del\b[^>]*>(.*?)<\/del>/s';
         $link = '/<a\b[^>]*href=["\']?([^"\'\s]*)[^>]*>(.*?)<\/a>/s';
+
         // Replace each HTML tag with its corresponding markdown format
         $md = preg_replace($bold, '*$2*', $html);
         $md = preg_replace($italic, '_$1_', $md);
         $md = preg_replace($strikethrough, '~$1~', $md);
         $md = preg_replace($link, '$2: $1', $md);
-      
+
         // Replace any remaining HTML tags with an empty string
         $md = strip_tags($md);
 
         return $md;
-    }  
+    }
 
     public function sendWebhook($template = null, $data = null)
     {
