@@ -93,6 +93,9 @@ sender_name = "Unity Sender"
 pi_approve = "piapproval@unitywebportal.test"  ; Only PI approval messages will go to this email
 pi_approve_name = "Unity PI Approval"
 
+[webhook] ; webhook to send messages to admins
+url = "https://hooks.slack.com/services/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"
+
 [page]  ; which sql objects to use for the content on these pages
 home = "home"
 support = "support"

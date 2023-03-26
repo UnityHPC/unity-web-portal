@@ -234,7 +234,7 @@ class UnityLDAP extends ldapConn
   //
   // Functions that return user/group objects
   //
-    public function getAllUsers($UnitySQL, $UnityMailer, $UnityRedis, $ignorecache = false)
+    public function getAllUsers($UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook, $ignorecache = false)
     {
         $out = array();
 
@@ -242,7 +242,7 @@ class UnityLDAP extends ldapConn
             $users = $UnityRedis->getCache("sorted_users", "");
             if (!is_null($users)) {
                 foreach ($users as $user) {
-                    array_push($out, new UnityUser($user, $this, $UnitySQL, $UnityMailer, $UnityRedis));
+                    array_push($out, new UnityUser($user, $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook));
                 }
 
                 return $out;
@@ -252,13 +252,13 @@ class UnityLDAP extends ldapConn
         $users = $this->userOU->getChildren(true);
 
         foreach ($users as $user) {
-            array_push($out, new UnityUser($user->getAttribute("cn")[0], $this, $UnitySQL, $UnityMailer, $UnityRedis));
+            array_push($out, new UnityUser($user->getAttribute("cn")[0], $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook));
         }
 
         return $out;
     }
 
-    public function getAllPIGroups($UnitySQL, $UnityMailer, $UnityRedis, $ignorecache = false)
+    public function getAllPIGroups($UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook, $ignorecache = false)
     {
         $out = array();
 
@@ -266,7 +266,7 @@ class UnityLDAP extends ldapConn
             $groups = $UnityRedis->getCache("sorted_groups", "");
             if (!is_null($groups)) {
                 foreach ($groups as $group) {
-                    array_push($out, new UnityGroup($group, $this, $UnitySQL, $UnityMailer, $UnityRedis));
+                    array_push($out, new UnityGroup($group, $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook));
                 }
 
                 return $out;
@@ -281,14 +281,15 @@ class UnityLDAP extends ldapConn
                 $this,
                 $UnitySQL,
                 $UnityMailer,
-                $UnityRedis
+                $UnityRedis,
+                $UnityWebhook
             ));
         }
 
         return $out;
     }
 
-    public function getAllOrgGroups($UnitySQL, $UnityMailer, $UnityRedis, $ignorecache = false)
+    public function getAllOrgGroups($UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook, $ignorecache = false)
     {
         $out = array();
 
@@ -296,7 +297,7 @@ class UnityLDAP extends ldapConn
             $orgs = $UnityRedis->getCache("sorted_orgs", "");
             if (!is_null($orgs)) {
                 foreach ($orgs as $org) {
-                    array_push($out, new UnityOrg($org, $this, $UnitySQL, $UnityMailer, $UnityRedis));
+                    array_push($out, new UnityOrg($org, $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook));
                 }
 
                 return $out;
@@ -311,7 +312,8 @@ class UnityLDAP extends ldapConn
                 $this,
                 $UnitySQL,
                 $UnityMailer,
-                $UnityRedis
+                $UnityRedis,
+                $UnityWebhook
             ));
         }
 

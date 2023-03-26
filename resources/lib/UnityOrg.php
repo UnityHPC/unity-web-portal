@@ -12,14 +12,16 @@ class UnityOrg
     private $SQL;
     private $LDAP;
     private $REDIS;
+    private $WEBHOOK;
 
-    public function __construct($orgid, $LDAP, $SQL, $MAILER, $REDIS)
+    public function __construct($orgid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
     {
         $this->orgid = $orgid;
 
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
+        $this->WEBHOOK = $WEBHOOK;
         $this->REDIS = $REDIS;
     }
 
@@ -82,7 +84,7 @@ class UnityOrg
         $out = array();
         $cache_arr = array();
         foreach ($members as $member) {
-            $user_obj = new UnityUser($member, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS);
+            $user_obj = new UnityUser($member, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS, $this->WEBHOOK);
             array_push($out, $user_obj);
             array_push($cache_arr, $user_obj->getUID());
         }
