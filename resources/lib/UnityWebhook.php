@@ -3,7 +3,7 @@
 namespace UnityWebPortal\lib;
 
 class UnityWebhook
-{   
+{
     private $template_dir;
     private $override_template_dir;
     private $url;
@@ -21,13 +21,13 @@ class UnityWebhook
         $this->MSG_LINKREF = $msg_linkref;
     }
 
-    function htmlToMarkdown($html) {
+    public function htmlToMarkdown($html)
+    {
         // Define regex patterns for each markdown format
         $bold = '/<(b|strong)\b[^>]*>(.*?)<\/(b|strong)>/s';
         $italic = '/<i\b[^>]*>(.*?)<\/i>/s';
         $strikethrough = '/<del\b[^>]*>(.*?)<\/del>/s';
         $link = '/<a\b[^>]*href=["\']?([^"\'\s]*)[^>]*>(.*?)<\/a>/s';
-      
         // Replace each HTML tag with its corresponding markdown format
         $md = preg_replace($bold, '*$2*', $html);
         $md = preg_replace($italic, '_$1_', $md);

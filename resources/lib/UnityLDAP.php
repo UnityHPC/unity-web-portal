@@ -252,7 +252,8 @@ class UnityLDAP extends ldapConn
         $users = $this->userOU->getChildren(true);
 
         foreach ($users as $user) {
-            array_push($out, new UnityUser($user->getAttribute("cn")[0], $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook));
+            array_push($out, new UnityUser($user->getAttribute("cn")[0], $this, $UnitySQL, $UnityMailer, 
+            $UnityRedis, $UnityWebhook));
         }
 
         return $out;
@@ -266,7 +267,8 @@ class UnityLDAP extends ldapConn
             $groups = $UnityRedis->getCache("sorted_groups", "");
             if (!is_null($groups)) {
                 foreach ($groups as $group) {
-                    array_push($out, new UnityGroup($group, $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook));
+                    array_push($out, new UnityGroup($group, $this, $UnitySQL, $UnityMailer, 
+                    $UnityRedis, $UnityWebhook));
                 }
 
                 return $out;
