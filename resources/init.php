@@ -11,7 +11,8 @@ use UnityWebPortal\lib\{
     UnitySQL,
     UnitySSO,
     UnityUser,
-    UnityRedis
+    UnityRedis,
+    UnityWebhook
 };
 
 //
@@ -77,6 +78,14 @@ $MAILER = new UnityMailer(
     $CONFIG["mail"]["pi_approve_name"]
 );
 
+// Creates Webhook service
+$WEBHOOK = new UnityWebhook(
+    __DIR__ . "/mail",
+    __DIR__ . "/../deployment/mail_overrides",
+    $CONFIG["webhook"]["url"],
+    $CONFIG["site"]["url"] . $CONFIG["site"]["prefix"]
+);
+
 //
 // SSO Init
 //
@@ -86,11 +95,11 @@ if (!is_null($SSO)) {
     // SSO is available
     $_SESSION["SSO"] = $SSO;
 
-    $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $REDIS);
+    $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
     $_SESSION["is_admin"] = $USER->isAdmin();
 
     if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
-        $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $REDIS);
+        $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
     }
 
     $_SESSION["user_exists"] = $USER->exists();

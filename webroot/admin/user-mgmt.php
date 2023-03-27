@@ -36,7 +36,7 @@ include $LOC_HEADER;
     </tr>
 
     <?php
-    $users = $LDAP->getAllUsers($SQL, $MAILER, $REDIS);
+    $users = $LDAP->getAllUsers($SQL, $MAILER, $REDIS, $WEBHOOK);
 
     usort($users, function ($a, $b) {
         return strcmp($a->getUID(), $b->getUID());

@@ -3,7 +3,7 @@
 require_once "../resources/autoload.php";
 
 // Get Users
-$users = $LDAP->getAllUsers($SQL, $MAILER, $REDIS, true);
+$users = $LDAP->getAllUsers($SQL, $MAILER, $REDIS, $WEBHOOK, true);
 
 $sorted_uids = array();
 
@@ -32,7 +32,7 @@ sort($sorted_uids);
 $REDIS->setCache("sorted_users", "", $sorted_uids);
 
 // Get groups
-$groups = $LDAP->getAllPIGroups($SQL, $MAILER, $REDIS, true);
+$groups = $LDAP->getAllPIGroups($SQL, $MAILER, $REDIS, $WEBHOOK, true);
 
 $sorted_groups = array();
 
@@ -52,7 +52,7 @@ sort($sorted_groups);
 $REDIS->setCache("sorted_groups", "", $sorted_groups);
 
 // Get Orgs
-$orgs = $LDAP->getAllOrgGroups($SQL, $MAILER, $REDIS, true);
+$orgs = $LDAP->getAllOrgGroups($SQL, $MAILER, $REDIS, $WEBHOOK, true);
 
 $sorted_orgs = array();
 

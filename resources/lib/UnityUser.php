@@ -16,8 +16,9 @@ class UnityUser
     private $SQL;
     private $MAILER;
     private $REDIS;
+    private $WEBHOOK;
 
-    public function __construct($uid, $LDAP, $SQL, $MAILER, $REDIS)
+    public function __construct($uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
     {
         $this->uid = $uid;
 
@@ -25,6 +26,7 @@ class UnityUser
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
         $this->REDIS = $REDIS;
+        $this->WEBHOOK = $WEBHOOK;
     }
 
     public function equals($other_user)
@@ -514,7 +516,8 @@ class UnityUser
             $this->LDAP,
             $this->SQL,
             $this->MAILER,
-            $this->REDIS
+            $this->REDIS,
+            $this->WEBHOOK
         );
     }
 
@@ -525,7 +528,8 @@ class UnityUser
             $this->LDAP,
             $this->SQL,
             $this->MAILER,
-            $this->REDIS
+            $this->REDIS,
+            $this->WEBHOOK
         );
     }
 
@@ -547,7 +551,8 @@ class UnityUser
                         $this->LDAP,
                         $this->SQL,
                         $this->MAILER,
-                        $this->REDIS
+                        $this->REDIS,
+                        $this->WEBHOOK
                     );
                     array_push($out, $group_obj);
                 }

@@ -17,6 +17,7 @@ class UnityGroup
     private $LDAP;
     private $SQL;
     private $MAILER;
+    private $WEBHOOK;
     private $REDIS;
 
     /**
@@ -26,7 +27,7 @@ class UnityGroup
      * @param LDAP $LDAP LDAP Connection
      * @param SQL $SQL SQL Connection
      */
-    public function __construct($pi_uid, $LDAP, $SQL, $MAILER, $REDIS)
+    public function __construct($pi_uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
     {
         $this->pi_uid = $pi_uid;
 
@@ -34,6 +35,7 @@ class UnityGroup
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
         $this->REDIS = $REDIS;
+        $this->WEBHOOK = $WEBHOOK;
     }
 
     public function equals($other_group)
@@ -83,6 +85,16 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_request"
+            );
+
+            $this->WEBHOOK->sendWebhook(
+                "group_request_admin",
+                array(
+                    "user" => $this->getOwner()->getUID(),
+                    "org" => $this->getOwner()->getOrg(),
+                    "name" => $this->getOwner()->getFullname(),
+                    "email" => $this->getOwner()->getMail()
+                )
             );
 
             $this->MAILER->sendMail(
@@ -356,7 +368,8 @@ class UnityGroup
                 $this->LDAP,
                 $this->SQL,
                 $this->MAILER,
-                $this->REDIS
+                $this->REDIS,
+                $this->WEBHOOK
             );
             array_push($out, [$user, $request["timestamp"]]);
         }
@@ -389,7 +402,8 @@ class UnityGroup
                     $this->LDAP,
                     $this->SQL,
                     $this->MAILER,
-                    $this->REDIS
+                    $this->REDIS,
+                    $this->WEBHOOK
                 );
                 array_push($out, $user_obj);
                 array_push($cache_arr, $user_obj->getUID());
@@ -508,7 +522,8 @@ class UnityGroup
             $this->LDAP,
             $this->SQL,
             $this->MAILER,
-            $this->REDIS
+            $this->REDIS,
+            $this->WEBHOOK
         );
     }
 
