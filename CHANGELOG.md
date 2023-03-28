@@ -1,3 +1,9 @@
+# 1.1.2
+
+2023-3-28
+
+* [Bug] Fixed new users not being added to cache
+
 # 1.1.1
 
 2023-3-15
