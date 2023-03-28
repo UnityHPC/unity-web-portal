@@ -106,6 +106,9 @@ class UnityUser
         if (!$orgEntry->inOrg($this->uid)) {
             $orgEntry->addUser($this);
         }
+        
+        // add user to cache
+        $this->REDIS->appendCacheArray("sorted_users", "", $this->getUID());
 
         //
         // send email to user
