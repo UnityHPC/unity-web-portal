@@ -110,6 +110,16 @@ class UnityUser
         }
 
         //
+        // add to audit log
+        //
+        $this->SQL->addLog(
+            $this->getUID(),
+            $_SERVER['REMOTE_ADDR'],
+            "user_added",
+            $this->getUID()
+        );
+
+        //
         // send email to user
         //
         if ($send_mail) {
@@ -348,6 +358,16 @@ class UnityUser
         }
 
         $this->REDIS->setCache($this->uid, "sshkeys", $keys_filt);
+
+        //
+        // add audit log
+        // 
+        $this->SQL->addLog(
+            $this->getUID(),
+            $_SERVER['REMOTE_ADDR'],
+            "sshkey_modify",
+            $this->getUID()
+        );
 
         if ($send_mail) {
             $this->MAILER->sendMail(

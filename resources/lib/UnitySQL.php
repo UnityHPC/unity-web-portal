@@ -11,6 +11,7 @@ class UnitySQL
     private const TABLE_SSOLOG = "sso_log";
     private const TABLE_PAGES = "pages";
     private const TABLE_EVENTS = "events";
+    private const TABLE_AUDIT_LOG = "audit_log";
 
     private const REQUEST_ADMIN = "admin";
 
@@ -215,6 +216,20 @@ class UnitySQL
         $stmt->bindParam(":operator", $operator);
         $stmt->bindParam(":action", $action);
         $stmt->bindParam(":entity", $entity);
+
+        $stmt->execute();
+    }
+
+    // audit log table methods
+    public function addLog($operator, $operator_ip, $action_type, $recipient)
+    {
+        $stmt = $this->conn->prepare(
+            "INSERT INTO " . self::TABLE_AUDIT_LOG . " (operator, operator_ip, action_type, recipient) VALUE (:operator, :operator_ip, :action_type, :recipient)"
+        );
+        $stmt->bindParam(":operator", $operator);
+        $stmt->bindParam(":operator_ip", $operator_ip);
+        $stmt->bindParam(":action_type", $action_type);
+        $stmt->bindParam(":recipient", $recipient);
 
         $stmt->execute();
     }
