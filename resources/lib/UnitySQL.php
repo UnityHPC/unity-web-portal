@@ -224,7 +224,8 @@ class UnitySQL
     public function addLog($operator, $operator_ip, $action_type, $recipient)
     {
         $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_AUDIT_LOG . " (operator, operator_ip, action_type, recipient) VALUE (:operator, :operator_ip, :action_type, :recipient)"
+            "INSERT INTO " . self::TABLE_AUDIT_LOG . " (operator, operator_ip, action_type, recipient) 
+            VALUE (:operator, :operator_ip, :action_type, :recipient)"
         );
         $stmt->bindParam(":operator", $operator);
         $stmt->bindParam(":operator_ip", $operator_ip);

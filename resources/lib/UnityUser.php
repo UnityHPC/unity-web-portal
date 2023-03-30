@@ -361,7 +361,7 @@ class UnityUser
 
         //
         // add audit log
-        // 
+        //
         $this->SQL->addLog(
             $this->getUID(),
             $_SERVER['REMOTE_ADDR'],
