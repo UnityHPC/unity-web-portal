@@ -349,9 +349,10 @@ class UnityUser
      *
      * @param array $keys String array of openssh-style ssh public keys
      */
-    public function setSSHKeys($keys, $send_mail = true)
+    public function setSSHKeys($keys, $operator = null, $send_mail = true)
     {
         $ldapUser = $this->getLDAPUser();
+        $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
         $keys_filt = array_values(array_unique($keys));
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("sshpublickey", $keys_filt);
@@ -366,7 +367,7 @@ class UnityUser
         // add audit log
         //
         $this->SQL->addLog(
-            $this->getUID(),
+            $operator,
             $_SERVER['REMOTE_ADDR'],
             "sshkey_modify",
             $this->getUID()
