@@ -109,6 +109,9 @@ class UnityUser
             $orgEntry->addUser($this);
         }
 
+        // add user to cache
+        $this->REDIS->appendCacheArray("sorted_users", "", $this->getUID());
+
         //
         // add to audit log
         //
