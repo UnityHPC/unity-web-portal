@@ -95,11 +95,13 @@ if (!is_null($SSO)) {
     // SSO is available
     $_SESSION["SSO"] = $SSO;
 
-    $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-    $_SESSION["is_admin"] = $USER->isAdmin();
+    $OPERATOR = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+    $_SESSION["is_admin"] = $OPERATOR->isAdmin();
 
     if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
         $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+    } else {
+        $USER = $OPERATOR;
     }
 
     $_SESSION["user_exists"] = $USER->exists();
