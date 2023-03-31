@@ -94,6 +94,21 @@ CREATE TABLE `requests` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `audit_log`
+--
+
+CREATE TABLE `audit_log` (
+  `id` int(11) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `operator` varchar(1000) NOT NULL,
+  `operator_ip` varchar(1000) NOT NULL,
+  `action_type` varchar(1000) NOT NULL,
+  `recipient` varchar(1000) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Indexes for dumped tables
 --
 
@@ -125,6 +140,12 @@ ALTER TABLE `requests`
 -- Indexes for table `sso_log`
 --
 ALTER TABLE `sso_log`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `audit_log`
+--
+ALTER TABLE `audit_log`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -160,6 +181,12 @@ ALTER TABLE `requests`
 --
 ALTER TABLE `sso_log`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `audit_log`
+--
+ALTER TABLE `audit_log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

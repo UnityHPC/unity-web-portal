@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if (!empty($added_keys)) {
                 $added_keys = UnitySite::removeTrailingWhitespace($added_keys);
                 $totalKeys = array_merge($USER->getSSHKeys(), $added_keys);
-                $USER->setSSHKeys($totalKeys);
+                $USER->setSSHKeys($totalKeys, $OPERATOR);
             }
             break;
         case "delKey":
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             unset($keys[intval($_POST["delIndex"])]);  // remove key from array
             $keys = array_values($keys);
 
-            $USER->setSSHKeys($keys);  // Update user keys
+            $USER->setSSHKeys($keys, $OPERATOR);  // Update user keys
             break;
         case "loginshell":
             if ($_POST["shellSelect"] == "custom") {
