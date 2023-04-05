@@ -124,7 +124,7 @@ class UnityGroup
     /**
      * This method will create the group (this is what is executed when an admin approved the group)
      */
-    public function approveGroup($send_mail = true)
+    public function approveGroup($operator = null, $send_mail = true)
     {
         // check for edge cases...
         if ($this->exists()) {
@@ -143,6 +143,15 @@ class UnityGroup
         // this will silently fail if the request doesn't exist
         $this->SQL->removeRequest($this->getOwner()->getUID());
 
+        $operator = is_null($operator) ? $this->getOwner()->getUID() : $operator->getUID();
+
+        $this->SQL->addLog(
+            $operator,
+            $_SERVER['REMOTE_ADDR'],
+            "approved_group",
+            $this->getOwner()->getUID()
+        );
+
         // send email to the newly approved PI
         if ($send_mail) {
             $this->MAILER->sendMail(
@@ -155,7 +164,7 @@ class UnityGroup
     /**
      * This method is executed when an admin denys the PI group request
      */
-    public function denyGroup($send_mail = true)
+    public function denyGroup($operator = null, $send_mail = true)
     {
         // remove request - this will fail silently if the request doesn't exist
         $this->SQL->removeRequest($this->getOwner()->getUID());
@@ -163,6 +172,15 @@ class UnityGroup
         if ($this->exists()) {
             return;
         }
+
+        $operator = is_null($operator) ? $this->getOwner()->getUID() : $operator->getUID();
+
+        $this->SQL->addLog(
+            $operator,
+            $_SERVER['REMOTE_ADDR'],
+            "denied_group",
+            $this->getOwner()->getUID()
+        );
 
         // send email to the requestor
         if ($send_mail) {

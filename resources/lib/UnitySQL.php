@@ -118,7 +118,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function addNotice($title, $date, $content)
+    public function addNotice($title, $date, $content, $operator)
     {
         $stmt = $this->conn->prepare(
             "INSERT INTO " . self::TABLE_NOTICES . " (date, title, message) VALUES (:date, :title, :message)"
@@ -128,6 +128,15 @@ class UnitySQL
         $stmt->bindParam(":message", $content);
 
         $stmt->execute();
+
+        $operator = $operator->getUID();
+
+        $this->addLog(
+            $operator,
+            $_SERVER['REMOTE_ADDR'],
+            "added_cluster_notice",
+            $operator
+        );
     }
 
     public function editNotice($id, $title, $date, $content)
@@ -197,7 +206,7 @@ class UnitySQL
         return $stmt->fetchAll()[0];
     }
 
-    public function editPage($id, $content)
+    public function editPage($id, $content, $operator)
     {
         $stmt = $this->conn->prepare(
             "UPDATE " . self::TABLE_PAGES . " SET content=:content WHERE page=:id"
@@ -206,6 +215,15 @@ class UnitySQL
         $stmt->bindParam(":content", $content);
 
         $stmt->execute();
+
+        $operator = $operator->getUID();
+
+        $this->addLog(
+            $operator,
+            $_SERVER['REMOTE_ADDR'],
+            "edited_page",
+            $operator
+        );
     }
 
     public function addEvent($operator, $action, $entity)
