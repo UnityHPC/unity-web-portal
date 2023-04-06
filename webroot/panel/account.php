@@ -58,9 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break;
         case "loginshell":
             if ($_POST["shellSelect"] == "custom") {
-                $USER->setLoginShell($_POST["shell"]);
+                $USER->setLoginShell($_POST["shell"], $OPERATOR);
             } else {
-                $USER->setLoginShell($_POST["shellSelect"]);
+                $USER->setLoginShell($_POST["shellSelect"], $OPERATOR);
             }
             break;
         case "pi_request":

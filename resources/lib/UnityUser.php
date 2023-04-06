@@ -212,10 +212,18 @@ class UnityUser
      *
      * @param string $firstname
      */
-    public function setFirstname($firstname)
+    public function setFirstname($firstname, $operator = null)
     {
         $ldap_user = $this->getLDAPUser();
         $ldap_user->setAttribute("givenname", $firstname);
+        $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
+
+        $this->SQL->addLog(
+            $operator,
+            $_SERVER['REMOTE_ADDR'],
+            "firstname_changed",
+            $this->getUID()
+        );
 
         if (!$ldap_user->write()) {
             throw new Exception("Error updating LDAP entry $this->uid");
@@ -256,10 +264,18 @@ class UnityUser
      *
      * @param string $lastname
      */
-    public function setLastname($lastname)
+    public function setLastname($lastname, $operator = null)
     {
         $ldap_user = $this->getLDAPUser();
         $ldap_user->setAttribute("sn", $lastname);
+        $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
+
+        $this->SQL->addLog(
+            $operator,
+            $_SERVER['REMOTE_ADDR'],
+            "lastname_changed",
+            $this->getUID()
+        );
 
         if (!$this->getLDAPUser()->write()) {
             throw new Exception("Error updating LDAP entry $this->uid");
@@ -305,10 +321,18 @@ class UnityUser
      *
      * @param string $mail
      */
-    public function setMail($email)
+    public function setMail($email, $operator = null)
     {
         $ldap_user = $this->getLDAPUser();
         $ldap_user->setAttribute("mail", $email);
+        $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
+
+        $this->SQL->addLog(
+            $operator,
+            $_SERVER['REMOTE_ADDR'],
+            "email_changed",
+            $this->getUID()
+        );
 
         if (!$this->getLDAPUser()->write()) {
             throw new Exception("Error updating LDAP entry $this->uid");
@@ -420,7 +444,7 @@ class UnityUser
      *
      * @param string $shell absolute path to shell
      */
-    public function setLoginShell($shell, $send_mail = true)
+    public function setLoginShell($shell, $operator = null, $send_mail = true)
     {
         $ldapUser = $this->getLDAPUser();
         if ($ldapUser->exists()) {
@@ -429,6 +453,15 @@ class UnityUser
                 throw new Exception("Failed to modify login shell for $this->uid");
             }
         }
+
+        $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
+
+        $this->SQL->addLog(
+            $operator,
+            $_SERVER['REMOTE_ADDR'],
+            "loginshell_changed",
+            $this->getUID()
+        );
 
         $this->REDIS->setCache($this->uid, "loginshell", $shell);
 
@@ -470,7 +503,7 @@ class UnityUser
         return null;
     }
 
-    public function setHomeDir($home)
+    public function setHomeDir($home, $operator = null)
     {
         $ldapUser = $this->getLDAPUser();
         if ($ldapUser->exists()) {
@@ -478,6 +511,15 @@ class UnityUser
             if (!$ldapUser->write()) {
                 throw new Exception("Failed to modify home directory for $this->uid");
             }
+
+            $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
+
+            $this->SQL->addLog(
+                $operator,
+                $_SERVER['REMOTE_ADDR'],
+                "homedir_changed",
+                $this->getUID()
+            );
 
             $this->REDIS->setCache($this->uid, "homedir", $home);
         }

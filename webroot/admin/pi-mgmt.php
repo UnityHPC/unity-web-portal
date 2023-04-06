@@ -19,11 +19,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($_POST["action"] == "Approve") {
                 // approve group
                 $group = $form_user->getPIGroup();
-                $group->approveGroup();
+                $group->approveGroup($OPERATOR);
             } elseif ($_POST["action"] == "Deny") {
                 // deny group
                 $group = $form_user->getPIGroup();
-                $group->denyGroup();
+                $group->denyGroup($OPERATOR);
             }
 
             break;
