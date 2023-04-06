@@ -107,6 +107,13 @@ if (!is_null($SSO)) {
     $_SESSION["user_exists"] = $USER->exists();
     $_SESSION["is_pi"] = $USER->isPI();
 
+    $SQL->addLog(
+        $OPERATOR->getUID(),
+        $_SERVER['REMOTE_ADDR'],
+        "user_login",
+        $OPERATOR->getUID()
+    );
+
     if (!$_SESSION["user_exists"]) {
         // populate cache
         $REDIS->setCache($SSO["user"], "org", $SSO["org"]);
