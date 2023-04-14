@@ -71,7 +71,7 @@ class UnityGroup
     // Portal-facing methods, these are the methods called by scripts in webroot
     //
 
-    public function requestGroup($send_mail = true)
+    public function requestGroup($send_mail_to_admins, $send_mail = true)
     {
         // check for edge cases...
         if ($this->exists()) {
@@ -97,16 +97,18 @@ class UnityGroup
                 )
             );
 
-            $this->MAILER->sendMail(
-                "admin",
-                "group_request_admin",
-                array(
-                    "user" => $this->getOwner()->getUID(),
-                    "org" => $this->getOwner()->getOrg(),
-                    "name" => $this->getOwner()->getFullname(),
-                    "email" => $this->getOwner()->getMail()
-                )
-            );
+            if ($send_mail_to_admins) {
+                $this->MAILER->sendMail(
+                    "admin",
+                    "group_request_admin",
+                    array(
+                        "user" => $this->getOwner()->getUID(),
+                        "org" => $this->getOwner()->getOrg(),
+                        "name" => $this->getOwner()->getFullname(),
+                        "email" => $this->getOwner()->getMail()
+                    )
+                );
+            }
 
             $this->MAILER->sendMail(
                 "pi_approve",
