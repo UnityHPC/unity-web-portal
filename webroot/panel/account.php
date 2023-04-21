@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         case "pi_request":
             if (!$USER->isPI()) {
                 if (!$SQL->requestExists($USER->getUID())) {
-                    $USER->getPIGroup()->requestGroup();
+                    $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
                 }
             }
             break;
