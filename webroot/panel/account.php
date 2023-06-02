@@ -71,7 +71,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
             break;
         case "account_deletion_request":
-            if (!$SQL->accDeletionRequestExists($USER->getUID())) {
+            $hasGroups = count($USER->getGroups()) > 0;
+            if ($hasGroups) {
+                die();
+            } else if (!$SQL->accDeletionRequestExists($USER->getUID())) {
                 $USER->requestAccountDeletion();
             }
             break;
