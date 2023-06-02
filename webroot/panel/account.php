@@ -118,7 +118,10 @@ if (!$isPI) {
         onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'>
         <input type='hidden' name='form_type' value='pi_request'>";
         echo "<input type='submit' value='Request PI Account' disabled>";
-        echo "<label style='margin-left: 10px'>You cannot request PI Account while you have requested account deletion.</label>";
+        echo
+        "<label style='margin-left: 10px'>
+            You cannot request PI Account while you have requested account deletion.
+        </label>";
         echo "</form>";
     } else {
         echo
