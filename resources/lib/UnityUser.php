@@ -644,4 +644,32 @@ class UnityUser
 
         return $out;
     }
+
+    /**
+     * Sends an email to admins about account deletion request and also adds it to a table in the database
+     */
+    public function requestAccountDeletion()
+    {
+        $this->SQL->addAccountDeletionRequest($this->getUID());
+        $this->MAILER->sendMail(
+            "admin",
+            "account_deletion_request_admin",
+            array(
+                "user" => $this->getUID(),
+                "name" => $this->getFullname(),
+                "email" => $this->getMail()
+            )
+        );
+    }
+
+    /**
+     * Checks if the user has requested account deletion
+     *
+     * @return boolean true if account deletion has been requested, false if not
+     */
+    public function hasRequestedAccountDeletion()
+    {
+        return $this->SQL->accDeletionRequestExists($this->getUID());
+    }
+
 }

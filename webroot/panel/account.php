@@ -70,6 +70,19 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 }
             }
             break;
+        case "account_deletion_request":
+            $hasGroups = count($USER->getGroups()) > 0;
+            if (!$hasGroups) {
+                if (!$SQL->accDeletionRequestExists($USER->getUID())) {
+                    $USER->requestAccountDeletion();
+                }
+            } else {
+                echo "<script type='text/javascript'>
+                alert('You cannot delete your account while you are a member of a PI group.');
+                </script>
+                ";
+            }
+            break;
     }
 }
 ?>
@@ -193,6 +206,28 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
     <input type='submit' value='Set Login Shell'>
 
 </form>
+
+<hr>
+
+<h5>Account Deletion</h5>
+<?php
+
+    echo
+        "<form action='' method='POST' id='accDel' 
+        onsubmit='return confirm(\"Are you sure you want to request an account deletion?\")'>
+        <input type='hidden' name='form_type' value='account_deletion_request'>";
+        if ($SQL->accDeletionRequestExists($USER->getUID())) {
+            echo "<input type='submit' value='Request Account Deletion' disabled>";
+            echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
+        } else {
+            echo "<input type='submit' value='Request Account Deletion'>";
+        }
+        echo "</form>";
+
+?>
+
+<hr>
+
 
 <script>
     $("button.btnAddKey").click(function() {
