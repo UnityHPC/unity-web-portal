@@ -671,5 +671,4 @@ class UnityUser
     {
         return $this->SQL->accDeletionRequestExists($this->getUID());
     }
-
 }
