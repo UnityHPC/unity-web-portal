@@ -74,7 +74,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $hasGroups = count($USER->getGroups()) > 0;
             if ($hasGroups) {
                 die();
-            } else if (!$SQL->accDeletionRequestExists($USER->getUID())) {
+                break;
+            }
+            if (!$SQL->accDeletionRequestExists($USER->getUID())) {
                 $USER->requestAccountDeletion();
             }
             break;
