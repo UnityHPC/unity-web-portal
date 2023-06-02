@@ -212,17 +212,17 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 <h5>Account Deletion</h5>
 <?php
 
-    echo
-        "<form action='' method='POST' id='accDel' 
-        onsubmit='return confirm(\"Are you sure you want to request an account deletion?\")'>
-        <input type='hidden' name='form_type' value='account_deletion_request'>";
-        if ($SQL->accDeletionRequestExists($USER->getUID())) {
-            echo "<input type='submit' value='Request Account Deletion' disabled>";
-            echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
-        } else {
-            echo "<input type='submit' value='Request Account Deletion'>";
-        }
-        echo "</form>";
+echo
+"<form action='' method='POST' id='accDel' 
+onsubmit='return confirm(\"Are you sure you want to request an account deletion?\")'>
+<input type='hidden' name='form_type' value='account_deletion_request'>";
+if ($SQL->accDeletionRequestExists($USER->getUID())) {
+    echo "<input type='submit' value='Request Account Deletion' disabled>";
+    echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
+} else {
+    echo "<input type='submit' value='Request Account Deletion'>";
+}
+echo "</form>";
 
 ?>
 

@@ -44,7 +44,7 @@ include $LOC_HEADER;
 
     foreach ($users as $user) {
         if ($user->hasRequestedAccountDeletion()) {
-            echo "<tr style='color:grey; font-style: italic'>"; // grey out and italicize users who have requested account deletion
+            echo "<tr style='color:grey; font-style: italic'>";
         } else {
             echo "<tr>";
         }
