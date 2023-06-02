@@ -108,6 +108,20 @@ CREATE TABLE `audit_log` (
 
 -- --------------------------------------------------------
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `account_deletion_requests`
+--
+
+CREATE TABLE `account_deletion_requests` (
+  `id` int(11) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `uid` varchar(1000) NOT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
 --
 -- Indexes for dumped tables
 --
@@ -149,6 +163,12 @@ ALTER TABLE `audit_log`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `audit_log`
+--
+ALTER TABLE `account_deletion_requests`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -186,6 +206,14 @@ ALTER TABLE `sso_log`
 -- AUTO_INCREMENT for table `audit_log`
 --
 ALTER TABLE `audit_log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+COMMIT;
+
+--
+--
+-- AUTO_INCREMENT for table `account_deletion_requests`
+--
+ALTER TABLE `account_deletion_requests`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 

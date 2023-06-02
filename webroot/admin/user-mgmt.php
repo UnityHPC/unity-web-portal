@@ -43,7 +43,11 @@ include $LOC_HEADER;
     });
 
     foreach ($users as $user) {
-        echo "<tr>";
+        if ($user->hasRequestedAccountDeletion()) {
+            echo "<tr style='color:grey; font-style: italic'>";
+        } else {
+            echo "<tr>";
+        }
         echo "<td>" . $user->getFirstname() . " " . $user->getLastname() . "</td>";
         echo "<td>" . $user->getUID() . "</td>";
         echo "<td>" . $user->getOrg() . "</td>";

@@ -125,7 +125,14 @@ foreach ($groups as $group) {
 echo "</table>";
 ?>
 
-<button type="button" class="plusBtn btnAddPI">&#43;</button>
+<?php
+if ($SQL->accDeletionRequestExists($USER->getUID())) {
+    echo "<button type='button' class='plusBtn btnAddPI' disabled>&#43;</button>";
+    echo "<label>You cannot join a PI while you have requested account deletion.</label>";
+} else {
+    echo "<button type='button' class='plusBtn btnAddPI'>&#43;</button>";
+}
+?>
 
 <style>
     div.modalContent {

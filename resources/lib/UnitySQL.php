@@ -12,6 +12,7 @@ class UnitySQL
     private const TABLE_PAGES = "pages";
     private const TABLE_EVENTS = "events";
     private const TABLE_AUDIT_LOG = "audit_log";
+    private const TABLE_ACCOUNT_DELETION_REQUESTS = "account_deletion_requests";
 
     private const REQUEST_ADMIN = "admin";
 
@@ -251,5 +252,27 @@ class UnitySQL
         $stmt->bindParam(":recipient", $recipient);
 
         $stmt->execute();
+    }
+
+    public function addAccountDeletionRequest($uid)
+    {
+        $stmt = $this->conn->prepare(
+            "INSERT INTO " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " (uid) VALUE (:uid)"
+        );
+        $stmt->bindParam(":uid", $uid);
+
+        $stmt->execute();
+    }
+
+    public function accDeletionRequestExists($uid)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " WHERE uid=:uid"
+        );
+        $stmt->bindParam(":uid", $uid);
+
+        $stmt->execute();
+
+        return count($stmt->fetchAll()) > 0;
     }
 }
