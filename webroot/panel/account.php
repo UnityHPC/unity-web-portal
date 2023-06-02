@@ -71,16 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
             break;
         case "account_deletion_request":
-            $hasGroups = count($USER->getGroups()) > 0;
-            if (!$hasGroups) {
-                if (!$SQL->accDeletionRequestExists($USER->getUID())) {
-                    $USER->requestAccountDeletion();
-                }
-            } else {
-                echo "<script type='text/javascript'>
-                alert('You cannot delete your account while you are a member of a PI group.');
-                </script>
-                ";
+            if (!$SQL->accDeletionRequestExists($USER->getUID())) {
+                $USER->requestAccountDeletion();
             }
             break;
     }
@@ -120,17 +112,27 @@ if ($isPI) {
 }
 
 if (!$isPI) {
-    echo
-    "<form action='' method='POST' id='piReq' 
-    onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'>
-    <input type='hidden' name='form_type' value='pi_request'>";
-    if ($SQL->requestExists($USER->getUID())) {
+    if ($SQL->accDeletionRequestExists($USER->getUID())) {
+        echo
+        "<form action='' method='POST' id='piReq' 
+        onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'>
+        <input type='hidden' name='form_type' value='pi_request'>";
         echo "<input type='submit' value='Request PI Account' disabled>";
-        echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
+        echo "<label style='margin-left: 10px'>You cannot request PI Account while you have requested account deletion.</label>";
+        echo "</form>";
     } else {
-        echo "<input type='submit' value='Request PI Account'>";
+        echo
+        "<form action='' method='POST' id='piReq' 
+        onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'>
+        <input type='hidden' name='form_type' value='pi_request'>";
+        if ($SQL->requestExists($USER->getUID())) {
+            echo "<input type='submit' value='Request PI Account' disabled>";
+            echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
+        } else {
+            echo "<input type='submit' value='Request PI Account'>";
+        }
+        echo "</form>";
     }
-    echo "</form>";
 }
 ?>
 
@@ -211,18 +213,23 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 
 <h5>Account Deletion</h5>
 <?php
+$hasGroups = count($USER->getGroups()) > 0;
 
-echo
-"<form action='' method='POST' id='accDel' 
-onsubmit='return confirm(\"Are you sure you want to request an account deletion?\")'>
-<input type='hidden' name='form_type' value='account_deletion_request'>";
-if ($SQL->accDeletionRequestExists($USER->getUID())) {
-    echo "<input type='submit' value='Request Account Deletion' disabled>";
-    echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
+if ($hasGroups) {
+    echo "<p>You cannot request to delete your account while you are in a PI group.</p>";
 } else {
-    echo "<input type='submit' value='Request Account Deletion'>";
+    echo
+    "<form action='' method='POST' id='accDel' 
+    onsubmit='return confirm(\"Are you sure you want to request an account deletion?\")'>
+    <input type='hidden' name='form_type' value='account_deletion_request'>";
+    if ($SQL->accDeletionRequestExists($USER->getUID())) {
+        echo "<input type='submit' value='Request Account Deletion' disabled>";
+        echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
+    } else {
+        echo "<input type='submit' value='Request Account Deletion'>";
+    }
+    echo "</form>";
 }
-echo "</form>";
 
 ?>
 

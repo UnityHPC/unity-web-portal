@@ -78,6 +78,11 @@ class UnityGroup
             return;
         }
 
+        // check if account deletion request already exists
+        if ($this->SQL->accDeletionRequestExists($this->getOwner()->getUID())) {
+            return;
+        }
+
         $this->SQL->addRequest($this->getOwner()->getUID());
 
         if ($send_mail) {
@@ -349,6 +354,11 @@ class UnityGroup
         }
 
         if ($this->requestExists($new_user)) {
+            return;
+        }
+
+        // check if account deletion request already exists
+        if ($this->SQL->accDeletionRequestExists($new_user->getUID())) {
             return;
         }
 
