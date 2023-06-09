@@ -120,6 +120,14 @@ class UnityLDAP extends ldapConn
         $max_uid = $UnitySQL->getSiteVar('MAX_UID');
         $new_uid = $max_uid + 1;
 
+        $is_already_in_use = $this->UIDNumInUse($new_uid);
+
+        if ($is_already_in_use) {
+            while ($this->UIDNumInUse($new_uid)) {
+                $new_uid++;
+            }
+        }
+
         $UnitySQL->updateSiteVar('MAX_UID', $new_uid);
 
         return $new_uid;
@@ -130,6 +138,14 @@ class UnityLDAP extends ldapConn
         $max_pigid = $UnitySQL->getSiteVar('MAX_PIGID');
         $new_pigid = $max_pigid + 1;
 
+        $pi_groups = $this->pi_groupOU->getChildrenArray(true);
+
+        foreach ($pi_groups as $group) {
+            if ($group["gidnumber"][0] == $new_pigid) {
+                $new_pigid++;
+            }
+        }
+
         $UnitySQL->updateSiteVar('MAX_PIGID', $new_pigid);
 
         return $new_pigid;
@@ -139,6 +155,14 @@ class UnityLDAP extends ldapConn
     {
         $max_gid = $UnitySQL->getSiteVar('MAX_GID');
         $new_gid = $max_gid + 1;
+
+        $groups = $this->org_groupOU->getChildrenArray(true);
+
+        foreach ($groups as $group) {
+            if ($group["gidnumber"][0] == $new_gid) {
+                $new_gid++;
+            }
+        }
 
         $UnitySQL->updateSiteVar('MAX_GID', $new_gid);
 
