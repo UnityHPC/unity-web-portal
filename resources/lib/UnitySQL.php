@@ -13,6 +13,7 @@ class UnitySQL
     private const TABLE_EVENTS = "events";
     private const TABLE_AUDIT_LOG = "audit_log";
     private const TABLE_ACCOUNT_DELETION_REQUESTS = "account_deletion_requests";
+    private const TABLE_SITEVARS = "sitevars";
 
     private const REQUEST_ADMIN = "admin";
 
@@ -274,5 +275,28 @@ class UnitySQL
         $stmt->execute();
 
         return count($stmt->fetchAll()) > 0;
+    }
+
+    public function getSiteVar($name)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_SITEVARS . " WHERE name=:name"
+        );
+        $stmt->bindParam(":name", $name);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll()[0]['value'];
+    }
+
+    public function updateSiteVar($name, $value)
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE " . self::TABLE_SITEVARS . " SET value=:value WHERE name=:name"
+        );
+        $stmt->bindParam(":name", $name);
+        $stmt->bindParam(":value", $value);
+
+        $stmt->execute();
     }
 }

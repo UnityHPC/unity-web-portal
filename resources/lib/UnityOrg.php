@@ -30,7 +30,7 @@ class UnityOrg
         $org_group = $this->getLDAPOrgGroup();
 
         if (!$org_group->exists()) {
-            $nextGID = $this->LDAP->getNextOrgGIDNumber();
+            $nextGID = $this->LDAP->getNextOrgGIDNumber($this->SQL);
 
             $org_group->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
             $org_group->setAttribute("gidnumber", strval($nextGID));

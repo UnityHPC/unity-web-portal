@@ -115,67 +115,46 @@ class UnityLDAP extends ldapConn
   //
   // ID Number selection functions
   //
-    public function getNextUIDNumber()
+    public function getNextUIDNumber($UnitySQL)
     {
-        $users = $this->userOU->getChildrenArray(true);
+        $max_uid = $UnitySQL->getSiteVar('MAX_UID');
+        $new_uid = $max_uid + 1;
 
-      // This could become inefficient with more users
-        usort($users, function ($a, $b) {
-            return $a["uidnumber"] <=> $b["uidnumber"];
-        });
-
-        $id = self::ID_MAP[0];
-        foreach ($users as $acc) {
-            if ($id == $acc["uidnumber"][0]) {
-                $id++;
-            } else {
-                if (!$this->GIDNumInUse($id)) {
-                    break;
-                }
-            }
+        while ($this->UIDNumInUse($new_uid)) {
+            $new_uid++;
         }
 
-        return $id;
+        $UnitySQL->updateSiteVar('MAX_UID', $new_uid);
+
+        return $new_uid;
     }
 
-    public function getNextPiGIDNumber()
+    public function getNextPiGIDNumber($UnitySQL)
     {
-        $groups = $this->pi_groupOU->getChildrenArray(true);
+        $max_pigid = $UnitySQL->getSiteVar('MAX_PIGID');
+        $new_pigid = $max_pigid + 1;
 
-        usort($groups, function ($a, $b) {
-            return $a["gidnumber"] <=> $b["gidnumber"];
-        });
-
-        $id = self::PI_ID_MAP[0];
-        foreach ($groups as $acc) {
-            if ($id == $acc["gidnumber"][0]) {
-                $id++;
-            } else {
-                break;
-            }
+        while ($this->PIGIDNumInUse($new_pigid)) {
+            $new_pigid++;
         }
 
-        return $id;
+        $UnitySQL->updateSiteVar('MAX_PIGID', $new_pigid);
+
+        return $new_pigid;
     }
 
-    public function getNextOrgGIDNumber()
+    public function getNextOrgGIDNumber($UnitySQL)
     {
-        $groups = $this->org_groupOU->getChildrenArray(true);
+        $max_gid = $UnitySQL->getSiteVar('MAX_GID');
+        $new_gid = $max_gid + 1;
 
-        usort($groups, function ($a, $b) {
-            return $a["gidnumber"] <=> $b["gidnumber"];
-        });
-
-        $id = self::ORG_ID_MAP[0];
-        foreach ($groups as $acc) {
-            if ($id == $acc["gidnumber"][0]) {
-                $id++;
-            } else {
-                break;
-            }
+        while ($this->GIDNumInUse($new_gid)) {
+            $new_gid++;
         }
 
-        return $id;
+        $UnitySQL->updateSiteVar('MAX_GID', $new_gid);
+
+        return $new_gid;
     }
 
     private function UIDNumInUse($id)
@@ -190,11 +169,11 @@ class UnityLDAP extends ldapConn
         return false;
     }
 
-    private function GIDNumInUse($id)
+    private function PIGIDNumInUse($id)
     {
-        $users = $this->groupOU->getChildrenArray(true);
-        foreach ($users as $user) {
-            if ($user["gidnumber"][0] == $id) {
+        $pi_groups = $this->pi_groupOU->getChildrenArray(true);
+        foreach ($pi_groups as $pi_group) {
+            if ($pi_group["gidnumber"][0] == $id) {
                 return true;
             }
         }
@@ -202,7 +181,19 @@ class UnityLDAP extends ldapConn
         return false;
     }
 
-    public function getUnassignedID($uid)
+    private function GIDNumInUse($id)
+    {
+        $groups = $this->groupOU->getChildrenArray(true);
+        foreach ($groups as $group) {
+            if ($group["gidnumber"][0] == $id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getUnassignedID($uid, $UnitySQL)
     {
         $netid = strtok($uid, "_");  // extract netid
       // scrape all files in custom folder
@@ -226,7 +217,7 @@ class UnityLDAP extends ldapConn
         }
 
       // didn't find anything from existing mappings, use next available
-        $next_uid = $this->getNextUIDNumber();
+        $next_uid = $this->getNextUIDNumber($UnitySQL);
 
         return $next_uid;
     }
