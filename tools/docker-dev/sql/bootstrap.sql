@@ -122,6 +122,20 @@ CREATE TABLE `account_deletion_requests` (
 
 -- --------------------------------------------------------
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sitevars`
+--
+
+CREATE TABLE `sitevars` (
+  `id` int(11) NOT NULL,
+  `name` varchar(1000) NOT NULL,
+  `value` varchar(1000) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
 --
 -- Indexes for dumped tables
 --
@@ -166,6 +180,12 @@ ALTER TABLE `audit_log`
 -- Indexes for table `audit_log`
 --
 ALTER TABLE `account_deletion_requests`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `sitevars`
+--
+ALTER TABLE `sitevars`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -215,6 +235,13 @@ COMMIT;
 --
 ALTER TABLE `account_deletion_requests`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+COMMIT;
+
+--
+-- AUTO_INCREMENT for table `sitevars`
+--
+ALTER TABLE `sitevars`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

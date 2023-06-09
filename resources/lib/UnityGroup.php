@@ -482,7 +482,7 @@ class UnityGroup
         $ldapPiGroupEntry = $this->getLDAPPiGroup();
 
         if (!$ldapPiGroupEntry->exists()) {
-            $nextGID = $this->LDAP->getNextPiGIDNumber();
+            $nextGID = $this->LDAP->getNextPiGIDNumber($this->SQL);
 
             $ldapPiGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
             $ldapPiGroupEntry->setAttribute("gidnumber", strval($nextGID));
