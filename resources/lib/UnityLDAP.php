@@ -120,13 +120,9 @@ class UnityLDAP extends ldapConn
         $max_uid = $UnitySQL->getSiteVar('MAX_UID');
         $new_uid = $max_uid + 1;
 
-        $is_already_in_use = $this->UIDNumInUse($new_uid);
-
-        if ($is_already_in_use) {
-            while ($this->UIDNumInUse($new_uid)) {
-                $new_uid++;
-            }
-        }
+       while ($this->UIDNumInUse($new_uid)) {
+           $new_uid++;
+       }
 
         $UnitySQL->updateSiteVar('MAX_UID', $new_uid);
 
