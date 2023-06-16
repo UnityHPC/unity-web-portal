@@ -25,6 +25,8 @@
 
 </body>
 
+<script src="<?php echo $CONFIG["site"]["prefix"]; ?>/js/filterable.js"></script>
+<script src="<?php echo $CONFIG["site"]["prefix"]; ?>/js/sortable.js"></script>
 <script src="<?php echo $CONFIG["site"]["prefix"]; ?>/js/global.js"></script>
 <script src="<?php echo $CONFIG["site"]["prefix"]; ?>/js/tables.js"></script>
 
