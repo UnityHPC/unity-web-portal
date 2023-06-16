@@ -23,15 +23,15 @@ include $LOC_HEADER;
 <h1>User Management</h1>
 <hr>
 
-<input type="text" id="tableSearch" placeholder="Search...">
+<!-- <input type="text" id="tableSearch" placeholder="Search..."> -->
 
-<table class="searchable longTable">
+<table class="searchable longTable sortable filterable">
     <tr class="key">
-        <td>Name</td>
-        <td>UID</td>
-        <td>Org</td>
-        <td>Mail</td>
-        <td>Groups</td>
+        <input type="text" style="max-width: fit-content; margin-right: 5px;" placeholder="Filter by Name..." class="filterSearch" id="name-filter"><td id="name"><span class="filter">⫧ </span>Name</td>
+        <input type="text" style="max-width: fit-content; margin-right: 5px;" placeholder="Filter by UID..." class="filterSearch" id="uid-filter"><td id="uid"><span class="filter">⫧ </span>UID</td>
+        <input type="text" style="max-width: fit-content; margin-right: 5px;" placeholder="Filter by Org..." class="filterSearch" id="org-filter"><td id="org"><span class="filter">⫧ </span>Org</td>
+        <input type="text" style="max-width: fit-content; margin-right: 5px;" placeholder="Filter by Mail..." class="filterSearch" id="mail-filter"><td id="mail"><span class="filter">⫧ </span>Mail</td>
+        <input type="text" style="max-width: fit-content; margin-right: 5px;" placeholder="Filter by Groups..." class="filterSearch" id="groups-filter"><td id="groups"><span class="filter">⫧ </span>Groups</td>
         <td>Actions</td>
     </tr>
 

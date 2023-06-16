@@ -62,7 +62,7 @@ include $LOC_HEADER;
 <h1>PI Management</h1>
 <hr>
 
-<input type="text" id="tableSearch" placeholder="Search...">
+<!-- <input type="text" id="tableSearch" placeholder="Search..."> -->
 
 <h5>Pending PI Requests</h5>
 <table class="searchable">
@@ -104,11 +104,11 @@ include $LOC_HEADER;
 
 <h5>List of PIs</h5>
 
-<table class="searchable longTable">
+<table class="searchable longTable sortable filterable">
     <tr class="key">
-        <td>Name</td>
-        <td>Unity ID</td>
-        <td>Mail</td>
+        <input type="text" style="max-width: fit-content; margin-right: 100px;" placeholder="Filter by Name..." class="filterSearch" id="name-filter"><td id="name"><span class="filter">⫧ </span>Name</td>
+        <input type="text" style="max-width: fit-content; margin-right: 100px;" placeholder="Filter by Unity ID..." class="filterSearch" id="unityID-filter"><td id="unityID"><span class="filter">⫧ </span>Unity ID</td>
+        <input type="text" style="max-width: fit-content; margin-right: 5px;" placeholder="Filter by Mail..." class="filterSearch" id="mail-filter"><td id="mail"><span class="filter">⫧ </span>Mail</td>
         <td>Actions</td>
     </tr>
 
