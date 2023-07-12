@@ -114,6 +114,7 @@ if ($isPI) {
     echo "<p>You are currently not assigned to any PI, and will be 
     <strong>unable to use the cluster</strong>. Go to the <a href='groups.php'>My PIs</a> 
     page to join a PI, or click on the button below if you are a PI</p>";
+    echo "<p>Students should not request a PI account.</p>";
 }
 
 if (!$isPI) {
