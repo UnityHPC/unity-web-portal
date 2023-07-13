@@ -118,6 +118,6 @@ class UnityPerms
             return false;
         }
 
-        return true;   
+        return true;
     }
 }
