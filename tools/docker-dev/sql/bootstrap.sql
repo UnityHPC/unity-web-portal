@@ -2,10 +2,10 @@
 -- version 4.9.5deb2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Sep 22, 2022 at 08:36 PM
--- Server version: 10.3.34-MariaDB-0ubuntu0.20.04.1
--- PHP Version: 7.4.3
+-- Host: 127.0.0.1
+-- Generation Time: Jul 13, 2023 at 02:29 AM
+-- Server version: 10.3.38-MariaDB-0ubuntu0.20.04.1
+-- PHP Version: 7.4.3-4ubuntu2.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -25,6 +25,33 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `account_deletion_requests`
+--
+
+CREATE TABLE `account_deletion_requests` (
+  `id` int(11) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `uid` varchar(1000) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `audit_log`
+--
+
+CREATE TABLE `audit_log` (
+  `id` int(11) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `operator` varchar(1000) NOT NULL,
+  `operator_ip` varchar(1000) NOT NULL,
+  `action_type` varchar(1000) NOT NULL,
+  `recipient` varchar(1000) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `events`
 --
 
@@ -34,7 +61,81 @@ CREATE TABLE `events` (
   `action` varchar(300) NOT NULL,
   `entity` varchar(300) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `groupJoinRequests`
+--
+
+CREATE TABLE `groupJoinRequests` (
+  `id` int(11) NOT NULL,
+  `group_name` varchar(1000) NOT NULL,
+  `requestor` varchar(1000) NOT NULL,
+  `requested_on` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `groupRequests`
+--
+
+CREATE TABLE `groupRequests` (
+  `id` int(11) NOT NULL,
+  `group_type` varchar(1000) NOT NULL,
+  `group_name` varchar(1000) NOT NULL,
+  `requestor` varchar(1000) NOT NULL,
+  `requested_on` timestamp NOT NULL DEFAULT current_timestamp(),
+  `start_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `groupRoleAssignments`
+--
+
+CREATE TABLE `groupRoleAssignments` (
+  `id` int(11) NOT NULL,
+  `user` varchar(1000) NOT NULL,
+  `role` varchar(1000) NOT NULL,
+  `group` varchar(1000) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `groupRoles`
+--
+
+CREATE TABLE `groupRoles` (
+  `id` int(11) NOT NULL,
+  `name` varchar(1000) NOT NULL,
+  `slug` varchar(1000) NOT NULL,
+  `priority` int(11) NOT NULL,
+  `color` varchar(1000) NOT NULL,
+  `perms` varchar(1000) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `groupTypes`
+--
+
+CREATE TABLE `groupTypes` (
+  `id` int(11) NOT NULL,
+  `name` varchar(1000) NOT NULL,
+  `slug` varchar(1000) NOT NULL,
+  `color` varchar(1000) NOT NULL,
+  `time_limited` tinyint(1) NOT NULL,
+  `def_role` varchar(1000) NOT NULL,
+  `av_roles` varchar(1000) NOT NULL,
+  `can_request` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -47,7 +148,7 @@ CREATE TABLE `notices` (
   `date` timestamp NOT NULL DEFAULT current_timestamp(),
   `title` varchar(300) NOT NULL,
   `message` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `notices`
@@ -67,7 +168,7 @@ CREATE TABLE `pages` (
   `id` int(11) NOT NULL,
   `page` varchar(300) NOT NULL,
   `content` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `pages`
@@ -75,8 +176,7 @@ CREATE TABLE `pages` (
 
 INSERT INTO `pages` (`id`, `page`, `content`) VALUES
 (1, 'support', '<h3>Docmentation and FAQ</h3>\r\n<p>You can find our documentation <a href=\"https://esdconfluence.it.umass.edu/confluence/display/UNITY/Unity+Cluster+Documentation+Home\" target=\"_blank\">here</a>. We also have an <a target=\"_blank\" href=\"https://esdconfluence.it.umass.edu/confluence/display/UNITY/Frequently+Asked+Questions\">FAQ</a> page which could help answer quick questions.\r\n\r\n<h3>Office Hours</h3>\r\n<p>We offer office hours every week on <strong>Tuesdays 2-4 PM</strong> in-person at <strong>W.E.B. DuBois Library 786</strong> or remote on <strong><a target=\"_blank\" href=\"https://umass-amherst.zoom.us/j/95663998309\">Zoom</a></strong>. Be sure to check the <a href=\"<?php echo $CONFIG[\"site\"][\"prefix\"]; ?>/index.php\">cluster notes</a> page for up-to-date information on any canceled/delayed office hours.</p>\r\n\r\n<h3>Support Email</h3>\r\n<p>You can create a support ticket by emailing <a target=\"_blank\" href=\"mailto:hpc@umass.edu\">hpc@umass.edu</a>. We will do our best to reply as fast as possible!</p>'),
-(2, 'policy', '<p>By using resources associated with Unity, you agree to comply with the following conditions of use.  This is an extension of the University of Massachussetts Amherst Information Technology Acceptable Use Policy, which can be found <a target=\"_blank\" href=\"https://www.umass.edu/it/security/acceptable-use-policy\">here</a>.</p>\r\n\r\n<ol>\r\n    <li>You will not use Unity resources for illicit financial gain, such as virtual currency mining, or any unlawful purpose, nor attempt to breach or circumvent any Unity administrative or security controls. You will comply with all applicable laws, working with your home institution and the specific Unity service providers utilized to determine what constraints may be placed on you by any relevant regulations such as export control law or HIPAA.</li>\r\n    <li>You will respect intellectual property rights and observe confidentiality agreements.</li>\r\n    <li>You will protect the access credentials (e.g., passwords, private keys, and/or tokens) issued to you or generated to access Unity resources; these are issued to you for your sole use.</li>\r\n    <li>You will immediately report any known or suspected security breach or loss or misuse of Unity access credentials to <a href=\"mailto:hpc@it.umass.edu\">hpc@it.umass.edu</a>.</li>\r\n    <li>You will have only one Unity User account and will keep your profile information up-to-date.</li>\r\n    <li>Use of resources and services through Unity is at your own risk. There are no guarantees that resources and services will be available, that they will suit every purpose, or that data will never be lost or corrupted. Users are responsible for backing up critical data.</li>\r\n    <li>Logged information, including information provided by you for registration purposes, is used for administrative, operational, accounting, monitoring and security purposes. This information may be disclosed, via secured mechanisms, only for the same purposes and only as far as necessary to other organizations cooperating with Unity .</li>\r\n</ol>\r\n\r\n<p>The Unity team reserves the right to restrict access to any individual/group found to be in breach of the above.</p>'),
-(3, 'home', '<p>Home page content</p><p>Other line</p>');
+(2, 'policy', '<p>By using resources associated with Unity, you agree to comply with the following conditions of use.  This is an extension of the University of Massachussetts Amherst Information Technology Acceptable Use Policy, which can be found <a target=\"_blank\" href=\"https://www.umass.edu/it/security/acceptable-use-policy\">here</a>.</p>\r\n\r\n<ol>\r\n    <li>You will not use Unity resources for illicit financial gain, such as virtual currency mining, or any unlawful purpose, nor attempt to breach or circumvent any Unity administrative or security controls. You will comply with all applicable laws, working with your home institution and the specific Unity service providers utilized to determine what constraints may be placed on you by any relevant regulations such as export control law or HIPAA.</li>\r\n    <li>You will respect intellectual property rights and observe confidentiality agreements.</li>\r\n    <li>You will protect the access credentials (e.g., passwords, private keys, and/or tokens) issued to you or generated to access Unity resources; these are issued to you for your sole use.</li>\r\n    <li>You will immediately report any known or suspected security breach or loss or misuse of Unity access credentials to <a href=\"mailto:hpc@it.umass.edu\">hpc@it.umass.edu</a>.</li>\r\n    <li>You will have only one Unity User account and will keep your profile information up-to-date.</li>\r\n    <li>Use of resources and services through Unity is at your own risk. There are no guarantees that resources and services will be available, that they will suit every purpose, or that data will never be lost or corrupted. Users are responsible for backing up critical data.</li>\r\n    <li>Logged information, including information provided by you for registration purposes, is used for administrative, operational, accounting, monitoring and security purposes. This information may be disclosed, via secured mechanisms, only for the same purposes and only as far as necessary to other organizations cooperating with Unity .</li>\r\n</ol>\r\n\r\n<p>The Unity team reserves the right to restrict access to any individual/group found to be in breach of the above.</p>');
 
 -- --------------------------------------------------------
 
@@ -89,38 +189,7 @@ CREATE TABLE `requests` (
   `request_for` varchar(1000) NOT NULL,
   `uid` varchar(1000) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `audit_log`
---
-
-CREATE TABLE `audit_log` (
-  `id` int(11) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
-  `operator` varchar(1000) NOT NULL,
-  `operator_ip` varchar(1000) NOT NULL,
-  `action_type` varchar(1000) NOT NULL,
-  `recipient` varchar(1000) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
--- --------------------------------------------------------
-
---
--- Table structure for table `account_deletion_requests`
---
-
-CREATE TABLE `account_deletion_requests` (
-  `id` int(11) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
-  `uid` varchar(1000) NOT NULL,
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -132,18 +201,73 @@ CREATE TABLE `sitevars` (
   `id` int(11) NOT NULL,
   `name` varchar(1000) NOT NULL,
   `value` varchar(1000) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
+
+--
+-- Table structure for table `sso_log`
+--
+
+CREATE TABLE `sso_log` (
+  `id` int(10) NOT NULL,
+  `uid` varchar(300) NOT NULL,
+  `firstname` varchar(300) NOT NULL,
+  `lastname` varchar(300) NOT NULL,
+  `mail` varchar(300) NOT NULL,
+  `org` varchar(300) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Indexes for dumped tables
 --
 
 --
+-- Indexes for table `account_deletion_requests`
+--
+ALTER TABLE `account_deletion_requests`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `audit_log`
+--
+ALTER TABLE `audit_log`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `events`
 --
 ALTER TABLE `events`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `groupJoinRequests`
+--
+ALTER TABLE `groupJoinRequests`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `groupRequests`
+--
+ALTER TABLE `groupRequests`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `groupRoleAssignments`
+--
+ALTER TABLE `groupRoleAssignments`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `groupRoles`
+--
+ALTER TABLE `groupRoles`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `groupTypes`
+--
+ALTER TABLE `groupTypes`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -165,27 +289,15 @@ ALTER TABLE `requests`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `sso_log`
---
-ALTER TABLE `sso_log`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `audit_log`
---
-ALTER TABLE `audit_log`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `audit_log`
---
-ALTER TABLE `account_deletion_requests`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `sitevars`
 --
 ALTER TABLE `sitevars`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `sso_log`
+--
+ALTER TABLE `sso_log`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -193,9 +305,51 @@ ALTER TABLE `sitevars`
 --
 
 --
+-- AUTO_INCREMENT for table `account_deletion_requests`
+--
+ALTER TABLE `account_deletion_requests`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `audit_log`
+--
+ALTER TABLE `audit_log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `groupJoinRequests`
+--
+ALTER TABLE `groupJoinRequests`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `groupRequests`
+--
+ALTER TABLE `groupRequests`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `groupRoleAssignments`
+--
+ALTER TABLE `groupRoleAssignments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `groupRoles`
+--
+ALTER TABLE `groupRoles`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `groupTypes`
+--
+ALTER TABLE `groupTypes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -217,31 +371,16 @@ ALTER TABLE `requests`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1031;
 
 --
+-- AUTO_INCREMENT for table `sitevars`
+--
+ALTER TABLE `sitevars`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `sso_log`
 --
 ALTER TABLE `sso_log`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT for table `audit_log`
---
-ALTER TABLE `audit_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-COMMIT;
-
---
---
--- AUTO_INCREMENT for table `account_deletion_requests`
---
-ALTER TABLE `account_deletion_requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-COMMIT;
-
---
--- AUTO_INCREMENT for table `sitevars`
---
-ALTER TABLE `sitevars`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -671,4 +671,22 @@ class UnityUser
     {
         return $this->SQL->accDeletionRequestExists($this->getUID());
     }
+
+    /**
+     * Checks whether a user is in a group or not
+     */
+
+    public function isInGroup($uid, $group)
+    {
+        $group = new UnityGroup(
+            $group,
+            $this->LDAP,
+            $this->SQL,
+            $this->MAILER,
+            $this->REDIS,
+            $this->WEBHOOK
+        );
+
+        return in_array($uid, $group->getGroupMemberUIDs());
+    }
 }
