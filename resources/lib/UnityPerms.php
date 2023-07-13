@@ -21,11 +21,11 @@ class UnityPerms
 
         $role = $this->SQL->getRole($uid, $group);
 
-        if ($this->SQL->hasPermission($role, 'unity.admin') || $this->SQL->hasPermission($role, 'unity.admin_no_grant')) {
+        if ($this->SQL->hasPerm($role, 'unity.admin') || $this->SQL->hasPerm($role, 'unity.admin_no_grant')) {
             return true;
         }
 
-        if (!$this->SQL->hasPermission($role, 'unity.approve_user')) {
+        if (!$this->SQL->hasPerm($role, 'unity.approve_user')) {
             return false;
         }
 
@@ -46,11 +46,11 @@ class UnityPerms
 
         $role = $this->SQL->getRole($uid, $group);
 
-        if ($this->SQL->hasPermission($role, 'unity.admin') || $this->SQL->hasPermission($role, 'unity.admin_no_grant')) {
+        if ($this->SQL->hasPerm($role, 'unity.admin') || $this->SQL->hasPerm($role, 'unity.admin_no_grant')) {
             return true;
         }
 
-        if (!$this->SQL->hasPermission($role, 'unity.deny_user')) {
+        if (!$this->SQL->hasPerm($role, 'unity.deny_user')) {
             return false;
         }
 
@@ -75,11 +75,11 @@ class UnityPerms
 
         $user_role = $this->SQL->getRole($uid, $group);
 
-        if ($this->SQL->hasPermission($user_role, 'unity.admin') || $this->SQL->hasPermission($user_role, 'unity.admin_no_grant')) {
+        if ($this->SQL->hasPerm($user_role, 'unity.admin') || $this->SQL->hasPerm($user_role, 'unity.admin_no_grant')) {
             return true;
         }
 
-        if (!$this->SQL->hasPermission($user_role, 'unity.grant_role')) {
+        if (!$this->SQL->hasPerm($user_role, 'unity.grant_role')) {
             return false;
         }
 
@@ -89,7 +89,7 @@ class UnityPerms
             return false;
         }
 
-        return true;        
+        return true;
     }
 
     public function checkRevokeRole($uid, $group, $role)
@@ -104,11 +104,11 @@ class UnityPerms
 
         $user_role = $this->SQL->getRole($uid, $group);
 
-        if ($this->SQL->hasPermission($user_role, 'unity.admin') || $this->SQL->hasPermission($user_role, 'unity.admin_no_grant')) {
+        if ($this->SQL->hasPerm($user_role, 'unity.admin') || $this->SQL->hasPerm($user_role, 'unity.admin_no_grant')) {
             return true;
         }
 
-        if (!$this->SQL->hasPermission($user_role, 'unity.revoke_role')) {
+        if (!$this->SQL->hasPerm($user_role, 'unity.revoke_role')) {
             return false;
         }
 
@@ -118,6 +118,6 @@ class UnityPerms
             return false;
         }
 
-        return true;        
+        return true;   
     }
 }

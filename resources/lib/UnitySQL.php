@@ -319,7 +319,7 @@ class UnitySQL
         return $stmt->fetchAll()[0]['role'];
     }
 
-    public function hasPermission($role, $perm)
+    public function hasPerm($role, $perm)
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_GROUP_ROLES . " WHERE slug=:role"
@@ -356,7 +356,7 @@ class UnitySQL
 
         $stmt->execute();
         $row = $stmt->fetchAll()[0];
-        
+
         $group_slug = $row['group'];
 
         $stmt = $this->conn->prepare(
