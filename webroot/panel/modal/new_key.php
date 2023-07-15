@@ -63,17 +63,10 @@ action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/account.php">
         }
     });
 
-    $("div#key_generate > button").click(function() {
+    function generateKey(type) {
         var pubSection = "<section class='pubKey'>";
         var privSection = "<section class='privKey'>";
         var endingSection = "</section>";
-
-        // get type
-        if ($(this).hasClass('btnWin')) {
-            var type = "ppk";
-        } else if ($(this).hasClass('btnLin')) {
-            var type = "key";
-        }
 
         $.ajax({
             url: "<?php echo $CONFIG["site"]["prefix"]; ?>/js/ajax/ssh_generate.php?type=" + type,
@@ -89,6 +82,17 @@ action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/account.php">
                 $("#newKeyform").submit();
             }
         });
+    }
+
+    $("div#key_generate > button").click(function() {
+        // get type
+        if ($(this).hasClass('btnWin')) {
+            var type = "ppk";
+        } else if ($(this).hasClass('btnLin')) {
+            var type = "key";
+        }
+
+        setTimeout(() => generateKey(type), 300);
     });
 
     $("textarea[name=key]").on("input", function() {
