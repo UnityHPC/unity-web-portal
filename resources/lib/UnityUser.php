@@ -674,19 +674,26 @@ class UnityUser
 
     /**
      * Checks whether a user is in a group or not
+     * @param  string  $uid   uid of the user
+     * @param  string  or object $group group to check
+     * @return boolean true if user is in group, false if not
      */
 
     public function isInGroup($uid, $group)
     {
-        $group = new UnityGroup(
-            $group,
-            $this->LDAP,
-            $this->SQL,
-            $this->MAILER,
-            $this->REDIS,
-            $this->WEBHOOK
-        );
+        if (gettype($group) == "string") {
+            $group_checked = new UnityGroup(
+                $group,
+                $this->LDAP,
+                $this->SQL,
+                $this->MAILER,
+                $this->REDIS,
+                $this->WEBHOOK
+            );
+        } else {
+            $group_checked = $group;
+        }
 
-        return in_array($uid, $group->getGroupMemberUIDs());
+        return in_array($uid, $group_checked->getGroupMemberUIDs());
     }
 }
