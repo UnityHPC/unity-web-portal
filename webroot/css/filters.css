@@ -9,3 +9,7 @@
 #name-filter, #unityID-filter {
     margin-right: 100px;
 }
+
+.key td:hover {
+    cursor: pointer;
+}
