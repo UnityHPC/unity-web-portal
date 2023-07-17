@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 11, 2023 at 04:05 PM
--- Server version: 10.3.37-MariaDB-0ubuntu0.20.04.1
--- PHP Version: 7.4.3-4ubuntu2.17
+-- Generation Time: Jul 13, 2023 at 02:29 AM
+-- Server version: 10.3.38-MariaDB-0ubuntu0.20.04.1
+-- PHP Version: 7.4.3-4ubuntu2.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -61,6 +61,80 @@ CREATE TABLE `events` (
   `action` varchar(300) NOT NULL,
   `entity` varchar(300) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `groupJoinRequests`
+--
+
+CREATE TABLE `groupJoinRequests` (
+  `id` int(11) NOT NULL,
+  `group_name` varchar(1000) NOT NULL,
+  `requestor` varchar(1000) NOT NULL,
+  `requested_on` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `groupRequests`
+--
+
+CREATE TABLE `groupRequests` (
+  `id` int(11) NOT NULL,
+  `group_type` varchar(1000) NOT NULL,
+  `group_name` varchar(1000) NOT NULL,
+  `requestor` varchar(1000) NOT NULL,
+  `requested_on` timestamp NOT NULL DEFAULT current_timestamp(),
+  `start_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `groupRoleAssignments`
+--
+
+CREATE TABLE `groupRoleAssignments` (
+  `id` int(11) NOT NULL,
+  `user` varchar(1000) NOT NULL,
+  `role` varchar(1000) NOT NULL,
+  `group` varchar(1000) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `groupRoles`
+--
+
+CREATE TABLE `groupRoles` (
+  `id` int(11) NOT NULL,
+  `name` varchar(1000) NOT NULL,
+  `slug` varchar(1000) NOT NULL,
+  `priority` int(11) NOT NULL,
+  `color` varchar(1000) NOT NULL,
+  `perms` varchar(1000) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `groupTypes`
+--
+
+CREATE TABLE `groupTypes` (
+  `id` int(11) NOT NULL,
+  `name` varchar(1000) NOT NULL,
+  `slug` varchar(1000) NOT NULL,
+  `color` varchar(1000) NOT NULL,
+  `time_limited` tinyint(1) NOT NULL,
+  `def_role` varchar(1000) NOT NULL,
+  `av_roles` varchar(1000) NOT NULL,
+  `can_request` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -167,6 +241,36 @@ ALTER TABLE `events`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `groupJoinRequests`
+--
+ALTER TABLE `groupJoinRequests`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `groupRequests`
+--
+ALTER TABLE `groupRequests`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `groupRoleAssignments`
+--
+ALTER TABLE `groupRoleAssignments`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `groupRoles`
+--
+ALTER TABLE `groupRoles`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `groupTypes`
+--
+ALTER TABLE `groupTypes`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `notices`
 --
 ALTER TABLE `notices`
@@ -216,6 +320,36 @@ ALTER TABLE `audit_log`
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `groupJoinRequests`
+--
+ALTER TABLE `groupJoinRequests`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `groupRequests`
+--
+ALTER TABLE `groupRequests`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `groupRoleAssignments`
+--
+ALTER TABLE `groupRoleAssignments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `groupRoles`
+--
+ALTER TABLE `groupRoles`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `groupTypes`
+--
+ALTER TABLE `groupTypes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
