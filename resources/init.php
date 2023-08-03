@@ -43,7 +43,7 @@ $LDAP = new UnityLDAP(
     __DIR__ . "/../deployment/custom_user_mappings",
     $CONFIG["ldap"]["user_ou"],
     $CONFIG["ldap"]["group_ou"],
-    $CONFIG["ldap"]["pigroup_ou"],
+    $CONFIG["ldap"]["unitygroup_ou"],
     $CONFIG["ldap"]["orggroup_ou"],
     $CONFIG["ldap"]["admin_group"],
     $CONFIG["ldap"]["def_user_shell"]

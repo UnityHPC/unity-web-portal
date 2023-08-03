@@ -32,14 +32,14 @@ class UnityLDAP extends ldapConn
   // string vars for OUs
     private $STR_USEROU;
     private $STR_GROUPOU;
-    private $STR_PIGROUPOU;
+    private $STR_UNITYGROUPOU;
     private $STR_ORGGROUPOU;
     private $STR_ADMINGROUP;
 
   // Instance vars for various ldapEntry objects
     private $userOU;
     private $groupOU;
-    private $pi_groupOU;
+    private $unity_groupOU;
     private $org_groupOU;
     private $adminGroup;
 
@@ -54,7 +54,7 @@ class UnityLDAP extends ldapConn
         $custom_user_mappings,
         $user_ou,
         $group_ou,
-        $pigroup_ou,
+        $unitygroup_ou,
         $orggroup_ou,
         $admin_group,
         $def_user_shell
@@ -63,14 +63,14 @@ class UnityLDAP extends ldapConn
 
         $this->STR_USEROU = $user_ou;
         $this->STR_GROUPOU = $group_ou;
-        $this->STR_PIGROUPOU = $pigroup_ou;
+        $this->STR_UNITYGROUPOU = $unitygroup_ou;
         $this->STR_ORGGROUPOU = $orggroup_ou;
         $this->STR_ADMINGROUP = $admin_group;
 
       // Get Global Entries
         $this->userOU = $this->getEntry($user_ou);
         $this->groupOU = $this->getEntry($group_ou);
-        $this->pi_groupOU = $this->getEntry($pigroup_ou);
+        $this->unity_groupOU = $this->getEntry($unitygroup_ou);
         $this->org_groupOU = $this->getEntry($orggroup_ou);
         $this->adminGroup = $this->getEntry($admin_group);
 
@@ -92,9 +92,9 @@ class UnityLDAP extends ldapConn
         return $this->groupOU;
     }
 
-    public function getPIGroupOU()
+    public function getUnityGroupOU()
     {
-        return $this->pi_groupOU;
+        return $this->unity_groupOU;
     }
 
     public function getOrgGroupOU()
@@ -171,9 +171,9 @@ class UnityLDAP extends ldapConn
 
     private function PIGIDNumInUse($id)
     {
-        $pi_groups = $this->pi_groupOU->getChildrenArray(true);
-        foreach ($pi_groups as $pi_group) {
-            if ($pi_group["gidnumber"][0] == $id) {
+        $unity_groups = $this->unity_groupOU->getChildrenArray(true);
+        foreach ($unity_groups as $unity_group) {
+            if ($unity_group["gidnumber"][0] == $id) {
                 return true;
             }
         }
@@ -250,7 +250,7 @@ class UnityLDAP extends ldapConn
         return $out;
     }
 
-    public function getAllPIGroups($UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook, $ignorecache = false)
+    public function getAllUnityGroups($UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook, $ignorecache = false)
     {
         $out = array();
 
@@ -266,11 +266,11 @@ class UnityLDAP extends ldapConn
             }
         }
 
-        $pi_groups = $this->pi_groupOU->getChildren(true);
+        $unity_groups = $this->unity_groupOU->getChildren(true);
 
-        foreach ($pi_groups as $pi_group) {
+        foreach ($unity_groups as $unity_group) {
             array_push($out, new UnityGroup(
-                $pi_group->getAttribute("cn")[0],
+                $unity_group->getAttribute("cn")[0],
                 $this,
                 $UnitySQL,
                 $UnityMailer,
@@ -325,9 +325,9 @@ class UnityLDAP extends ldapConn
         return $ldap_entry;
     }
 
-    public function getPIGroupEntry($gid)
+    public function getUnityGroupEntry($gid)
     {
-        $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=$gid," . $this->STR_PIGROUPOU);
+        $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=$gid," . $this->STR_UNITYGROUPOU);
         return $ldap_entry;
     }
 

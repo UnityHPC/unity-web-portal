@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 13, 2023 at 02:29 AM
+-- Generation Time: Aug 03, 2023 at 12:23 AM
 -- Server version: 10.3.38-MariaDB-0ubuntu0.20.04.1
 -- PHP Version: 7.4.3-4ubuntu2.19
 
@@ -134,7 +134,8 @@ CREATE TABLE `groupTypes` (
   `time_limited` tinyint(1) NOT NULL,
   `def_role` varchar(1000) NOT NULL,
   `av_roles` varchar(1000) NOT NULL,
-  `can_request` tinyint(1) NOT NULL
+  `can_request` tinyint(1) NOT NULL,
+  `prefix` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

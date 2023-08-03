@@ -113,7 +113,7 @@ include $LOC_HEADER;
     </tr>
 
 <?php
-    $accounts = $LDAP->getAllPIGroups($SQL, $MAILER, $REDIS, $WEBHOOK);
+    $accounts = $LDAP->getAllUnityGroups($SQL, $MAILER, $REDIS, $WEBHOOK);
 
     usort($accounts, function ($a, $b) {
         return strcmp($a->getPIUID(), $b->getPIUID());

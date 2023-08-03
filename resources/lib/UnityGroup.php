@@ -64,7 +64,7 @@ class UnityGroup
      */
     public function exists()
     {
-        return $this->getLDAPPiGroup()->exists();
+        return $this->getLDAPUnityGroup()->exists();
     }
 
     //
@@ -216,7 +216,7 @@ class UnityGroup
         $users = $this->getGroupMembers();
 
         // now we delete the ldap entry
-        $ldapPiGroupEntry = $this->getLDAPPiGroup();
+        $ldapPiGroupEntry = $this->getLDAPUnityGroup();
         if ($ldapPiGroupEntry->exists()) {
             if (!$ldapPiGroupEntry->delete()) {
                 throw new Exception("Unable to delete PI ldap group");
@@ -418,7 +418,7 @@ class UnityGroup
 
         $updatecache = false;
         if (!isset($members)) {
-            $pi_group = $this->getLDAPPiGroup();
+            $pi_group = $this->getLDAPUnityGroup();
             $members = $pi_group->getAttribute("memberuid");
             $updatecache = true;
         }
@@ -449,7 +449,7 @@ class UnityGroup
 
     public function getGroupMemberUIDs()
     {
-        $pi_group = $this->getLDAPPiGroup();
+        $pi_group = $this->getLDAPUnityGroup();
         $members = $pi_group->getAttribute("memberuid");
 
         return $members;
@@ -479,7 +479,7 @@ class UnityGroup
         $owner = $this->getOwner();
 
         // (1) Create LDAP PI group
-        $ldapPiGroupEntry = $this->getLDAPPiGroup();
+        $ldapPiGroupEntry = $this->getLDAPUnityGroup();
 
         if (!$ldapPiGroupEntry->exists()) {
             $nextGID = $this->LDAP->getNextPiGIDNumber($this->SQL);
@@ -501,7 +501,7 @@ class UnityGroup
     private function addUserToGroup($new_user)
     {
         // Add to LDAP Group
-        $pi_group = $this->getLDAPPiGroup();
+        $pi_group = $this->getLDAPUnityGroup();
         $pi_group->appendAttribute("memberuid", $new_user->getUID());
 
         if (!$pi_group->write()) {
@@ -515,7 +515,7 @@ class UnityGroup
     private function removeUserFromGroup($old_user)
     {
         // Remove from LDAP Group
-        $pi_group = $this->getLDAPPiGroup();
+        $pi_group = $this->getLDAPUnityGroup();
         $pi_group->removeAttributeEntryByValue("memberuid", $old_user->getUID());
 
         if (!$pi_group->write()) {
@@ -557,9 +557,9 @@ class UnityGroup
         );
     }
 
-    public function getLDAPPiGroup()
+    public function getLDAPUnityGroup()
     {
-        return $this->LDAP->getPIGroupEntry($this->pi_uid);
+        return $this->LDAP->getUnityGroupEntry($this->pi_uid);
     }
 
     public static function getPIUIDfromUID($uid)

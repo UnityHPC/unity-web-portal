@@ -627,14 +627,14 @@ class UnityUser
             }
         }
 
-        $all_pi_groups = $this->LDAP->getAllPIGroups($this->SQL, $this->MAILER, $this->REDIS, $ignorecache);
+        $all_unity_groups = $this->LDAP->getAllUnityGroups($this->SQL, $this->MAILER, $this->REDIS, $ignorecache);
 
         $cache_arr = array();
 
-        foreach ($all_pi_groups as $pi_group) {
-            if (in_array($this->getUID(), $pi_group->getGroupMemberUIDs())) {
-                array_push($out, $pi_group);
-                array_push($cache_arr, $pi_group->getPIUID());
+        foreach ($all_unity_groups as $unity_group) {
+            if (in_array($this->getUID(), $unity_group->getGroupMemberUIDs())) {
+                array_push($out, $unity_group);
+                array_push($cache_arr, $unity_group->getPIUID());
             }
         }
 

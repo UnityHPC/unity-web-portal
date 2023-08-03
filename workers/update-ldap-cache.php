@@ -32,7 +32,7 @@ sort($sorted_uids);
 $REDIS->setCache("sorted_users", "", $sorted_uids);
 
 // Get groups
-$groups = $LDAP->getAllPIGroups($SQL, $MAILER, $REDIS, $WEBHOOK, true);
+$groups = $LDAP->getAllUnityGroups($SQL, $MAILER, $REDIS, $WEBHOOK, true);
 
 $sorted_groups = array();
 
