@@ -13,7 +13,7 @@ $MAX_COUNT = 10;  // Max results of PI search
 
 $out = array();
 foreach ($assocs as $assoc_obj) {
-    $assoc = $assoc_obj->getPIUID();
+    $assoc = $assoc_obj->getGroupUID();
     // loop through each association
     if (strpos($assoc, $search_query) !== false) {
         array_push($out, $assoc);

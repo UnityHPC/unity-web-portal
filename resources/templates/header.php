@@ -64,7 +64,7 @@ if (isset($SSO)) {
       // Menu Items for Present Users
         echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/support.php'>Support</a>";
         echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>Account Settings</a>";
-        echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/groups.php'>My PIs</a>";
+        echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/groups.php'>My Groups</a>";
 
         if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
           // PI only pages

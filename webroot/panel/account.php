@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         case "pi_request":
             if (!$USER->isPI()) {
                 if (!$SQL->requestExists($USER->getUID())) {
-                    $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
+                    $USER->getGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
                 }
             }
             break;
@@ -112,7 +112,7 @@ if ($isPI) {
     echo "<p>You are curently a <strong>user</strong> on the Unity Cluster</p>";
 } else {
     echo "<p>You are currently not assigned to any PI, and will be 
-    <strong>unable to use the cluster</strong>. Go to the <a href='groups.php'>My PIs</a> 
+    <strong>unable to use the cluster</strong>. Go to the <a href='groups.php'>My Groups</a> 
     page to join a PI, or click on the button below if you are a PI</p>";
     echo "<p>Students should not request a PI account.</p>";
 }

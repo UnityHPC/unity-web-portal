@@ -18,11 +18,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         case "req":
             if ($_POST["action"] == "Approve") {
                 // approve group
-                $group = $form_user->getPIGroup();
+                $group = $form_user->getGroup();
                 $group->approveGroup($OPERATOR);
             } elseif ($_POST["action"] == "Deny") {
                 // deny group
-                $group = $form_user->getPIGroup();
+                $group = $form_user->getGroup();
                 $group->denyGroup($OPERATOR);
             }
 
@@ -116,7 +116,7 @@ include $LOC_HEADER;
     $accounts = $LDAP->getAllUnityGroups($SQL, $MAILER, $REDIS, $WEBHOOK);
 
     usort($accounts, function ($a, $b) {
-        return strcmp($a->getPIUID(), $b->getPIUID());
+        return strcmp($a->getGroupUID(), $b->getGroupUID());
     });
 
     foreach ($accounts as $pi_group) {
@@ -125,14 +125,14 @@ include $LOC_HEADER;
         echo "<tr class='expandable'>";
         echo "<td><button class='btnExpand'>&#9654;</button>" . $pi_user->getFirstname() .
         " " . $pi_user->getLastname() . "</td>";
-        echo "<td>" . $pi_group->getPIUID() . "</td>";
+        echo "<td>" . $pi_group->getGroupUID() . "</td>";
         echo "<td><a href='mailto:" . $pi_user->getMail() . "'>" . $pi_user->getMail() . "</a></td>";
         echo "<td>";
         echo
         "<form action='' method='POST' 
-    onsubmit='return confirm(\"Are you sure you want to remove " . $pi_group->getPIUID() . "?\")'>
+    onsubmit='return confirm(\"Are you sure you want to remove " . $pi_group->getGroupUID() . "?\")'>
         <input type='hidden' name='form_name' value='remGroup'>
-        <input type='hidden' name='pi' value='" . $pi_group->getPIUID() . "'>
+        <input type='hidden' name='pi' value='" . $pi_group->getGroupUID() . "'>
         <input type='submit' value='Remove'>
     </form>";
         echo "</td>";
@@ -158,7 +158,7 @@ include $LOC_HEADER;
         }
     });
 
-    var ajax_url = "<?php echo $CONFIG["site"]["prefix"]; ?>/admin/ajax/get_group_members.php?pi_uid=";
+    var ajax_url = "<?php echo $CONFIG["site"]["prefix"]; ?>/admin/ajax/get_group_members.php?group_uid=";
 </script>
 
 <?php

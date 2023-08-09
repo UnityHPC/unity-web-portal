@@ -371,4 +371,107 @@ class UnitySQL
 
         return in_array($role, $roles);
     }
+
+    public function getGroupRoleAssignments($uid, $group_uid)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_ROLE_ASSIGNMENTS . " WHERE user=:uid AND `group`=:group"
+        );
+        $stmt->bindParam(":uid", $uid);
+        $stmt->bindParam(":group", $group_uid);
+
+        $stmt->execute();
+
+        $roles = array();
+        foreach ($stmt->fetchAll() as $row) {
+            $roles[] = $row['role'];
+        }
+
+        return $roles;
+    }
+
+    public function getDefaultRole($group_type)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_TYPES . " WHERE slug=:slug"
+        );
+        $stmt->bindParam(":slug", $group_type);
+
+        $stmt->execute();
+
+        $row = $stmt->fetchAll()[0];
+        return $row['def_role'];
+    }
+
+    public function getGroupTypeDetails($group_type)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_TYPES . " WHERE slug=:slug"
+        );
+        $stmt->bindParam(":slug", $group_type);
+
+        $stmt->execute();
+
+        $row = $stmt->fetchAll()[0];
+
+        $out = array();
+        $out['name'] = $row['name'];
+        $out['color'] = $row['color'];
+
+        $av_roles = explode(",", $row['av_roles']);
+        $out['av_roles'] = $av_roles;
+
+        return $out;
+    }
+
+    public function getRoleName($role)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_ROLES . " WHERE slug=:slug"
+        );
+        $stmt->bindParam(":slug", $role);
+
+        $stmt->execute();
+
+        $row = $stmt->fetchAll()[0];
+        return $row['name'];
+    }
+
+    public function getPermissions($roles)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_ROLES . " WHERE slug=:slug"
+        );
+
+        $perms = array();
+        foreach ($roles as $role) {
+            $stmt->bindParam(":slug", $role);
+
+            $stmt->execute();
+
+            $row = $stmt->fetchAll()[0];
+            $perms = array_merge($perms, explode(",", $row['perms']));
+        }
+
+        return $perms;
+    }
+
+    public function getUsersWithRoles($role, $group_uid)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_ROLE_ASSIGNMENTS . " WHERE `group`=:group AND role=:role"
+        );
+
+        $stmt->bindParam(":group", $group_uid);
+        $stmt->bindParam(":role", $role);
+
+        $stmt->execute();
+
+        $users = array();
+        foreach ($stmt->fetchAll() as $row) {
+            $users[] = $row['user'];
+        }
+
+        return $users;
+    }
 }

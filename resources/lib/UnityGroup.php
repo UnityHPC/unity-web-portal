@@ -11,7 +11,7 @@ class UnityGroup
 {
     public const PI_PREFIX = "pi_";
 
-    private $pi_uid;
+    private $group_uid; // change to group_uid;
 
     // Services
     private $LDAP;
@@ -23,13 +23,13 @@ class UnityGroup
     /**
      * Constructor for the object
      *
-     * @param string $pi_uid PI UID in the format <PI_PREFIX><OWNER_UID>
+     * @param string $group_uid Group UID in the format <GROUP_PREFIX><OWNER_UID>
      * @param LDAP $LDAP LDAP Connection
      * @param SQL $SQL SQL Connection
      */
-    public function __construct($pi_uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
+    public function __construct($group_uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
     {
-        $this->pi_uid = $pi_uid;
+        $this->group_uid = $group_uid;
 
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
@@ -44,17 +44,17 @@ class UnityGroup
             throw new Exception("Unable to check equality because the parameter is not a " . self::class . " object");
         }
 
-        return $this->getPIUID() == $other_group->getPIUID();
+        return $this->getGroupUID() == $other_group->getGroupUID();
     }
 
     /**
-     * Returns this group's PI UID
+     * Returns this group's Group UID
      *
-     * @return string PI UID of the group
+     * @return string Group UID of the group
      */
-    public function getPIUID()
+    public function getGroupUID() // change this to groupUID
     {
-        return $this->pi_uid;
+        return $this->group_uid;
     }
 
     /**
@@ -205,7 +205,7 @@ class UnityGroup
     {
         // remove any pending requests
         // this will silently fail if the request doesn't exist (which is what we want)
-        $this->SQL->removeRequests($this->pi_uid);
+        $this->SQL->removeRequests($this->group_uid);
 
         // we don't need to do anything extra if the group is already deleted
         if (!$this->exists()) {
@@ -216,15 +216,15 @@ class UnityGroup
         $users = $this->getGroupMembers();
 
         // now we delete the ldap entry
-        $ldapPiGroupEntry = $this->getLDAPUnityGroup();
-        if ($ldapPiGroupEntry->exists()) {
-            if (!$ldapPiGroupEntry->delete()) {
+        $ldapGroupEntry = $this->getLDAPUnityGroup();
+        if ($ldapGroupEntry->exists()) {
+            if (!$ldapGroupEntry->delete()) {
                 throw new Exception("Unable to delete PI ldap group");
             }
 
-            $this->REDIS->removeCacheArray("sorted_groups", "", $this->getPIUID());
+            $this->REDIS->removeCacheArray("sorted_groups", "", $this->getGroupUID());
             foreach ($users as $user) {
-                $this->REDIS->removeCacheArray($user->getUID(), "groups", $this->getPIUID());
+                $this->REDIS->removeCacheArray($user->getUID(), "groups", $this->getGroupUID());
             }
         }
 
@@ -234,7 +234,7 @@ class UnityGroup
                 $this->MAILER->sendMail(
                     $user->getMail(),
                     "group_disband",
-                    array("group_name" => $this->pi_uid)
+                    array("group_name" => $this->group_uid)
                 );
             }
         }
@@ -262,14 +262,14 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $new_user->getMail(),
                 "group_user_added",
-                array("group" => $this->pi_uid)
+                array("group" => $this->group_uid)
             );
             // send email to the PI
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_user_added_owner",
                 array(
-                    "group" => $this->pi_uid,
+                    "group" => $this->group_uid,
                     "user" => $new_user->getUID(),
                     "name" => $new_user->getFullName(),
                     "email" => $new_user->getMail(),
@@ -293,7 +293,7 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $new_user->getMail(),
                 "group_user_denied",
-                array("group" => $this->pi_uid)
+                array("group" => $this->group_uid)
             );
 
             // send email to the PI
@@ -301,7 +301,7 @@ class UnityGroup
                 $this->getOwner()->getMail(),
                 "group_user_denied_owner",
                 array(
-                    "group" => $this->pi_uid,
+                    "group" => $this->group_uid,
                     "user" => $new_user->getUID(),
                     "name" => $new_user->getFullName(),
                     "email" => $new_user->getMail(),
@@ -329,7 +329,7 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $new_user->getMail(),
                 "group_user_removed",
-                array("group" => $this->pi_uid)
+                array("group" => $this->group_uid)
             );
 
             // send email to the PI
@@ -337,7 +337,7 @@ class UnityGroup
                 $this->getOwner()->getMail(),
                 "group_user_removed_owner",
                 array(
-                    "group" => $this->pi_uid,
+                    "group" => $this->group_uid,
                     "user" => $new_user->getUID(),
                     "name" => $new_user->getFullName(),
                     "email" => $new_user->getMail(),
@@ -369,7 +369,7 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $new_user->getMail(),
                 "group_user_request",
-                array("group" => $this->pi_uid)
+                array("group" => $this->group_uid)
             );
 
             // send email to PI
@@ -377,7 +377,7 @@ class UnityGroup
                 $this->getOwner()->getMail(),
                 "group_user_request_owner",
                 array(
-                    "group" => $this->pi_uid,
+                    "group" => $this->group_uid,
                     "user" => $new_user->getUID(),
                     "name" => $new_user->getFullName(),
                     "email" => $new_user->getMail(),
@@ -389,7 +389,7 @@ class UnityGroup
 
     public function getRequests()
     {
-        $requests = $this->SQL->getRequests($this->pi_uid);
+        $requests = $this->SQL->getRequests($this->group_uid);
 
         $out = array();
         foreach ($requests as $request) {
@@ -410,7 +410,7 @@ class UnityGroup
     public function getGroupMembers($ignorecache = false)
     {
         if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->getPIUID(), "members");
+            $cached_val = $this->REDIS->getCache($this->getGroupUID(), "members");
             if (!is_null($cached_val)) {
                 $members = $cached_val;
             }
@@ -418,8 +418,8 @@ class UnityGroup
 
         $updatecache = false;
         if (!isset($members)) {
-            $pi_group = $this->getLDAPUnityGroup();
-            $members = $pi_group->getAttribute("memberuid");
+            $group = $this->getLDAPUnityGroup();
+            $members = $group->getAttribute("memberuid");
             $updatecache = true;
         }
 
@@ -441,7 +441,7 @@ class UnityGroup
 
         if (!$ignorecache && $updatecache) {
             sort($cache_arr);
-            $this->REDIS->setCache($this->getPIUID(), "members", $cache_arr);
+            $this->REDIS->setCache($this->getGroupUID(), "members", $cache_arr);
         }
 
         return $out;
@@ -449,8 +449,8 @@ class UnityGroup
 
     public function getGroupMemberUIDs()
     {
-        $pi_group = $this->getLDAPUnityGroup();
-        $members = $pi_group->getAttribute("memberuid");
+        $group = $this->getLDAPUnityGroup();
+        $members = $group->getAttribute("memberuid");
 
         return $members;
     }
@@ -479,21 +479,21 @@ class UnityGroup
         $owner = $this->getOwner();
 
         // (1) Create LDAP PI group
-        $ldapPiGroupEntry = $this->getLDAPUnityGroup();
+        $ldapGroupEntry = $this->getLDAPUnityGroup();
 
-        if (!$ldapPiGroupEntry->exists()) {
-            $nextGID = $this->LDAP->getNextPiGIDNumber($this->SQL);
+        if (!$ldapGroupEntry->exists()) {
+            $nextGID = $this->LDAP->getNextGIDNumber($this->SQL);
 
-            $ldapPiGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
-            $ldapPiGroupEntry->setAttribute("gidnumber", strval($nextGID));
-            $ldapPiGroupEntry->setAttribute("memberuid", array($owner->getUID()));
+            $ldapGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
+            $ldapGroupEntry->setAttribute("gidnumber", strval($nextGID));
+            $ldapGroupEntry->setAttribute("memberuid", array($owner->getUID()));
 
-            if (!$ldapPiGroupEntry->write()) {
+            if (!$ldapGroupEntry->write()) {
                 throw new Exception("Failed to create POSIX group for " . $owner->getUID());  // this shouldn't execute
             }
         }
 
-        $this->REDIS->appendCacheArray("sorted_groups", "", $this->getPIUID());
+        $this->REDIS->appendCacheArray("sorted_groups", "", $this->getGroupUID());
 
         // TODO if we ever make this project based, we need to update the cache here with the memberuid
     }
@@ -501,29 +501,29 @@ class UnityGroup
     private function addUserToGroup($new_user)
     {
         // Add to LDAP Group
-        $pi_group = $this->getLDAPUnityGroup();
-        $pi_group->appendAttribute("memberuid", $new_user->getUID());
+        $group = $this->getLDAPUnityGroup();
+        $group->appendAttribute("memberuid", $new_user->getUID());
 
-        if (!$pi_group->write()) {
+        if (!$group->write()) {
             throw new Exception("Unable to write PI group");
         }
 
-        $this->REDIS->appendCacheArray($this->getPIUID(), "members", $new_user->getUID());
-        $this->REDIS->appendCacheArray($new_user->getUID(), "groups", $this->getPIUID());
+        $this->REDIS->appendCacheArray($this->getGroupUID(), "members", $new_user->getUID());
+        $this->REDIS->appendCacheArray($new_user->getUID(), "groups", $this->getGroupUID());
     }
 
     private function removeUserFromGroup($old_user)
     {
         // Remove from LDAP Group
-        $pi_group = $this->getLDAPUnityGroup();
-        $pi_group->removeAttributeEntryByValue("memberuid", $old_user->getUID());
+        $group = $this->getLDAPUnityGroup();
+        $group->removeAttributeEntryByValue("memberuid", $old_user->getUID());
 
-        if (!$pi_group->write()) {
+        if (!$group->write()) {
             throw new Exception("Unable to write PI group");
         }
 
-        $this->REDIS->removeCacheArray($this->getPIUID(), "members", $old_user->getUID());
-        $this->REDIS->removeCacheArray($old_user->getUID(), "groups", $this->getPIUID());
+        $this->REDIS->removeCacheArray($this->getGroupUID(), "members", $old_user->getUID());
+        $this->REDIS->removeCacheArray($old_user->getUID(), "groups", $this->getGroupUID());
     }
 
     public function userExists($user)
@@ -533,12 +533,12 @@ class UnityGroup
 
     private function addRequest($uid)
     {
-        $this->SQL->addRequest($uid, $this->pi_uid);
+        $this->SQL->addRequest($uid, $this->group_uid);
     }
 
     private function removeRequest($uid)
     {
-        $this->SQL->removeRequest($uid, $this->pi_uid);
+        $this->SQL->removeRequest($uid, $this->group_uid);
     }
 
     //
@@ -548,7 +548,7 @@ class UnityGroup
     public function getOwner()
     {
         return new UnityUser(
-            self::getUIDfromPIUID($this->pi_uid),
+            self::getUIDfromGroupUID($this->group_uid),
             $this->LDAP,
             $this->SQL,
             $this->MAILER,
@@ -559,20 +559,75 @@ class UnityGroup
 
     public function getLDAPUnityGroup()
     {
-        return $this->LDAP->getUnityGroupEntry($this->pi_uid);
+        return $this->LDAP->getUnityGroupEntry($this->group_uid);
     }
 
-    public static function getPIUIDfromUID($uid)
+    public static function getGroupUIDfromUID($uid)
     {
         return self::PI_PREFIX . $uid;
     }
 
-    public static function getUIDfromPIUID($pi_uid)
+    public static function getUIDfromGroupUID($group_uid)
     {
-        if (substr($pi_uid, 0, strlen(self::PI_PREFIX)) == self::PI_PREFIX) {
-            return substr($pi_uid, strlen(self::PI_PREFIX));
+        if (substr($group_uid, 0, strlen(self::PI_PREFIX)) == self::PI_PREFIX) {
+            return substr($group_uid, strlen(self::PI_PREFIX));
         } else {
             throw new Exception("PI netid doesn't have the correct prefix.");
         }
+    }
+
+    public function getGroupColor()
+    {
+        $gid = $this->getLDAPUnityGroup()->getAttribute("cn")[0];
+        $group_type = $this->LDAP->getGroupType($gid);
+        $group_details = $this->SQL->getGroupTypeDetails($group_type);
+        return $group_details["color"];
+    }
+
+    public function getGroupName()
+    {
+        $gid = $this->getLDAPUnityGroup()->getAttribute("cn")[0];
+        $group_type = $this->LDAP->getGroupType($gid);
+        $group_details = $this->SQL->getGroupTypeDetails($group_type);
+        return $group_details["name"];
+    }
+
+    public function getAvailableRoles()
+    {
+        $gid = $this->getLDAPUnityGroup()->getAttribute("cn")[0];
+        $group_type = $this->LDAP->getGroupType($gid);
+        $group_details = $this->SQL->getGroupTypeDetails($group_type);
+        $av_roles = $group_details["av_roles"];
+
+        $out = array();
+        foreach ($av_roles as $role) {
+            $role_obj = array();
+            $role_obj["slug"] = $role;
+            $role_obj["display_name"] = $this->SQL->getRoleName($role);
+            array_push($out, $role_obj);
+        }
+
+        return $out;
+    }
+
+    public function getUsersWithRole($role)
+    {
+        $gid = $this->getLDAPUnityGroup()->getAttribute("cn")[0];
+        $users = $this->SQL->getUsersWithRoles($role, $gid);
+
+        $out = array();
+        foreach ($users as $user) {
+            $user_obj = new UnityUser(
+                $user,
+                $this->LDAP,
+                $this->SQL,
+                $this->MAILER,
+                $this->REDIS,
+                $this->WEBHOOK
+            );
+            array_push($out, $user_obj);
+        }
+
+        return $out;
     }
 }

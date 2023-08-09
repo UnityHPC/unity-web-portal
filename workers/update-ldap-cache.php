@@ -22,7 +22,7 @@ foreach ($users as $user) {
     $parsed_groups = array();
 
     foreach ($user->getGroups(true) as $cur_group) {
-        array_push($parsed_groups, $cur_group->getPIUID());
+        array_push($parsed_groups, $cur_group->getGroupUID());
     }
 
     $REDIS->setCache($uid, "groups", $parsed_groups);
@@ -37,7 +37,7 @@ $groups = $LDAP->getAllUnityGroups($SQL, $MAILER, $REDIS, $WEBHOOK, true);
 $sorted_groups = array();
 
 foreach ($groups as $group) {
-    $gid = $group->getPIUID();
+    $gid = $group->getGroupUID();
     array_push($sorted_groups, $gid);
 
     $parsed_members = array();

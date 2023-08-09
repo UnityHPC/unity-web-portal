@@ -13,7 +13,7 @@ $("button.btnExpand").click(function() {
     var pi_wrapper = $(this).parent();  // parent column (td)
     var piRow = pi_wrapper.parent();  // parent row (tr)
     var piTree = piRow.parent();  // parent table (table)
-    var pi_uid = pi_wrapper.next().html();
+    var group_uid = pi_wrapper.next().html();
 
     if ($(this).hasClass("btnExpanded")) {
         // already expanded
@@ -32,7 +32,7 @@ $("button.btnExpand").click(function() {
         $("button.btnExpanded").trigger("click");
         // not expanded
         $.ajax({
-            url: ajax_url + pi_uid,
+            url: ajax_url + group_uid,
             success: function(result) {
                 console.log(result);
                 piRow.after(result);

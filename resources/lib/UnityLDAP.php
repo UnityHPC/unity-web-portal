@@ -129,18 +129,18 @@ class UnityLDAP extends ldapConn
         return $new_uid;
     }
 
-    public function getNextPiGIDNumber($UnitySQL)
+    public function getNextGIDNumber($UnitySQL)
     {
-        $max_pigid = $UnitySQL->getSiteVar('MAX_PIGID');
-        $new_pigid = $max_pigid + 1;
+        $max_gid = $UnitySQL->getSiteVar('MAX_GID');
+        $new_gid = $max_gid + 1;
 
-        while ($this->PIGIDNumInUse($new_pigid)) {
-            $new_pigid++;
+        while ($this->GIDNumInUse($new_gid)) {
+            $new_gid++;
         }
 
-        $UnitySQL->updateSiteVar('MAX_PIGID', $new_pigid);
+        $UnitySQL->updateSiteVar('MAX_GID', $new_gid);
 
-        return $new_pigid;
+        return $new_gid;
     }
 
     public function getNextOrgGIDNumber($UnitySQL)
@@ -169,23 +169,11 @@ class UnityLDAP extends ldapConn
         return false;
     }
 
-    private function PIGIDNumInUse($id)
+    private function GIDNumInUse($id)
     {
         $unity_groups = $this->unity_groupOU->getChildrenArray(true);
         foreach ($unity_groups as $unity_group) {
             if ($unity_group["gidnumber"][0] == $id) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function GIDNumInUse($id)
-    {
-        $groups = $this->groupOU->getChildrenArray(true);
-        foreach ($groups as $group) {
-            if ($group["gidnumber"][0] == $id) {
                 return true;
             }
         }
@@ -335,5 +323,13 @@ class UnityLDAP extends ldapConn
     {
         $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=$gid," . $this->STR_ORGGROUPOU);
         return $ldap_entry;
+    }
+
+    public function getGroupType($gid)
+    {
+        // $group_entry = $this->getGroupEntry($gid);
+        // $type = $group_entry->getAttribute("type");
+        // return $type[0];
+        return "pi";
     }
 }

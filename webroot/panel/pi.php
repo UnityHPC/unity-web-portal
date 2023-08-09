@@ -5,7 +5,7 @@ require_once "../../resources/autoload.php";
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnitySite;
 
-$group = $USER->getPIGroup();
+$group = $USER->getGroup();
 
 if (!$USER->isPI()) {
     die();
@@ -51,7 +51,7 @@ $assocs = $group->getGroupMembers();
 if (count($requests) + count($assocs) == 1) {
     echo "<p>You do not have any users attached to your PI account. 
     Ask your users to request to join your account on the <a href='" . $CONFIG["site"]["prefix"] .
-    "/panel/groups.php'>My PIs</a> page.</p>";
+    "/panel/groups.php'>My Groups</a> page.</p>";
 }
 
 if (count($requests) > 0) {

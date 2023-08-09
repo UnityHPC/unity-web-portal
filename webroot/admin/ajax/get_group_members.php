@@ -8,11 +8,11 @@ if (!$USER->isAdmin()) {
     die();
 }
 
-if (!isset($_GET["pi_uid"])) {
-    die("PI UID not set");
+if (!isset($_GET["group_uid"])) {
+    die("Group UID not set");
 }
 
-$group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+$group = new UnityGroup($_GET["group_uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
 $members = $group->getGroupMembers();
 $requests = $group->getRequests();
 
@@ -38,7 +38,7 @@ foreach ($members as $member) {
     $member->getUID() . " from this group?\");'>
     <input type='hidden' name='form_name' value='remUserChild'>
     <input type='hidden' name='uid' value='" . $member->getUID() . "'>
-    <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
+    <input type='hidden' name='pi' value='" . $group->getGroupUID() . "'>
     <input type='submit' value='Remove'>
     </form>";
     echo "</td>";
@@ -63,7 +63,7 @@ foreach ($requests as $key => $request) {
     onsubmit='return confirm(\"Are you sure you want to approve " . $request->getUID() . "?\");'>
     <input type='hidden' name='form_name' value='reqChild'>
     <input type='hidden' name='uid' value='" . $request->getUID() . "'>
-    <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
+    <input type='hidden' name='pi' value='" . $group->getGroupUID() . "'>
     <input type='submit' name='action' value='Approve'>
     <input type='submit' name='action' value='Deny'></form>";
     echo "</td>";

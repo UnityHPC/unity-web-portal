@@ -572,13 +572,13 @@ class UnityUser
      */
     public function isPI()
     {
-        return $this->getPIGroup()->exists();
+        return $this->getGroup()->exists();
     }
 
-    public function getPIGroup()
+    public function getGroup()
     {
         return new UnityGroup(
-            UnityGroup::getPIUIDfromUID($this->uid),
+            UnityGroup::getGroupUIDfromUID($this->uid),
             $this->LDAP,
             $this->SQL,
             $this->MAILER,
@@ -634,7 +634,7 @@ class UnityUser
         foreach ($all_unity_groups as $unity_group) {
             if (in_array($this->getUID(), $unity_group->getGroupMemberUIDs())) {
                 array_push($out, $unity_group);
-                array_push($cache_arr, $unity_group->getPIUID());
+                array_push($cache_arr, $unity_group->getGroupUID());
             }
         }
 
@@ -695,5 +695,37 @@ class UnityUser
         }
 
         return in_array($uid, $group_checked->getGroupMemberUIDs());
+    }
+
+    public function getGroupRoles($group_uid)
+    {
+        $uid = $this->getUID();
+        $roles = $this->SQL->getGroupRoleAssignments($uid, $group_uid);
+        if (count($roles) == 0) {
+            $group_type = $this->LDAP->getGroupType($group_uid);
+            $def_role = $this->SQL->getDefaultRole($group_type);
+            $roles = array($def_role);
+        }
+
+        $role_names = array();
+        foreach ($roles as $role) {
+            $role_names[] = $this->SQL->getRoleName($role);
+        }
+
+        return $role_names;
+    }
+
+    public function hasPermission($group_uid, $permission)
+    {
+        $uid = $this->getUID();
+        $roles = $this->SQL->getGroupRoleAssignments($uid, $group_uid);
+        if (count($roles) == 0) {
+            $group_type = $this->LDAP->getGroupType($group_uid);
+            $def_role = $this->SQL->getDefaultRole($group_type);
+            $roles = array($def_role);
+        }
+
+        $permissions = $this->SQL->getPermissions($roles);
+        return in_array($permission, $permissions);
     }
 }
