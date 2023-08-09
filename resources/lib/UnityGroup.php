@@ -630,4 +630,38 @@ class UnityGroup
 
         return $out;
     }
+
+    public function getUsersWithoutRole()
+    {
+        $gid = $this->getLDAPUnityGroup()->getAttribute("cn")[0];
+        $current_users_uids = $this->getGroupMemberUIDs();
+        $users = $this->SQL->getUsersWithoutRoles($gid, $current_users_uids);
+
+        $out = array();
+        foreach ($users as $user) {
+            $user_obj = new UnityUser(
+                $user,
+                $this->LDAP,
+                $this->SQL,
+                $this->MAILER,
+                $this->REDIS,
+                $this->WEBHOOK
+            );
+            array_push($out, $user_obj);
+        }
+
+        return $out;
+    }
+
+    public function assignRole($user, $role)
+    {
+        $gid = $this->getLDAPUnityGroup()->getAttribute("cn")[0];
+        $this->SQL->assignRole($role, $user->getUID(), $gid);
+    }
+
+    public function revokeRole($user, $role)
+    {
+        $gid = $this->getLDAPUnityGroup()->getAttribute("cn")[0];
+        $this->SQL->revokeRole($role, $user, $gid);
+    }
 }

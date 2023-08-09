@@ -52,35 +52,35 @@ include $LOC_HEADER;
 <?php
 $groups = $USER->getGroups();
 
-// $requests = $SQL->getRequestsByUser($USER->getUID());
+$requests = $SQL->getRequestsByUser($USER->getUID());
 
-// $req_filtered = array();
-// foreach ($requests as $request) {
-//     if ($request["request_for"] != "admin") {  // put this in config later for gypsum
-//         array_push($req_filtered, $request);
-//     }
-// }
+$req_filtered = array();
+foreach ($requests as $request) {
+    if ($request["request_for"] != "admin") {  // put this in config later for gypsum
+        array_push($req_filtered, $request);
+    }
+}
 
-// if (count($req_filtered) > 0) {
-//     echo "<h5>Pending Requests</h5>";
-//     echo "<table>";
-//     foreach ($req_filtered as $request) {
-//         $requested_account = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-//         $requested_owner = $requested_account->getOwner();
-//         echo "<tr class='pending_request'>";
-//         echo "<td>" . $requested_owner->getFirstname() . " " . $requested_owner->getLastname() . "</td>";
-//         echo "<td>" . $requested_account->getGroupUID() . "</td>";
-//         echo "<td><a href='mailto:" . $requested_owner->getMail() . "'>" . $requested_owner->getMail() . "</a></td>";
-//         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
-//         echo "<td></td>";
-//         echo "</tr>";
-//     }
-//     echo "</table>";
+if (count($req_filtered) > 0) {
+    echo "<h5>Pending Requests</h5>";
+    echo "<table>";
+    foreach ($req_filtered as $request) {
+        $requested_account = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $requested_owner = $requested_account->getOwner();
+        echo "<tr class='pending_request'>";
+        echo "<td>" . $requested_owner->getFirstname() . " " . $requested_owner->getLastname() . "</td>";
+        echo "<td>" . $requested_account->getGroupUID() . "</td>";
+        echo "<td><a href='mailto:" . $requested_owner->getMail() . "'>" . $requested_owner->getMail() . "</a></td>";
+        echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
+        echo "<td></td>";
+        echo "</tr>";
+    }
+    echo "</table>";
 
-//     if (count($groups) > 0) {
-//         echo "<hr>";
-//     }
-// }
+    if (count($groups) > 0) {
+        echo "<hr>";
+    }
+}
 
 echo "<h5>Current Groups</h5>";
 
@@ -108,15 +108,15 @@ foreach ($groups as $group) {
     echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
     echo "<td> <button class='viewGroup'>View Group</button> </td>";
     echo "<input type='hidden' name='pi' value='" . $group->getGroupUID() . "'>";
-    // echo
-    // "<td>
-    // <form action='' method='POST' 
-    // onsubmit='return confirm(\"Are you sure you want to leave the PI group " . $group->getGroupUID() . "?\")'>
-    // <input type='hidden' name='form_name' value='removePIForm'>
-    // <input type='hidden' name='pi' value='" . $group->getGroupUID() . "'>
-    // <input type='submit' value='Leave Group'>
-    // </form>
-    // </td>";
+    echo
+    "<td>
+    <form action='' method='POST' 
+    onsubmit='return confirm(\"Are you sure you want to leave the group " . $group->getGroupUID() . "?\")'>
+    <input type='hidden' name='form_name' value='removePIForm'>
+    <input type='hidden' name='pi' value='" . $group->getGroupUID() . "'>
+    <input type='submit' value='Leave Group' style='margin-top: 0px'>
+    </form>
+    </td>";
     echo "</tr>";
 }
 

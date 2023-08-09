@@ -357,7 +357,7 @@ class UnitySQL
         $stmt->execute();
         $row = $stmt->fetchAll()[0];
 
-        $group_slug = $row['group'];
+        $group_slug = substr($row['group'], 0, strpos($row['group'], "_"));
 
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_GROUP_TYPES . " WHERE slug=:slug"
@@ -367,7 +367,7 @@ class UnitySQL
         $stmt->execute();
 
         $row = $stmt->fetchAll()[0];
-        $roles = explode(",", $row['roles']);
+        $roles = explode(",", $row['av_roles']);
 
         return in_array($role, $roles);
     }
@@ -473,5 +473,51 @@ class UnitySQL
         }
 
         return $users;
+    }
+
+    public function getUsersWithoutRoles($group_uid, $curr_users_uids)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_ROLE_ASSIGNMENTS . " WHERE `group`=:group"
+        );
+
+        $stmt->bindParam(":group", $group_uid);
+
+        $stmt->execute();
+
+        $users = array();
+        foreach ($stmt->fetchAll() as $row) {
+            $users[] = $row['user'];
+        }
+
+        $users = array_diff($curr_users_uids, $users);
+        
+        return $users;
+    }
+
+    public function assignRole($role, $uid, $gid)
+    {
+        $stmt = $this->conn->prepare(
+            "INSERT INTO " . self::TABLE_GROUP_ROLE_ASSIGNMENTS . " (user, `group`, role) VALUES (:user, :group, :role)"
+        );
+
+        $stmt->bindParam(":user", $uid);
+        $stmt->bindParam(":group", $gid);
+        $stmt->bindParam(":role", $role);
+
+        $stmt->execute();
+    }
+
+    public function revokeRole($role, $uid, $gid)
+    {
+        $stmt = $this->conn->prepare(
+            "DELETE FROM " . self::TABLE_GROUP_ROLE_ASSIGNMENTS . " WHERE user=:user AND `group`=:group AND role=:role"
+        );
+
+        $stmt->bindParam(":user", $uid);
+        $stmt->bindParam(":group", $gid);
+        $stmt->bindParam(":role", $role);
+
+        $stmt->execute();
     }
 }

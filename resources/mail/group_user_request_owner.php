@@ -6,7 +6,7 @@ $this->Subject = "Group Member Request";
 
 <p>Hello,</p>
 
-<p>A user has requested to join your PI group, <?php echo $data["group"] ?>. The details of the user are below:</p>
+<p>A user has requested to join your group, <?php echo $data["group"] ?>. The details of the user are below:</p>
 
 <p>
 <strong>Username</strong> <?php echo $data["user"]; ?>
@@ -19,4 +19,4 @@ $this->Subject = "Group Member Request";
 </p>
 
 <p>You can approve or deny this user on the 
-    <a href="<?php echo $this->MSG_LINKREF; ?>/panel/pi.php">my users</a> page</p>
+    <a href="<?php echo $this->MSG_LINKREF; ?>/panel/view_group.php?group=<?php echo $data["group"] ?>">group details</a> page</p>

@@ -19,6 +19,7 @@ require_once __DIR__ . "/lib/UnitySite.php";
 require_once __DIR__ . "/lib/UnityConfig.php";
 require_once __DIR__ . "/lib/UnityWebhook.php";
 require_once __DIR__ . "/lib/UnityRedis.php";
+require_once __DIR__ . "/lib/UnityPerms.php";
 
 // run init script
 require __DIR__ . "/init.php";

@@ -66,10 +66,10 @@ if (isset($SSO)) {
         echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>Account Settings</a>";
         echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/groups.php'>My Groups</a>";
 
-        if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
-          // PI only pages
-            echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>My Users</a>";
-        }
+        // if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
+        //   // PI only pages
+        //     echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>My Users</a>";
+        // }
 
       // additional branding items
         $num_additional_items = count($CONFIG["menuitems_secure"]["labels"]);
