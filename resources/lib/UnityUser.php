@@ -726,6 +726,12 @@ class UnityUser
         }
 
         $permissions = $this->SQL->getPermissions($roles);
-        return in_array($permission, $permissions);
+        $bool = in_array($permission, $permissions);
+
+        if (in_array("unity.admin", $permissions) || in_array("unity.admin_no_grant", $permissions)) {
+            $bool = true;
+        }
+
+        return $bool;
     }
 }
