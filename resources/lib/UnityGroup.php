@@ -5,7 +5,7 @@ namespace UnityWebPortal\lib;
 use Exception;
 
 /**
- * Class that represents a single PI group in the Unity Cluster.
+ * Class that represents a single group in the Unity Cluster.
  */
 class UnityGroup
 {

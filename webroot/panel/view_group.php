@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     switch ($_POST["form_name"]) {
         case "assignRoleForm":
-            if (!$unityPerms->checkGrantRole($USER->getUID(), $group->getGroupUID(), $_COOKIE['role'])) {
+            if (!$unityPerms->checkGrantRole($USER->getUID(), $group->getGroupUID(), $_COOKIE['role']) && $USER->getUID() != $group->getOwner()->getUID()) {
                 echo '<script>alert("You do not have permission to assign roles to this user")</script>';
                 array_push($modalErrors, "You do not have permission to assign roles to this user");
             }
@@ -51,13 +51,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             break;
         case "userReq":
             if ($_POST["action"] == "Approve") {
-                if (!$unityPerms->checkApproveUser($USER->getUID(), $group->getGroupUID())) {
+                if (!$unityPerms->checkApproveUser($USER->getUID(), $group->getGroupUID()) && $USER->getUID() != $group->getOwner()->getUID()) {
                     echo "<script>alert('You do not have permission to approve this user')</script>";
                 }
 
                 $group->approveUser($form_user);
             } elseif ($_POST["action"] == "Deny") {
-                if (!$unityPerms->checkDenyUser($USER->getUID(), $group->getGroupUID())) {
+                if (!$unityPerms->checkDenyUser($USER->getUID(), $group->getGroupUID()) && $USER->getUID() != $group->getOwner()->getUID()) {
                     echo "<script>alert('You do not have permission to deny this user')</script>";
                 }
 
@@ -76,10 +76,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             break;
         case "revokeRole":
-            if ($revoke_uid == $USER->getUID()) {
+            if ($revoke_uid == $USER->getUID() && $USER->getUID() != $group->getOwner()->getUID()) {
                 echo "<script>alert('You cannot revoke your own roles')</script>";
             } else {
-                if (!$unityPerms->checkRevokeRole($USER->getUID(), $group->getGroupUID(), $revoke_role)) {
+                if (!$unityPerms->checkRevokeRole($USER->getUID(), $group->getGroupUID(), $revoke_role) && $USER->getUID() != $group->getOwner()->getUID()) {
                     echo "<script>alert('You do not have permission to revoke this role')</script>";
                 } else {
                     $group->revokeRole($revoke_uid, $revoke_role);
@@ -154,7 +154,7 @@ foreach ($assocs as $assoc) {
     }
 
     echo "<tr>";
-    if ($USER->hasPermission($_GET["group"], "unity.admin")) {
+    if ($USER->hasPermission($_GET["group"], "unity.admin") || $USER->getUID() == $group->getOwner()->getUID()) {
         echo "<td>";
         echo
         "<form action='' method='POST'>
@@ -174,7 +174,7 @@ foreach ($assocs as $assoc) {
 
 echo "</table>";
 
-if ($USER->hasPermission($_GET["group"], "unity.grant_role") || $USER->hasPermission($_GET["group"], "unity.revoke_role")) {
+if ($USER->hasPermission($_GET["group"], "unity.grant_role") || $USER->hasPermission($_GET["group"], "unity.revoke_role") || $USER->getUID() == $group->getOwner()->getUID()) {
     $roles = $group->getAvailableRoles();
 
     echo "<br>";
@@ -189,7 +189,7 @@ if ($USER->hasPermission($_GET["group"], "unity.grant_role") || $USER->hasPermis
         foreach ($users_with_role as $user) {
             echo "<table>";
             echo "<tr>";
-            if ($USER->hasPermission($_GET["group"], "unity.admin") || $USER->hasPermission($_GET["group"], "unity.revoke_role")) {
+            if ($USER->hasPermission($_GET["group"], "unity.admin") || $USER->hasPermission($_GET["group"], "unity.revoke_role" || $USER->getUID() == $group->getOwner()->getUID())) {
                 echo "<td>";
                 echo
                 "<form action='' method='POST'>
@@ -214,7 +214,7 @@ if ($USER->hasPermission($_GET["group"], "unity.grant_role") || $USER->hasPermis
     }
 }
 
-if ($USER->hasPermission($_GET["group"], "unity.admin")) {
+if ($USER->hasPermission($_GET["group"], "unity.admin") || $USER->getUID() == $group->getOwner()->getUID()) {
     echo "<br>";
     echo "<h2>Manage Group</h2>";
     echo "<hr>";
