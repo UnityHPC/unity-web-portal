@@ -18,12 +18,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         case "req":
             if ($_POST["action"] == "Approve") {
                 // approve group
-                $group = $form_user->getGroup();
-                $group->approveGroup($OPERATOR);
+                $group_type = $_POST["group_type"];
+                $group_name = $_POST["group_name"];
+                $group_uid = $group_type . "_" . $group_name;
+                $group = new UnityGroup($group_uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+                $group->approveGroup($_POST["uid"], $OPERATOR);
             } elseif ($_POST["action"] == "Deny") {
                 // deny group
-                $group = $form_user->getGroup();
-                $group->denyGroup($OPERATOR);
+                $group_type = $_POST["group_type"];
+                $group_name = $_POST["group_name"];
+                $group_uid = $group_type . "_" . $group_name;
+                $group = new UnityGroup($group_uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+                $group->denyGroup($_POST["uid"], $OPERATOR);
             }
 
             break;
@@ -59,37 +65,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 include $LOC_HEADER;
 ?>
 
-<h1>PI Management</h1>
+<h1>Group Management</h1>
 <hr>
 
 <input type="text" id="tableSearch" placeholder="Search...">
 
-<h5>Pending PI Requests</h5>
+<h5>Pending Group Requests</h5>
 <table class="searchable">
     <tr class="key">
-        <td>Name</td>
-        <td>Unity ID</td>
+        <td>Group Name</td>
+        <td>Group Type</td>
+        <td>Requestor</td>
+        <td>Requestor UID</td>
         <td>Mail</td>
         <td>Requested On</td>
         <td>Actions</td>
     </tr>
 
     <?php
-    $requests = $SQL->getRequests();
+    $requests = $SQL->getGroupRequests();
+    $types = $USER->getRequestableGroupTypes();
+
+    function getTypeNameFromSlug($slug) {
+        global $types;
+        foreach ($types as $type) {
+            if ($type['slug'] == $slug) {
+                return $type['name'];
+            }
+        }
+        return null;
+    }
 
     foreach ($requests as $request) {
-        $request_user = new UnityUser($request["uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $request_user = new UnityUser($request["requestor"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
 
         echo "<tr>";
+        echo "<td>" . $request['group_name'] . "</td>";
+        echo "<td> <div class='type' style='border-radius: 5px; padding-left: 10px; padding-right: 10px; text-align: center; font-size: 12px; color: white; background-color: " . '#800000' . ";'>" . getTypeNameFromSlug($request['group_type']) . "</div></td>";
         echo "<td>" . $request_user->getFirstname() . " " . $request_user->getLastname() . "</td>";
         echo "<td>" . $request_user->getUID() . "</td>";
         echo "<td><a href='mailto:" . $request_user->getMail() . "'>" . $request_user->getMail() . "</a></td>";
-        echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
+        echo "<td>" . date("jS F, Y", strtotime($request['requested_on'])) . "</td>";
         echo "<td>";
         echo
         "<form action='' method='POST'>
         <input type='hidden' name='form_name' value='req'>
         <input type='hidden' name='uid' value='" . $request_user->getUID() . "'>
+        <input type='hidden' name='group_name' value='" . $request['group_name'] . "'>
+        <input type='hidden' name='group_type' value='" . $request['group_type'] . "'>
         <input type='submit' name='action' value='Approve' 
         onclick='return confirm(\"Are you sure you want to approve " . $request_user->getUID() . "?\");'>
         <input type='submit' name='action' value='Deny' 
@@ -102,13 +125,12 @@ include $LOC_HEADER;
 
 </table>
 
-<h5>List of PIs</h5>
+<h5>List of Groups</h5>
 
 <table class="searchable longTable">
     <tr class="key">
-        <td>Name</td>
-        <td>Unity ID</td>
-        <td>Mail</td>
+        <td>Group Type</td>
+        <td>Group Name</td>
         <td>Actions</td>
     </tr>
 
@@ -118,21 +140,19 @@ include $LOC_HEADER;
     usort($accounts, function ($a, $b) {
         return strcmp($a->getGroupUID(), $b->getGroupUID());
     });
-
+    
     foreach ($accounts as $pi_group) {
-        $pi_user = $pi_group->getOwner();
 
-        echo "<tr class='expandable'>";
-        echo "<td><button class='btnExpand'>&#9654;</button>" . $pi_user->getFirstname() .
-        " " . $pi_user->getLastname() . "</td>";
-        echo "<td>" . $pi_group->getGroupUID() . "</td>";
-        echo "<td><a href='mailto:" . $pi_user->getMail() . "'>" . $pi_user->getMail() . "</a></td>";
-        echo "<td>";
+        echo "<tr>";
+        echo "<td> <div class='type' style='width: 20px; margin: auto; border-radius: 5px; padding-left: 10px; padding-right: 10px; text-align: center; font-size: 12px; color: white; background-color: " . '#800000' . ";'>" . getTypeNameFromSlug($pi_group->getGroupType()) . "</div></td>";
+        echo "<td style='text-align: center'>" . $pi_group->getGroupName() . "</td>";
+        echo "<td style='text-align: center'>";
         echo
         "<form action='' method='POST' 
     onsubmit='return confirm(\"Are you sure you want to remove " . $pi_group->getGroupUID() . "?\")'>
         <input type='hidden' name='form_name' value='remGroup'>
         <input type='hidden' name='pi' value='" . $pi_group->getGroupUID() . "'>
+        <button class='viewGroup' type='button'>View Group</button>
         <input type='submit' value='Remove'>
     </form>";
         echo "</td>";
@@ -156,6 +176,11 @@ include $LOC_HEADER;
                 current = current.next();
             }
         }
+    });
+
+    $("button.viewGroup").click(function() {
+        $pi = $(this).parent().parent().find("input[name='pi']").val();
+        window.location.href = "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/view_group.php?group=" + $pi;
     });
 
     var ajax_url = "<?php echo $CONFIG["site"]["prefix"]; ?>/admin/ajax/get_group_members.php?group_uid=";

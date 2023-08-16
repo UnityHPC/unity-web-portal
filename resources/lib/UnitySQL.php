@@ -309,14 +309,20 @@ class UnitySQL
     public function getRole($uid, $group)
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_GROUP_ROLE_ASSIGNMENTS . " WHERE user=:uid AND `group`=:group"
+            "SELECT * FROM " . self::TABLE_GROUP_ROLE_ASSIGNMENTS . " WHERE user=:uid AND `group`=:group_uid"
         );
         $stmt->bindParam(":uid", $uid);
-        $stmt->bindParam(":group", $group);
+        $stmt->bindParam(":group_uid", $group);
 
         $stmt->execute();
+        $roles = array();
+        foreach ($stmt->fetchAll() as $row) {
+            $roles[] = $row['role'];
+        }
 
-        return $stmt->fetchAll()[0]['role'];
+        foreach ($roles as $role) {
+            return $role;
+        }
     }
 
     public function hasPerm($role, $perm)
@@ -328,9 +334,18 @@ class UnitySQL
 
         $stmt->execute();
 
-        $row = $stmt->fetchAll()[0];
-        $perms = explode(",", $row['perms']);
-        return in_array($perm, $perms);
+        $perms = array();
+        foreach ($stmt->fetchAll() as $row) {
+            $perms[] = $row['perms'];
+        }
+
+        foreach ($perms as $p) {
+            $perms = explode(",", $p);
+            if (in_array($perm, $perms)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function getPriority($role)
@@ -519,5 +534,261 @@ class UnitySQL
         $stmt->bindParam(":role", $role);
 
         $stmt->execute();
+    }
+
+    public function getGroupTypes()
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_TYPES . " WHERE can_request=1"
+        );
+
+        $stmt->execute();
+
+        $types = array();
+        foreach ($stmt->fetchAll() as $row) {
+            $types[] = array(
+                "slug" => $row['slug'],
+                "name" => $row['name'],
+                "time_limited" => $row['time_limited'],
+                "prefix" => $row['prefix'],
+            );
+        }
+
+        return $types;
+    }
+
+    public function addGroupRequest($requestor, $group_type, $group_name, $start_date, $end_date) 
+    {
+        $stmt = $this->conn->prepare(
+            "INSERT INTO " . self::TABLE_GROUP_REQUESTS . " (requestor, group_type, group_name, start_date, end_date) 
+            VALUES (:requestor, :group_type, :group_name, :start_date, :end_date)"
+        );
+
+        $stmt->bindParam(":requestor", $requestor);
+        $stmt->bindParam(":group_type", $group_type);
+        $stmt->bindParam(":group_name", $group_name);
+        $stmt->bindParam(":start_date", $start_date);
+        $stmt->bindParam(":end_date", $end_date);
+
+        $stmt->execute();
+    }
+
+    public function getPendingGroupRequests($user)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_REQUESTS . " WHERE requestor=:requestor"
+        );
+
+        $stmt->bindParam(":requestor", $user);
+
+        $stmt->execute();
+
+        $requests = array();
+        foreach ($stmt->fetchAll() as $row) {
+            $requests[] = array(
+                "id" => $row['id'],
+                "group_type" => $row['group_type'],
+                "group_name" => $row['group_name'],
+                "requested_on" => $row['requested_on']
+            );
+        }
+
+        return $requests;
+    }
+
+    public function getGroupRequests()
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_REQUESTS
+        );
+
+        $stmt->execute();
+
+        $requests = array();
+        foreach ($stmt->fetchAll() as $row) {
+            $requests[] = array(
+                "id" => $row['id'],
+                "requestor" => $row['requestor'],
+                "group_type" => $row['group_type'],
+                "group_name" => $row['group_name'],
+                "requested_on" => $row['requested_on']
+            );
+        }
+
+        return $requests;
+    }
+
+    public function removeGroupRequest($user)
+    {
+        $stmt = $this->conn->prepare(
+            "DELETE FROM " . self::TABLE_GROUP_REQUESTS . " WHERE requestor=:requestor"
+        );
+
+        $stmt->bindParam(":requestor", $user);
+
+        $stmt->execute();
+    }
+
+    public function getRequestor($group)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_REQUESTS . " WHERE group_name=:group_name"
+        );
+
+        $stmt->bindParam(":group_name", $group);
+
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+
+        return $row['requestor'];
+    }
+
+    public function groupRequestExists($user)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_REQUESTS . " WHERE requestor=:requestor"
+        );
+
+        $stmt->bindParam(":requestor", $user);
+
+        $stmt->execute();
+
+        return count($stmt->fetchAll()) > 0;
+    }
+
+    public function addJoinRequest($requestor, $group_uid)
+    {
+        $stmt = $this->conn->prepare(
+            "INSERT INTO " . self::TABLE_GROUP_JOIN_REQUESTS . " (requestor, group_name) VALUES (:requestor, :group_name)"
+        );
+
+        $stmt->bindParam(":requestor", $requestor);
+        $stmt->bindParam(":group_name", $group_uid);
+
+        $stmt->execute();
+    }
+
+    public function removeJoinRequest($requestor, $group_uid)
+    {
+        $stmt = $this->conn->prepare(
+            "DELETE FROM " . self::TABLE_GROUP_JOIN_REQUESTS . " WHERE requestor=:requestor AND group_name=:group_name"
+        );
+
+        $stmt->bindParam(":requestor", $requestor);
+        $stmt->bindParam(":group_name", $group_uid);
+
+        $stmt->execute();
+    }
+
+    public function removeJoinRequests($group_uid)
+    {
+        $stmt = $this->conn->prepare(
+            "DELETE FROM " . self::TABLE_GROUP_JOIN_REQUESTS . " WHERE group_name=:group_name"
+        );
+
+        $stmt->bindParam(":group_name", $group_uid);
+
+        $stmt->execute();
+    }
+
+    public function getJoinRequests($group_uid)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_JOIN_REQUESTS . " WHERE group_name=:group_name"
+        );
+
+        $stmt->bindParam(":group_name", $group_uid);
+
+        $stmt->execute();
+
+        $requests = array();
+        foreach ($stmt->fetchAll() as $row) {
+            $requests[] = array(
+                "requestor" => $row['requestor'],
+                "requested_on" => $row['requested_on']
+            );
+        }
+
+        return $requests;
+    }
+
+    public function getJoinRequestsByUser($user)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_JOIN_REQUESTS . " WHERE requestor=:requestor"
+        );
+
+        $stmt->bindParam(":requestor", $user);
+
+        $stmt->execute();
+
+        $requests = array();
+        foreach ($stmt->fetchAll() as $row) {
+            $requests[] = array(
+                "group_name" => $row['group_name'],
+                "requested_on" => $row['requested_on']
+            );
+        }
+
+        return $requests;
+    }
+
+    public function assignSuperRole($user, $group_type, $group_uid)
+    {
+        // get the defSuperRole property from the group types table using the $group as slug. then assign the user that role.
+        $stmt = $this->conn->prepare(
+            "SELECT defSuperRole FROM " . self::TABLE_GROUP_TYPES . " WHERE slug=:slug"
+        );
+
+        $stmt->bindParam(":slug", $group_type);
+
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+
+        $this->assignRole($row['defSuperRole'], $user, $group_uid);
+    }
+
+    public function getGroupAdmins($group_uid, $users)
+    {
+        // first get the roles of all users. then check if they have the unity.admin permission. if they do, add them to the admins array.
+        $admins = array();
+        foreach ($users as $user) {
+            $role = $this->getRole($user, $group_uid);
+            if ($this->hasPerm($role, "unity.admin")) {
+                $admins[] = $user;
+            }
+        }
+        return $admins;
+    }
+
+    public function assignDefRole($user, $group_type, $group_uid)
+    {
+        // get the defRole property from the group types table using the $group as slug. then assign the user that role.
+        $stmt = $this->conn->prepare(
+            "SELECT def_role FROM " . self::TABLE_GROUP_TYPES . " WHERE slug=:slug"
+        );
+
+        $stmt->bindParam(":slug", $group_type);
+
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+
+        $this->assignRole($row['def_role'], $user, $group_uid);
+    }
+
+    public function PIRequestExists($user)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_REQUESTS . " WHERE requestor=:requestor AND group_type='pi'"
+        );
+
+        $stmt->bindParam(":requestor", $user);
+
+        $stmt->execute();
+
+        return count($stmt->fetchAll()) > 0;
     }
 }

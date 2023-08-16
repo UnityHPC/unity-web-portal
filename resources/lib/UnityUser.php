@@ -572,7 +572,18 @@ class UnityUser
      */
     public function isPI()
     {
-        return $this->getGroup()->exists();
+        $groups = $this->getGroups(true);
+        foreach ($groups as $group) {
+            if ($group->getGroupType() == "pi") {
+                $admins = $group->getGroupAdmins();
+                foreach ($admins as $admin) {
+                    if ($admin->getUID() == $this->getUID()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public function getGroup()
@@ -638,7 +649,7 @@ class UnityUser
             }
         }
 
-        if (!$ignorecache) {
+        if ($ignorecache) {
             $this->REDIS->setCache($this->getUID(), "groups", $cache_arr);
         }
 
@@ -733,5 +744,26 @@ class UnityUser
         }
 
         return $bool;
+    }
+
+    public function getRequestableGroupTypes()
+    {
+        return $this->SQL->getGroupTypes();
+    }
+
+    public function checkGroupName($group_name)
+    {
+        $groups =  $this->LDAP->getAllUnityGroups($this->SQL, $this->MAILER, $this->REDIS, $this->WEBHOOK);
+        foreach ($groups as $group) {
+            if ($group->getGroupName() == $group_name) {
+                return "not available";
+            }
+        }
+        return "available";
+    }
+
+    public function getPendingGroupRequests()
+    {
+        return $this->SQL->getPendingGroupRequests($this->getUID());
     }
 }

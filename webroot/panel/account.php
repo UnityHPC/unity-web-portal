@@ -65,8 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break;
         case "pi_request":
             if (!$USER->isPI()) {
-                if (!$SQL->requestExists($USER->getUID())) {
-                    $USER->getGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
+                if (!$SQL->PIRequestExists($USER->getUID())) {
+                    UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/new_group.php");
                 }
             }
             break;
@@ -134,7 +134,7 @@ if (!$isPI) {
         "<form action='' method='POST' id='piReq' 
         onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'>
         <input type='hidden' name='form_type' value='pi_request'>";
-        if ($SQL->requestExists($USER->getUID())) {
+        if ($SQL->PIRequestExists($USER->getUID())) {
             echo "<input type='submit' value='Request PI Account' disabled>";
             echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
         } else {

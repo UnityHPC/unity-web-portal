@@ -238,7 +238,7 @@ class UnityLDAP extends ldapConn
         return $out;
     }
 
-    public function getAllUnityGroups($UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook, $ignorecache = false)
+    public function getAllUnityGroups($UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook, $ignorecache = true)
     {
         $out = array();
 

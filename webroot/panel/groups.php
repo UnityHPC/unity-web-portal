@@ -50,28 +50,19 @@ include $LOC_HEADER;
 <hr>
 
 <?php
-$groups = $USER->getGroups();
+$groups = $USER->getGroups(true);
 
-$requests = $SQL->getRequestsByUser($USER->getUID());
+$requests = $SQL->getJoinRequestsByUser($USER->getUID());
 
-$req_filtered = array();
-foreach ($requests as $request) {
-    if ($request["request_for"] != "admin") {  // put this in config later for gypsum
-        array_push($req_filtered, $request);
-    }
-}
-
-if (count($req_filtered) > 0) {
+if (count($requests) > 0) {
     echo "<h5>Pending Requests</h5>";
     echo "<table>";
-    foreach ($req_filtered as $request) {
-        $requested_account = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-        $requested_owner = $requested_account->getOwner();
+    foreach ($requests as $request) {
+        $requested_account = new UnityGroup($request["group_name"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
         echo "<tr class='pending_request'>";
-        echo "<td>" . $requested_owner->getFirstname() . " " . $requested_owner->getLastname() . "</td>";
+        echo "<td> <div class='type' style='border-radius: 5px; padding-left: 10px; color: white; padding-right: 10px; text-align: center; font-size: 12px; background-color: " . $requested_account->getGroupTypeColor() . ";'>" . $requested_account->getGroupTypeName() . "</div></td>";
         echo "<td>" . $requested_account->getGroupUID() . "</td>";
-        echo "<td><a href='mailto:" . $requested_owner->getMail() . "'>" . $requested_owner->getMail() . "</a></td>";
-        echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
+        echo "<td>" . date("jS F, Y", strtotime($request['requested_on'])) . "</td>";
         echo "<td></td>";
         echo "</tr>";
     }
@@ -98,14 +89,10 @@ if (count($groups) == 0) {
 echo "<table>";
 
 foreach ($groups as $group) {
-    $owner = $group->getOwner();
 
     echo "<tr class='expandable viewGroup'>";
-    echo "<td> <div class='type' style='border-radius: 5px; padding-left: 10px; color: white; padding-right: 10px; text-align: center; font-size: 12px; background-color: " . $group->getGroupColor() . ";'>" . $group->getGroupName() . "</div></td>";
-    echo
-    "<td>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
+    echo "<td> <div class='type' style='border-radius: 5px; padding-left: 10px; color: white; padding-right: 10px; text-align: center; font-size: 12px; background-color: " . $group->getGroupTypeColor() . ";'>" . $group->getGroupTypeName() . "</div></td>";
     echo "<td>" . $group->getGroupUID() . "</td>";
-    echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
     echo "<td> <button class='viewGroup'>View Group</button> </td>";
     echo "<input type='hidden' name='pi' value='" . $group->getGroupUID() . "'>";
     echo

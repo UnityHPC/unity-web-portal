@@ -65,6 +65,8 @@ if (isset($SSO)) {
         echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/support.php'>Support</a>";
         echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>Account Settings</a>";
         echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/groups.php'>My Groups</a>";
+        echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/new_group.php'>Request New Group</a>";
+
 
         // if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
         //   // PI only pages
@@ -83,7 +85,7 @@ if (isset($SSO)) {
             echo "<hr class='navHR'>";
           // Admin only pages
             echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/user-mgmt.php'>User Management</a>";
-            echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/pi-mgmt.php'>PI Management</a>";
+            echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/group-mgmt.php'>Group Management</a>";
             echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/notices.php'>Cluster Notices</a>";
             echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/content.php'>Content Management</a>";
         }

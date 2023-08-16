@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     switch ($_POST["form_name"]) {
         case "assignRoleForm":
-            if (!$unityPerms->checkGrantRole($USER->getUID(), $group->getGroupUID(), $_COOKIE['role']) && $USER->getUID() != $group->getOwner()->getUID()) {
+            if (!$unityPerms->checkGrantRole($USER->getUID(), $group->getGroupUID(), $_COOKIE['role']) && !$OPERATOR->isAdmin()) {
                 echo '<script>alert("You do not have permission to assign roles to this user")</script>';
                 array_push($modalErrors, "You do not have permission to assign roles to this user");
             }
@@ -51,13 +51,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             break;
         case "userReq":
             if ($_POST["action"] == "Approve") {
-                if (!$unityPerms->checkApproveUser($USER->getUID(), $group->getGroupUID()) && $USER->getUID() != $group->getOwner()->getUID()) {
+                if (!$unityPerms->checkApproveUser($USER->getUID(), $group->getGroupUID()) && !$OPERATOR->isAdmin()) {
                     echo "<script>alert('You do not have permission to approve this user')</script>";
                 }
 
                 $group->approveUser($form_user);
             } elseif ($_POST["action"] == "Deny") {
-                if (!$unityPerms->checkDenyUser($USER->getUID(), $group->getGroupUID()) && $USER->getUID() != $group->getOwner()->getUID()) {
+                if (!$unityPerms->checkDenyUser($USER->getUID(), $group->getGroupUID()) && !$OPERATOR->isAdmin()) {
                     echo "<script>alert('You do not have permission to deny this user')</script>";
                 }
 
@@ -76,10 +76,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             break;
         case "revokeRole":
-            if ($revoke_uid == $USER->getUID() && $USER->getUID() != $group->getOwner()->getUID()) {
+            if ($revoke_uid == $USER->getUID() && !$OPERATOR->isAdmin()) {
                 echo "<script>alert('You cannot revoke your own roles')</script>";
             } else {
-                if (!$unityPerms->checkRevokeRole($USER->getUID(), $group->getGroupUID(), $revoke_role) && $USER->getUID() != $group->getOwner()->getUID()) {
+                if (!$unityPerms->checkRevokeRole($USER->getUID(), $group->getGroupUID(), $revoke_role) && !$OPERATOR->isAdmin()) {
                     echo "<script>alert('You do not have permission to revoke this role')</script>";
                 } else {
                     $group->revokeRole($revoke_uid, $revoke_role);
@@ -100,12 +100,12 @@ $requests = $group->getRequests();
 $assocs = $group->getGroupMembers();
 
 if (count($requests) + count($assocs) == 1) {
-    echo "<p>You do not have any users attached to your PI account. 
-    Ask your users to request to join your account on the <a href='" . $CONFIG["site"]["prefix"] .
+    echo "<p>There are no users attached to this group. 
+    Ask users to request to join this group on the <a href='" . $CONFIG["site"]["prefix"] .
     "/panel/groups.php'>My Groups</a> page.</p>";
 }
 
-if (count($requests) > 0 && ($USER->hasPermission($_GET["group"], "unity.approve_user") || $USER->hasPermission($_GET["group"], "unity.deny_user"))) {
+if (count($requests) > 0 && ($USER->hasPermission($_GET["group"], "unity.approve_user") || $USER->hasPermission($_GET["group"], "unity.deny_user") || $OPERATOR->isAdmin())) {
     echo "<h5>Pending Requests</h5>";
     echo "<table>";
 
@@ -144,9 +144,10 @@ if (count($requests) > 0 && ($USER->hasPermission($_GET["group"], "unity.approve
     }
 }
 
-echo "<h5>Users in Group</h5>";
-
-echo "<table>";
+if (count($assocs) > 2 || $OPERATOR->isAdmin()) {
+    echo "<h5>Users in Group</h5>";
+    echo "<table>";
+}
 
 foreach ($assocs as $assoc) {
     if ($assoc->getUID() == $USER->getUID()) {
@@ -154,7 +155,7 @@ foreach ($assocs as $assoc) {
     }
 
     echo "<tr>";
-    if ($USER->hasPermission($_GET["group"], "unity.admin") || $USER->getUID() == $group->getOwner()->getUID()) {
+    if ($USER->hasPermission($_GET["group"], "unity.admin") || $OPERATOR->isAdmin()) {
         echo "<td>";
         echo
         "<form action='' method='POST'>
@@ -174,7 +175,7 @@ foreach ($assocs as $assoc) {
 
 echo "</table>";
 
-if ($USER->hasPermission($_GET["group"], "unity.grant_role") || $USER->hasPermission($_GET["group"], "unity.revoke_role") || $USER->getUID() == $group->getOwner()->getUID()) {
+if ($USER->hasPermission($_GET["group"], "unity.grant_role") || $USER->hasPermission($_GET["group"], "unity.revoke_role") || $OPERATOR->isAdmin()) {
     $roles = $group->getAvailableRoles();
 
     echo "<br>";
@@ -189,7 +190,7 @@ if ($USER->hasPermission($_GET["group"], "unity.grant_role") || $USER->hasPermis
         foreach ($users_with_role as $user) {
             echo "<table>";
             echo "<tr>";
-            if ($USER->hasPermission($_GET["group"], "unity.admin") || $USER->hasPermission($_GET["group"], "unity.revoke_role" || $USER->getUID() == $group->getOwner()->getUID())) {
+            if ($USER->hasPermission($_GET["group"], "unity.admin") || $USER->hasPermission($_GET["group"], "unity.revoke_role" || $OPERATOR->isAdmin())) {
                 echo "<td>";
                 echo
                 "<form action='' method='POST'>
@@ -214,7 +215,7 @@ if ($USER->hasPermission($_GET["group"], "unity.grant_role") || $USER->hasPermis
     }
 }
 
-if ($USER->hasPermission($_GET["group"], "unity.admin") || $USER->getUID() == $group->getOwner()->getUID()) {
+if ($USER->hasPermission($_GET["group"], "unity.admin") || $OPERATOR->isAdmin()) {
     echo "<br>";
     echo "<h2>Manage Group</h2>";
     echo "<hr>";

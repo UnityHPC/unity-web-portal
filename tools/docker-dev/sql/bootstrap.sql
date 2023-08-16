@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 03, 2023 at 12:23 AM
+-- Generation Time: Aug 15, 2023 at 04:28 PM
 -- Server version: 10.3.38-MariaDB-0ubuntu0.20.04.1
 -- PHP Version: 7.4.3-4ubuntu2.19
 
@@ -120,6 +120,16 @@ CREATE TABLE `groupRoles` (
   `perms` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `groupRoles`
+--
+
+INSERT INTO `groupRoles` (`id`, `name`, `slug`, `priority`, `color`, `perms`) VALUES
+(1, 'Member Approve', 'member_approve', 50, '', 'unity.approve_user,unity.deny_user'),
+(2, 'Member', 'member', 20, '', ''),
+(3, 'Owner', 'owner', 100, '', 'unity.admin'),
+(4, 'TA', 'ta', 60, '', 'unity.grant_role,unity.revoke_role');
+
 -- --------------------------------------------------------
 
 --
@@ -135,8 +145,16 @@ CREATE TABLE `groupTypes` (
   `def_role` varchar(1000) NOT NULL,
   `av_roles` varchar(1000) NOT NULL,
   `can_request` tinyint(1) NOT NULL,
-  `prefix` varchar(1000) NOT NULL
+  `prefix` varchar(1000) NOT NULL,
+  `defSuperRole` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `groupTypes`
+--
+
+INSERT INTO `groupTypes` (`id`, `name`, `slug`, `color`, `time_limited`, `def_role`, `av_roles`, `can_request`, `prefix`, `defSuperRole`) VALUES
+(1, 'PI', 'pi', '#800000', 0, 'member', 'member,owner,member_approve,ta', 1, 'pi_', 'owner');
 
 -- --------------------------------------------------------
 
@@ -203,6 +221,12 @@ CREATE TABLE `sitevars` (
   `name` varchar(1000) NOT NULL,
   `value` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sitevars`
+--
+INSERT INTO `sitevars` (`id`, `name`, `value`) VALUES
+(1, 'MAX_GID', 50000);
 
 -- --------------------------------------------------------
 

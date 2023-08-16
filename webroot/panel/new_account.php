@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (count($errors) == 0) {
         if ($_POST["new_user_sel"] == "pi") {
             // requesting a PI account
-            $USER->getGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
+            UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/new_group.php");
         } elseif ($_POST["new_user_sel"] == "not_pi") {
             $form_group->newUserRequest($USER);
         }
@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <hr>
 
     <?php
-    $pending_requests = $SQL->getRequestsByUser($USER->getUID());
+    $pending_requests = $SQL->getJoinRequestsByUser($USER->getUID());
     if (count($pending_requests) > 0) {
         // already has pending requests
         echo "<p>Your request to activate your account has been submitted. 
@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<label><input type='radio' name='new_user_sel' value='not_pi' checked>Join an existing PI group</label>";
 
         echo "<div style='position: relative;' id='piSearchWrapper'>";
-        echo "<input type='text' id='pi_search' name='pi' placeholder='Search PI by NetID' required>";
+        echo "<input type='text' id='pi_search' name='pi' placeholder='Search groups by NetID' required>";
         echo "<div class='searchWrapper' style='display: none;'></div>";
         echo "</div>";
 
