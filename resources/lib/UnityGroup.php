@@ -627,24 +627,21 @@ class UnityGroup
 
     public function getGroupTypeColor()
     {
-        $gid = $this->getLDAPUnityGroup()->getAttribute("cn")[0];
-        $group_type = $this->LDAP->getGroupType($gid);
+        $group_type = $this->getGroupType();
         $group_details = $this->SQL->getGroupTypeDetails($group_type);
         return $group_details["color"];
     }
 
     public function getGroupTypeName()
     {
-        $gid = $this->getLDAPUnityGroup()->getAttribute("cn")[0];
-        $group_type = $this->LDAP->getGroupType($gid);
+        $group_type = $this->getGroupType();
         $group_details = $this->SQL->getGroupTypeDetails($group_type);
         return $group_details["name"];
     }
 
     public function getAvailableRoles()
     {
-        $gid = $this->getLDAPUnityGroup()->getAttribute("cn")[0];
-        $group_type = $this->LDAP->getGroupType($gid);
+        $group_type = $this->getGroupType();
         $group_details = $this->SQL->getGroupTypeDetails($group_type);
         $av_roles = $group_details["av_roles"];
 
@@ -731,8 +728,9 @@ class UnityGroup
     public function getGroupType()
     {
         $group_uid = $this->getGroupUID();
-        $group_type = substr($group_uid, 0, strpos($group_uid, "_"));
-        return $group_type;
+        $group_prefix = substr($group_uid, 0, strpos($group_uid, "_"));
+        $type = $this->SQL->getGroupType($group_prefix . "_");
+        return $type;
     }
 
     public function getGroupAdmins()

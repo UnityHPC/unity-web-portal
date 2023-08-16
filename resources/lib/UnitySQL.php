@@ -791,4 +791,19 @@ class UnitySQL
 
         return count($stmt->fetchAll()) > 0;
     }
+
+    public function getGroupType($prefix)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_TYPES . " WHERE prefix=:prefix"
+        );
+
+        $stmt->bindParam(":prefix", $prefix);
+
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+
+        return $row['slug'] ?? null;
+    }
 }
