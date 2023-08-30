@@ -40,25 +40,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     switch ($_POST["form_name"]) {
         case "assignRoleForm":
             if (!$unityPerms->checkGrantRole($USER->getUID(), $group->getGroupUID(), $_COOKIE['role']) && !$OPERATOR->isAdmin()) {
-                echo '<script>alert("You do not have permission to assign roles to this user")</script>';
-                array_push($modalErrors, "You do not have permission to assign roles to this user");
+                echo '<script>alert("You do not have permission to assign this role to the user")</script>';
+                array_push($modalErrors, "You do not have permission to assign this role to the user");
+                header("Refresh:0");
             }
 
-            if (empty($modalErrors)) {
-                $group->assignRole($operated_on, $_COOKIE['role']);
-                UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/view_group.php?group=" . $group->getGroupUID());
+            $operated_on_role = $group->getMemberRole($operated_on->getUID());
+            if (!$unityPerms->checkRevokeRole($USER->getUID(), $group->getGroupUID(), $operated_on_role) && !$OPERATOR->isAdmin()) {
+                echo "<script>alert('You do not have permission to revoke this role')</script>";
+                array_push($modalErrors, "You do not have permission to revoke this role");
+                header("Refresh:0");
+            } else {
+                if (empty($modalErrors)) {
+                    $group->revokeRole($operated_on->getUID(), $operated_on_role);
+                    $group->assignRole($operated_on, $_COOKIE['role']);
+                    UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/view_group.php?group=" . $group->getGroupUID());
+                }
             }
             break;
         case "userReq":
             if ($_POST["action"] == "Approve") {
                 if (!$unityPerms->checkApproveUser($USER->getUID(), $group->getGroupUID()) && !$OPERATOR->isAdmin()) {
                     echo "<script>alert('You do not have permission to approve this user')</script>";
+                    header("Refresh:0");
                 }
 
                 $group->approveUser($form_user);
             } elseif ($_POST["action"] == "Deny") {
                 if (!$unityPerms->checkDenyUser($USER->getUID(), $group->getGroupUID()) && !$OPERATOR->isAdmin()) {
                     echo "<script>alert('You do not have permission to deny this user')</script>";
+                    header("Refresh:0");
                 }
 
                 $group->denyUser($form_user);
@@ -75,17 +86,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/account.php");
 
             break;
-        case "revokeRole":
-            if ($revoke_uid == $USER->getUID() && !$OPERATOR->isAdmin()) {
-                echo "<script>alert('You cannot revoke your own roles')</script>";
-            } else {
-                if (!$unityPerms->checkRevokeRole($USER->getUID(), $group->getGroupUID(), $revoke_role) && !$OPERATOR->isAdmin()) {
-                    echo "<script>alert('You do not have permission to revoke this role')</script>";
-                } else {
-                    $group->revokeRole($revoke_uid, $revoke_role);
-                    UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/view_group.php?group=" . $group->getGroupUID());
-                }
-            }
     }
 }
 
@@ -177,6 +177,10 @@ echo "</table>";
 
 if ($USER->hasPermission($_GET["group"], "unity.grant_role") || $USER->hasPermission($_GET["group"], "unity.revoke_role") || $OPERATOR->isAdmin()) {
     $roles = $group->getAvailableRoles();
+    $user_priority = $group->getRolePriority($USER->getUID());
+    usort($roles, function ($a, $b) {
+        return $b["priority"] - $a["priority"];
+    });
 
     echo "<br>";
     echo "<h2>Manage Roles</h2>";
@@ -190,18 +194,6 @@ if ($USER->hasPermission($_GET["group"], "unity.grant_role") || $USER->hasPermis
         foreach ($users_with_role as $user) {
             echo "<table>";
             echo "<tr>";
-            if ($USER->hasPermission($_GET["group"], "unity.admin") || $USER->hasPermission($_GET["group"], "unity.revoke_role" || $OPERATOR->isAdmin())) {
-                echo "<td>";
-                echo
-                "<form action='' method='POST'>
-                <input type='hidden' name='form_name' value='revokeRole'>
-                <input type='hidden' name='revoke_uid' value='" . $user->getUID() . "'>
-                <input type='hidden' name='revoke_role' value='" . $role["slug"] . "'>
-                <input type='submit' value='Revoke'
-                onclick='return confirm(\"Are you sure you want to revoke the role from " . $user->getUID() . "?\")'>
-                </form>";
-                echo "</td>";
-            }
             echo "<td>" . $user->getFirstname() . " " . $user->getLastname() . "</td>";
             echo "<td>" . $user->getUID() . "</td>";
             echo "<td><a href='mailto:" . $user->getMail() . "'>" . $user->getMail() . "</a></td>";
@@ -210,7 +202,9 @@ if ($USER->hasPermission($_GET["group"], "unity.grant_role") || $USER->hasPermis
         }
         echo "<div>";
         echo "<input type='hidden' name='role' value='" . $role["slug"] . "'>";
-        echo "<button type='button' class='plusBtn btnAssignRole' style='font-size: 13px; padding-top: 7px; padding-bottom: 7px; margin-bottom: 20px;'>Assign " . $role["display_name"] . " Role</button>";
+        if ($user_priority >= $role["priority"] && ($USER->hasPermission($_GET["group"], "unity.grant_role") || $OPERATOR->isAdmin())) {
+            echo "<button type='button' class='plusBtn btnAssignRole' style='font-size: 13px; padding-top: 7px; padding-bottom: 7px; margin-bottom: 20px;'>Assign " . $role["display_name"] . " Role</button>";
+        };
         echo "</div>";
     }
 }

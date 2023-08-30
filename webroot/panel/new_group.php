@@ -35,10 +35,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $group_end_date = null;
     }
 
-    $group_uid = $group_type_prefix . $_POST['group_name'];
+    if ($_POST['group_name'] == "") {
+        $group_name = $USER->getUID();
+    } else {
+        $group_name = $_POST['group_name'];
+    }
+
+    $group_uid = $group_type_prefix . $group_name;
 
     $new_group = new UnityGroup($group_uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-    $new_group->requestGroup($USER->getUID(), $group_type_slug, $_POST['group_name'], $SEND_PIMESG_TO_ADMINS, $group_start_date, $group_end_date);
+    $new_group->requestGroup($USER->getUID(), $group_type_slug, $group_name, $SEND_PIMESG_TO_ADMINS, $group_start_date, $group_end_date);
     header("Refresh:0");
 }
 
@@ -70,16 +76,13 @@ if (count($pending_requests) > 0) {
 <form id="newGroupForm" action="" method="POST">
     <p>Fill in the following information to request a new group</p>
     <div>
-        <strong>Name (cannot have spaces)&nbsp;&nbsp;</strong><br>
-        <input type="text" name="group_name" placeholder="name_of_the_group" required  style="margin-bottom: 15px"><br>
-        <div style="color: red; font-size: 0.8rem; display: none; margin-top: -10px;" id="groupNameError">(Name not available. Try something different)/(Invalid name. Make sure to not have spaces)<br></div>
         <strong>Type of Group</strong><br>
         <?php
         foreach ($types as $type) {
             if ($type['slug'] == 'pi') {
-                echo "<label><input type='radio' name='group_type' value='" . $type["prefix"] . "-" . $type["slug"] . "-" . $type['time_limited'] . "' checked> " . $type["name"] . "</label><br>";
+                echo "<label><input type='radio' name='group_type' value='" . $type["prefix"] . "-" . $type["slug"] . "-" . $type['time_limited'] . "-" . $type['isNameable'] . "' checked> " . $type["name"] . "</label><br>";
             } else {
-                echo "<label><input type='radio' name='group_type' value='" . $type["prefix"] . "-" . $type["slug"] . "-" . $type['time_limited'] . "'> " . $type["name"] . "</label><br>";
+                echo "<label><input type='radio' name='group_type' value='" . $type["prefix"] . "-" . $type["slug"] . "-" . $type['time_limited'] . "-" . $type['isNameable'] . "'> " . $type["name"] . "</label><br>";
             }
         }
         ?>
@@ -88,20 +91,51 @@ if (count($pending_requests) > 0) {
             <label>Start Date: &nbsp;&nbsp;<input type='date' name='group_start_date'></label><br>
             <label>End Date: &nbsp;&nbsp;<input type='date' name='group_end_date'></label><br>
         </div>
+        <div id="nameInputBox" style="margin-top: 10px;">
+            <strong>Name (cannot have spaces)&nbsp;&nbsp;</strong><br>
+            <input type="text" name="group_name" placeholder="name_of_the_group" style="margin-bottom: 15px"><br>
+            <div style="color: red; font-size: 0.8rem; display: none; margin-top: -10px;" id="groupNameError">(Name not available. Try something different)/(Invalid name. Make sure to not have spaces)<br></div>
+        </div>
     </div>
-    <input style='margin-top: 10px;' type='submit' value='Request Group'>
+    <input style='margin-top: 10px;' type='submit' value='Request Group' id="requestGroupButton">
 </form>
 
 <script>
-    $('input[type=radio][name=group_type]').change(function() {
+    $(window).on("load", function() {
+        let type_info = $('input[type=radio][name=group_type]:checked').val().split('-');
+        const isNameable = type_info[3];
+        const time_limited = type_info[2];
         let date_selector = document.getElementById('dateSelector');
-        if (this.value.endsWith('1')) {
+        if (time_limited == 1) {
             date_selector.style.display = 'block';
-        } else if (this.value.endsWith('0')) {
+        } else if (time_limited == 0) {
             date_selector.style.display = 'none';
         }
-    });
+        let nameInputBox = document.getElementById('nameInputBox');
+        if (isNameable == 1) {
+            nameInputBox.style.display = 'block';
+        } else if (isNameable == 0) {
+            nameInputBox.style.display = 'none';
+        }
+    })
 
+    $('input[type=radio][name=group_type]').change(function() {
+        let type_info = this.value.split('-');
+        const isNameable = type_info[3];
+        const time_limited = type_info[2];
+        let date_selector = document.getElementById('dateSelector');
+        if (time_limited == 1) {
+            date_selector.style.display = 'block';
+        } else if (time_limited == 0) {
+            date_selector.style.display = 'none';
+        }
+        let nameInputBox = document.getElementById('nameInputBox');
+        if (isNameable == 1) {
+            nameInputBox.style.display = 'block';
+        } else if (isNameable == 0) {
+            nameInputBox.style.display = 'none';
+        }
+    });
 
     $("input[type=text][name=group_name]").keyup(function() {
         $group_name = $(this).val();
@@ -109,6 +143,7 @@ if (count($pending_requests) > 0) {
         if ($group_name.includes(" ")) {
             $span.text("Invalid name. Make sure to not have spaces.");
             $span.show();
+            $("#requestGroupButton").prop("disabled", true);
         } else {
             $span.hide();
             $.ajax({url: "<?php echo $CONFIG["site"]["prefix"] ?>/panel/ajax/check_group_name.php?group_name="
@@ -118,10 +153,13 @@ if (count($pending_requests) > 0) {
                     $span.show();
                 } else {
                     $span.hide();
+                    $("#requestGroupButton").prop("disabled", false);
                 }
-            }});   
+            }});
+            $("#requestGroupButton").prop("disabled", true);
         }
     });
+
 </script>
 
 <?php

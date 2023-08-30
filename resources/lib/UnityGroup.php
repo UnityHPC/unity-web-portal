@@ -650,6 +650,7 @@ class UnityGroup
             $role_obj = array();
             $role_obj["slug"] = $role;
             $role_obj["display_name"] = $this->SQL->getRoleName($role);
+            $role_obj["priority"] = $this->SQL->getPriority($role);
             array_push($out, $role_obj);
         }
 
@@ -751,5 +752,15 @@ class UnityGroup
         }, $admins);
 
         return $admins;
+    }
+
+    public function getRolePriority($user) {
+        $user_role = $this->SQL->getRole($user, $this->getGroupUID());
+        return $this->SQL->getPriority($user_role);
+    }
+
+    public function getMemberRole($user) {
+        $user_role = $this->SQL->getRole($user, $this->getGroupUID());
+        return $user_role;
     }
 }

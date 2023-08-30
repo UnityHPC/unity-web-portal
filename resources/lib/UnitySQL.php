@@ -551,6 +551,7 @@ class UnitySQL
                 "name" => $row['name'],
                 "time_limited" => $row['time_limited'],
                 "prefix" => $row['prefix'],
+                "isNameable" => $row['isNameable'],
             );
         }
 

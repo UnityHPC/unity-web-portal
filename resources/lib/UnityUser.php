@@ -572,7 +572,7 @@ class UnityUser
      */
     public function isPI()
     {
-        $groups = $this->getGroups(true);
+        $groups = $this->getGroups();
         foreach ($groups as $group) {
             if ($group->getGroupType() == "pi") {
                 $admins = $group->getGroupAdmins();
@@ -649,7 +649,7 @@ class UnityUser
             }
         }
 
-        if ($ignorecache) {
+        if (!$ignorecache) {
             $this->REDIS->setCache($this->getUID(), "groups", $cache_arr);
         }
 

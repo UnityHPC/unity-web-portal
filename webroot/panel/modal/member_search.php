@@ -11,7 +11,7 @@ if (empty($search_query)) {
 }
 
 $group = new UnityGroup($_GET["group"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-$assocs = $group->getUsersWithoutRole();
+$assocs = $group->getGroupMembers();
 
 $MAX_COUNT = 10;  // Max results of PI search
 
