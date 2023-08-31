@@ -235,16 +235,16 @@ if ($USER->hasPermission($_GET["group"], "unity.admin") || $OPERATOR->isAdmin())
     });
 
     <?php
-        // This is here to re-open the modal if there are errors
-        if (isset($modalErrors) && is_array($modalErrors) && count($modalErrors) > 0) {
-            $errorHTML = "";
-            foreach ($modalErrors as $error) {
-                $errorHTML .= "<span>$error</span>";
-            }
-            $roleName = $_COOKIE["roleName"];
-            echo "openModal(" . $roleName . ", '" .
-            $CONFIG["site"]["prefix"] . "/panel/modal/assign_role.php', '" . $errorHTML . "');";
+    // This is here to re-open the modal if there are errors
+    if (isset($modalErrors) && is_array($modalErrors) && count($modalErrors) > 0) {
+        $errorHTML = "";
+        foreach ($modalErrors as $error) {
+            $errorHTML .= "<span>$error</span>";
         }
+        $roleName = $_COOKIE["roleName"];
+        echo "openModal(" . $roleName . ", '" .
+        $CONFIG["site"]["prefix"] . "/panel/modal/assign_role.php', '" . $errorHTML . "');";
+    }
     ?>
 </script>
 

@@ -754,12 +754,14 @@ class UnityGroup
         return $admins;
     }
 
-    public function getRolePriority($user) {
+    public function getRolePriority($user) 
+    {
         $user_role = $this->SQL->getRole($user, $this->getGroupUID());
         return $this->SQL->getPriority($user_role);
     }
 
-    public function getMemberRole($user) {
+    public function getMemberRole($user) 
+    {
         $user_role = $this->SQL->getRole($user, $this->getGroupUID());
         return $user_role;
     }

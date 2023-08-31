@@ -506,7 +506,7 @@ class UnitySQL
         }
 
         $users = array_diff($curr_users_uids, $users);
-        
+
         return $users;
     }
 
@@ -558,7 +558,7 @@ class UnitySQL
         return $types;
     }
 
-    public function addGroupRequest($requestor, $group_type, $group_name, $start_date, $end_date) 
+    public function addGroupRequest($requestor, $group_type, $group_name, $start_date, $end_date)
     {
         $stmt = $this->conn->prepare(
             "INSERT INTO " . self::TABLE_GROUP_REQUESTS . " (requestor, group_type, group_name, start_date, end_date) 

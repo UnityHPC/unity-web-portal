@@ -76,7 +76,7 @@ if (count($requests) > 0) {
 echo "<h5>Current Groups</h5>";
 
 // if ($USER->isPI() && count($groups) == 1) {
-//     echo "You are only a member of your own PI group. 
+//     echo "You are only a member of your own PI group.
 //     Navigate to the <a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>my users</a> page to see your group.";
 // }
 
@@ -89,7 +89,6 @@ if (count($groups) == 0) {
 echo "<table>";
 
 foreach ($groups as $group) {
-
     echo "<tr class='expandable viewGroup'>";
     echo "<td> <div class='type' style='border-radius: 5px; padding-left: 10px; color: white; padding-right: 10px; text-align: center; font-size: 12px; background-color: " . $group->getGroupTypeColor() . ";'>" . $group->getGroupTypeName() . "</div></td>";
     echo "<td>" . $group->getGroupUID() . "</td>";

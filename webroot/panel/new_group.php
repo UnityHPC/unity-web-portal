@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $group_type_prefix = $group_type_values[0];
     $group_type_slug = $group_type_values[1];
     $group_type_time_limited = $group_type_values[2];
-    
+
     if ($group_type_time_limited == 1) {
         $group_start_date = $_POST['group_start_date'];
         $group_end_date = $_POST['group_end_date'];

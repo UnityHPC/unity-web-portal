@@ -140,9 +140,8 @@ include $LOC_HEADER;
     usort($accounts, function ($a, $b) {
         return strcmp($a->getGroupUID(), $b->getGroupUID());
     });
-    
-    foreach ($accounts as $pi_group) {
 
+    foreach ($accounts as $pi_group) {
         echo "<tr>";
         echo "<td> <div class='type' style='width: 20px; margin: auto; border-radius: 5px; padding-left: 10px; padding-right: 10px; text-align: center; font-size: 12px; color: white; background-color: " . '#800000' . ";'>" . getTypeNameFromSlug($pi_group->getGroupType()) . "</div></td>";
         echo "<td style='text-align: center'>" . $pi_group->getGroupName() . "</td>";
