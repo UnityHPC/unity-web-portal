@@ -86,7 +86,8 @@ include $LOC_HEADER;
     $requests = $SQL->getGroupRequests();
     $types = $USER->getRequestableGroupTypes();
 
-    function getTypeNameFromSlug($slug) {
+    function getTypeNameFromSlug($slug) 
+    {
         global $types;
         foreach ($types as $type) {
             if ($type['slug'] == $slug) {

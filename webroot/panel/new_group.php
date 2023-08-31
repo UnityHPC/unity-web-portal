@@ -10,7 +10,8 @@ require_once $LOC_HEADER;
 $types = $USER->getRequestableGroupTypes();
 $pending_requests = $USER->getPendingGroupRequests();
 
-function getTypeNameFromSlug($slug) {
+function getTypeNameFromSlug($slug) 
+{
     global $types;
     foreach ($types as $type) {
         if ($type['slug'] == $slug) {
