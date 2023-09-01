@@ -60,7 +60,11 @@ if (count($requests) > 0) {
     foreach ($requests as $request) {
         $requested_account = new UnityGroup($request["group_name"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
         echo "<tr class='pending_request'>";
-        echo "<td> <div class='type' style='border-radius: 5px; padding-left: 10px; color: white; padding-right: 10px; text-align: center; font-size: 12px; background-color: " . $requested_account->getGroupTypeColor() . ";'>" . $requested_account->getGroupTypeName() . "</div></td>";
+        echo "<td> 
+        <div class='type' style='border-radius: 5px; padding-left: 10px;
+        color: white; padding-right: 10px; text-align: center; font-size: 12px;
+        background-color: " . $requested_account->getGroupTypeColor() . ";'>" 
+        . $requested_account->getGroupTypeName() . "</div> </td>";
         echo "<td>" . $requested_account->getGroupUID() . "</td>";
         echo "<td>" . date("jS F, Y", strtotime($request['requested_on'])) . "</td>";
         echo "<td></td>";
@@ -90,7 +94,10 @@ echo "<table>";
 
 foreach ($groups as $group) {
     echo "<tr class='expandable viewGroup'>";
-    echo "<td> <div class='type' style='border-radius: 5px; padding-left: 10px; color: white; padding-right: 10px; text-align: center; font-size: 12px; background-color: " . $group->getGroupTypeColor() . ";'>" . $group->getGroupTypeName() . "</div></td>";
+    echo "<td> 
+    <div class='type' style='border-radius: 5px; padding-left: 10px; 
+    color: white; padding-right: 10px; text-align: center; font-size: 12px; 
+    background-color: " . $group->getGroupTypeColor() . ";'>" . $group->getGroupTypeName() . "</div></td>";
     echo "<td>" . $group->getGroupUID() . "</td>";
     echo "<td> <button class='viewGroup'>View Group</button> </td>";
     echo "<input type='hidden' name='pi' value='" . $group->getGroupUID() . "'>";

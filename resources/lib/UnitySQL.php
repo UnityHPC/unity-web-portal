@@ -661,11 +661,11 @@ class UnitySQL
     public function addJoinRequest($requestor, $group_uid)
     {
         $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_GROUP_JOIN_REQUESTS . " (requestor, group_name) VALUES (:requestor, :group_name)"
+            "INSERT INTO " . self::TABLE_GROUP_JOIN_REQUESTS . " (requestor, group_name) VALUES (:requestor, :group)"
         );
 
         $stmt->bindParam(":requestor", $requestor);
-        $stmt->bindParam(":group_name", $group_uid);
+        $stmt->bindParam(":group", $group_uid);
 
         $stmt->execute();
     }
@@ -737,7 +737,6 @@ class UnitySQL
 
     public function assignSuperRole($user, $group_type, $group_uid)
     {
-        // get the defSuperRole property from the group types table using the $group as slug. then assign the user that role.
         $stmt = $this->conn->prepare(
             "SELECT defSuperRole FROM " . self::TABLE_GROUP_TYPES . " WHERE slug=:slug"
         );
@@ -753,7 +752,6 @@ class UnitySQL
 
     public function getGroupAdmins($group_uid, $users)
     {
-        // first get the roles of all users. then check if they have the unity.admin permission. if they do, add them to the admins array.
         $admins = array();
         foreach ($users as $user) {
             $role = $this->getRole($user, $group_uid);

@@ -19,4 +19,7 @@ $this->Subject = "Group Member Request";
 </p>
 
 <p>You can approve or deny this user on the 
-    <a href="<?php echo $this->MSG_LINKREF; ?>/panel/view_group.php?group=<?php echo $data["group"] ?>">group details</a> page</p>
+    <a href="<?php echo $this->MSG_LINKREF; ?>/panel/view_group.php?group=<?php echo $data["group"] ?>">
+    group details
+    </a> page
+</p>
