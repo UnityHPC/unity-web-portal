@@ -39,7 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     switch ($_POST["form_name"]) {
         case "assignRoleForm":
-            if (!$unityPerms->checkGrantRole($USER->getUID(), $group->getGroupUID(), $_COOKIE['role']) 
+            if (
+                !$unityPerms->checkGrantRole($USER->getUID(), $group->getGroupUID(), $_COOKIE['role'])
                 && !$OPERATOR->isAdmin()
             ) {
                 echo '<script>alert("You do not have permission to assign this role to the user")</script>';
@@ -48,7 +49,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
             $operated_on_role = $group->getMemberRole($operated_on->getUID());
-            if (!$unityPerms->checkRevokeRole($USER->getUID(), $group->getGroupUID(), $operated_on_role) 
+            if (
+                !$unityPerms->checkRevokeRole($USER->getUID(), $group->getGroupUID(), $operated_on_role)
                 && !$OPERATOR->isAdmin()
             ) {
                 echo "<script>alert('You do not have permission to revoke this role')</script>";
@@ -111,7 +113,8 @@ if (count($requests) + count($assocs) == 1) {
     "/panel/groups.php'>My Groups</a> page.</p>";
 }
 
-if (count($requests) > 0 && ($USER->hasPermission($_GET["group"], "unity.approve_user") 
+if (
+    count($requests) > 0 && ($USER->hasPermission($_GET["group"], "unity.approve_user")
     || $USER->hasPermission($_GET["group"], "unity.deny_user") || $OPERATOR->isAdmin())
 ) {
     echo "<h5>Pending Requests</h5>";
@@ -185,7 +188,8 @@ foreach ($assocs as $assoc) {
 
 echo "</table>";
 
-if ($USER->hasPermission($_GET["group"], "unity.grant_role") 
+if (
+    $USER->hasPermission($_GET["group"], "unity.grant_role")
     || $USER->hasPermission($_GET["group"], "unity.revoke_role") || $OPERATOR->isAdmin()
 ) {
     $roles = $group->getAvailableRoles();
@@ -214,7 +218,11 @@ if ($USER->hasPermission($_GET["group"], "unity.grant_role")
         }
         echo "<div>";
         echo "<input type='hidden' name='role' value='" . $role["slug"] . "'>";
-        if ($user_priority >= $role["priority"] && ($USER->hasPermission($_GET["group"], "unity.grant_role") || $OPERATOR->isAdmin())) {
+        if (
+            $user_priority >= $role["priority"]
+            && ($USER->hasPermission($_GET["group"], "unity.grant_role")
+            || $OPERATOR->isAdmin())
+        ) {
             echo "<button type='button' class='plusBtn btnAssignRole' style='font-size: 13px; padding-top: 7px; 
             padding-bottom: 7px; margin-bottom: 20px;'>Assign " . $role["display_name"] . " Role</button>";
         };

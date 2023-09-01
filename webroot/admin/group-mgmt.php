@@ -86,23 +86,14 @@ include $LOC_HEADER;
     $requests = $SQL->getGroupRequests();
     $types = $USER->getRequestableGroupTypes();
 
-    function getTypeNameFromSlug($slug)
-    {
-        global $types;
-        foreach ($types as $type) {
-            if ($type['slug'] == $slug) {
-                return $type['name'];
-            }
-        }
-        return null;
-    }
-
     foreach ($requests as $request) {
         $request_user = new UnityUser($request["requestor"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
 
         echo "<tr>";
         echo "<td>" . $request['group_name'] . "</td>";
-        echo "<td> <div class='type' style='border-radius: 5px; padding-left: 10px; padding-right: 10px; text-align: center; font-size: 12px; color: white; background-color: " . '#800000' . ";'>" . getTypeNameFromSlug($request['group_type']) . "</div></td>";
+        echo "<td> <div class='type' style='border-radius: 5px; padding-left: 10px; padding-right: 10px; 
+        text-align: center; font-size: 12px; color: white; background-color: " . '#800000' . ";'>" .
+         $USER->getTypeNameFromSlug($types, $request['group_type']) . "</div></td>";
         echo "<td>" . $request_user->getFirstname() . " " . $request_user->getLastname() . "</td>";
         echo "<td>" . $request_user->getUID() . "</td>";
         echo "<td><a href='mailto:" . $request_user->getMail() . "'>" . $request_user->getMail() . "</a></td>";
@@ -144,7 +135,9 @@ include $LOC_HEADER;
 
     foreach ($accounts as $pi_group) {
         echo "<tr>";
-        echo "<td> <div class='type' style='width: 20px; margin: auto; border-radius: 5px; padding-left: 10px; padding-right: 10px; text-align: center; font-size: 12px; color: white; background-color: " . '#800000' . ";'>" . getTypeNameFromSlug($pi_group->getGroupType()) . "</div></td>";
+        echo "<td> <div class='type' style='width: 20px; margin: auto; border-radius: 5px; padding-left: 10px; 
+        padding-right: 10px; text-align: center; font-size: 12px; color: white; background-color: " .
+         '#800000' . ";'>" . $USER->getTypeNameFromSlug($types, $pi_group->getGroupType()) . "</div></td>";
         echo "<td style='text-align: center'>" . $pi_group->getGroupName() . "</td>";
         echo "<td style='text-align: center'>";
         echo

@@ -16,7 +16,8 @@ require_once "../../../resources/autoload.php";  // Load required libs
     $("input[type=text][name=operated_on_uid]").keyup(function() {
         var searchWrapper = $("div.searchWrapper");
         $.ajax({
-            url: "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/member_search.php?search=" + $(this).val() + "&group=<?php echo $_GET["group"]; ?>",
+            url: "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/member_search.php?search=" +
+             $(this).val() + "&group=<?php echo $_GET["group"]; ?>",
             success: function(result) {
                 searchWrapper.html(result);
 
