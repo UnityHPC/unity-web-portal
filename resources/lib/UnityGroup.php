@@ -71,8 +71,10 @@ class UnityGroup
     // Portal-facing methods, these are the methods called by scripts in webroot
     //
 
-    public function requestGroup($requestor_uid, $group_type, $group_name, $send_mail_to_admins, $start_date, $end_date, $send_mail = true)
-    {
+    public function requestGroup($requestor_uid, 
+        $group_type, $group_name, $send_mail_to_admins, 
+        $start_date, $end_date, $send_mail = true
+    ) {
         // check for edge cases...
         if ($this->exists()) {
             return;
