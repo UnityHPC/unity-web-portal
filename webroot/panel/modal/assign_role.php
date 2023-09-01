@@ -3,7 +3,8 @@
 require_once "../../../resources/autoload.php";  // Load required libs
 ?>
 
-<form id="assignRoleForm" method="POST" action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/view_group.php?group=<?php echo $_GET["group"]; ?>">
+<form id="assignRoleForm" method="POST" 
+action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/view_group.php?group=<?php echo $_GET["group"]; ?>">
     <input type="hidden" name="form_name" value="assignRoleForm">
     <div style="position: relative;">
         <input type="text" id="member_search" name="operated_on_uid" placeholder="Search Members by UID" required>
