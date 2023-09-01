@@ -63,7 +63,7 @@ if (count($requests) > 0) {
         echo "<td> 
         <div class='type' style='border-radius: 5px; padding-left: 10px;
         color: white; padding-right: 10px; text-align: center; font-size: 12px;
-        background-color: " . $requested_account->getGroupTypeColor() . ";'>" 
+        background-color: " . $requested_account->getGroupTypeColor() . ";'>"
         . $requested_account->getGroupTypeName() . "</div> </td>";
         echo "<td>" . $requested_account->getGroupUID() . "</td>";
         echo "<td>" . date("jS F, Y", strtotime($request['requested_on'])) . "</td>";

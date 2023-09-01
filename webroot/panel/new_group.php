@@ -10,17 +10,6 @@ require_once $LOC_HEADER;
 $types = $USER->getRequestableGroupTypes();
 $pending_requests = $USER->getPendingGroupRequests();
 
-function getTypeNameFromSlug($slug)
-{
-    global $types;
-    foreach ($types as $type) {
-        if ($type['slug'] == $slug) {
-            return $type['name'];
-        }
-    }
-    return null;
-}
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $group_type_value = $_POST['group_type'];
     $group_type_values = explode("-", $group_type_value);
@@ -45,7 +34,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $group_uid = $group_type_prefix . $group_name;
 
     $new_group = new UnityGroup($group_uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-    $new_group->requestGroup($USER->getUID(), $group_type_slug, $group_name, $SEND_PIMESG_TO_ADMINS, $group_start_date, $group_end_date);
+    $new_group->requestGroup(
+        $USER->getUID(),
+        $group_type_slug,
+        $group_name,
+        $SEND_PIMESG_TO_ADMINS,
+        $group_start_date,
+        $group_end_date
+    );
     header("Refresh:0");
 }
 
@@ -55,6 +51,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <hr>
 
 <?php
+function getTypeNameFromSlug($slug)
+{
+    global $types;
+    foreach ($types as $type) {
+        if ($type['slug'] == $slug) {
+            return $type['name'];
+        }
+    }
+    return null;
+}
+
 if (count($pending_requests) > 0) {
     echo "<h5>Pending Requests</h5>";
     echo "<table>";
@@ -62,7 +69,9 @@ if (count($pending_requests) > 0) {
         $requested_owner = $USER;
         echo "<tr class='pending_request'>";
         echo "<td> 
-        <div class='type' style='border-radius: 5px; padding-left: 10px; color: white; padding-right: 10px; text-align: center; font-size: 12px; background-color: #800000'>" . getTypeNameFromSlug($request['group_type']) . "</div></td>";
+        <div class='type' style='border-radius: 5px; padding-left: 10px; color: white; 
+        padding-right: 10px; text-align: center; font-size: 12px; 
+        background-color: #800000'>" . getTypeNameFromSlug($request['group_type']) . "</div></td>";
         echo "<td>" . $request['group_name'] . "</td>";
         echo "<td>" . date("jS F, Y", strtotime($request['requested_on'])) . "</td>";
         echo "<td></td>";
@@ -81,9 +90,15 @@ if (count($pending_requests) > 0) {
         <?php
         foreach ($types as $type) {
             if ($type['slug'] == 'pi') {
-                echo "<label><input type='radio' name='group_type' value='" . $type["prefix"] . "-" . $type["slug"] . "-" . $type['time_limited'] . "-" . $type['isNameable'] . "' checked> " . $type["name"] . "</label><br>";
+                echo "<label><input type='radio' name='group_type' 
+                value='" . $type["prefix"] . "-" . $type["slug"] . "-" . 
+                $type['time_limited'] . "-" . $type['isNameable'] . "' checked> " . 
+                $type["name"] . "</label><br>";
             } else {
-                echo "<label><input type='radio' name='group_type' value='" . $type["prefix"] . "-" . $type["slug"] . "-" . $type['time_limited'] . "-" . $type['isNameable'] . "'> " . $type["name"] . "</label><br>";
+                echo "<label><input type='radio' name='group_type' 
+                value='" . $type["prefix"] . "-" . $type["slug"] . "-" . 
+                $type['time_limited'] . "-" . $type['isNameable'] . "'> " 
+                . $type["name"] . "</label><br>";
             }
         }
         ?>
@@ -95,7 +110,8 @@ if (count($pending_requests) > 0) {
         <div id="nameInputBox" style="margin-top: 10px;">
             <strong>Name (cannot have spaces)&nbsp;&nbsp;</strong><br>
             <input type="text" name="group_name" placeholder="name_of_the_group" style="margin-bottom: 15px"><br>
-            <div style="color: red; font-size: 0.8rem; display: none; margin-top: -10px;" id="groupNameError">(Name not available. Try something different)/(Invalid name. Make sure to not have spaces)<br></div>
+            <div style="color: red; font-size: 0.8rem; display: none; margin-top: -10px;" 
+            id="groupNameError">Error Occured<br></div>
         </div>
     </div>
     <input style='margin-top: 10px;' type='submit' value='Request Group' id="requestGroupButton">
