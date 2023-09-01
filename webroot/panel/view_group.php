@@ -39,14 +39,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     switch ($_POST["form_name"]) {
         case "assignRoleForm":
-            if (!$unityPerms->checkGrantRole($USER->getUID(), $group->getGroupUID(), $_COOKIE['role']) && !$OPERATOR->isAdmin()) {
+            if (!$unityPerms->checkGrantRole($USER->getUID(), $group->getGroupUID(), $_COOKIE['role']) 
+                && !$OPERATOR->isAdmin()
+            ) {
                 echo '<script>alert("You do not have permission to assign this role to the user")</script>';
                 array_push($modalErrors, "You do not have permission to assign this role to the user");
                 header("Refresh:0");
             }
 
             $operated_on_role = $group->getMemberRole($operated_on->getUID());
-            if (!$unityPerms->checkRevokeRole($USER->getUID(), $group->getGroupUID(), $operated_on_role) && !$OPERATOR->isAdmin()) {
+            if (!$unityPerms->checkRevokeRole($USER->getUID(), $group->getGroupUID(), $operated_on_role) 
+                && !$OPERATOR->isAdmin()
+            ) {
                 echo "<script>alert('You do not have permission to revoke this role')</script>";
                 array_push($modalErrors, "You do not have permission to revoke this role");
                 header("Refresh:0");
@@ -54,7 +58,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (empty($modalErrors)) {
                     $group->revokeRole($operated_on->getUID(), $operated_on_role);
                     $group->assignRole($operated_on, $_COOKIE['role']);
-                    UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/view_group.php?group=" . $group->getGroupUID());
+                    UnitySite::redirect(
+                        $CONFIG["site"]["prefix"] . "/panel/view_group.php?group=" . $group->getGroupUID()
+                    );
                 }
             }
             break;
@@ -105,7 +111,9 @@ if (count($requests) + count($assocs) == 1) {
     "/panel/groups.php'>My Groups</a> page.</p>";
 }
 
-if (count($requests) > 0 && ($USER->hasPermission($_GET["group"], "unity.approve_user") || $USER->hasPermission($_GET["group"], "unity.deny_user") || $OPERATOR->isAdmin())) {
+if (count($requests) > 0 && ($USER->hasPermission($_GET["group"], "unity.approve_user") 
+    || $USER->hasPermission($_GET["group"], "unity.deny_user") || $OPERATOR->isAdmin())
+) {
     echo "<h5>Pending Requests</h5>";
     echo "<table>";
 
@@ -169,13 +177,17 @@ foreach ($assocs as $assoc) {
     echo "<td>" . $assoc->getFirstname() . " " . $assoc->getLastname() . "</td>";
     echo "<td>" . $assoc->getUID() . "</td>";
     echo "<td><a href='mailto:" . $assoc->getMail() . "'>" . $assoc->getMail() . "</a></td>";
-    echo "<td> <div class='type' style='border-radius: 10px; padding-left: 10px; padding-right: 10px; text-align: center; font-size: 12px; color: white; background-color: " . '#800000' . ";'>" . $assoc->getGroupRoles($_GET["group"])[0] . "</div></td>";
+    echo "<td><div class='type' style='border-radius: 10px; padding-left: 10px; padding-right: 10px; text-align: center;
+    font-size: 12px; color: white; background-color: " . '#800000' . ";'>" .
+    $assoc->getGroupRoles($_GET["group"])[0] . "</div></td>";
     echo "</tr>";
 }
 
 echo "</table>";
 
-if ($USER->hasPermission($_GET["group"], "unity.grant_role") || $USER->hasPermission($_GET["group"], "unity.revoke_role") || $OPERATOR->isAdmin()) {
+if ($USER->hasPermission($_GET["group"], "unity.grant_role") 
+    || $USER->hasPermission($_GET["group"], "unity.revoke_role") || $OPERATOR->isAdmin()
+) {
     $roles = $group->getAvailableRoles();
     $user_priority = $group->getRolePriority($USER->getUID());
     usort($roles, function ($a, $b) {
@@ -203,7 +215,8 @@ if ($USER->hasPermission($_GET["group"], "unity.grant_role") || $USER->hasPermis
         echo "<div>";
         echo "<input type='hidden' name='role' value='" . $role["slug"] . "'>";
         if ($user_priority >= $role["priority"] && ($USER->hasPermission($_GET["group"], "unity.grant_role") || $OPERATOR->isAdmin())) {
-            echo "<button type='button' class='plusBtn btnAssignRole' style='font-size: 13px; padding-top: 7px; padding-bottom: 7px; margin-bottom: 20px;'>Assign " . $role["display_name"] . " Role</button>";
+            echo "<button type='button' class='plusBtn btnAssignRole' style='font-size: 13px; padding-top: 7px; 
+            padding-bottom: 7px; margin-bottom: 20px;'>Assign " . $role["display_name"] . " Role</button>";
         };
         echo "</div>";
     }
@@ -231,7 +244,10 @@ if ($USER->hasPermission($_GET["group"], "unity.admin") || $OPERATOR->isAdmin())
         document.cookie = "role=" + role;
         const roleName = $(this).text();
         document.cookie = "roleName=" + $(this).text();
-        openModal(roleName, "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/assign_role.php?group=<?php echo $_GET["group"]; ?>");
+        openModal(
+            roleName, 
+            "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/assign_role.php?group=<?php echo $_GET["group"]; ?>"
+        );
     });
 
     <?php
