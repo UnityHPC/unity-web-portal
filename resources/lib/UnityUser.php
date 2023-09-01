@@ -766,4 +766,14 @@ class UnityUser
     {
         return $this->SQL->getPendingGroupRequests($this->getUID());
     }
+
+    public function getTypeNameFromSlug($types, $slug)
+    {
+        foreach ($types as $type) {
+            if ($type['slug'] == $slug) {
+                return $type['name'];
+            }
+        }
+        return null;
+    }
 }

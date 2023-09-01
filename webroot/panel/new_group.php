@@ -51,17 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <hr>
 
 <?php
-function getTypeNameFromSlug($slug)
-{
-    global $types;
-    foreach ($types as $type) {
-        if ($type['slug'] == $slug) {
-            return $type['name'];
-        }
-    }
-    return null;
-}
-
 if (count($pending_requests) > 0) {
     echo "<h5>Pending Requests</h5>";
     echo "<table>";
@@ -71,7 +60,7 @@ if (count($pending_requests) > 0) {
         echo "<td> 
         <div class='type' style='border-radius: 5px; padding-left: 10px; color: white; 
         padding-right: 10px; text-align: center; font-size: 12px; 
-        background-color: #800000'>" . getTypeNameFromSlug($request['group_type']) . "</div></td>";
+        background-color: #800000'>" . $USER->getTypeNameFromSlug($types, $request['group_type']) . "</div></td>";
         echo "<td>" . $request['group_name'] . "</td>";
         echo "<td>" . date("jS F, Y", strtotime($request['requested_on'])) . "</td>";
         echo "<td></td>";
@@ -91,13 +80,13 @@ if (count($pending_requests) > 0) {
         foreach ($types as $type) {
             if ($type['slug'] == 'pi') {
                 echo "<label><input type='radio' name='group_type' 
-                value='" . $type["prefix"] . "-" . $type["slug"] . "-" . 
-                $type['time_limited'] . "-" . $type['isNameable'] . "' checked> " . 
+                value='" . $type["prefix"] . "-" . $type["slug"] . "-" .
+                $type['time_limited'] . "-" . $type['isNameable'] . "' checked> " .
                 $type["name"] . "</label><br>";
             } else {
                 echo "<label><input type='radio' name='group_type' 
-                value='" . $type["prefix"] . "-" . $type["slug"] . "-" . 
-                $type['time_limited'] . "-" . $type['isNameable'] . "'> " 
+                value='" . $type["prefix"] . "-" . $type["slug"] . "-" .
+                $type['time_limited'] . "-" . $type['isNameable'] . "'> "
                 . $type["name"] . "</label><br>";
             }
         }
