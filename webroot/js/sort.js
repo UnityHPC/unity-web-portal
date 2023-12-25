@@ -4,7 +4,7 @@ table.querySelectorAll("td").forEach(function(td) {
         if (td.parentElement.classList.contains("key") && td.innerHTML != "Actions") {
             if (e.target.classList.contains("filter")) {
                 updateQueryStringParameter(window.location.href, "filter", e.target.parentElement.id);
-                updateFilterInputs();
+                updateFilterInput();
             } else {
                 var column = td.cellIndex;
                 var rows = Array.from(table.querySelectorAll("tr:nth-child(n+2)"));
