@@ -27,15 +27,11 @@ include $LOC_HEADER;
 
 <table class="searchable longTable sortable filterable">
     <tr class="key">
-        <input type="text"style="margin-right:5px;"placeholder="Filter by Name..."class="filterSearch"id="name-filter">
+        <input type="text" style="margin-right:5px;" placeholder="Filter by..." id="common-filter" class="filterSearch">
         <td id="name"><span class="filter">⫧ </span>Name</td>
-        <input type="text" placeholder="Filter by UID..." class="filterSearch" id="uid-filter">
         <td id="uid"><span class="filter">⫧ </span>UID</td>
-        <input type="text" placeholder="Filter by Org..." class="filterSearch" id="org-filter">
         <td id="org"><span class="filter">⫧ </span>Org</td>
-        <input type="text" placeholder="Filter by Mail..." class="filterSearch" id="mail-filter">
         <td id="mail"><span class="filter">⫧ </span>Mail</td>
-        <input type="text" placeholder="Filter by Groups..." class="filterSearch" id="groups-filter">
         <td id="groups"><span class="filter">⫧ </span>Groups</td>
         <td>Actions</td>
     </tr>

@@ -21,48 +21,52 @@ function updateQueryStringParameter(uri, key, value) {
     window.history.pushState("object or string", "Title", currentURL.href);
 }
 
-function updateFilterInputs() {
-    $(".filterSearch").each(function() {
-        if (getQueryVariable("filter") != false) {
-            if (this.id == getQueryVariable("filter")+"-filter") {
-                if ($(this).css("display") == "inline-block" && $(this).css("visibility") == "visible" && getQueryVariable("value") == false) {
-                    updateQueryStringParameter(window.location.href, "filter", "");
-                    updateQueryStringParameter(window.location.href, "value", "");
-                    updateFilterInputs();
-                    return;
-                }
-                $(this).css("display", "inline-block");
-                $(this).css("visibility", "visible");
-            } else {
-                $(this).css("display", "inline-block");
-                $(this).css("visibility", "hidden");
-            }
+function updateFilterInput() {
+    const commonFilterInputBox = document.querySelector(".filterSearch");
+    commonFilterInputBox.style.display = "none";
+    commonFilterInputBox.style.visibility = "hidden";
+    commonFilterInputBox.value = "";
+
+    var filter = getQueryVariable("filter");
+    if (filter) {
+        commonFilterInputBox.style.display = "inline-block";
+        commonFilterInputBox.style.visibility = "visible";
+
+        if (filter == "uid") {
+            commonFilterInputBox.placeholder = "Filter by " + filter.toUpperCase() + '...';
         } else {
-            $(this).css("display", "none");
+            commonFilterInputBox.placeholder = "Filter by " + filter.charAt(0).toUpperCase() + filter.slice(1) + '...';
         }
 
         if (getQueryVariable("value") != false) {
-            $(this).val(getQueryVariable("value"));
-        } else {
-            $(this).val("");
+            commonFilterInputBox.value = getQueryVariable("value");
+            filterRows();
         }
 
-        $(this).on("keyup", function(e) {
-            updateQueryStringParameter(window.location.href, "value", $(this).val());
+        commonFilterInputBox.addEventListener("keyup", function(e) {
+            updateQueryStringParameter(window.location.href, "value", e.target.value);
             filterRows();
-        })        
-    });
+        });
+    }
 }
 
-updateFilterInputs();
+updateFilterInput();
 
 var filters = document.querySelectorAll("span.filter");
 filters.forEach(function(filter) {
     filter.addEventListener("click", function(e) {
         e.preventDefault();
         e.stopPropagation();
-        updateQueryStringParameter(window.location.href, "filter", e.target.parentElement.id);
-        updateFilterInputs();
+        if (e.target.parentElement.id != getQueryVariable("filter")) {
+            updateQueryStringParameter(window.location.href, "filter", e.target.parentElement.id);
+            updateQueryStringParameter(window.location.href, "value", "");
+            filterRows();
+        } else {
+            updateQueryStringParameter(window.location.href, "filter", "");
+            updateQueryStringParameter(window.location.href, "value", "");
+            filterRows();
+        }
+        updateFilterInput();
     });
 });
 
