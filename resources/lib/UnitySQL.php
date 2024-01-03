@@ -807,23 +807,24 @@ class UnitySQL
         return $row['slug'] ?? null;
     }
 
-    public function setGroupAttributes($group_id, $user) 
+    public function setGroupAttributes($group_id, $user)
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_GROUP_REQUESTS . " WHERE requestor=:requestor"
         );
 
         $stmt->bindParam(":requestor", $user);
-        
+
         $stmt->execute();
 
         $row = $stmt->fetch();
         $group_type = $row['group_type'];
         $start_date = $row['start_date'];
         $end_date = $row['end_date'];
-        
+
         $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_GROUP_ATTRIBUTES . " (group_id, group_type, start_date, end_date) VALUES (:group_id, :group_type, :start_date, :end_date)"
+            "INSERT INTO " . self::TABLE_GROUP_ATTRIBUTES . " (group_id, group_type, start_date, end_date)
+            VALUES (:group_id, :group_type, :start_date, :end_date)"
         );
 
         $stmt->bindParam(":group_id", $group_id);
@@ -834,7 +835,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function modifyGroupAttribute($group_id, $attribute, $value) 
+    public function modifyGroupAttribute($group_id, $attribute, $value)
     {
         $stmt = $this->conn->prepare(
             "UPDATE " . self::TABLE_GROUP_ATTRIBUTES . " SET " . $attribute . "=:value WHERE group_id=:group_id"
