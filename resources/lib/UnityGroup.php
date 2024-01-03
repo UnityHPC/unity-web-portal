@@ -171,6 +171,9 @@ class UnityGroup
         // initialize ldap objects, if this fails the script will crash, but nothing will persistently break
         $this->init();
 
+        // add the group to the group attributes table
+        $this->SQL->setGroupAttributes($this->getGroupUID(), $requestor->getUID());
+
         // remove the request from the sql table
         // this will silently fail if the request doesn't exist
         $this->SQL->removeGroupRequest($requestor->getUID());

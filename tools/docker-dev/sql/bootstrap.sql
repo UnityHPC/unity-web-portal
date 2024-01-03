@@ -246,6 +246,20 @@ CREATE TABLE `sso_log` (
   `org` varchar(300) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- ------------------------------------------------------
+
+--
+-- Table structure for table `groupAttributes`
+--
+
+CREATE TABLE `groupAttributes` (
+  `id` int(11) NOT NULL,
+  `group_type` varchar(1000) NOT NULL,
+  `group_id` varchar(1000) NOT NULL,
+  `start_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Indexes for dumped tables
 --
@@ -329,6 +343,12 @@ ALTER TABLE `sso_log`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `groupAttributes`
+--
+ALTER TABLE `groupAttributes`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -409,6 +429,12 @@ ALTER TABLE `sitevars`
 --
 ALTER TABLE `sso_log`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `groupAttributes`
+--
+ALTER TABLE `groupAttributes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

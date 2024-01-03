@@ -19,6 +19,7 @@ class UnitySQL
     private const TABLE_GROUP_ROLE_ASSIGNMENTS = "groupRoleAssignments";
     private const TABLE_GROUP_REQUESTS = "groupRequests";
     private const TABLE_GROUP_JOIN_REQUESTS = "groupJoinRequests";
+    private const TABLE_GROUP_ATTRIBUTES = "groupAttributes";
 
 
     private const REQUEST_ADMIN = "admin";
@@ -804,5 +805,59 @@ class UnitySQL
         $row = $stmt->fetch();
 
         return $row['slug'] ?? null;
+    }
+
+    public function setGroupAttributes($group_id, $user) 
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_REQUESTS . " WHERE requestor=:requestor"
+        );
+
+        $stmt->bindParam(":requestor", $user);
+        
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+        $group_type = $row['group_type'];
+        $start_date = $row['start_date'];
+        $end_date = $row['end_date'];
+        
+        $stmt = $this->conn->prepare(
+            "INSERT INTO " . self::TABLE_GROUP_ATTRIBUTES . " (group_id, group_type, start_date, end_date) VALUES (:group_id, :group_type, :start_date, :end_date)"
+        );
+
+        $stmt->bindParam(":group_id", $group_id);
+        $stmt->bindParam(":group_type", $group_type);
+        $stmt->bindParam(":start_date", $start_date);
+        $stmt->bindParam(":end_date", $end_date);
+
+        $stmt->execute();
+    }
+
+    public function modifyGroupAttribute($group_id, $attribute, $value) 
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE " . self::TABLE_GROUP_ATTRIBUTES . " SET " . $attribute . "=:value WHERE group_id=:group_id"
+        );
+
+        $stmt->bindParam(":group_id", $group_id);
+        $stmt->bindParam(":value", $value);
+
+        $stmt->execute();
+    }
+
+    public function getGroupAttribute($group_id, $attribute)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM " . self::TABLE_GROUP_ATTRIBUTES . " WHERE `group_id`=:group_id"
+        );
+
+        $stmt->bindParam(":group_id", $group_id);
+
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+
+        return $row[$attribute] ?? null;
     }
 }
