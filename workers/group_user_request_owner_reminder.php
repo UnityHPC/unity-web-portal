@@ -1,5 +1,5 @@
 <?php
-/*
+/**
 Emails PIs that have oustanding member requests once a week for 4 weeks.
 Removes the request after 34 days have passed.
 */
@@ -16,10 +16,9 @@ foreach ($accounts as $pi_group) {
         $request_date = strtotime($request[1]);
         $daysDifference = ($today - $request_date) / (60 * 60 * 24);
         if ($daysDifference > 34) {
-            # No interface in UnityGroup for this, so use DB directly
+            // No interface in UnityGroup for this, so use DB directly
             $SQL->removeRequest($request[0], $pi_group->getPIUID());
-        }
-        elseif ($daysDifference > 1 && $daysDifference % 7 == 0) {
+        } elseif ($daysDifference > 1 && $daysDifference % 7 == 0) {
             $new_user = $request[0];
             // send email to PI
             $MAILER->sendMail(
