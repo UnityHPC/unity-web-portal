@@ -88,8 +88,8 @@ CREATE TABLE `groupRequests` (
   `group_name` varchar(1000) NOT NULL,
   `requestor` varchar(1000) NOT NULL,
   `requested_on` timestamp NOT NULL DEFAULT current_timestamp(),
-  `start_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+  `start_date` timestamp NULL DEFAULT NULL,
+  `end_date` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -256,8 +256,8 @@ CREATE TABLE `groupAttributes` (
   `id` int(11) NOT NULL,
   `group_type` varchar(1000) NOT NULL,
   `group_id` varchar(1000) NOT NULL,
-  `start_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+  `start_date` timestamp NULL DEFAULT NULL,
+  `end_date` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

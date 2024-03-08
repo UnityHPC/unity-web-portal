@@ -98,7 +98,7 @@ if (count($pending_requests) > 0) {
         </div>
         <div id="nameInputBox" style="margin-top: 10px;">
             <strong>Name (cannot have spaces)&nbsp;&nbsp;</strong><br>
-            <input type="text" name="group_name" placeholder="name_of_the_group" style="margin-bottom: 15px"><br>
+            <input type="text" name="group_name" placeholder="Name of Group" style="margin-bottom: 15px"><br>
             <div style="color: red; font-size: 0.8rem; display: none; margin-top: -10px;" 
             id="groupNameError">Error Occured<br></div>
         </div>
@@ -131,14 +131,18 @@ if (count($pending_requests) > 0) {
         const time_limited = type_info[2];
         let date_selector = document.getElementById('dateSelector');
         if (time_limited == 1) {
+            $("#requestGroupButton").prop("disabled", true);
             date_selector.style.display = 'block';
         } else if (time_limited == 0) {
+            $("#requestGroupButton").prop("disabled", false);
             date_selector.style.display = 'none';
         }
         let nameInputBox = document.getElementById('nameInputBox');
         if (isNameable == 1) {
+            $("#requestGroupButton").prop("disabled", true);
             nameInputBox.style.display = 'block';
         } else if (isNameable == 0) {
+            $("#requestGroupButton").prop("disabled", false);
             nameInputBox.style.display = 'none';
         }
     });
@@ -146,23 +150,27 @@ if (count($pending_requests) > 0) {
     $("input[type=text][name=group_name]").keyup(function() {
         $group_name = $(this).val();
         $span = $("#groupNameError");
-        if ($group_name.includes(" ")) {
-            $span.text("Invalid name. Make sure to not have spaces.");
-            $span.show();
+        if ($group_name.length == 0) {
             $("#requestGroupButton").prop("disabled", true);
         } else {
-            $span.hide();
-            $.ajax({url: "<?php echo $CONFIG["site"]["prefix"] ?>/panel/ajax/check_group_name.php?group_name="
-            + $(this).val(), success: function(result) {
-                if (result == "not available") {
-                    $span.text("Name not available. Try something different.");
-                    $span.show();
-                } else {
-                    $span.hide();
-                    $("#requestGroupButton").prop("disabled", false);
-                }
-            }});
-            $("#requestGroupButton").prop("disabled", true);
+            if ($group_name.includes(" ")) {
+                $span.text("Invalid name. Make sure to not have spaces.");
+                $span.show();
+                $("#requestGroupButton").prop("disabled", true);
+            } else {
+                $span.hide();
+                $.ajax({url: "<?php echo $CONFIG["site"]["prefix"] ?>/panel/ajax/check_group_name.php?group_name="
+                + $(this).val(), success: function(result) {
+                    if (result == "not available") {
+                        $span.text("Name not available. Try something different.");
+                        $span.show();
+                        $("#requestGroupButton").prop("disabled", true);
+                    } else {
+                        $span.hide();
+                        $("#requestGroupButton").prop("disabled", false);
+                    }
+                }});
+            }
         }
     });
 

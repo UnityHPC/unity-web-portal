@@ -77,6 +77,7 @@ include $LOC_HEADER;
         <td>Group Type</td>
         <td>Requestor</td>
         <td>Requestor UID</td>
+        <td>Start/End Dates</td>
         <td>Mail</td>
         <td>Requested On</td>
         <td>Actions</td>
@@ -96,6 +97,11 @@ include $LOC_HEADER;
          $USER->getTypeNameFromSlug($types, $request['group_type']) . "</div></td>";
         echo "<td>" . $request_user->getFirstname() . " " . $request_user->getLastname() . "</td>";
         echo "<td>" . $request_user->getUID() . "</td>";
+        if ($request['start_date'] == null || $request['end_date'] == null) {
+            echo "<td></td>";
+        } else {
+            echo "<td>" . date("jS F, Y", strtotime($request['start_date'])) . " - " . date("jS F, Y", strtotime($request['end_date'])) . "</td>";
+        }
         echo "<td><a href='mailto:" . $request_user->getMail() . "'>" . $request_user->getMail() . "</a></td>";
         echo "<td>" . date("jS F, Y", strtotime($request['requested_on'])) . "</td>";
         echo "<td>";

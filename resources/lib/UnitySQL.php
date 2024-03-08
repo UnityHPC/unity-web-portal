@@ -613,7 +613,9 @@ class UnitySQL
                 "requestor" => $row['requestor'],
                 "group_type" => $row['group_type'],
                 "group_name" => $row['group_name'],
-                "requested_on" => $row['requested_on']
+                "requested_on" => $row['requested_on'],
+                "start_date" => $row['start_date'],
+                "end_date" => $row['end_date']
             );
         }
 
