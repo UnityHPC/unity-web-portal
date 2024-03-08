@@ -23,15 +23,16 @@ include $LOC_HEADER;
 <h1>User Management</h1>
 <hr>
 
-<input type="text" id="tableSearch" placeholder="Search...">
+<!-- <input type="text" id="tableSearch" placeholder="Search..."> -->
 
-<table class="searchable longTable">
+<table class="searchable longTable sortable filterable">
     <tr class="key">
-        <td>Name</td>
-        <td>UID</td>
-        <td>Org</td>
-        <td>Mail</td>
-        <td>Groups</td>
+        <input type="text" style="margin-right:5px;" placeholder="Filter by..." id="common-filter" class="filterSearch">
+        <td id="name"><span class="filter">⫧ </span>Name</td>
+        <td id="uid"><span class="filter">⫧ </span>UID</td>
+        <td id="org"><span class="filter">⫧ </span>Org</td>
+        <td id="mail"><span class="filter">⫧ </span>Mail</td>
+        <td id="groups"><span class="filter">⫧ </span>Groups</td>
         <td>Actions</td>
     </tr>
 
