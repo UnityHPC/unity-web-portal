@@ -31,8 +31,8 @@ $CONFIG = UnityConfig::getConfig(__DIR__ . "/../defaults", __DIR__ . "/../deploy
 
 // Creates REDIS service
 $REDIS = new UnityRedis(
-    $CONFIG["redis"]["host"],
-    $CONFIG["redis"]["port"]
+    $CONFIG["redis"]["host"] ?? "",
+    $CONFIG["redis"]["port"] ?? ""
 );
 
 // Creates LDAP service
