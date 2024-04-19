@@ -100,7 +100,7 @@ include $LOC_HEADER;
         if ($request['start_date'] == null || $request['end_date'] == null) {
             echo "<td></td>";
         } else {
-            echo "<td>" . date("jS F, Y", strtotime($request['start_date'])) . " - " 
+            echo "<td>" . date("jS F, Y", strtotime($request['start_date'])) . " - "
             . date("jS F, Y", strtotime($request['end_date'])) . "</td>";
         }
         echo "<td><a href='mailto:" . $request_user->getMail() . "'>" . $request_user->getMail() . "</a></td>";
