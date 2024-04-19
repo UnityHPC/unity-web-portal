@@ -9,12 +9,3 @@ $days = 30;
 $daysAgo = date('Y-m-d', strtotime("-$days days"));
 
 $SQL->getConn()->prepare("DELETE FROM audit_log WHERE timestamp < :daysAgo")->execute(['daysAgo' => $daysAgo]);
-
-
-
-
-
-
-
-
-
