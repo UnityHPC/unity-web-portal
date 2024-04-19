@@ -16,6 +16,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $group_type_prefix = $group_type_values[0];
     $group_type_slug = $group_type_values[1];
     $group_type_time_limited = $group_type_values[2];
+    $group_type_isNameable = $group_type_values[3];
+    $group_type_exclusiveOwner = $group_type_values[4];
+
+    if ($group_type_exclusiveOwner == 1) {
+        $groups = $USER->getGroups(true);
+        $group_names = array();
+        foreach ($groups as $group) {
+            array_push($group_names, $group->getGroupUID());
+        }
+        $uid = $USER->getUID();
+        foreach ($group_names as $group_name) {
+            if (strpos($group_name, $uid) !== false) {
+                $group_type = explode("_", $group_name)[0];
+                if ($group_type == $group_type_slug) {
+                    echo "<script>alert('You already have a group of this type.');</script>";
+                    // refresh page
+                    header("Refresh:0");
+                }
+            }
+        }
+    }
 
     if ($group_type_time_limited == 1) {
         $group_start_date = $_POST['group_start_date'];
@@ -81,12 +102,12 @@ if (count($pending_requests) > 0) {
             if ($type['slug'] == 'pi') {
                 echo "<label><input type='radio' name='group_type' 
                 value='" . $type["prefix"] . "-" . $type["slug"] . "-" .
-                $type['time_limited'] . "-" . $type['isNameable'] . "' checked> " .
+                $type['time_limited'] . "-" . $type['isNameable'] . "-" . $type['exclusiveOwner'] . "' checked> " .
                 $type["name"] . "</label><br>";
             } else {
                 echo "<label><input type='radio' name='group_type' 
                 value='" . $type["prefix"] . "-" . $type["slug"] . "-" .
-                $type['time_limited'] . "-" . $type['isNameable'] . "'> "
+                $type['time_limited'] . "-" . $type['isNameable'] . "-" . $type['exclusiveOwner'] . "'> "
                 . $type["name"] . "</label><br>";
             }
         }

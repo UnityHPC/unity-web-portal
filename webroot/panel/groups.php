@@ -39,6 +39,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Remove PI form
                 $pi_account->removeUser($USER);
                 break;
+            case "cancelRequest":
+                $SQL->cancelJoinRequest($USER->getUID(), $_POST["group_uid_to_cancel"]);
+                break;
         }
     }
 }
@@ -67,6 +70,15 @@ if (count($requests) > 0) {
         . $requested_account->getGroupTypeName() . "</div> </td>";
         echo "<td>" . $requested_account->getGroupUID() . "</td>";
         echo "<td>" . date("jS F, Y", strtotime($request['requested_on'])) . "</td>";
+        echo "<td>";
+        echo
+        "<form action='' method='POST'>
+        <input type='hidden' name='form_name' value='cancelRequest'>
+        <input type='hidden' name='group_uid_to_cancel' value='" . $requested_account->getGroupUID() . "'>
+        <input type='submit' name='action' value='Cancel Request' 
+        onclick='return confirm(\"Are you sure you want to cancel the request?\");'>
+        </form>";
+        echo "</td>";
         echo "<td></td>";
         echo "</tr>";
     }

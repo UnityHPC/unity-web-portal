@@ -147,17 +147,18 @@ CREATE TABLE `groupTypes` (
   `can_request` tinyint(1) NOT NULL,
   `prefix` varchar(1000) NOT NULL,
   `defSuperRole` varchar(1000) NOT NULL,
-  `isNameable` tinyint(1) NOT NULL
+  `isNameable` tinyint(1) NOT NULL,
+  `exclusiveOwner` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `groupTypes`
 --
 
-INSERT INTO `groupTypes` (`id`, `name`, `slug`, `color`, `time_limited`, `def_role`, `av_roles`, `can_request`, `prefix`, `defSuperRole`, 'isNameable') VALUES
-(1, 'PI', 'pi', '#800000', 0, 'member', 'member,owner,member_approve,ta', 1, 'pi_', 'owner', 0),
-(2, 'Class', 'class', '#800000', 1, 'member', 'member,owner,member_approve,ta', 1, 'class_', 'owner', 1),
-(3, 'Center', 'center', '#800000', 0, 'member', 'member,owner,member_approve,ta', 1, 'center_', 'owner', 1);
+INSERT INTO `groupTypes` (`id`, `name`, `slug`, `color`, `time_limited`, `def_role`, `av_roles`, `can_request`, `prefix`, `defSuperRole`, `isNameable`, `exclusiveOwner`) VALUES
+(1, 'PI', 'pi', '#800000', 0, 'member', 'member,owner,member_approve,ta', 1, 'pi_', 'owner', 0, 1),
+(2, 'Class', 'class', '#800000', 1, 'member', 'member,owner,member_approve,ta', 1, 'class_', 'owner', 1, 0),
+(3, 'Center', 'center', '#800000', 0, 'member', 'member,owner,member_approve,ta', 1, 'center_', 'owner', 1, 0);
 
 -- --------------------------------------------------------
 

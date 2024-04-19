@@ -553,6 +553,7 @@ class UnitySQL
                 "time_limited" => $row['time_limited'],
                 "prefix" => $row['prefix'],
                 "isNameable" => $row['isNameable'],
+                "exclusiveOwner" => $row['exclusiveOwner']
             );
         }
 
@@ -736,6 +737,18 @@ class UnitySQL
         }
 
         return $requests;
+    }
+
+    public function cancelJoinRequest($user, $group_uid)
+    {
+        $stmt = $this->conn->prepare(
+            "DELETE FROM " . self::TABLE_GROUP_JOIN_REQUESTS . " WHERE requestor=:requestor AND group_name=:group_name"
+        );
+
+        $stmt->bindParam(":requestor", $user);
+        $stmt->bindParam(":group_name", $group_uid);
+
+        $stmt->execute();
     }
 
     public function assignSuperRole($user, $group_type, $group_uid)
