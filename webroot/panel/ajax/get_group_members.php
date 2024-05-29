@@ -4,11 +4,11 @@ require_once "../../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityGroup;
 
-if (!isset($_GET["pi_uid"])) {
-    die("PI UID not set");
+if (!isset($_GET["group_uid"])) {
+    die("Group UID not set");
 }
 
-$group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+$group = new UnityGroup($_GET["group_uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
 $members = $group->getGroupMembers();
 
 // verify that the user querying is actually in the group

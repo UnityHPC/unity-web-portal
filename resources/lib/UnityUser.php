@@ -572,13 +572,24 @@ class UnityUser
      */
     public function isPI()
     {
-        return $this->getPIGroup()->exists();
+        $groups = $this->getGroups();
+        foreach ($groups as $group) {
+            if ($group->getGroupType() == "pi") {
+                $admins = $group->getGroupAdmins();
+                foreach ($admins as $admin) {
+                    if ($admin->getUID() == $this->getUID()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
-    public function getPIGroup()
+    public function getGroup()
     {
         return new UnityGroup(
-            UnityGroup::getPIUIDfromUID($this->uid),
+            UnityGroup::getGroupUIDfromUID($this->uid),
             $this->LDAP,
             $this->SQL,
             $this->MAILER,
@@ -627,14 +638,14 @@ class UnityUser
             }
         }
 
-        $all_pi_groups = $this->LDAP->getAllPIGroups($this->SQL, $this->MAILER, $this->REDIS, $ignorecache);
+        $all_unity_groups = $this->LDAP->getAllUnityGroups($this->SQL, $this->MAILER, $this->REDIS, $ignorecache);
 
         $cache_arr = array();
 
-        foreach ($all_pi_groups as $pi_group) {
-            if (in_array($this->getUID(), $pi_group->getGroupMemberUIDs())) {
-                array_push($out, $pi_group);
-                array_push($cache_arr, $pi_group->getPIUID());
+        foreach ($all_unity_groups as $unity_group) {
+            if (in_array($this->getUID(), $unity_group->getGroupMemberUIDs())) {
+                array_push($out, $unity_group);
+                array_push($cache_arr, $unity_group->getGroupUID());
             }
         }
 
@@ -695,5 +706,74 @@ class UnityUser
         }
 
         return in_array($uid, $group_checked->getGroupMemberUIDs());
+    }
+
+    public function getGroupRoles($group_uid)
+    {
+        $uid = $this->getUID();
+        $roles = $this->SQL->getGroupRoleAssignments($uid, $group_uid);
+        if (count($roles) == 0) {
+            $group_type = $this->LDAP->getGroupType($group_uid);
+            $def_role = $this->SQL->getDefaultRole($group_type);
+            $roles = array($def_role);
+        }
+
+        $role_names = array();
+        foreach ($roles as $role) {
+            $role_names[] = $this->SQL->getRoleName($role);
+        }
+
+        return $role_names;
+    }
+
+    public function hasPermission($group_uid, $permission)
+    {
+        $uid = $this->getUID();
+        $roles = $this->SQL->getGroupRoleAssignments($uid, $group_uid);
+        if (count($roles) == 0) {
+            $group_type = $this->LDAP->getGroupType($group_uid);
+            $def_role = $this->SQL->getDefaultRole($group_type);
+            $roles = array($def_role);
+        }
+
+        $permissions = $this->SQL->getPermissions($roles);
+        $bool = in_array($permission, $permissions);
+
+        if (in_array("unity.admin", $permissions) || in_array("unity.admin_no_grant", $permissions)) {
+            $bool = true;
+        }
+
+        return $bool;
+    }
+
+    public function getRequestableGroupTypes()
+    {
+        return $this->SQL->getGroupTypes();
+    }
+
+    public function checkGroupName($group_name)
+    {
+        $groups =  $this->LDAP->getAllUnityGroups($this->SQL, $this->MAILER, $this->REDIS, $this->WEBHOOK);
+        foreach ($groups as $group) {
+            if ($group->getGroupName() == $group_name) {
+                return "not available";
+            }
+        }
+        return "available";
+    }
+
+    public function getPendingGroupRequests()
+    {
+        return $this->SQL->getPendingGroupRequests($this->getUID());
+    }
+
+    public function getTypeNameFromSlug($types, $slug)
+    {
+        foreach ($types as $type) {
+            if ($type['slug'] == $slug) {
+                return $type['name'];
+            }
+        }
+        return null;
     }
 }

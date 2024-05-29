@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 13, 2023 at 02:29 AM
+-- Generation Time: Aug 15, 2023 at 04:28 PM
 -- Server version: 10.3.38-MariaDB-0ubuntu0.20.04.1
 -- PHP Version: 7.4.3-4ubuntu2.19
 
@@ -88,8 +88,8 @@ CREATE TABLE `groupRequests` (
   `group_name` varchar(1000) NOT NULL,
   `requestor` varchar(1000) NOT NULL,
   `requested_on` timestamp NOT NULL DEFAULT current_timestamp(),
-  `start_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+  `start_date` timestamp NULL DEFAULT NULL,
+  `end_date` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -120,6 +120,16 @@ CREATE TABLE `groupRoles` (
   `perms` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `groupRoles`
+--
+
+INSERT INTO `groupRoles` (`id`, `name`, `slug`, `priority`, `color`, `perms`) VALUES
+(1, 'Member Approve', 'member_approve', 50, '', 'unity.approve_user,unity.deny_user'),
+(2, 'Member', 'member', 20, '', ''),
+(3, 'Owner', 'owner', 100, '', 'unity.admin'),
+(4, 'TA', 'ta', 60, '', 'unity.grant_role,unity.revoke_role');
+
 -- --------------------------------------------------------
 
 --
@@ -134,8 +144,21 @@ CREATE TABLE `groupTypes` (
   `time_limited` tinyint(1) NOT NULL,
   `def_role` varchar(1000) NOT NULL,
   `av_roles` varchar(1000) NOT NULL,
-  `can_request` tinyint(1) NOT NULL
+  `can_request` tinyint(1) NOT NULL,
+  `prefix` varchar(1000) NOT NULL,
+  `defSuperRole` varchar(1000) NOT NULL,
+  `isNameable` tinyint(1) NOT NULL,
+  `exclusiveOwner` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `groupTypes`
+--
+
+INSERT INTO `groupTypes` (`id`, `name`, `slug`, `color`, `time_limited`, `def_role`, `av_roles`, `can_request`, `prefix`, `defSuperRole`, `isNameable`, `exclusiveOwner`) VALUES
+(1, 'PI', 'pi', '#800000', 0, 'member', 'member,owner,member_approve,ta', 1, 'pi_', 'owner', 0, 1),
+(2, 'Class', 'class', '#800000', 1, 'member', 'member,owner,member_approve,ta', 1, 'class_', 'owner', 1, 0),
+(3, 'Center', 'center', '#800000', 0, 'member', 'member,owner,member_approve,ta', 1, 'center_', 'owner', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -203,6 +226,12 @@ CREATE TABLE `sitevars` (
   `value` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `sitevars`
+--
+INSERT INTO `sitevars` (`id`, `name`, `value`) VALUES
+(1, 'MAX_GID', 50000);
+
 -- --------------------------------------------------------
 
 --
@@ -216,6 +245,20 @@ CREATE TABLE `sso_log` (
   `lastname` varchar(300) NOT NULL,
   `mail` varchar(300) NOT NULL,
   `org` varchar(300) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ------------------------------------------------------
+
+--
+-- Table structure for table `groupAttributes`
+--
+
+CREATE TABLE `groupAttributes` (
+  `id` int(11) NOT NULL,
+  `group_type` varchar(1000) NOT NULL,
+  `group_id` varchar(1000) NOT NULL,
+  `start_date` timestamp NULL DEFAULT NULL,
+  `end_date` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -301,6 +344,12 @@ ALTER TABLE `sso_log`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `groupAttributes`
+--
+ALTER TABLE `groupAttributes`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -381,6 +430,12 @@ ALTER TABLE `sitevars`
 --
 ALTER TABLE `sso_log`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `groupAttributes`
+--
+ALTER TABLE `groupAttributes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

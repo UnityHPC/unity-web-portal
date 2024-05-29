@@ -39,6 +39,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Remove PI form
                 $pi_account->removeUser($USER);
                 break;
+            case "cancelRequest":
+                $SQL->cancelJoinRequest($USER->getUID(), $_POST["group_uid_to_cancel"]);
+                break;
         }
     }
 }
@@ -46,32 +49,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 include $LOC_HEADER;
 ?>
 
-<h1>My Principal Investigators</h1>
+<h1>My Groups</h1>
 <hr>
 
 <?php
-$groups = $USER->getGroups();
+$groups = $USER->getGroups(true);
 
-$requests = $SQL->getRequestsByUser($USER->getUID());
+$requests = $SQL->getJoinRequestsByUser($USER->getUID());
 
-$req_filtered = array();
-foreach ($requests as $request) {
-    if ($request["request_for"] != "admin") {  // put this in config later for gypsum
-        array_push($req_filtered, $request);
-    }
-}
-
-if (count($req_filtered) > 0) {
+if (count($requests) > 0) {
     echo "<h5>Pending Requests</h5>";
     echo "<table>";
-    foreach ($req_filtered as $request) {
-        $requested_account = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-        $requested_owner = $requested_account->getOwner();
+    foreach ($requests as $request) {
+        $requested_account = new UnityGroup($request["group_name"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
         echo "<tr class='pending_request'>";
-        echo "<td>" . $requested_owner->getFirstname() . " " . $requested_owner->getLastname() . "</td>";
-        echo "<td>" . $requested_account->getPIUID() . "</td>";
-        echo "<td><a href='mailto:" . $requested_owner->getMail() . "'>" . $requested_owner->getMail() . "</a></td>";
-        echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
+        echo "<td> 
+        <div class='type' style='border-radius: 5px; padding-left: 10px;
+        color: white; padding-right: 10px; text-align: center; font-size: 12px;
+        background-color: " . $requested_account->getGroupTypeColor() . ";'>"
+        . $requested_account->getGroupTypeName() . "</div> </td>";
+        echo "<td>" . $requested_account->getGroupUID() . "</td>";
+        echo "<td>" . date("jS F, Y", strtotime($request['requested_on'])) . "</td>";
+        echo "<td>";
+        echo
+        "<form action='' method='POST'>
+        <input type='hidden' name='form_name' value='cancelRequest'>
+        <input type='hidden' name='group_uid_to_cancel' value='" . $requested_account->getGroupUID() . "'>
+        <input type='submit' name='action' value='Cancel Request' 
+        onclick='return confirm(\"Are you sure you want to cancel the request?\");'>
+        </form>";
+        echo "</td>";
         echo "<td></td>";
         echo "</tr>";
     }
@@ -84,13 +91,13 @@ if (count($req_filtered) > 0) {
 
 echo "<h5>Current Groups</h5>";
 
-if ($USER->isPI() && count($groups) == 1) {
-    echo "You are only a member of your own PI group. 
-    Navigate to the <a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>my users</a> page to see your group.";
-}
+// if ($USER->isPI() && count($groups) == 1) {
+//     echo "You are only a member of your own PI group.
+//     Navigate to the <a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>my users</a> page to see your group.";
+// }
 
 if (count($groups) == 0) {
-    echo "You are not a member of any groups. Request to join a PI using the button below, 
+    echo "You are not a member of any groups. Request to join a group using the button below, 
     or request your own PI account on the <a href='" . $CONFIG["site"]["prefix"] .
     "/panel/account.php'>account settings</a> page";
 }
@@ -98,25 +105,21 @@ if (count($groups) == 0) {
 echo "<table>";
 
 foreach ($groups as $group) {
-    $owner = $group->getOwner();
-
-    if ($USER->getUID() == $owner->getUID()) {
-        continue;
-    }
-
-    echo "<tr class='expandable'>";
-    echo
-    "<td>
-    <button class='btnExpand'>&#9654;</button>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
-    echo "<td>" . $group->getPIUID() . "</td>";
-    echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
+    echo "<tr class='expandable viewGroup'>";
+    echo "<td> 
+    <div class='type' style='border-radius: 5px; padding-left: 10px; 
+    color: white; padding-right: 10px; text-align: center; font-size: 12px; 
+    background-color: " . $group->getGroupTypeColor() . ";'>" . $group->getGroupTypeName() . "</div></td>";
+    echo "<td>" . $group->getGroupUID() . "</td>";
+    echo "<td> <button class='viewGroup'>View Group</button> </td>";
+    echo "<input type='hidden' name='pi' value='" . $group->getGroupUID() . "'>";
     echo
     "<td>
     <form action='' method='POST' 
-    onsubmit='return confirm(\"Are you sure you want to leave the PI group " . $group->getPIUID() . "?\")'>
+    onsubmit='return confirm(\"Are you sure you want to leave the group " . $group->getGroupUID() . "?\")'>
     <input type='hidden' name='form_name' value='removePIForm'>
-    <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
-    <input type='submit' value='Leave Group'>
+    <input type='hidden' name='pi' value='" . $group->getGroupUID() . "'>
+    <input type='submit' value='Leave Group' style='margin-top: 0px'>
     </form>
     </td>";
     echo "</tr>";
@@ -128,7 +131,7 @@ echo "</table>";
 <?php
 if ($SQL->accDeletionRequestExists($USER->getUID())) {
     echo "<button type='button' class='plusBtn btnAddPI' disabled>&#43;</button>";
-    echo "<label>You cannot join a PI while you have requested account deletion.</label>";
+    echo "<label>You cannot join a group while you have requested account deletion.</label>";
 } else {
     echo "<button type='button' class='plusBtn btnAddPI'>&#43;</button>";
 }
@@ -145,6 +148,16 @@ if ($SQL->accDeletionRequestExists($USER->getUID())) {
         openModal("Add New PI", "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/new_pi.php");
     });
 
+    $("button.viewGroup").click(function() {
+        $pi = $(this).parent().parent().find("input[name='pi']").val();
+        window.location.href = "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/view_group.php?group=" + $pi;
+    });
+
+    $("tr.viewGroup").click(function() {
+        $pi = $(this).find("input[name='pi']").val();
+        window.location.href = "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/view_group.php?group=" + $pi;
+    });
+
     <?php
     // This is here to re-open the modal if there are errors
     if (isset($modalErrors) && is_array($modalErrors) && count($modalErrors) > 0) {
@@ -158,7 +171,7 @@ if ($SQL->accDeletionRequestExists($USER->getUID())) {
     }
     ?>
 
-    var ajax_url = "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/ajax/get_group_members.php?pi_uid=";
+    var ajax_url = "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/ajax/get_group_members.php?group_uid=";
 </script>
 
 <style>
