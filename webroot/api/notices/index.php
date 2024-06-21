@@ -4,21 +4,16 @@ header('Content-type: text/plain');
 
 require_once "../../../resources/autoload.php";
 
-if (isset($_GET["line_wrap"])) {
-    $CHAR_WRAP = $_GET["line_wrap"];
-} else {
-    $CHAR_WRAP = 80;
-}
-
 $notices = $SQL->getNotices();
+$jsonArray = [];
 foreach ($notices as $notice) {
-    echo $notice["title"] . "\r\n";
-    echo date('m-d-Y', strtotime($notice["date"])) . "\r\n";
-
-    $lineArr = explode("\r\n", wordwrap($notice["message"], $CHAR_WRAP));
-    foreach ($lineArr as $line) {
-        echo $line;
-    }
-
-    echo "\r\n\r\n";
+    $formattedNotice = [
+        "title" => $notice["title"],
+        "date" => date('m-d-Y', strtotime($notice["date"])),
+        "message" => $notice["message"]
+    ];
+    $jsonArray[] = $formattedNotice;
 }
+
+$jsonOutput = json_encode($jsonArray, JSON_PRETTY_PRINT);
+echo $jsonOutput;
