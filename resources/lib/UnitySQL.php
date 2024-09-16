@@ -134,7 +134,7 @@ class UnitySQL
         $stmt->bindParam(":date", $date);
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":message", $content);
-        $stmt->bindParam(":expiry", $expiry); 
+        $stmt->bindParam(":expiry", $expiry);
 
         $stmt->execute();
 
