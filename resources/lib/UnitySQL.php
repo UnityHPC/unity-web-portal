@@ -126,14 +126,15 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function addNotice($title, $date, $content, $operator)
+    public function addNotice($title, $date, $content, $expiry, $operator)
     {
         $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_NOTICES . " (date, title, message) VALUES (:date, :title, :message)"
+            "INSERT INTO " . self::TABLE_NOTICES . " (date, title, message, expiry) VALUES (:date, :title, :message, :expiry)"
         );
         $stmt->bindParam(":date", $date);
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":message", $content);
+        $stmt->bindParam(":expiry", $expiry); 
 
         $stmt->execute();
 
@@ -147,14 +148,15 @@ class UnitySQL
         );
     }
 
-    public function editNotice($id, $title, $date, $content)
+    public function editNotice($id, $title, $date, $content, $expiry)
     {
         $stmt = $this->conn->prepare(
-            "UPDATE " . self::TABLE_NOTICES . " SET date=:date, title=:title, message=:message WHERE id=:id"
+            "UPDATE " . self::TABLE_NOTICES . " SET date=:date, title=:title, message=:message, expiry=:expiry WHERE id=:id"
         );
         $stmt->bindParam(":date", $date);
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":message", $content);
+        $stmt->bindParam(":expiry", $expiry);
         $stmt->bindParam(":id", $id);
 
         $stmt->execute();
