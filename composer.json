@@ -3,6 +3,6 @@
         "psr/log": "1.1.4",
         "phpseclib/phpseclib": "3.0.16",
         "phpmailer/phpmailer": "6.6.4",
-        "hakasapl/phpopenldaper": "1.0.4"
+        "hakasapl/phpopenldaper": "1.0.5"
     }
 }
