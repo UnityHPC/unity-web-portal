@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST["form_name"])) {
         if (isset($_POST["pi"])) {
-            $pi_account = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+            $pi_account = new UnityGroup(trim($_POST["pi"]), $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             if (!$pi_account->exists()) {
                 // "\'"  instead of "'", otherwise it will close a single quote used to place the message
                 array_push($modalErrors, "This PI doesn\'t exist");
