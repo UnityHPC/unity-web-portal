@@ -22,17 +22,17 @@ Unity Web Portal is a PHP application built in top of MariaDB and LDAP which act
     1. Composer (`apt install composer` on Ubuntu)
     1. PHP Extensions
         1. `php-ldap`
-        2. `php-curl`
-        3. `php-redis`
-        4. `php-cli`
-        5. `php-mysql`
-        6. `php-pdo`
-2. Composer packages
+        1. `php-curl`
+        1. `php-redis`
+        1. `php-cli`
+        1. `php-mysql`
+        1. `php-pdo`
+1. Composer packages
     1. `cd` to this repository
-    2. Install packages `composer update`
-3. Setup config file `config/config.ini` according to your site deployment
-4. Setup branding file `config/branding/config.ini` according to your site deployment
-5. Point your web server's document root to `webroot` in this repo
+    1. Install packages `sudo composer update --no-plugins --no-scripts`
+1. Deployment:
+    1. configure the files in `deployment/` according to their respective `README.md` files
+1. Point your web server's document root to `webroot` in this repo
 
 The scope of this project ends at being responsible for the LDAP user database. We recommend production deployments to set up scripts which detect changes in LDAP and then perform further actions. For example, a script can be used to create Slurm scheduler accounting roles based on the LDAP information created by this website.
 
@@ -46,7 +46,7 @@ The update process is similar to the installation process:
 
 1. Clone the release and follow installation instructions 1 and 2 from above.
 2. Copy the following folders from the old installation to the new one:
-    1. `config`
+    1. `deployment`
     2. `webroot/assets/footer_logos`
 
 We recommend a deployment where each version of the portal is its own clone, then just change a symlink to point to the new version. This way a rollback is much easier.
