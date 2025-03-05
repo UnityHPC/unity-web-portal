@@ -9,11 +9,11 @@ if (!$USER->isAdmin()) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     switch ($_POST["form_type"]) {
         case "newNotice":
-            $SQL->addNotice($_POST["title"], $_POST["date"], $_POST["content"], $USER);
+            $SQL->addNotice($_POST["title"], $_POST["date"], $_POST["content"], $_POST["expiry"], $USER);
 
             break;
         case "editNotice":
-            $SQL->editNotice($_POST["id"], $_POST["title"], $_POST["date"], $_POST["content"]);
+            $SQL->editNotice($_POST["id"], $_POST["title"], $_POST["date"], $_POST["content"], $_POST["expiry"]);
 
             break;
         case "delNotice":
