@@ -54,6 +54,7 @@ foreach ($requests as $key => $request) {
         echo "<tr class='expanded $key'>";
     }
 
+    [$request, $timestamp] = $request;
     echo "<td>" . $request->getFirstname() . " " . $request->getLastname() . "</td>";
     echo "<td>" . $request->getUID() . "</td>";
     echo "<td><a href='mailto:" . $request->getMail() . "'>" . $request->getMail() . "</a></td>";
