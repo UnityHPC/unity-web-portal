@@ -31,7 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `account_deletion_requests` (
   `id` int(11) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
-  `uid` varchar(1000) NOT NULL
+  `uid` varchar(768) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -43,10 +43,10 @@ CREATE TABLE `account_deletion_requests` (
 CREATE TABLE `audit_log` (
   `id` int(11) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
-  `operator` varchar(1000) NOT NULL,
-  `operator_ip` varchar(1000) NOT NULL,
-  `action_type` varchar(1000) NOT NULL,
-  `recipient` varchar(1000) NOT NULL
+  `operator` varchar(768) NOT NULL,
+  `operator_ip` varchar(768) NOT NULL,
+  `action_type` varchar(768) NOT NULL,
+  `recipient` varchar(768) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -112,8 +112,8 @@ INSERT INTO `pages` (`id`, `page`, `content`) VALUES
 
 CREATE TABLE `requests` (
   `id` int(11) NOT NULL,
-  `request_for` varchar(1000) NOT NULL,
-  `uid` varchar(1000) NOT NULL,
+  `request_for` varchar(768) NOT NULL,
+  `uid` varchar(768) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -125,8 +125,8 @@ CREATE TABLE `requests` (
 
 CREATE TABLE `sitevars` (
   `id` int(11) NOT NULL,
-  `name` varchar(1000) NOT NULL,
-  `value` varchar(1000) NOT NULL
+  `name` varchar(768) NOT NULL,
+  `value` varchar(768) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
