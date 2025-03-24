@@ -186,7 +186,7 @@ INSERT INTO `pages` (`id`, `page`, `content`) VALUES
 
 CREATE TABLE `requests` (
   `id` int(11) NOT NULL,
-  `request_for` varchar(768) NOT NULL,
+  `request_for` varchar(131) NOT NULL,
   `uid` varchar(128) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
