@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   identity:
     hostname: identity
@@ -12,6 +11,8 @@ services:
       - "8000:80"
     volumes:
       - ../../:/var/www/unity-web-portal
+      # anonymous volume for PHP dependencies
+      - /var/www/unity-web-portal/vendor
   sql:
     hostname: sql
     build: sql
