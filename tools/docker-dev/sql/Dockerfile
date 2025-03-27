@@ -28,4 +28,4 @@ RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
 EXPOSE 80
 EXPOSE 3306
 
-CMD apache2ctl -D FOREGROUND & mysqld
+CMD apache2ctl -D FOREGROUND & mysqld --user=root
