@@ -572,7 +572,7 @@ class UnityUser
      */
     public function isPI()
     {
-        return $this->getPIGroup()->exists();
+        return @$this->getPIGroup()->exists();
     }
 
     public function getPIGroup()
