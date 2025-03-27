@@ -555,7 +555,7 @@ class UnityUser
     }
 
     /**
-     * Checks if the current account is an admin (in the sudo group)
+     * Checks if the current account is an admin (in the web_admins group)
      *
      * @return boolean true if admin, false if not
      */
