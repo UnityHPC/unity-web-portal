@@ -1,5 +1,6 @@
 FROM ubuntu:24.04
 
+# Web Server Setup
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     apache2 \
@@ -10,14 +11,7 @@ RUN apt-get update && apt-get install -y \
     php-ldap \
     php-pdo \
     php-redis \
-    php-cli \
-    composer
-
-# PHP dependencies
-COPY composer.json /var/www/unity-web-portal/composer.json
-RUN cd /var/www/unity-web-portal && composer update
-
-# Web Server Setup
+    php-cli
 COPY htpasswd /etc/apache2/.htpasswd
 COPY unity-apache.conf /etc/apache2/sites-available/unity.conf
 RUN a2dissite 000-default
