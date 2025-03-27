@@ -8,7 +8,7 @@ When submitting pull requests, the pull request should be made to the version yo
 
 ## Conventions
 
-This code base is currently using PHP version 7.4. All files are required to be linted with PSR-12 standard. This repository will automatically check PRs for linting compliance.
+This code base is currently using PHP version 8.3. All files are required to be linted with PSR-12 standard. This repository will automatically check PRs for linting compliance.
 
 ## Development Environment
 
