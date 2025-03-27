@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
     mariadb-server \
     mariadb-client \
     apache2 \
+    php8.3 \ # https://bugs.launchpad.net/bugs/2016016
     phpmyadmin
 RUN sed -i '/bind-address/c\bind-address = 0.0.0.0' /etc/mysql/mariadb.conf.d/50-server.cnf
 COPY bootstrap.sql /tmp/bootstrap.sql
