@@ -41,14 +41,6 @@ CREATE TABLE user_last_logins (
     `last_login` timestamp  NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `events` (
-  `id` int(11) NOT NULL,
-  `operator` varchar(128) NOT NULL,
-  `action` varchar(300) NOT NULL,
-  `entity` varchar(300) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 CREATE TABLE `groupJoinRequests` (
   `id` int(11) NOT NULL,
   `group_name` varchar(768) NOT NULL,
@@ -146,9 +138,6 @@ ALTER TABLE `audit_log`
 ALTER TABLE `user_last_logins`
   ADD PRIMARY KEY (`operator`);
 
-ALTER TABLE `events`
-  ADD PRIMARY KEY (`id`);
-
 ALTER TABLE `groupJoinRequests`
   ADD PRIMARY KEY (`id`);
 
@@ -183,9 +172,6 @@ ALTER TABLE `account_deletion_requests`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `audit_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `events`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `groupJoinRequests`
