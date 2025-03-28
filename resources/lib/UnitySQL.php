@@ -3,7 +3,6 @@
 namespace UnityWebPortal\lib;
 
 use Exception;
-
 use PDO;
 
 class UnitySQL
