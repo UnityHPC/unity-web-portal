@@ -11,9 +11,10 @@ objectclass: top
 objectclass: simpleSecurityObject
 objectclass: organizationalRole
 userPassword: {SSHA}d6WBSm5wjlNpMwil1KQY+Uo4o/vc6PnR
+description: for LDAP server administration purposes, not a valid login to web portal
 
-dn: cn=sudo,dc=unityhpc,dc=test
-cn: sudo
+dn: cn=web_admins,dc=unityhpc,dc=test
+cn: web_admins
 gidnumber: 500
 memberuid: user1_org1_test
 memberuid: user2_org1_test

@@ -1,15 +1,16 @@
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     mariadb-server \
     mariadb-client \
     apache2 \
+    php8.3 \
     phpmyadmin
 RUN sed -i '/bind-address/c\bind-address = 0.0.0.0' /etc/mysql/mariadb.conf.d/50-server.cnf
 COPY bootstrap.sql /tmp/bootstrap.sql
 
-RUN service mysql start; \
+RUN service mariadb start; \
     mariadb -e "CREATE DATABASE unity"; \
     mariadb -e "CREATE USER 'unity'@'%' IDENTIFIED BY 'password'"; \
     mariadb -e "GRANT ALL PRIVILEGES ON unity.* TO 'unity'@'%'"; \
@@ -28,4 +29,4 @@ RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
 EXPOSE 80
 EXPOSE 3306
 
-CMD apache2ctl -D FOREGROUND & mysqld
+CMD apache2ctl -D FOREGROUND & mysqld --user=root
