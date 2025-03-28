@@ -36,22 +36,10 @@ CREATE TABLE `audit_log` (
   `recipient` varchar(128) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `user_last_logins`
---
-
 CREATE TABLE user_last_logins (
     `operator` varchar(128) NOT NULL,
     `last_login` timestamp  NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `events`
---
 
 CREATE TABLE `events` (
   `id` int(11) NOT NULL,
@@ -155,15 +143,9 @@ ALTER TABLE `account_deletion_requests`
 ALTER TABLE `audit_log`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `user_last_logins`
---
 ALTER TABLE `user_last_logins`
   ADD PRIMARY KEY (`operator`);
 
---
--- Indexes for table `events`
---
 ALTER TABLE `events`
   ADD PRIMARY KEY (`id`);
 
