@@ -55,6 +55,7 @@ class UnityUser
         $ldapGroupEntry = $this->getLDAPGroup();
         $id = $this->LDAP->getUnassignedIDNum($this->getUID(), $this->SQL);
 
+        // TODO should this call UnityGroup->init() instead?
         if (!$ldapGroupEntry->exists()) {
             $ldapGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
             $ldapGroupEntry->setAttribute("gidnumber", strval($id));
