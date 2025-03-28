@@ -1,6 +1,7 @@
 <?php
 
 namespace UnityWebPortal\lib;
+use Exception;
 
 use PDO;
 
@@ -278,8 +279,14 @@ class UnitySQL
         $stmt->bindParam(":name", $name);
 
         $stmt->execute();
-
-        return $stmt->fetchAll()[0]['value'];
+        $result = $stmt->fetchAll();
+        if (empty($result)) {
+            throw new Exception("Site variable with name '$name' not found.");
+        }
+        if (count($result) > 1) {
+            throw new Exception("Multiple site variables found with name '$name'. Expected only one.");
+        }
+        return $result[0]['value'];
     }
 
     public function updateSiteVar($name, $value)
