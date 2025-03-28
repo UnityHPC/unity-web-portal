@@ -75,10 +75,11 @@ class UnityGroup
     {
         // check for edge cases...
         if ($this->exists()) {
-            return;
+            return; // FIXME requesting a group that already exists should be an error
         }
 
         // check if account deletion request already exists
+        // FIXME remove this. it's not harmful, making function noop is bad experience
         if ($this->SQL->accDeletionRequestExists($this->getOwner()->getUID())) {
             return;
         }
@@ -135,7 +136,7 @@ class UnityGroup
     {
         // check for edge cases...
         if ($this->exists()) {
-            return;
+            return; // FIXME creating a group that already exists should be an error
         }
 
         // check if owner exists
@@ -177,7 +178,7 @@ class UnityGroup
         $this->SQL->removeRequest($this->getOwner()->getUID());
 
         if ($this->exists()) {
-            return;
+            return; // FIXME denying a request to create a group that already exists should be an error
         }
 
         $operator = is_null($operator) ? $this->getOwner()->getUID() : $operator->getUID();
@@ -209,7 +210,7 @@ class UnityGroup
 
         // we don't need to do anything extra if the group is already deleted
         if (!$this->exists()) {
-            return;
+            return; // FIXME trying to delete a group that already exists should be an error
         }
 
         // first, we must record the users in the group currently
@@ -217,6 +218,7 @@ class UnityGroup
 
         // now we delete the ldap entry
         $ldapPiGroupEntry = $this->getLDAPPiGroup();
+        // FIXME deleting a pi group that doesn't exist should be an error
         if ($ldapPiGroupEntry->exists()) {
             if (!$ldapPiGroupEntry->delete()) {
                 throw new Exception("Unable to delete PI ldap group");
@@ -245,7 +247,8 @@ class UnityGroup
      */
     public function approveUser($new_user, $send_mail = true)
     {
-        // check if user exists
+        // user requested to join group but was subsequently deleted
+        // FIXME this should be an error, this should not resurrect a user!
         if (!$new_user->exists()) {
             $new_user->init();
         }
@@ -281,11 +284,13 @@ class UnityGroup
 
     public function denyUser($new_user, $send_mail = true)
     {
+        // user requested to join group but was subsequently deleted
         if (!$this->requestExists($new_user)) {
             return;
         }
 
         // remove request, this will fail silently if the request doesn't exist
+        // user requested to join group but was subsequently deleted
         $this->removeRequest($new_user->getUID());
 
         if ($send_mail) {
@@ -313,6 +318,7 @@ class UnityGroup
 
     public function removeUser($new_user, $send_mail = true)
     {
+        // FIXME users should be removed from their PI groups before they are deleted, this should be a warning
         if (!$this->userExists($new_user)) {
             return;
         }
@@ -349,15 +355,18 @@ class UnityGroup
 
     public function newUserRequest($new_user, $send_mail = true)
     {
+        // FIXME requesting to join a group you're already in should be an error
         if ($this->userExists($new_user)) {
             return;
         }
 
+        // FIXME requesting to join a group multiple times should be an error
         if ($this->requestExists($new_user)) {
             return;
         }
 
         // check if account deletion request already exists
+        // FIXME remove this. it's not harmful, making function noop is bad experience
         if ($this->SQL->accDeletionRequestExists($new_user->getUID())) {
             return;
         }
