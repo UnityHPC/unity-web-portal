@@ -56,7 +56,7 @@ CREATE TABLE `audit_log` (
 --
 
 CREATE TABLE user_last_logins (
-    `operator` varchar(131) NOT NULL,
+    `operator` varchar(128) NOT NULL,
     `last_login` timestamp  NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
