@@ -19,6 +19,8 @@ RUN a2ensite unity
 RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
 
 RUN sed -i '/display_errors/c\display_errors = on' /etc/php/8.3/apache2/php.ini
+RUN sed -i '/zend.assertions/c\zend.assertions = 1' /etc/php/8.3/apache2/php.ini
+RUN sed -i '/zend.assertions/c\zend.assertions = 1' /etc/php/8.3/cli/php.ini
 
 # Start apache2 server
 EXPOSE 80
