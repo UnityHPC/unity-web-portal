@@ -36,6 +36,11 @@ CREATE TABLE `audit_log` (
   `recipient` varchar(128) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE user_last_logins (
+    `operator` varchar(128) NOT NULL,
+    `last_login` timestamp  NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 CREATE TABLE `events` (
   `id` int(11) NOT NULL,
   `operator` varchar(128) NOT NULL,
@@ -138,6 +143,9 @@ ALTER TABLE `account_deletion_requests`
 ALTER TABLE `audit_log`
   ADD PRIMARY KEY (`id`);
 
+ALTER TABLE `user_last_logins`
+  ADD PRIMARY KEY (`operator`);
+
 ALTER TABLE `events`
   ADD PRIMARY KEY (`id`);
 
@@ -210,6 +218,24 @@ ALTER TABLE `sitevars`
 ALTER TABLE `sso_log`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
+
+-- --------------------------------------------------------
+
+--
+-- automatically update `user_last_logins` from `audit_log`
+--
+DELIMITER //
+CREATE TRIGGER update_last_login
+AFTER INSERT ON audit_log
+FOR EACH ROW
+BEGIN
+    IF NEW.action_type = 'user_login' THEN
+        INSERT INTO user_last_logins (operator, last_login)
+        VALUES (NEW.operator, NEW.timestamp)
+        ON DUPLICATE KEY UPDATE last_login = NEW.timestamp;
+    END IF;
+END;//
+DELIMITER ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
