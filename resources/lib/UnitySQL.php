@@ -40,6 +40,7 @@ class UnitySQL
     //
     public function addRequest($requestor, $dest = self::REQUEST_ADMIN)
     {
+        // FIXME this should be an error
         if ($this->requestExists($requestor, $dest)) {
             return;
         }
@@ -55,6 +56,7 @@ class UnitySQL
 
     public function removeRequest($requestor, $dest = self::REQUEST_ADMIN)
     {
+        // FIXME this should be an error
         if (!$this->requestExists($requestor, $dest)) {
             return;
         }
