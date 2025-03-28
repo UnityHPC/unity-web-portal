@@ -188,6 +188,11 @@ CREATE TABLE `sitevars` (
   `value` varchar(768) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+INSERT INTO `sitevars` (`id`, `name`, `value`) VALUES
+(0, 'MAX_UID', '0'),
+(1, 'MAX_GID', '0'),
+(2, 'MAX_PIGID', '0');
+
 --
 -- Indexes for dumped tables
 --
