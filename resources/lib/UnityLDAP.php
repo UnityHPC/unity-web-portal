@@ -159,6 +159,12 @@ class UnityLDAP extends ldapConn
 
     private function UIDNumInUse($id)
     {
+        if ($id >= 100 && $id <= 999){
+            return true;
+        }
+        if ($id >= 60000 && $id <= 64999){
+            return true;
+        }
         $users = $this->userOU->getChildrenArray(true);
         foreach ($users as $user) {
             if ($user["uidnumber"][0] == $id) {
@@ -173,6 +179,12 @@ class UnityLDAP extends ldapConn
     // one should conform to the other
     private function GIDNumInUse($id)
     {
+        if ($id >= 100 && $id <= 999){
+            return true;
+        }
+        if ($id >= 60000 && $id <= 64999){
+            return true;
+        }
         $groups = $this->groupOU->getChildrenArray(true);
         foreach ($groups as $group) {
             if ($group["gidnumber"][0] == $id) {
