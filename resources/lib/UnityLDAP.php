@@ -120,7 +120,7 @@ class UnityLDAP extends ldapConn
         $max_uid = $UnitySQL->getSiteVar('MAX_UID');
         $new_uid = $max_uid + 1;
 
-        while ($this->UIDNumInUse($new_uid)) {
+        while ($this->UIDNumInUse($new_uid) || $this->GIDNumInUse($new_uid)) {
             $new_uid++;
         }
 
@@ -134,7 +134,7 @@ class UnityLDAP extends ldapConn
         $max_pigid = $UnitySQL->getSiteVar('MAX_PIGID');
         $new_pigid = $max_pigid + 1;
 
-        while ($this->PIGIDNumInUse($new_pigid)) {
+        while ($this->GIDNumInUse($new_pigid)) {
             $new_pigid++;
         }
 
@@ -169,18 +169,8 @@ class UnityLDAP extends ldapConn
         return false;
     }
 
-    private function PIGIDNumInUse($id)
-    {
-        $pi_groups = $this->pi_groupOU->getChildrenArray(true);
-        foreach ($pi_groups as $pi_group) {
-            if ($pi_group["gidnumber"][0] == $id) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
+    // FIXME libpam-ldap on unity nodes does not check specific OUs, they check the whole tree
+    // one should conform to the other
     private function GIDNumInUse($id)
     {
         $groups = $this->groupOU->getChildrenArray(true);
@@ -189,7 +179,18 @@ class UnityLDAP extends ldapConn
                 return true;
             }
         }
-
+        $pi_groups = $this->pi_groupOU->getChildrenArray(true);
+        foreach ($pi_groups as $pi_group) {
+            if ($pi_group["gidnumber"][0] == $id) {
+                return true;
+            }
+        }
+        $org_groups = $this->org_groupOU->getChildrenArray(true);
+        foreach ($org_groups as $org_group) {
+            if ($org_group["gidnumber"][0] == $id) {
+                return true;
+            }
+        }
         return false;
     }
 
