@@ -18,7 +18,7 @@ RUN a2dissite 000-default
 RUN a2ensite unity
 RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
 
-RUN sed -i '/display_errors/c\display_errors = on' /etc/php/7.4/apache2/php.ini
+RUN sed -i '/display_errors/c\display_errors = on' /etc/php/8.3/apache2/php.ini
 
 # Start apache2 server
 EXPOSE 80
