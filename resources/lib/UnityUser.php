@@ -672,28 +672,28 @@ class UnityUser
         return $this->SQL->accDeletionRequestExists($this->getUID());
     }
 
-    /**
-     * Checks whether a user is in a group or not
-     * @param  string  $uid   uid of the user
-     * @param  string  or object $group group to check
-     * @return boolean true if user is in group, false if not
-     */
+    // /**
+    //  * Checks whether a user is in a group or not
+    //  * @param  string  $uid   uid of the user
+    //  * @param  string  or object $group group to check
+    //  * @return boolean true if user is in group, false if not
+    //  */
 
-    public function isInGroup($uid, $group)
-    {
-        if (gettype($group) == "string") {
-            $group_checked = new UnityGroup(
-                $group,
-                $this->LDAP,
-                $this->SQL,
-                $this->MAILER,
-                $this->REDIS,
-                $this->WEBHOOK
-            );
-        } else {
-            $group_checked = $group;
-        }
+    // public function isInGroup($uid, $group)
+    // {
+    //     if (gettype($group) == "string") {
+    //         $group_checked = new UnityGroup(
+    //             $group,
+    //             $this->LDAP,
+    //             $this->SQL,
+    //             $this->MAILER,
+    //             $this->REDIS,
+    //             $this->WEBHOOK
+    //         );
+    //     } else {
+    //         $group_checked = $group;
+    //     }
 
-        return in_array($uid, $group_checked->getGroupMemberUIDs());
-    }
+    //     return in_array($uid, $group_checked->getGroupMemberUIDs());
+    // }
 }

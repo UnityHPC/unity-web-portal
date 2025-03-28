@@ -41,49 +41,49 @@ CREATE TABLE user_last_logins (
     `last_login` timestamp  NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `groupJoinRequests` (
-  `id` int(11) NOT NULL,
-  `group_name` varchar(768) NOT NULL,
-  `requestor` varchar(768) NOT NULL,
-  `requested_on` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- CREATE TABLE `groupJoinRequests` (
+--   `id` int(11) NOT NULL,
+--   `group_name` varchar(768) NOT NULL,
+--   `requestor` varchar(768) NOT NULL,
+--   `requested_on` timestamp NOT NULL DEFAULT current_timestamp()
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `groupRequests` (
-  `id` int(11) NOT NULL,
-  `group_type` varchar(768) NOT NULL,
-  `group_name` varchar(768) NOT NULL,
-  `requestor` varchar(128) NOT NULL,
-  `requested_on` timestamp NOT NULL DEFAULT current_timestamp(),
-  `start_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- CREATE TABLE `groupRequests` (
+--   `id` int(11) NOT NULL,
+--   `group_type` varchar(768) NOT NULL,
+--   `group_name` varchar(768) NOT NULL,
+--   `requestor` varchar(128) NOT NULL,
+--   `requested_on` timestamp NOT NULL DEFAULT current_timestamp(),
+--   `start_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+--   `end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `groupRoleAssignments` (
-  `id` int(11) NOT NULL,
-  `user` varchar(128) NOT NULL,
-  `role` varchar(768) NOT NULL,
-  `group` varchar(768) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- CREATE TABLE `groupRoleAssignments` (
+--   `id` int(11) NOT NULL,
+--   `user` varchar(128) NOT NULL,
+--   `role` varchar(768) NOT NULL,
+--   `group` varchar(768) NOT NULL
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `groupRoles` (
-  `id` int(11) NOT NULL,
-  `name` varchar(768) NOT NULL,
-  `slug` varchar(768) NOT NULL,
-  `priority` int(11) NOT NULL,
-  `color` varchar(768) NOT NULL,
-  `perms` varchar(768) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- CREATE TABLE `groupRoles` (
+--   `id` int(11) NOT NULL,
+--   `name` varchar(768) NOT NULL,
+--   `slug` varchar(768) NOT NULL,
+--   `priority` int(11) NOT NULL,
+--   `color` varchar(768) NOT NULL,
+--   `perms` varchar(768) NOT NULL
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `groupTypes` (
-  `id` int(11) NOT NULL,
-  `name` varchar(768) NOT NULL,
-  `slug` varchar(768) NOT NULL,
-  `color` varchar(768) NOT NULL,
-  `time_limited` tinyint(1) NOT NULL,
-  `def_role` varchar(768) NOT NULL,
-  `av_roles` varchar(768) NOT NULL,
-  `can_request` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- CREATE TABLE `groupTypes` (
+--   `id` int(11) NOT NULL,
+--   `name` varchar(768) NOT NULL,
+--   `slug` varchar(768) NOT NULL,
+--   `color` varchar(768) NOT NULL,
+--   `time_limited` tinyint(1) NOT NULL,
+--   `def_role` varchar(768) NOT NULL,
+--   `av_roles` varchar(768) NOT NULL,
+--   `can_request` tinyint(1) NOT NULL
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `notices` (
   `id` int(11) NOT NULL,
@@ -138,20 +138,20 @@ ALTER TABLE `audit_log`
 ALTER TABLE `user_last_logins`
   ADD PRIMARY KEY (`operator`);
 
-ALTER TABLE `groupJoinRequests`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `groupJoinRequests`
+--   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `groupRequests`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `groupRequests`
+--   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `groupRoleAssignments`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `groupRoleAssignments`
+--   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `groupRoles`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `groupRoles`
+--   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `groupTypes`
-  ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `groupTypes`
+--   ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `notices`
   ADD PRIMARY KEY (`id`);
@@ -174,20 +174,20 @@ ALTER TABLE `account_deletion_requests`
 ALTER TABLE `audit_log`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `groupJoinRequests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+-- ALTER TABLE `groupJoinRequests`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `groupRequests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+-- ALTER TABLE `groupRequests`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `groupRoleAssignments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+-- ALTER TABLE `groupRoleAssignments`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `groupRoles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+-- ALTER TABLE `groupRoles`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `groupTypes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+-- ALTER TABLE `groupTypes`
+--   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `notices`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
