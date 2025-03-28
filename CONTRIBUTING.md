@@ -33,8 +33,6 @@ The test environment ships with a number of users that can be used for testing. 
 
 The following users are available for testing:
 
-* `admin1@domain.com` - admin user who is a member of pi_user1_domain_edu
-* `admin2@domain.com` - admin user
 * `user1@domain.com` - user who is the owner of pi_user1_domain_edu
 * `user2@domain.com` - user who is the owner of pi_user2_domain_edu
 * `user3@domain.com` - user who is a member of pi_user1_domain_edu
