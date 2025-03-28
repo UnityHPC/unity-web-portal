@@ -93,15 +93,15 @@ class UnityGroup
                 "group_request"
             );
 
-            $this->WEBHOOK->sendWebhook(
-                "group_request_admin",
-                array(
-                    "user" => $this->getOwner()->getUID(),
-                    "org" => $this->getOwner()->getOrg(),
-                    "name" => $this->getOwner()->getFullname(),
-                    "email" => $this->getOwner()->getMail()
-                )
-            );
+            // $this->WEBHOOK->sendWebhook(
+            //     "group_request_admin",
+            //     array(
+            //         "user" => $this->getOwner()->getUID(),
+            //         "org" => $this->getOwner()->getOrg(),
+            //         "name" => $this->getOwner()->getFullname(),
+            //         "email" => $this->getOwner()->getMail()
+            //     )
+            // );
 
             if ($send_mail_to_admins) {
                 $this->MAILER->sendMail(
