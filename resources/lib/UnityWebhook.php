@@ -1,25 +1,25 @@
-// <?php
+<?php
 
-// namespace UnityWebPortal\lib;
+namespace UnityWebPortal\lib;
 
-// class UnityWebhook
-// {
-//     private $template_dir;
-//     private $override_template_dir;
-//     private $url;
-//     private $MSG_LINKREF;
+class UnityWebhook
+{
+    private $template_dir;
+    private $override_template_dir;
+    private $url;
+    private $MSG_LINKREF;
 
-//     public function __construct(
-//         $template_dir,
-//         $override_template_dir,
-//         $url,
-//         $msg_linkref
-//     ) {
-//         $this->template_dir = $template_dir;
-//         $this->override_template_dir = $override_template_dir;
-//         $this->url = $url;
-//         $this->MSG_LINKREF = $msg_linkref;
-//     }
+    public function __construct(
+        $template_dir,
+        $override_template_dir,
+        $url,
+        $msg_linkref
+    ) {
+        $this->template_dir = $template_dir;
+        $this->override_template_dir = $override_template_dir;
+        $this->url = $url;
+        $this->MSG_LINKREF = $msg_linkref;
+    }
 
 //     public function htmlToMarkdown($html)
 //     {
@@ -66,4 +66,4 @@
 //         curl_close($ch);
 //         return $result;
 //     }
-// }
+}
