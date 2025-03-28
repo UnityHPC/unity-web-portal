@@ -120,15 +120,6 @@ CREATE TABLE `sitevars` (
   `value` varchar(768) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `sso_log` (
-  `id` int(10) NOT NULL,
-  `uid` varchar(300) NOT NULL,
-  `firstname` varchar(300) NOT NULL,
-  `lastname` varchar(300) NOT NULL,
-  `mail` varchar(300) NOT NULL,
-  `org` varchar(300) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 ALTER TABLE `account_deletion_requests`
   ADD PRIMARY KEY (`id`);
 
@@ -165,9 +156,6 @@ ALTER TABLE `requests`
 ALTER TABLE `sitevars`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `sso_log`
-  ADD PRIMARY KEY (`id`);
-
 ALTER TABLE `account_deletion_requests`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
@@ -200,10 +188,6 @@ ALTER TABLE `requests`
 
 ALTER TABLE `sitevars`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
-ALTER TABLE `sso_log`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-COMMIT;
 
 -- --------------------------------------------------------
 
