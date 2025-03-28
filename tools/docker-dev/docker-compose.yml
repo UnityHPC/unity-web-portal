@@ -5,6 +5,7 @@ services:
     build: identity
     ports:
       - "8010:80"
+      - "389:389"
   web:
     hostname: web
     build: web
