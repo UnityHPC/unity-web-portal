@@ -2,9 +2,13 @@
 
 namespace UnityWebPortal\lib;
 
+use Mockery;
+use PHPUnit\Framework\TestCase;
+
 require_once "../../resources/autoload.php";
 
-ini_set("assert.exception", true);
+ini_set("assert.exception", false);
+ini_set("assert.warning", true);
 
 $_SERVER = [
     "REMOTE_ADDR" => "127.0.0.1"
@@ -72,6 +76,32 @@ function add_ssh_key_import(string $key): void {
     unset($_FILES["keyfile"]);
 }
 
+function add_ssh_key_generated(string $key): void {
+    post(
+        "../../webroot/panel/account.php",
+        [
+            "form_type" => "addKey",
+            "add_type" => "generate",
+            "gen_key" => $key
+        ]
+    );
+}
+
+function add_ssh_key_github(string $key): void {
+    // requires phpunit `@runTestsInSeparateProcesses` and `@preserveGlobalState disabled`
+    $mock = Mockery::mock("overload:\UnityWebPortal\lib\UnitySite");
+    $mock->shouldReceive("getGithubKeys")->with("foobar")->andReturn(json_encode([["key" => $key]]));
+    post(
+        "../../webroot/panel/account.php",
+        [
+            "form_type" => "addKey",
+            "add_type" => "github",
+            "gh_user" => "foobar"
+        ]
+    );
+    Mockery::close();
+}
+
 $pi_1 = ["user1@org1.test", "Givenname", "Surname", "user1@org1.test"];
 $user_in_pi_1 = ["user2@org1.test", "Givenname", "Surname", "user2@org1.test"];
 $new_user = ["FIXME", "Givenname", "Surname", "FIXME"];
@@ -123,40 +153,54 @@ assert(!in_array($invalid_ssh_key, $USER->getSSHKeys(true)));
 add_ssh_key_import($invalid_ssh_key);
 assert(!in_array($invalid_ssh_key, $USER->getSSHKeys(true)));
 
-// // test generate key
-// assert(!in_array($valid_ssh_key, $USER->getSSHKeys(true)));
-// post(
-//     "../../webroot/panel/account.php",
-//     [
-//         "form_type" => "addKey",
-//         "add_type" => "paste",
-//         "key" => $valid_ssh_key
-//     ]
-// );
-// assert(in_array($valid_ssh_key, $USER->getSSHKeys(true)));
+// test generated valid key that doesn't exist yet
+$new_key_index = count($USER->getSSHKeys(true));
+assert(!in_array($valid_ssh_key, $USER->getSSHKeys(true)));
+add_ssh_key_generated($valid_ssh_key);
+assert(in_array($valid_ssh_key, $USER->getSSHKeys(true)));
 
-// // test github valid
-// assert(!in_array($valid_ssh_key, $USER->getSSHKeys(true)));
-// post(
-//     "../../webroot/panel/account.php",
-//     [
-//         "form_type" => "addKey",
-//         "add_type" => "paste",
-//         "key" => $valid_ssh_key
-//     ]
-// );
-// assert(in_array($valid_ssh_key, $USER->getSSHKeys(true)));
+// test generated valid key that already exists
+$count_before_duplicate_add = count($USER->getSSHKeys(true));
+assert($count_before_duplicate_add > 0);
+add_ssh_key_generated($valid_ssh_key);
+assert(count($USER->getSSHKeys(true)) == $count_before_duplicate_add);
 
-// // test github invalid
+// cleanup
+delete_ssh_key($new_key_index);
+assert(!in_array($valid_ssh_key, $USER->getSSHKeys(true)));
+
+// test generated invalid key
 // assert(!in_array($invalid_ssh_key, $USER->getSSHKeys(true)));
-// post(
-//     "../../webroot/panel/account.php",
-//     [
-//         "form_type" => "addKey",
-//         "add_type" => "paste",
-//         "key" => $invalid_ssh_key
-//     ]
-// );
+// add_ssh_key_generated($invalid_ssh_key);
+// assert(!in_array($invalid_ssh_key, $USER->getSSHKeys(true)));
+
+class AccountTest extends TestCase {
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function AccountSshKeyAddGithubFrontendTest(): void {
+        // test github valid key that doesn't exist yet
+        $new_key_index = count($USER->getSSHKeys(true));
+        assert(!in_array($valid_ssh_key, $USER->getSSHKeys(true)));
+        add_ssh_key_github($valid_ssh_key);
+        assert(in_array($valid_ssh_key, $USER->getSSHKeys(true)));
+    }
+}
+
+// test github valid key that already exists
+$count_before_duplicate_add = count($USER->getSSHKeys(true));
+assert($count_before_duplicate_add > 0);
+add_ssh_key_github($valid_ssh_key);
+assert(count($USER->getSSHKeys(true)) == $count_before_duplicate_add);
+
+// cleanup
+delete_ssh_key($new_key_index);
+assert(!in_array($valid_ssh_key, $USER->getSSHKeys(true)));
+
+// test github invalid key
+// assert(!in_array($invalid_ssh_key, $USER->getSSHKeys(true)));
+// add_ssh_key_github($invalid_ssh_key);
 // assert(!in_array($invalid_ssh_key, $USER->getSSHKeys(true)));
 
 // test that everything is the way we found it
