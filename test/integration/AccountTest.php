@@ -49,13 +49,11 @@ function add_ssh_key_generated(string $key): void {
     );
 }
 
-function add_ssh_key_github(string $key): void {
+function add_ssh_keys_github(array $keys): void {
     global $SITE;
     $old_site = $SITE;
-    $SITE = Mockery::mock();
-    $SITE->shouldReceive("getGithubKeys")->with("foobar")->andReturn([["key" => $key]]);
-    $SITE->shouldReceive("testValidSSHKey")->with(["key" => $key])->andReturn(true);
-    $SITE->shouldReceive("removeTrailingWhitespace")->with(Mockery::any())->andReturn([$key]);
+    $SITE = Mockery::mock(UnitySite::class)->makePartial();
+    $SITE->shouldReceive("getGithubKeys")->with("foobar")->andReturn($keys);
     try {
         post(
             "../../webroot/panel/account.php",
@@ -139,22 +137,28 @@ assert(!in_array($valid_ssh_key, $USER->getSSHKeys(true)));
 
 // test github valid key that doesn't exist yet
 assert(!in_array($valid_ssh_key, $USER->getSSHKeys(true)));
-add_ssh_key_github($valid_ssh_key);
+add_ssh_keys_github([$valid_ssh_key]);
 assert(in_array($valid_ssh_key, $USER->getSSHKeys(true)));
 
 // test github valid key that already exists
 $count_before_duplicate_add = count($USER->getSSHKeys(true));
 assert($count_before_duplicate_add > 0);
-add_ssh_key_github($valid_ssh_key);
+add_ssh_keys_github([$valid_ssh_key]);
 assert(count($USER->getSSHKeys(true)) == $count_before_duplicate_add);
 
 // cleanup
 delete_ssh_key($new_key_index);
 assert(!in_array($valid_ssh_key, $USER->getSSHKeys(true)));
 
+// test github nonexistent account / no keys in account
+$count_before_duplicate_add = count($USER->getSSHKeys(true));
+assert($count_before_duplicate_add > 0);
+add_ssh_keys_github([]);
+assert(count($USER->getSSHKeys(true)) == $count_before_duplicate_add);
+
 // test github invalid key
 // assert(!in_array($invalid_ssh_key, $USER->getSSHKeys(true)));
-// add_ssh_key_github($invalid_ssh_key);
+// add_ssh_keys_github([$invalid_ssh_key]);
 // assert(!in_array($invalid_ssh_key, $USER->getSSHKeys(true)));
 
 // test that everything is the way we found it
