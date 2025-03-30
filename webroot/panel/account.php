@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
             switch ($_POST["add_type"]) {
                 case "paste":
+                    // FIXME sanitize input
                     $key = $_POST["key"];
                     if ($SITE->testValidSSHKey($key)) {
                         array_push($added_keys, $key);
@@ -24,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     break;
                 case "import":
                     $keyfile = $_FILES["keyfile"]["tmp_name"];
+                    // FIXME sanitize input
                     $key = file_get_contents($keyfile);
                     if ($SITE->testValidSSHKey($key)) {
                         array_push($added_keys, $key);
@@ -32,9 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     }
                     break;
                 case "generate":
+                    // FIXME check valid key, sanitize input
                     array_push($added_keys, $_POST["gen_key"]);
                     break;
                 case "github":
+                    // FIXME check valid key, sanitize input
                     $gh_user = $_POST["gh_user"];
                     if (empty($gh_user)) {
                         break; // FIXME this should be an error
