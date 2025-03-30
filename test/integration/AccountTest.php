@@ -31,6 +31,7 @@ function switch_to_user(string $eppn, string $given_name, string $sn, string $ma
     assert(isset($OPERATOR));
     assert(isset($SSO));
     assert(isset($_SESSION));
+    assert(isset($USER));
 }
 
 function post(string $phpfile, array $post_data): string {
