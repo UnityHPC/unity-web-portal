@@ -39,10 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 case "github":
                     $gh_user = $_POST["gh_user"];
                     if (empty($gh_user)) {
-                        break;
+                        break; // FIXME this should be an error
                     }
                     $keys = UnitySite::getGithubKeys($gh_user);
                     foreach ($keys as $key) {
+                        // FIXME this should be an error
                         if (UnitySite::testValidSSHKey($key)) {
                             array_push($added_keys, $key);
                         }
