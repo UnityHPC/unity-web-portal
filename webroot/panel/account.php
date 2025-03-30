@@ -61,12 +61,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break;
         case "delKey":
             $keys = $USER->getSSHKeys();
+            // FIXME check valid index
             unset($keys[intval($_POST["delIndex"])]);  // remove key from array
             $keys = array_values($keys);
 
             $USER->setSSHKeys($keys, $OPERATOR);  // Update user keys
             break;
         case "loginshell":
+            // FIXME sanitize input
             if ($_POST["shellSelect"] == "custom") {
                 $USER->setLoginShell($_POST["shell"], $OPERATOR);
             } else {
@@ -83,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         case "account_deletion_request":
             $hasGroups = count($USER->getGroups()) > 0;
             if ($hasGroups) {
+                // FIXME make an error message?
                 die();
                 break;
             }
