@@ -15,7 +15,7 @@ $_SERVER = [
 ];
 
 function switch_to_user(string $eppn, string $given_name, string $sn, string $mail): void {
-    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $USER, $LOC_HEADER, $LOC_FOOTER;
+    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     unset($SSO);
     // unset($_SESSION);
     session_write_close();
