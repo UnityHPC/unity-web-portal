@@ -34,6 +34,10 @@ class UnitySSO
                 "firstname" => $_SERVER["givenName"],
                 "lastname" => $_SERVER["sn"],
                 "name" => $_SERVER["givenName"] . " " . $_SERVER["sn"],
+                // FIXME if mail is not set, prompt user for email address
+                // TODO let user customize email address
+                // this form is also a valid email address, and 99% of the time it should be their email
+                // https://www.educause.edu/fidm/attributes
                 "mail" => isset($_SERVER["mail"]) ? $_SERVER["mail"] : $_SERVER["eppn"]
             );
 
