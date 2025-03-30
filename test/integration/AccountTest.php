@@ -3,6 +3,7 @@
 namespace UnityWebPortal\lib;
 
 use Mockery;
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 require_once "../../resources/autoload.php";
