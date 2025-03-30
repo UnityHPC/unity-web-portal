@@ -199,7 +199,7 @@ assert(count($USER->getSSHKeys(true)) == $count_before_duplicate_add);
 delete_ssh_key($new_key_index);
 assert(!in_array($valid_ssh_key, $USER->getSSHKeys(true)));
 
-// test github invalid key
+// // test github invalid key
 // assert(!in_array($invalid_ssh_key, $USER->getSSHKeys(true)));
 // add_ssh_key_github($invalid_ssh_key);
 // assert(!in_array($invalid_ssh_key, $USER->getSSHKeys(true)));
