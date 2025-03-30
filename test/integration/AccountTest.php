@@ -16,7 +16,7 @@ $_SERVER = [
 ];
 
 function switch_to_user(string $eppn, string $given_name, string $sn, string $mail): void {
-    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
+    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     unset($SSO);
     // unset($_SESSION);
     session_write_close();
@@ -36,7 +36,7 @@ function switch_to_user(string $eppn, string $given_name, string $sn, string $ma
 }
 
 function post(string $phpfile, array $post_data): string {
-    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $USER, $LOC_HEADER, $LOC_FOOTER;
+    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     $_SERVER["REQUEST_METHOD"] = "POST";
     $_POST = $post_data;
     ob_start();
