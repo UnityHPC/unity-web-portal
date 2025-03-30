@@ -9,6 +9,7 @@ use UnityWebPortal\lib\{
     UnityLDAP,
     UnityMailer,
     UnitySQL,
+    UnitySite,
     UnitySSO,
     UnityUser,
     UnityRedis,
@@ -85,6 +86,9 @@ $WEBHOOK = new UnityWebhook(
     $CONFIG["webhook"]["url"],
     $CONFIG["site"]["url"] . $CONFIG["site"]["prefix"]
 );
+
+//
+$SITE = new UnitySite();
 
 //
 // SSO Init

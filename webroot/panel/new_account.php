@@ -2,15 +2,12 @@
 
 require_once "../../resources/autoload.php";
 
-use UnityWebPortal\lib\{
-    UnitySite,
-    UnityGroup
-};
+use UnityWebPortal\lib\UnityGroup;
 
 require_once $LOC_HEADER;
 
 if ($USER->exists()) {
-    UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/index.php");  // Redirect if account already exists
+    $SITE->redirect($CONFIG["site"]["prefix"] . "/panel/index.php");  // Redirect if account already exists
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

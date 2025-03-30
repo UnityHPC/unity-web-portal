@@ -6,7 +6,7 @@ use phpseclib3\Crypt\PublicKeyLoader;
 
 class UnitySite
 {
-    public static function redirect($destination)
+    public function redirect($destination)
     {
         if ($_SERVER["PHP_SELF"] != $destination) {
             header("Location: $destination");
@@ -14,7 +14,7 @@ class UnitySite
         }
     }
 
-    public static function removeTrailingWhitespace($arr)
+    public function removeTrailingWhitespace($arr)
     {
         $out = array();
         foreach ($arr as $str) {
@@ -25,7 +25,7 @@ class UnitySite
         return $out;
     }
 
-    public static function getGithubKeys($username)
+    public function getGithubKeys($username)
     {
         $url = "https://api.github.com/users/$username/keys";
         $headers = array(
@@ -47,7 +47,7 @@ class UnitySite
         return $out;
     }
 
-    public static function testValidSSHKey($key_str)
+    public function testValidSSHKey($key_str)
     {
         try {
             PublicKeyLoader::load($key_str);
