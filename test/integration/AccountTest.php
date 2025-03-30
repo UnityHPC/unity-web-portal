@@ -71,12 +71,6 @@ function add_ssh_key_github(string $key): void {
     }
 }
 
-$pi_1 = ["user1@org1.test", "Givenname", "Surname", "user1@org1.test"];
-$user_in_pi_1 = ["user2@org1.test", "Givenname", "Surname", "user2@org1.test"];
-$new_user = ["FIXME", "Givenname", "Surname", "FIXME"];
-$valid_ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDWG37i3uTdnanD8SCY2UCUcuqYEszvb/eebyqfUHiRn foobar";
-$invalid_ssh_key = "foobar AAAAC3NzaC1lZDI1NTE5AAAAIDWG37i3uTdnanD8SCY2UCUcuqYEszvb/eebyqfUHiRn foobar";
-
 switch_to_user(...$user_in_pi_1);
 
 $initial_ssh_keys = $USER->getSSHKeys(true);

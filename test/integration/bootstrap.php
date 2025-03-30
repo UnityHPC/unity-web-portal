@@ -40,3 +40,9 @@ function post(string $phpfile, array $post_data): string {
     unset($_SERVER["REQUEST_METHOD"]);
     return $output;
 }
+
+$pi_1 = ["user1@org1.test", "Givenname", "Surname", "user1@org1.test"];
+$user_in_pi_1 = ["user2@org1.test", "Givenname", "Surname", "user2@org1.test"];
+$new_user = ["FIXME", "Givenname", "Surname", "FIXME"];
+$valid_ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDWG37i3uTdnanD8SCY2UCUcuqYEszvb/eebyqfUHiRn foobar";
+$invalid_ssh_key = "foobar AAAAC3NzaC1lZDI1NTE5AAAAIDWG37i3uTdnanD8SCY2UCUcuqYEszvb/eebyqfUHiRn foobar";
