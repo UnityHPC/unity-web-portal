@@ -12,6 +12,11 @@ SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
+-- magic numbers explained:
+-- SET @eppn_max_length = 128; -- https://www.educause.edu/fidm/attributes
+-- SET @group_max_length = 131; -- "pi_" is 3 chars
+-- SET @big_buffer_length = 768; -- varchar(769) is too big to be a primary key
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
