@@ -180,5 +180,18 @@ assert(count($USER->getSSHKeys(true)) == $count_before);
 // } catch(Exception) {}
 // assert(count($USER->getSSHKeys(true)) == $count_before);
 
+// test invalid add_type
+// FIXME webroot php does not error for invalid posts
+// try {
+//     post(
+//         "../../webroot/panel/account.php",
+//         [
+//             "form_type" => "addKey",
+//             "add_type" => "foobar",
+//         ]
+//     );
+//     assert(false, 'account.php form_type=addKey add_type=foobar should have failed but didnt!');
+// } catch(Exception) {}
+
 // test that everything is the way we found it
 assert($USER->getSSHKeys(true) === $initial_ssh_keys);
