@@ -5,7 +5,7 @@ namespace UnityWebPortal\lib;
 use Mockery;
 use Exception;
 
-require "bootstrap.php";
+require "panel-bootstrap.php";
 
 function delete_ssh_key(int $index): void {
     post(
