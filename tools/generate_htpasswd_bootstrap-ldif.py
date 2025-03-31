@@ -18,8 +18,8 @@ PI_GROUPS_OU_DN = f"ou=pi_groups,{ROOT_DN}"
 ORG_GROUPS_OU_DN = f"ou=org_groups,{ROOT_DN}"
 USER_OBJECT_CLASSES = ["inetOrgPerson", "posixAccount", "top", "ldapPublicKey"]
 GROUP_OBJECT_CLASSES = ["posixGroup", "top"]
-
-LDAP_STRUCTURE = [
+OU_OBJECT_CLASSES = ["organizationalUnit", "top"]
+LDAP_EXTRA_ENTRIES = [
     [
         ROOT_DN,
         ["organization", "dcObject", "top"],
@@ -39,10 +39,10 @@ LDAP_STRUCTURE = [
             "description": "for LDAP server administration purposes only",
         },
     ],
-    [f"ou=groups,{ROOT_DN}", GROUP_OBJECT_CLASSES, {"ou": "groups"}],
-    [f"ou=org_groups,{ROOT_DN}", GROUP_OBJECT_CLASSES, {"ou": "org_groups"}],
-    [f"ou=pi_groups,{ROOT_DN}", GROUP_OBJECT_CLASSES, {"ou": "pi_groups"}],
-    [f"ou=users,{ROOT_DN}", GROUP_OBJECT_CLASSES, {"ou": "users"}],
+    [f"ou=groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "groups"}],
+    [f"ou=org_groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "org_groups"}],
+    [f"ou=pi_groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "pi_groups"}],
+    [f"ou=users,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "users"}],
 ]
 
 SHELL_CHOICES = ["/bin/bash", "/bin/tcsh", "/bin/zsh"]
@@ -124,7 +124,7 @@ def main():
     with tempfile.NamedTemporaryFile(mode="w+", delete=False) as ldif_tempfile:
         with ldap3.Connection(server=None, client_strategy=ldap3.LDIF) as ldap_conn:
             ldap_conn.stream = ldif_tempfile
-            for args in LDAP_STRUCTURE:
+            for args in LDAP_EXTRA_ENTRIES:
                 ldap_conn.add(*args)
             for group_cn, member_uids in org_group_membership.items():
                 ldap_conn.add(
