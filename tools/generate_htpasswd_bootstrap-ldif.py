@@ -82,6 +82,7 @@ def make_random_user(user_num: int, org: str) -> tuple[str, dict[str, object], d
     return (
         uid,
         {
+            "cn": uid,
             "uid": uid,
             "mail": email,
             "o": org,
@@ -93,7 +94,7 @@ def make_random_user(user_num: int, org: str) -> tuple[str, dict[str, object], d
             "loginshell": random.choice(SHELL_CHOICES),
             "sshpublickey": pubkey_or_pubkeys,
         },
-        {"gidnumber": user_num2id(user_num)},
+        {"cn": uid, "gidnumber": user_num2id(user_num)},
     )
 
 
