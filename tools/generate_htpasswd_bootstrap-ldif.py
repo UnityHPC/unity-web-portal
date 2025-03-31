@@ -106,6 +106,7 @@ def make_random_user(user_num: int, org: str) -> tuple[str, dict[str, object], d
             "loginshell": random.choice(SHELL_CHOICES),
             "sshpublickey": pubkey_or_pubkeys,
         },
+        # user group does not have memberuids, rely on user gidnumber instead
         {"cn": uid, "gidnumber": user_num2id(user_num)},
     )
 
