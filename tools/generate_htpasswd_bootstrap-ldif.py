@@ -19,6 +19,13 @@ ORG_GROUPS_OU_DN = f"ou=org_groups,{ROOT_DN}"
 USER_OBJECT_CLASSES = ["inetOrgPerson", "posixAccount", "top", "ldapPublicKey"]
 GROUP_OBJECT_CLASSES = ["posixGroup", "top"]
 OU_OBJECT_CLASSES = ["organizationalUnit", "top"]
+WEB_ADMIN = {
+    "cn": "web_admin_unityhpc_edu",
+    "uid": "web_admin_unityhpc_edu",
+    "mail": "web_admin@unityhpc.edu",
+    "o": "unityhpc_edu",
+    "homedirectory": "/home/web_admin_unityhpc_edu",
+}
 LDAP_EXTRA_ENTRIES = [
     [
         ROOT_DN,
@@ -39,12 +46,16 @@ LDAP_EXTRA_ENTRIES = [
             "description": "for LDAP server administration purposes only",
         },
     ],
+    [
+        f"cn=web_admins,{ROOT_DN}",
+        GROUP_OBJECT_CLASSES,
+        {"cn": "web_admins", "memberuid": [WEB_ADMIN["uid"]]},
+    ],
     [f"ou=groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "groups"}],
     [f"ou=org_groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "org_groups"}],
     [f"ou=pi_groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "pi_groups"}],
     [f"ou=users,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "users"}],
 ]
-
 SHELL_CHOICES = ["/bin/bash", "/bin/tcsh", "/bin/zsh"]
 PUBKEY_CHOICES = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDWG37i3uTdnanD8SCY2UCUcuqYEszvb/eebyqfUHiRn foobar",
@@ -54,6 +65,7 @@ PUBKEY_CHOICES = [
 NUM_USERS = 100  # TODO increase to 4000
 ID_ZFILL = len(str(NUM_USERS))
 NUM_PIS = 10
+NUM_ORGS = 3
 
 
 def user_num2id(user_num: int) -> int:
@@ -101,25 +113,29 @@ def make_random_user(user_num: int, org: str) -> tuple[str, dict[str, object], d
 def main():
     random.seed(1)
 
-    org_group_membership = {k: [] for k in [f"org{x}" for x in [1, 2, 3]]}
+    org_group_membership = {k: [] for k in [f"org{x}_edu" for x in range(NUM_ORGS)]}
     pi_group_membership = {}
-    user_groups = {}
-    users = {}
+    user_groups = []
+    users = []
 
-    pi_user_nums = random.sample(range(0, NUM_USERS), k=NUM_PIS)
+    # 0th user will not be PI because uid will be changed to web_admin
+    pi_user_nums = random.sample(range(1, NUM_USERS), k=NUM_PIS)
     for user_num in range(NUM_USERS):
         org = random.choice(list(org_group_membership.keys()))
         uid, user_attributes, user_group_attributes = make_random_user(user_num, org)
-        users[uid] = user_attributes
-        user_groups[uid] = user_group_attributes
+        users.append(user_attributes)
+        user_groups.append(user_group_attributes)
         org_group_membership.setdefault(org, []).append(uid)
         if user_num in pi_user_nums:
-            pi_group_membership[uid] = []
+            pi_group_membership[f"pi_{uid}"] = []
 
-    for uid in users:
+    for attributes in users:
+        uid = attributes["uid"]
         num_pis = random.randint(0, 3)
         for pi in random.sample(list(pi_group_membership.keys()), k=num_pis):
             pi_group_membership[pi].append(uid)
+
+    users[0].update(WEB_ADMIN)
 
     with tempfile.NamedTemporaryFile(mode="w+", delete=False) as ldif_tempfile:
         with ldap3.Connection(server=None, client_strategy=ldap3.LDIF) as ldap_conn:
@@ -138,10 +154,12 @@ def main():
                     GROUP_OBJECT_CLASSES,
                     {"cn": group_cn, "memberuid": member_uids},
                 )
-            for uid, attributes in users.items():
-                ldap_conn.add(f"cn={uid},{USERS_OU_DN}", USER_OBJECT_CLASSES, attributes)
-            for uid, attributes in user_groups.items():
-                ldap_conn.add(f"cn={uid},{USER_GROUPS_OU_DN}", GROUP_OBJECT_CLASSES, attributes)
+            for attributes in users:
+                cn = attributes["cn"]
+                ldap_conn.add(f"cn={cn},{USERS_OU_DN}", USER_OBJECT_CLASSES, attributes)
+            for attributes in user_groups:
+                cn = attributes["cn"]
+                ldap_conn.add(f"cn={cn},{USER_GROUPS_OU_DN}", GROUP_OBJECT_CLASSES, attributes)
         print(f"export LDAP_BOOTSTRAP_LDIF_PATH={ldif_tempfile.name}")
 
 
