@@ -224,7 +224,7 @@ class UnityGroup
                 throw new Exception("Unable to delete PI ldap group");
             }
 
-            $this->REDIS->removeCacheArray("sorted_groups", "", $this->getPIUID());
+            $this->REDIS->removeCacheArray("sorted_pi_groups", "", $this->getPIUID());
             foreach ($users as $user) {
                 $this->REDIS->removeCacheArray($user->getUID(), "groups", $this->getPIUID());
             }
@@ -502,7 +502,7 @@ class UnityGroup
             }
         }
 
-        $this->REDIS->appendCacheArray("sorted_groups", "", $this->getPIUID());
+        $this->REDIS->appendCacheArray("sorted_pi_groups", "", $this->getPIUID());
 
         // TODO if we ever make this project based, we need to update the cache here with the memberuid
     }

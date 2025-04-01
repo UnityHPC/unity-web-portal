@@ -268,7 +268,7 @@ class UnityLDAP extends ldapConn
         $out = array();
 
         if (!$ignorecache) {
-            $groups = $UnityRedis->getCache("sorted_groups", "");
+            $groups = $UnityRedis->getCache("sorted_pi_groups", "");
             if (!is_null($groups)) {
                 foreach ($groups as $group) {
                     $params = array($group, $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook);
