@@ -29,24 +29,12 @@ While the environment is running, the following is accessible:
 
 ### Test Users
 
-The test environment ships with a number of users that can be used for testing. When accessing locked down portions of the portal, you will be asked for a username and password. The password is always `password`.
-
 The following users are available for testing:
 
-* `user1@domain.com` - user who is the owner of pi_user1_domain_edu
-* `user2@domain.com` - user who is the owner of pi_user2_domain_edu
-* `user3@domain.com` - user who is a member of pi_user1_domain_edu
-* `user4@domain.com` - user
-* `user5@domain.com` - user who is a member of pi_user2_domain_edu
-* `user6@domain.com` - user who is a member of pi_user2_domain_edu
-* `user7@domain.com` - user who has no LDAP object
-* `user8@domain.com` - user who has no LDAP object
-* `user9@domain.com` - user who has no LDAP object
-* `user1@domain2.com` - user who is the owner of pi_user1_domain2_edu
-* `user2@domain2.com` - user
-* `user3@domain2.com` - user who has no LDAP object
-* `user4@domain2.com` - user who has no LDAP object
+* `web_admin@unityhpc.test` - portal administrator, also has PI group `pi_web_admin_unityhpc_test`
+
+The test environment ships with a randomly generated (with hard coded seed) set of organizations, PI groups, and user accounts. See `tools/generate_htpasswd_bootstrap-ldif.py`. Use PHPLDAPAdmin to view them. The UIDs are of the form `user0001_org01_test`, `user0002_org02_test`, ... . The lowest user numbers are deliberatly left out, so that you can test the creation of new users. To log in as a user, you can clear your cookies and do HTTP basic auth with their `mail` attribute and password "password", or you can log in as `web_admin` and switch to their account from the user management page.
 
 ### Changes to Dev Environment
 
-Should the default schema of the web portal change, the `ldap/bootstrap.ldif` and `sql/bootstrap.sql` must be updated for the LDAP server and the MySQL server, respectively.
+Should the default schema of the web portal change, `tools/generate_htpasswd_bootstrap-ldif.py` and `sql/bootstrap.sql` must be updated for the LDAP server and the MySQL server, respectively.

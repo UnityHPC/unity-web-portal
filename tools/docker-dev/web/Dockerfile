@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
     php-mbstring \
     php-xml
 COPY htpasswd /etc/apache2/.htpasswd
+RUN chown www-data /etc/apache2/.htpasswd
 COPY unity-apache.conf /etc/apache2/sites-available/unity.conf
 RUN a2dissite 000-default
 RUN a2ensite unity

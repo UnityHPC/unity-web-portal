@@ -1,7 +1,6 @@
 """
 generates an htpasswd and a bootstrap.ldif for the web and identity docker containers, respectively
-outputs shell instructions to set env vars to use tempfiles during docker build
-remember to clean up tempfiles after use
+outputs shell instructions to set LDAP_BOOTSTRAP_LDIF_PATH and HTPASSWD_PATH to tempfiles
 """
 
 import string
@@ -30,7 +29,6 @@ LDAP_EXTRA_ENTRIES = [
         [
             "simpleSecurityObject",
             "organizationalRole",
-            "posixGroup",
             "top",
         ],
         {
@@ -67,14 +65,26 @@ PUBKEY_CHOICES = [
     "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBIL0GJOPT94cHG/vbgBtCdTxJNY3BTBxmKNJqb2cMdootEJr5Yt/mWoPDxW1FOazv+nhCwT5wfz/rCayAv6wptU= foobar",
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDBnvfnEmpXoyEygsTNdi4fhKiLAY9aUQ1ktMIY1GkegKkHds73wMlUsbf24I3OtV27gVIPTl8Q8VB9zfIC8cGR0lvF1XbcRXhumSM+efSICmgkFj5YlkBjfePH4Wgy4zU5I4UXo1fDsb6REl2XD/OU74hU1j0vkXS04LsLK4V11KTf7nWfQpFmR+ratK0jShP/jtz0W+jFNpdEG8AtBFt5MQ6xmQL4zVGatNM0cvbH3bJGepz4+8EX7kyVU+1+lGjbx3EURA+OLjY3VfRMsNb4FnIr1nYNDz1Jwr0dv22RqW2+7I7xiO9/Hs6vqTpepCPtePDtjg9U6vl+2koQ6mlx0ghxWjOug/fePZXk09wW1ylkGH1z+pKDYHsHYNAmtdZ/rgyq+U+lo00fE7kIu1twZTJsf0MCPXw0NKGroJWEYfFCdt2dArfPpiIfZFyS6nj+8CoBKjIE2aVIINDTBH29iUmYL9ms1QXhjNEztc6dvYts6oLRlZbbmg6y7Hq5Iz0= foobar",
 ]
-NUM_USERS = 100  # TODO increase to 4000
-ID_ZFILL = len(str(NUM_USERS))
-NUM_PIS = 10
-NUM_ORGS = 3
+NUM_USERS = 10000
+NUM_PIS = 100
+NUM_ORGS = 10
+# zfill: get the last number in the range from 0 to max, check how many digits of string it is
+ID_ZFILL = len(str(range(NUM_USERS - 1, NUM_USERS)[-1]))
+ORG_ZFILL = len(str(range(NUM_ORGS - 1, NUM_ORGS)[-1]))
+# the user number range starts at this number and ends at NUM_USERS
+NUM_RESERVED_USER_NUMBERS = 100
 
 
 def user_num2id(user_num: int) -> int:
-    return user_num + 10000
+    return user_num + 1000000
+
+
+def pi_num2gid(pi_num: int) -> int:
+    return pi_num + 2000000
+
+
+def org_num2gid(pi_num: int) -> int:
+    return pi_num + 3000000
 
 
 @beartype
@@ -119,13 +129,15 @@ def make_random_user(user_num: int, org: str) -> tuple[str, dict[str, object], d
 def main():
     random.seed(1)
 
-    org_group_membership = {k: [] for k in [f"org{x}_edu" for x in range(NUM_ORGS)]}
-    pi_group_membership = {}
+    org_group_membership = {
+        k: [] for k in [f"org{str(x).zfill(ORG_ZFILL)}_edu" for x in range(NUM_ORGS)]
+    }
+    pi_group_membership = {"pi_web_admin_unityhpc_test": []}
     user_groups = []
     users = [WEB_ADMIN]
 
-    pi_user_nums = random.sample(range(NUM_USERS), k=NUM_PIS)
-    for user_num in range(NUM_USERS):
+    pi_user_nums = random.sample(range(NUM_RESERVED_USER_NUMBERS, NUM_USERS), k=NUM_PIS)
+    for user_num in range(NUM_RESERVED_USER_NUMBERS, NUM_USERS):
         org = random.choice(list(org_group_membership.keys()))
         uid, user_attributes, user_group_attributes = make_random_user(user_num, org)
         users.append(user_attributes)
@@ -145,17 +157,17 @@ def main():
             ldap_conn.stream = ldif_tempfile
             for args in LDAP_EXTRA_ENTRIES:
                 ldap_conn.add(*args)
-            for group_cn, member_uids in org_group_membership.items():
+            for i, (group_cn, member_uids) in enumerate(org_group_membership.items()):
                 ldap_conn.add(
                     f"cn={group_cn},{ORG_GROUPS_OU_DN}",
                     GROUP_OBJECT_CLASSES,
-                    {"cn": group_cn, "memberuid": member_uids},
+                    {"cn": group_cn, "memberuid": member_uids, "gidnumber": org_num2gid(i)},
                 )
-            for group_cn, member_uids in pi_group_membership.items():
+            for i, (group_cn, member_uids) in enumerate(pi_group_membership.items()):
                 ldap_conn.add(
                     f"cn={group_cn},{PI_GROUPS_OU_DN}",
                     GROUP_OBJECT_CLASSES,
-                    {"cn": group_cn, "memberuid": member_uids},
+                    {"cn": group_cn, "memberuid": member_uids, "gidnumber": pi_num2gid(i)},
                 )
             for attributes in users:
                 cn = attributes["cn"]
@@ -163,7 +175,13 @@ def main():
             for attributes in user_groups:
                 cn = attributes["cn"]
                 ldap_conn.add(f"cn={cn},{USER_GROUPS_OU_DN}", GROUP_OBJECT_CLASSES, attributes)
-        print(f"export LDAP_BOOTSTRAP_LDIF_PATH={ldif_tempfile.name}")
+    print(f"export LDAP_BOOTSTRAP_LDIF_PATH={ldif_tempfile.name}")
+
+    with tempfile.NamedTemporaryFile(mode="w+", delete=False) as htpasswd_tempfile:
+        for user in users:
+            # password is "password"
+            htpasswd_tempfile.write(f"{user["mail"]}:$apr1$Rgrex74Z$rgJx6sCnGQN9UVMmhVG2R1\n")
+    print(f"export HTPASSWD_PATH={htpasswd_tempfile.name}")
 
 
 if __name__ == "__main__":
