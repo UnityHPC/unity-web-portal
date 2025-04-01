@@ -54,11 +54,12 @@ WEB_ADMIN = {
     "o": "unityhpc_test",
     "homedirectory": "/home/web_admin_unityhpc_test",
     "loginshell": "/bin/bash",
-    "uidnumber": 500,
-    "gidnumber": 500,
+    "uidnumber": 501,
+    "gidnumber": 501,
     "givenname": "Web",
     "sn": "Admin",
 }
+WEB_ADMIN_USER_GROUP = {"cn": "web_admin_unityhpc_test", "gidnumber": 501}
 SHELL_CHOICES = ["/bin/bash", "/bin/tcsh", "/bin/zsh"]
 PUBKEY_CHOICES = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDWG37i3uTdnanD8SCY2UCUcuqYEszvb/eebyqfUHiRn foobar",
@@ -136,7 +137,7 @@ def main():
         k: [] for k in [f"org{str(x).zfill(ORG_ZFILL)}_edu" for x in range(NUM_ORGS)]
     }
     pi_group_membership = {"pi_web_admin_unityhpc_test": []}
-    user_groups = []
+    user_groups = [WEB_ADMIN_USER_GROUP]
     users = [WEB_ADMIN]
 
     pi_user_nums = random.sample(range(NUM_RESERVED_USER_NUMBERS, NUM_USERS), k=NUM_PIS)
