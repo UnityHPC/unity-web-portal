@@ -10,6 +10,15 @@ import tempfile
 import ldap3
 from beartype import beartype
 
+NUM_USERS = 10000
+NUM_PIS = 100
+NUM_ORGS = 10
+# zfill: get the last number in the range from 0 to max, check how many digits of string it is
+ID_ZFILL = len(str(range(NUM_USERS - 1, NUM_USERS)[-1]))
+ORG_ZFILL = len(str(range(NUM_ORGS - 1, NUM_ORGS)[-1]))
+# the user number range starts at this number and ends at NUM_USERS
+NUM_RESERVED_USER_NUMBERS = 100
+
 ROOT_DN = "dc=unityhpc,dc=test"
 USERS_OU_DN = f"ou=users,{ROOT_DN}"
 USER_GROUPS_OU_DN = f"ou=groups,{ROOT_DN}"
@@ -66,14 +75,6 @@ PUBKEY_CHOICES = [
     "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBIL0GJOPT94cHG/vbgBtCdTxJNY3BTBxmKNJqb2cMdootEJr5Yt/mWoPDxW1FOazv+nhCwT5wfz/rCayAv6wptU= foobar",
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDBnvfnEmpXoyEygsTNdi4fhKiLAY9aUQ1ktMIY1GkegKkHds73wMlUsbf24I3OtV27gVIPTl8Q8VB9zfIC8cGR0lvF1XbcRXhumSM+efSICmgkFj5YlkBjfePH4Wgy4zU5I4UXo1fDsb6REl2XD/OU74hU1j0vkXS04LsLK4V11KTf7nWfQpFmR+ratK0jShP/jtz0W+jFNpdEG8AtBFt5MQ6xmQL4zVGatNM0cvbH3bJGepz4+8EX7kyVU+1+lGjbx3EURA+OLjY3VfRMsNb4FnIr1nYNDz1Jwr0dv22RqW2+7I7xiO9/Hs6vqTpepCPtePDtjg9U6vl+2koQ6mlx0ghxWjOug/fePZXk09wW1ylkGH1z+pKDYHsHYNAmtdZ/rgyq+U+lo00fE7kIu1twZTJsf0MCPXw0NKGroJWEYfFCdt2dArfPpiIfZFyS6nj+8CoBKjIE2aVIINDTBH29iUmYL9ms1QXhjNEztc6dvYts6oLRlZbbmg6y7Hq5Iz0= foobar",
 ]
-NUM_USERS = 10000
-NUM_PIS = 100
-NUM_ORGS = 10
-# zfill: get the last number in the range from 0 to max, check how many digits of string it is
-ID_ZFILL = len(str(range(NUM_USERS - 1, NUM_USERS)[-1]))
-ORG_ZFILL = len(str(range(NUM_ORGS - 1, NUM_ORGS)[-1]))
-# the user number range starts at this number and ends at NUM_USERS
-NUM_RESERVED_USER_NUMBERS = 100
 
 
 def user_num2id(user_num: int) -> int:
