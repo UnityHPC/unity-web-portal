@@ -7,10 +7,18 @@ require_once $LOC_HEADER;
 $invalid_ssh_dialogue = "<script type='text/javascript'>
 alert('Invalid SSH key. Please verify your public key file is valid.');
 </script>";
+$too_many_ssh_dialogue = "<script type='text/javascript'>
+alert('You have already uploaded the maximum number of SSH keys.');
+</script>";
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     switch ($_POST["form_type"]) {
         case "addKey":
+            $existing_keys = $USER->getSSHKeys(true);
+            if(count($existing_keys) >= $CONFIG["ldap"]["max_num_ssh_keys"]){
+                echo $too_many_ssh_dialogue;
+                break;
+            }
             $added_keys = array();
 
             switch ($_POST["add_type"]) {
@@ -55,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
             if (!empty($added_keys)) {
                 $added_keys = $SITE->removeTrailingWhitespace($added_keys);
-                $totalKeys = array_merge($USER->getSSHKeys(), $added_keys);
+                $totalKeys = array_merge($existing_keys, $added_keys);
                 $USER->setSSHKeys($totalKeys, $OPERATOR);
             }
             break;

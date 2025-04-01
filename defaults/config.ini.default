@@ -23,6 +23,7 @@ pigroup_ou = "ou=pi_groups,dc=unityhpc,dc=test"  ; PI Group organizational unit
 orggroup_ou = "ou=org_groups,dc=unityhpc,dc=test"  ; ORG group organizational unit
 admin_group = "cn=web_admins,dc=unityhpc,dc=test"  ; admin dn (members of this group are admins on the web portal)
 def_user_shell = "/bin/bash"  ; Default shell for new users
+max_num_ssh_keys = 100
 
 [sql]
 host = "sql"  ; mariadb hostname
