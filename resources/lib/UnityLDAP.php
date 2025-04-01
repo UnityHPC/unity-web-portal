@@ -11,6 +11,7 @@ use PHPOpenLDAPer\LDAPEntry;
 class UnityLDAP extends ldapConn
 {
   // User Specific Constants
+  // TODO how do these "maps" play with MAX_UID MAX_GID MAX_PIGID?
     private const ID_MAP = array(1000, 9999);
     private const PI_ID_MAP = array(10000, 19999);
     private const ORG_ID_MAP = array(20000, 29999);
