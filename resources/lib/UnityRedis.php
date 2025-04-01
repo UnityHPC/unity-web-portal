@@ -22,12 +22,16 @@ class UnityRedis
         }
     }
 
+    public function flushAll(){
+        $this->client->flushAll();
+    }
+
     public function setCache($object, $key, $data)
     {
         if (!$this->enabled) {
             return;
         }
-
+        // FIXME dubious cast to string
         if (!empty($key)) {
             $keyStr = $object . "_" . $key;
         } else {
@@ -42,7 +46,7 @@ class UnityRedis
         if (!$this->enabled) {
             return null;
         }
-
+        // FIXME dubious cast to string
         if (!empty($key)) {
             $keyStr = $object . "_" . $key;
         } else {

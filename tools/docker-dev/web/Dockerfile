@@ -29,4 +29,4 @@ RUN sed -i '/memory_limit/c\memory_limit = -1' /etc/php/8.3/apache2/php.ini
 # Start apache2 server
 EXPOSE 80
 
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+CMD ["bash", "-c", "pushd /var/www/unity-web-portal/workers && php ./update-ldap-cache.php && popd && apache2ctl -D FOREGROUND"]

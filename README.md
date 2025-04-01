@@ -32,6 +32,7 @@ Unity Web Portal is a PHP application built in top of MariaDB and LDAP which act
     1. Install packages `sudo composer update --no-plugins --no-scripts`
 1. Deployment:
     1. configure the files in `deployment/` according to their respective `README.md` files
+1. make sure redis cache is populated: `cd workers && php ./update-ldap-cache.php`
 1. Point your web server's document root to `webroot` in this repo
 
 The scope of this project ends at being responsible for the LDAP user database. We recommend production deployments to set up scripts which detect changes in LDAP and then perform further actions. For example, a script can be used to create Slurm scheduler accounting roles based on the LDAP information created by this website.

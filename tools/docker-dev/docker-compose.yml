@@ -13,6 +13,9 @@ services:
       - "8000:80"
     volumes:
       - ../../:/var/www/unity-web-portal
+    depends_on:
+      - redis
+      - identity
   sql:
     hostname: sql
     build: sql

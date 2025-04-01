@@ -166,6 +166,7 @@ class UnityLDAP extends ldapConn
         if ($id >= 60000 && $id <= 64999){
             return true;
         }
+        // FIXME use cache
         $users = $this->userOU->getChildrenArray(true);
         foreach ($users as $user) {
             if ($user["uidnumber"][0] == $id) {
@@ -186,18 +187,21 @@ class UnityLDAP extends ldapConn
         if ($id >= 60000 && $id <= 64999){
             return true;
         }
+        // FIXME use cache
         $groups = $this->groupOU->getChildrenArray(true);
         foreach ($groups as $group) {
             if ($group["gidnumber"][0] == $id) {
                 return true;
             }
         }
+        // FIXME use cache
         $pi_groups = $this->pi_groupOU->getChildrenArray(true);
         foreach ($pi_groups as $pi_group) {
             if ($pi_group["gidnumber"][0] == $id) {
                 return true;
             }
         }
+        // FIXME use cache
         $org_groups = $this->org_groupOU->getChildrenArray(true);
         foreach ($org_groups as $org_group) {
             if ($org_group["gidnumber"][0] == $id) {
@@ -348,5 +352,29 @@ class UnityLDAP extends ldapConn
     {
         $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=$gid," . $this->STR_ORGGROUPOU);
         return $ldap_entry;
+    }
+
+    public static function parseUserChildrenArray(array $userChildrenArray): array{
+        // input comes from LdapEntry::getChildrenArray on a UnityUser
+        $output = [];
+        $required_string_attributes = [
+            "gidnumber",
+            "givenname",
+            "homedirectory",
+            "loginshell",
+            "mail",
+            "o",
+            "sn",
+            "uid",
+            "uidnumber",
+        ];
+        foreach($required_string_attributes as $key){
+            $output[$key] = $userChildrenArray[$key][0];
+        }
+        $output["objectclass"] = $userChildrenArray["objectclass"];
+        if(array_key_exists("sspublickey", $userChildrenArray)){
+            $output["sshpublickey"] = $userChildrenArray["sshpublickey"];
+        }
+        return $output;
     }
 }
