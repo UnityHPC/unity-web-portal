@@ -19,13 +19,6 @@ ORG_GROUPS_OU_DN = f"ou=org_groups,{ROOT_DN}"
 USER_OBJECT_CLASSES = ["inetOrgPerson", "posixAccount", "top", "ldapPublicKey"]
 GROUP_OBJECT_CLASSES = ["posixGroup", "top"]
 OU_OBJECT_CLASSES = ["organizationalUnit", "top"]
-WEB_ADMIN = {
-    "cn": "web_admin_unityhpc_edu",
-    "uid": "web_admin_unityhpc_edu",
-    "mail": "web_admin@unityhpc.edu",
-    "o": "unityhpc_edu",
-    "homedirectory": "/home/web_admin_unityhpc_edu",
-}
 LDAP_EXTRA_ENTRIES = [
     [
         ROOT_DN,
@@ -49,13 +42,25 @@ LDAP_EXTRA_ENTRIES = [
     [
         f"cn=web_admins,{ROOT_DN}",
         GROUP_OBJECT_CLASSES,
-        {"cn": "web_admins", "memberuid": [WEB_ADMIN["uid"]]},
+        {"cn": "web_admins", "gidnumber": 500, "memberuid": "web_admin_unityhpc_test"},
     ],
     [f"ou=groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "groups"}],
     [f"ou=org_groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "org_groups"}],
     [f"ou=pi_groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "pi_groups"}],
     [f"ou=users,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "users"}],
 ]
+WEB_ADMIN = {
+    "cn": "web_admin_unityhpc_test",
+    "uid": "web_admin_unityhpc_test",
+    "mail": "web_admin@unityhpc.test",
+    "o": "unityhpc_test",
+    "homedirectory": "/home/web_admin_unityhpc_test",
+    "loginshell": "/bin/bash",
+    "uidnumber": 500,
+    "gidnumber": 500,
+    "givenname": "Web",
+    "sn": "Admin",
+}
 SHELL_CHOICES = ["/bin/bash", "/bin/tcsh", "/bin/zsh"]
 PUBKEY_CHOICES = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDWG37i3uTdnanD8SCY2UCUcuqYEszvb/eebyqfUHiRn foobar",
@@ -117,10 +122,9 @@ def main():
     org_group_membership = {k: [] for k in [f"org{x}_edu" for x in range(NUM_ORGS)]}
     pi_group_membership = {}
     user_groups = []
-    users = []
+    users = [WEB_ADMIN]
 
-    # 0th user will not be PI because uid will be changed to web_admin
-    pi_user_nums = random.sample(range(1, NUM_USERS), k=NUM_PIS)
+    pi_user_nums = random.sample(range(NUM_USERS), k=NUM_PIS)
     for user_num in range(NUM_USERS):
         org = random.choice(list(org_group_membership.keys()))
         uid, user_attributes, user_group_attributes = make_random_user(user_num, org)
@@ -135,8 +139,6 @@ def main():
         num_pis = random.randint(0, 3)
         for pi in random.sample(list(pi_group_membership.keys()), k=num_pis):
             pi_group_membership[pi].append(uid)
-
-    users[0].update(WEB_ADMIN)
 
     with tempfile.NamedTemporaryFile(mode="w+", delete=False) as ldif_tempfile:
         with ldap3.Connection(server=None, client_strategy=ldap3.LDIF) as ldap_conn:
