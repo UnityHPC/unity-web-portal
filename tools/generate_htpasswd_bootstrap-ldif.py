@@ -46,17 +46,12 @@ LDAP_EXTRA_ENTRIES = [
             "description": "for LDAP server administration purposes only",
         },
     ],
-    [
-        f"cn=web_admins,{ROOT_DN}",
-        GROUP_OBJECT_CLASSES,
-        {"cn": "web_admins", "gidnumber": 500, "memberuid": "web_admin_unityhpc_test"},
-    ],
     [f"ou=groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "groups"}],
     [f"ou=org_groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "org_groups"}],
     [f"ou=pi_groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "pi_groups"}],
     [f"ou=users,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "users"}],
 ]
-WEB_ADMIN = {
+WEB_ADMIN_USER = {
     "cn": "web_admin_unityhpc_test",
     "uid": "web_admin_unityhpc_test",
     "mail": "web_admin@unityhpc.test",
@@ -69,6 +64,8 @@ WEB_ADMIN = {
     "sn": "Admin",
 }
 WEB_ADMIN_USER_GROUP = {"cn": "web_admin_unityhpc_test", "gidnumber": 501}
+WEB_ADMINS_GROUP_GID = 500
+WEB_ADMINS_GROUP_MEMBERS = ["web_admin_unityhpc_test"]
 SHELL_CHOICES = ["/bin/bash", "/bin/tcsh", "/bin/zsh"]
 PUBKEY_CHOICES = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDWG37i3uTdnanD8SCY2UCUcuqYEszvb/eebyqfUHiRn foobar",
@@ -139,7 +136,7 @@ def main():
     }
     pi_group_membership = {"pi_web_admin_unityhpc_test": []}
     user_groups = [WEB_ADMIN_USER_GROUP]
-    users = [WEB_ADMIN]
+    users = [WEB_ADMIN_USER]
 
     pi_user_nums = random.sample(range(NUM_RESERVED_USER_NUMBERS, NUM_USERS), k=NUM_PIS)
     for user_num in range(NUM_RESERVED_USER_NUMBERS, NUM_USERS):
@@ -162,6 +159,15 @@ def main():
             ldap_conn.stream = ldif_tempfile
             for args in LDAP_EXTRA_ENTRIES:
                 ldap_conn.add(*args)
+            ldap_conn.add(
+                f"cn=web_admins,{ROOT_DN}",
+                GROUP_OBJECT_CLASSES,
+                {
+                    "cn": "web_admins",
+                    "memberuid": WEB_ADMINS_GROUP_MEMBERS,
+                    "gidnumber": WEB_ADMINS_GROUP_GID,
+                },
+            )
             for i, (group_cn, member_uids) in enumerate(org_group_membership.items()):
                 ldap_conn.add(
                     f"cn={group_cn},{ORG_GROUPS_OU_DN}",
