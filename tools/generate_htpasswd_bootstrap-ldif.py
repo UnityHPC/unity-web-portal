@@ -85,9 +85,9 @@ def pi_num2gid(pi_num: int) -> int:
     return pi_num + 2000000
 
 
-def org_num2gid(pi_num: int) -> int:
+def org_num2gid(org_num: int) -> int:
     assert org_num < 1000000
-    return pi_num + 3000000
+    return org_num + 3000000
 
 
 @beartype
