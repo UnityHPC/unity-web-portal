@@ -76,14 +76,17 @@ NUM_RESERVED_USER_NUMBERS = 100
 
 
 def user_num2id(user_num: int) -> int:
+    assert user_num < 1000000
     return user_num + 1000000
 
 
 def pi_num2gid(pi_num: int) -> int:
+    assert pi_num < 1000000
     return pi_num + 2000000
 
 
 def org_num2gid(pi_num: int) -> int:
+    assert org_num < 1000000
     return pi_num + 3000000
 
 
