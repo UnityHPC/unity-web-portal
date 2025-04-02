@@ -22,7 +22,7 @@ if (array_key_exists("f", $options)) {
 }
 
 if (!is_null($REDIS->getCache("initialized", ""))) {
-    echo "cache is already initialized, nothing doing.\n";
+    echo "cache is already initialized, nothing doing. use -f argument to flush cache.\n";
 } else {
     echo "rebuilding cache...\n";
     $user_ou = new LDAPEntry($LDAP->getConn(), $CONFIG["ldap"]["user_ou"]);
