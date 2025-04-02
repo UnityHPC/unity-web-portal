@@ -145,6 +145,7 @@ def make_random_user(
     )
 
 
+@beartype
 def dict2ldif(x: dict) -> str:
     output = ""
     for k, v in x.items():
