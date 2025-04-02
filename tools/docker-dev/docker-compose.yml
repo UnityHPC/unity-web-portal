@@ -16,6 +16,8 @@ services:
     depends_on:
       - redis
       - identity
+      - sql
+      - smtp
   sql:
     hostname: sql
     build: sql
