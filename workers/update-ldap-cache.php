@@ -73,7 +73,6 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     }
     foreach($user_pi_group_member_of as $uid => $pi_groups){
         $REDIS->setCache($uid, "pi_groups", $pi_groups);
-        echo $uid . "_pi_groups\n";
     }
     $REDIS->setCache("initializing", "", false);
     $REDIS->setCache("initialized", "", true);
