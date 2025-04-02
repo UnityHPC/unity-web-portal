@@ -194,10 +194,10 @@ def main():
     # to meet NUM_PIS
     assert (
         NUM_USERS >= cur_user_num
-    ), f"test cases have made {cur_user_num} users but NUM_USERS=={NUM_USERS}!"
+    ), f"test cases have made {cur_user_num} users, which already exceeds  NUM_USERS=={NUM_USERS}!"
     assert NUM_PIS >= len(
         pi_group_membership
-    ), f"test cases have made {len(pi_group_membership)} PIs but NUM_PIS=={NUM_PIS}!"
+    ), f"test cases have made {len(pi_group_membership)} PIs, which already exceeds NUM_PIS=={NUM_PIS}!"
     filler_user_nums = range(cur_user_num, NUM_USERS)
     filler_pi_user_nums = random.sample(filler_user_nums, k=(NUM_PIS - len(pi_group_membership)))
     for user_num in filler_user_nums:
