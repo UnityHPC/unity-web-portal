@@ -109,16 +109,12 @@ def make_random_user(
     """
     # eppn must be {user}@{org}.edu: https://www.educause.edu/fidm/attributes
     # this form is also a valid email address, and 99% of the time it should be their email
-    eppn = f"user{str(user_num).zfill(ID_ZFILL)}@{org}"
+    eppn = f"user{str(user_num).zfill(ID_ZFILL)}@{org}.edu"
     uid = eppn.replace("@", "_").replace(".", "_")
     if num_pubkeys == 1:
         pubkey_or_pubkeys = random.choice(PUBKEY_CHOICES)
     else:
         pubkey_or_pubkeys = random.sample(PUBKEY_CHOICES, k=num_pubkeys)
-    len_email_org = random.choice([4, 10, 15])
-    email_org = "".join(random.sample(string.ascii_letters + string.digits, k=len_email_org))
-    email_tld = "".join(random.sample(string.ascii_letters + string.digits, k=3))
-    email = f"{uid}@{email_org}.{email_tld}"  # user_org_edu@asldkjasldkj.xxx
     uidnumber_gidnumber = user_num2id(user_num)
     return (
         uid,
@@ -127,7 +123,7 @@ def make_random_user(
             "objectclass": USER_OBJECT_CLASSES,
             "cn": uid,
             "uid": uid,
-            "mail": email,
+            "mail": eppn,
             "o": org,
             "uidnumber": uidnumber_gidnumber,
             "gidnumber": uidnumber_gidnumber,
@@ -166,7 +162,7 @@ def main():
     random.seed(1)
 
     org_group_membership = {
-        k: set() for k in [f"org{str(x).zfill(ORG_ZFILL)}_edu" for x in range(NUM_ORGS)]
+        k: set() for k in [f"org{str(x).zfill(ORG_ZFILL)}" for x in range(NUM_ORGS)]
     }
     pi_group_membership = {"pi_web_admin_unityhpc_test": set()}
     user_pi_group_membership = {}
@@ -335,13 +331,13 @@ def main():
                 },
             )
         )
-        for i, (group_cn, member_uids) in enumerate(org_group_membership.items()):
+        for i, (org, member_uids) in enumerate(org_group_membership.items()):
             ldif_tempfile.write(
                 dict2ldif(
                     {
-                        "dn": f"cn={group_cn},{ORG_GROUPS_OU_DN}",
+                        "dn": f"cn={org}_edu,{ORG_GROUPS_OU_DN}",
                         "objectclass": GROUP_OBJECT_CLASSES,
-                        "cn": group_cn,
+                        "cn": f"{org}_edu",
                         "memberuid": member_uids,
                         "gidnumber": org_num2gid(i),
                     },
