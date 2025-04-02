@@ -253,8 +253,7 @@ class UnityGroup
      */
     public function approveUser($new_user, $send_mail = true)
     {
-        // user requested to join group but was subsequently deleted
-        // FIXME this should be an error, this should not resurrect a user!
+        // user isn't added to LDAP until they are accepted to their first PI group
         if (!$new_user->exists()) {
             $new_user->init();
         }
@@ -290,7 +289,7 @@ class UnityGroup
 
     public function denyUser($new_user, $send_mail = true)
     {
-        // user requested to join group but was subsequently deleted
+        // user isn't added to LDAP until they are accepted to their first PI group
         if (!$this->requestExists($new_user)) {
             return;
         }
