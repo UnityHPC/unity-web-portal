@@ -3,6 +3,7 @@ generates an htpasswd and a bootstrap.ldif for the web and identity docker conta
 outputs shell instructions to set LDAP_BOOTSTRAP_LDIF_PATH and HTPASSWD_PATH to tempfiles
 """
 
+import sys
 import string
 import random
 import tempfile
@@ -11,7 +12,7 @@ import ldap3
 from beartype import beartype
 
 NUM_USERS = 10000
-NUM_PIS = 100
+NUM_PIS = 209  # should be >= (the number of PIs created by test cases + MAX_PIS_MEMBER_OF)
 NUM_ORGS = 10
 # zfill: get the last number in the range from 0 to max, check how many digits of string it is
 ID_ZFILL = len(str(range(NUM_USERS - 1, NUM_USERS)[-1]))
@@ -65,13 +66,13 @@ WEB_ADMIN_USER = {
 }
 WEB_ADMIN_USER_GROUP = {"cn": "web_admin_unityhpc_test", "gidnumber": 501}
 WEB_ADMINS_GROUP_GID = 500
-WEB_ADMINS_GROUP_MEMBERS = ["web_admin_unityhpc_test"]
+LOCKED_GROUP_GID = 502
 SHELL_CHOICES = ["/bin/bash", "/bin/tcsh", "/bin/zsh"]
+MAX_PUBKEYS = 100  # TODO integrate with UnityConfig
+MAX_PIS_MEMBER_OF = 100  # TODO integrate with UnityConfig
 PUBKEY_CHOICES = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDWG37i3uTdnanD8SCY2UCUcuqYEszvb/eebyqfUHiRn foobar",
-    "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBIL0GJOPT94cHG/vbgBtCdTxJNY3BTBxmKNJqb2cMdootEJr5Yt/mWoPDxW1FOazv+nhCwT5wfz/rCayAv6wptU= foobar",
-    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDBnvfnEmpXoyEygsTNdi4fhKiLAY9aUQ1ktMIY1GkegKkHds73wMlUsbf24I3OtV27gVIPTl8Q8VB9zfIC8cGR0lvF1XbcRXhumSM+efSICmgkFj5YlkBjfePH4Wgy4zU5I4UXo1fDsb6REl2XD/OU74hU1j0vkXS04LsLK4V11KTf7nWfQpFmR+ratK0jShP/jtz0W+jFNpdEG8AtBFt5MQ6xmQL4zVGatNM0cvbH3bJGepz4+8EX7kyVU+1+lGjbx3EURA+OLjY3VfRMsNb4FnIr1nYNDz1Jwr0dv22RqW2+7I7xiO9/Hs6vqTpepCPtePDtjg9U6vl+2koQ6mlx0ghxWjOug/fePZXk09wW1ylkGH1z+pKDYHsHYNAmtdZ/rgyq+U+lo00fE7kIu1twZTJsf0MCPXw0NKGroJWEYfFCdt2dArfPpiIfZFyS6nj+8CoBKjIE2aVIINDTBH29iUmYL9ms1QXhjNEztc6dvYts6oLRlZbbmg6y7Hq5Iz0= foobar",
-]
+    random.choice(string.ascii_letters + string.digits) for x in range(MAX_PUBKEYS)
+]  # FIXME
 
 
 def user_num2id(user_num: int) -> int:
@@ -90,7 +91,9 @@ def org_num2gid(org_num: int) -> int:
 
 
 @beartype
-def make_random_user(user_num: int, org: str) -> tuple[str, dict[str, object], dict[str, object]]:
+def make_random_user(
+    user_num: int, org: str, num_pubkeys: int
+) -> tuple[str, dict[str, object], dict[str, object]]:
     """
     returns uid, ldap posixaccount attributes, ldap posixgroup attributes
     does not generate pi group membership because this is used to make the PIs (chicken/egg problem)
@@ -99,7 +102,6 @@ def make_random_user(user_num: int, org: str) -> tuple[str, dict[str, object], d
     # this form is also a valid email address, and 99% of the time it should be their email
     eppn = f"user{str(user_num).zfill(ID_ZFILL)}@{org}"
     uid = eppn.replace("@", "_").replace(".", "_")
-    num_pubkeys = random.randint(0, 3)
     if num_pubkeys == 1:
         pubkey_or_pubkeys = random.choice(PUBKEY_CHOICES)
     else:
@@ -132,27 +134,100 @@ def main():
     random.seed(1)
 
     org_group_membership = {
-        k: [] for k in [f"org{str(x).zfill(ORG_ZFILL)}_edu" for x in range(NUM_ORGS)]
+        k: set() for k in [f"org{str(x).zfill(ORG_ZFILL)}_edu" for x in range(NUM_ORGS)]
     }
     pi_group_membership = {"pi_web_admin_unityhpc_test": []}
     user_groups = [WEB_ADMIN_USER_GROUP]
     users = [WEB_ADMIN_USER]
+    filler_user_names = []
+    filler_pi_names = []
+    users_requested_deletion = []
+    locked_users = []
+    web_admins_group_members = [WEB_ADMIN_USER["cn"]]
+    users_need_pis = {}
+    pis_need_users = {}
+    ALL_FILLER_USERS = -1
+    pis_need_all_filler_users = []
 
-    pi_user_nums = random.sample(range(NUM_RESERVED_USER_NUMBERS, NUM_USERS), k=NUM_PIS)
-    for user_num in range(NUM_RESERVED_USER_NUMBERS, NUM_USERS):
+    # test case users
+    # start counting at the end of the reserved user number range
+    cur_user_num = NUM_RESERVED_USER_NUMBERS
+    for is_admin in [True, False]:
+        for has_requested_deletion in [True, False]:
+            for is_locked in [True, False]:
+                for is_pi in [True, False]:
+                    for num_pi_group_members in [0, 1, ALL_FILLER_USERS]:
+                        for num_pubkeys in [0, 1, MAX_PUBKEYS]:
+                            for num_pi_group_member_of in [0, 1, MAX_PIS_MEMBER_OF]:
+                                if has_requested_deletion and is_pi:
+                                    continue
+                                if not is_pi and num_pi_group_members > 0:
+                                    continue
+                                org = random.choice(list(org_group_membership.keys()))
+                                uid, user_attributes, user_group_attributes = make_random_user(
+                                    cur_user_num, org, num_pubkeys
+                                )
+                                org_group_membership[org].add(uid)
+                                users.append(user_attributes)
+                                user_groups.append(user_group_attributes)
+                                if is_admin:
+                                    web_admins_group_members.append(uid)
+                                if has_requested_deletion:
+                                    users_requested_deletion.append(uid)
+                                if is_locked:
+                                    locked_users.append(uid)
+                                if is_pi:
+                                    pi_group_membership[f"pi_{uid}"] = set()
+                                    if num_pi_group_members == ALL_FILLER_USERS:
+                                        pis_need_all_filler_users.append(f"pi_{uid}")
+                                    elif num_pi_group_members > 0:
+                                        pis_need_users[f"pi_{uid}"] = num_pi_group_members
+                                if num_pi_group_member_of > 0:
+                                    users_need_pis[uid] = num_pi_group_member_of
+                                cur_user_num += 1
+
+    print(
+        f"test cases made {cur_user_num} users and {len(pi_group_membership)} PIs", file=sys.stderr
+    )
+
+    # after covering all cases, generate random users to meet NUM_USERS, and make some of them PIs
+    # to meet NUM_PIS
+    assert (
+        NUM_USERS >= cur_user_num
+    ), f"test cases have made {cur_user_num} users but NUM_USERS=={NUM_USERS}!"
+    assert NUM_PIS >= len(
+        pi_group_membership
+    ), f"test cases have made {len(pi_group_membership)} PIs but NUM_PIS=={NUM_PIS}!"
+    filler_user_nums = range(cur_user_num, NUM_USERS)
+    filler_pi_user_nums = random.sample(filler_user_nums, k=(NUM_PIS - len(pi_group_membership)))
+    for user_num in filler_user_nums:
         org = random.choice(list(org_group_membership.keys()))
-        uid, user_attributes, user_group_attributes = make_random_user(user_num, org)
+        num_pubkeys = random.randint(0, 3)
+        uid, user_attributes, user_group_attributes = make_random_user(user_num, org, num_pubkeys)
         users.append(user_attributes)
         user_groups.append(user_group_attributes)
-        org_group_membership.setdefault(org, []).append(uid)
-        if user_num in pi_user_nums:
-            pi_group_membership[f"pi_{uid}"] = []
+        org_group_membership[org].add(uid)
+        if user_num in filler_pi_user_nums:
+            pi_group_membership[f"pi_{uid}"] = set()
+            filler_pi_names.append(f"pi_{uid}")
+        filler_user_names.append(user_attributes["cn"])
 
-    for attributes in users:
-        uid = attributes["uid"]
-        num_pis = random.randint(0, 3)
-        for pi in random.sample(list(pi_group_membership.keys()), k=num_pis):
-            pi_group_membership[pi].append(uid)
+    # use filler users and filler PIs to meet num_pi_group_members and num_pi_group_member_of
+    for pi, num_needed in pis_need_users.items():
+        assert (
+            len(filler_user_names) >= num_needed
+        ), f"there aren't enough filler users ({len(filler_user_names)}) to meet num_pi_group_members ({num_needed})!"
+        pi_group_membership[pi] = random.sample(filler_user_names, k=num_needed)
+    for uid, num_needed in users_need_pis.items():
+        assert (
+            len(filler_pi_names) >= num_needed
+        ), f"there aren't enough filler PIs ({len(filler_pi_names)}) to meet num_pi_group_member_of ({num_needed})!"
+        for selected_pi in random.sample(filler_pi_names, k=num_needed):
+            pi_group_membership[selected_pi].add(uid)
+    for pi in pis_need_all_filler_users:
+        pi_group_membership[pi] |= set(filler_user_names)
+
+    # TODO deletion request
 
     with tempfile.NamedTemporaryFile(mode="w+", delete=False) as ldif_tempfile:
         with ldap3.Connection(server=None, client_strategy=ldap3.LDIF) as ldap_conn:
@@ -164,8 +239,17 @@ def main():
                 GROUP_OBJECT_CLASSES,
                 {
                     "cn": "web_admins",
-                    "memberuid": WEB_ADMINS_GROUP_MEMBERS,
+                    "memberuid": web_admins_group_members,
                     "gidnumber": WEB_ADMINS_GROUP_GID,
+                },
+            )
+            ldap_conn.add(
+                f"cn=locked,{ROOT_DN}",
+                GROUP_OBJECT_CLASSES,
+                {
+                    "cn": "locked",
+                    "memberuid": locked_users,
+                    "gidnumber": LOCKED_GROUP_GID,
                 },
             )
             for i, (group_cn, member_uids) in enumerate(org_group_membership.items()):
