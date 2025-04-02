@@ -7,9 +7,7 @@ output="$(python ./tools/generate_htpasswd_bootstrap-ldif.py)"
 echo "$output"
 eval "$output"
 set -x
-# remove 1st 2 lines (version) from ldif
-tail -n +3 "$LDAP_BOOTSTRAP_LDIF_PATH" | grep -v changetype > ./tools/docker-dev/identity/bootstrap.ldif
-rm "$LDAP_BOOTSTRAP_LDIF_PATH"
+mv "$LDAP_BOOTSTRAP_LDIF_PATH" ./tools/docker-dev/identity/bootstrap.ldif
 mv "$HTPASSWD_PATH" ./tools/docker-dev/web/htpasswd
 cd ./tools/docker-dev
 docker-compose down

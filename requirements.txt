@@ -1,2 +1,1 @@
-ldap3
 beartype

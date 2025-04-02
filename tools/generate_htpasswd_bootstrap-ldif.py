@@ -8,7 +8,6 @@ import string
 import random
 import tempfile
 
-import ldap3
 from beartype import beartype
 
 NUM_USERS = 10000
@@ -29,30 +28,31 @@ USER_OBJECT_CLASSES = ["inetOrgPerson", "posixAccount", "top", "ldapPublicKey"]
 GROUP_OBJECT_CLASSES = ["posixGroup", "top"]
 OU_OBJECT_CLASSES = ["organizationalUnit", "top"]
 LDAP_EXTRA_ENTRIES = [
-    [
-        ROOT_DN,
-        ["organization", "dcObject", "top"],
-        {"structuralObjectClass": "organization", "o": "unityhpc"},
-    ],
-    [
-        f"cn=admin,{ROOT_DN}",
-        [
+    {
+        "dn": ROOT_DN,
+        "objectClass": ["organization", "dcObject", "top"],
+        "structuralObjectClass": "organization",
+        "o": "unityhpc",
+    },
+    {
+        "dn": f"cn=admin,{ROOT_DN}",
+        "cn": "admin",
+        "userPassword": "{SSHA}d6WBSm5wjlNpMwil1KQY+Uo4o/vc6PnR",  # password is "password"
+        "description": "for LDAP server administration purposes only",
+        "objectClass": [
             "simpleSecurityObject",
             "organizationalRole",
             "top",
         ],
-        {
-            "cn": "admin",
-            "userPassword": "{SSHA}d6WBSm5wjlNpMwil1KQY+Uo4o/vc6PnR",  # password is "password"
-            "description": "for LDAP server administration purposes only",
-        },
-    ],
-    [f"ou=groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "groups"}],
-    [f"ou=org_groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "org_groups"}],
-    [f"ou=pi_groups,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "pi_groups"}],
-    [f"ou=users,{ROOT_DN}", OU_OBJECT_CLASSES, {"ou": "users"}],
+    },
+    {"dn": USER_GROUPS_OU_DN, "objectClass": OU_OBJECT_CLASSES, "ou": "groups"},
+    {"dn": ORG_GROUPS_OU_DN, "objectClass": OU_OBJECT_CLASSES, "ou": "org_groups"},
+    {"dn": PI_GROUPS_OU_DN, "objectClass": OU_OBJECT_CLASSES, "ou": "pi_groups"},
+    {"dn": USERS_OU_DN, "objectClass": OU_OBJECT_CLASSES, "ou": "users"},
 ]
 WEB_ADMIN_USER = {
+    "dn": f"cn=web_admin_unityhpc_test,{USERS_OU_DN}",
+    "objectclass": USER_OBJECT_CLASSES,
     "cn": "web_admin_unityhpc_test",
     "uid": "web_admin_unityhpc_test",
     "mail": "web_admin@unityhpc.test",
@@ -64,7 +64,12 @@ WEB_ADMIN_USER = {
     "givenname": "Web",
     "sn": "Admin",
 }
-WEB_ADMIN_USER_GROUP = {"cn": "web_admin_unityhpc_test", "gidnumber": 501}
+WEB_ADMIN_USER_GROUP = {
+    "dn": f"cn=web_admin_unityhpc_test,{USER_GROUPS_OU_DN}",
+    "objectclass": GROUP_OBJECT_CLASSES,
+    "cn": "web_admin_unityhpc_test",
+    "gidnumber": 501,
+}
 WEB_ADMINS_GROUP_GID = 500
 LOCKED_GROUP_GID = 502
 SHELL_CHOICES = ["/bin/bash", "/bin/zsh", "foobar"]
@@ -112,15 +117,18 @@ def make_random_user(
     email_org = "".join(random.sample(string.ascii_letters + string.digits, k=len_email_org))
     email_tld = "".join(random.sample(string.ascii_letters + string.digits, k=3))
     email = f"{uid}@{email_org}.{email_tld}"  # user_org_edu@asldkjasldkj.xxx
+    uidnumber_gidnumber = user_num2id(user_num)
     return (
         uid,
         {
+            "dn": f"cn={uid},{USERS_OU_DN}",
+            "objectclass": USER_OBJECT_CLASSES,
             "cn": uid,
             "uid": uid,
             "mail": email,
             "o": org,
-            "uidnumber": user_num2id(user_num),
-            "gidnumber": user_num2id(user_num),
+            "uidnumber": uidnumber_gidnumber,
+            "gidnumber": uidnumber_gidnumber,
             "givenname": f"Givenname{user_num}",
             "sn": f"Surname{user_num}",
             "homedirectory": f"/home/{uid}",
@@ -128,8 +136,27 @@ def make_random_user(
             "sshpublickey": pubkey_or_pubkeys,
         },
         # user group does not have memberuids, rely on user gidnumber instead
-        {"cn": uid, "gidnumber": user_num2id(user_num)},
+        {
+            "cn": uid,
+            "gidnumber": uidnumber_gidnumber,
+            "dn": f"cn={uid},{USER_GROUPS_OU_DN}",
+            "objectclass": GROUP_OBJECT_CLASSES,
+        },
     )
+
+
+def dict2ldif(x: dict) -> str:
+    output = ""
+    for k, v in x.items():
+        if isinstance(v, (list, set)):
+            if len(v) == 0:
+                continue  # no empty values allowed
+            for e in v:
+                output += f"{k}: {e}\n"  # lists are represented as duplicate keys
+        else:
+            output += f"{k}: {v}\n"
+    output += "\n"
+    return output
 
 
 def main():
@@ -276,49 +303,58 @@ def main():
     print(f"export SQL_BOOTSTRAP_USERS_PATH={sql_tempfile.name}")
 
     with tempfile.NamedTemporaryFile(mode="w+", delete=False) as ldif_tempfile:
-        with ldap3.Connection(server=None, client_strategy=ldap3.LDIF) as ldap_conn:
-            ldap_conn.stream = ldif_tempfile
-            for args in LDAP_EXTRA_ENTRIES:
-                ldap_conn.add(*args)
-            ldap_conn.add(
-                f"cn=web_admins,{ROOT_DN}",
-                GROUP_OBJECT_CLASSES,
+        for entry in LDAP_EXTRA_ENTRIES:
+            ldif_tempfile.write(dict2ldif(entry))
+        ldif_tempfile.write(
+            dict2ldif(
                 {
+                    "dn": f"cn=web_admins,{ROOT_DN}",
+                    "objectclass": GROUP_OBJECT_CLASSES,
                     "cn": "web_admins",
                     "memberuid": web_admins_group_members,
                     "gidnumber": WEB_ADMINS_GROUP_GID,
                 },
             )
-            ldap_conn.add(
-                f"cn=locked,{ROOT_DN}",
-                GROUP_OBJECT_CLASSES,
+        )
+        ldif_tempfile.write(
+            dict2ldif(
                 {
+                    "dn": f"cn=locked,{ROOT_DN}",
+                    "objectclass": GROUP_OBJECT_CLASSES,
                     "cn": "locked",
                     "memberuid": locked_users,
                     "gidnumber": LOCKED_GROUP_GID,
                 },
             )
-            for i, (group_cn, member_uids) in enumerate(org_group_membership.items()):
-                ldap_conn.add(
-                    f"cn={group_cn},{ORG_GROUPS_OU_DN}",
-                    GROUP_OBJECT_CLASSES,
-                    {"cn": group_cn, "memberuid": member_uids, "gidnumber": org_num2gid(i)},
+        )
+        for i, (group_cn, member_uids) in enumerate(org_group_membership.items()):
+            ldif_tempfile.write(
+                dict2ldif(
+                    {
+                        "dn": f"cn={group_cn},{ORG_GROUPS_OU_DN}",
+                        "objectclass": GROUP_OBJECT_CLASSES,
+                        "cn": group_cn,
+                        "memberuid": member_uids,
+                        "gidnumber": org_num2gid(i),
+                    },
                 )
-            print("adding PI groups to LDAP...", file=sys.stderr)
-            for i, (group_cn, member_uids) in enumerate(pi_group_membership.items()):
-                ldap_conn.add(
-                    f"cn={group_cn},{PI_GROUPS_OU_DN}",
-                    GROUP_OBJECT_CLASSES,
-                    {"cn": group_cn, "memberuid": member_uids, "gidnumber": pi_num2gid(i)},
+            )
+        for i, (group_cn, member_uids) in enumerate(pi_group_membership.items()):
+            ldif_tempfile.write(
+                dict2ldif(
+                    {
+                        "dn": f"cn={group_cn},{PI_GROUPS_OU_DN}",
+                        "objectclass": GROUP_OBJECT_CLASSES,
+                        "cn": group_cn,
+                        "memberuid": member_uids,
+                        "gidnumber": pi_num2gid(i),
+                    },
                 )
-            print("adding users to LDAP...", file=sys.stderr)
-            for attributes in users:
-                cn = attributes["cn"]
-                ldap_conn.add(f"cn={cn},{USERS_OU_DN}", USER_OBJECT_CLASSES, attributes)
-            print("adding user groups to LDAP...", file=sys.stderr)
-            for attributes in user_groups:
-                cn = attributes["cn"]
-                ldap_conn.add(f"cn={cn},{USER_GROUPS_OU_DN}", GROUP_OBJECT_CLASSES, attributes)
+            )
+        for attributes in users:
+            ldif_tempfile.write(dict2ldif(attributes))
+        for attributes in user_groups:
+            ldif_tempfile.write(dict2ldif(attributes))
     print(f"export LDAP_BOOTSTRAP_LDIF_PATH={ldif_tempfile.name}")
 
     with tempfile.NamedTemporaryFile(mode="w+", delete=False) as htpasswd_tempfile:
@@ -329,6 +365,6 @@ def main():
 
 
 if __name__ == "__main__":
-    import cProfile
-
-    cProfile.run("main()")
+    # import cProfile
+    # cProfile.run("main()")
+    main()
