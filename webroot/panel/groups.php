@@ -30,6 +30,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     array_push($modalErrors, "You\'re already in this PI group");
                 }
 
+                $pi_groups = $USER->getPIGroups();
+                $requests = $SQL->getRequestsByUser($USER->getUID());
+                if (count($pi_groups) + count($requests) >= $CONFIG["ldap"]["max_num_pi_groups_per_user"]) {
+                    array_push($modalErrors, "You\'ve already requested or joined the maximum number of PI groups");
+                }
+
                 // Add row to sql
                 if (empty($modalErrors)) {
                     $pi_account->newUserRequest($USER);
