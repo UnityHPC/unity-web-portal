@@ -3,7 +3,7 @@ set -e
 repo_dir="$(git rev-parse --show-toplevel)"
 cd "$repo_dir"
 source ./venv/bin/activate
-output="$(python ./tools/generate_htpasswd_bootstrap-ldif.py)"
+output="$(cd ./tools && python ./generate_htpasswd_bootstrap-ldif.py)"
 echo "$output"
 eval "$output"
 set -x

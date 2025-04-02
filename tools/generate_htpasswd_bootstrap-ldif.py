@@ -4,6 +4,7 @@ outputs shell instructions to set LDAP_BOOTSTRAP_LDIF_PATH HTPASSWD_PATH SQL_BOO
 """
 
 import sys
+import json
 import string
 import random
 import tempfile
@@ -75,11 +76,12 @@ LOCKED_GROUP_GID = 502
 SHELL_CHOICES = ["/bin/bash", "/bin/zsh", "foobar"]
 MAX_PUBKEYS = 100  # TODO integrate with UnityConfig
 MAX_PIS_MEMBER_OF = 100  # TODO integrate with UnityConfig
-PUBKEY_CHOICES = [
-    random.choice(string.ascii_letters + string.digits) for x in range(MAX_PUBKEYS)
-]  # FIXME
 SQL_ACCT_DEL_REQ_TABLE = "account_deletion_requests"  # FIXME integrate somehow
 SQL_PI_MEMBER_REQ_TABLE = "requests"  # FIXME integrate somehow
+
+with open("./public-keys.json", "r", encoding="utf8") as public_keys_file:
+    PUBKEY_CHOICES = json.load(public_keys_file)
+    assert len(PUBKEY_CHOICES) >= MAX_PUBKEYS, "not enough pubkeys in public-keys.json!"
 
 
 def user_num2id(user_num: int) -> int:
