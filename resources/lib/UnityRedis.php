@@ -58,6 +58,7 @@ class UnityRedis
             return unserialize($cached_val);
         }
 
+        // error_log("redis cache miss: " . $keyStr);
         return null;
     }
 
