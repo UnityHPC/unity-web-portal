@@ -371,6 +371,9 @@ class UnityLDAP extends ldapConn
         foreach($required_string_attributes as $key){
             $output[$key] = $userChildrenArray[$key][0];
         }
+        $output["firstname"] = $output["givenname"];
+        $output["lastname"] = $output["sn"];
+        $output["org"] = $output["o"];
         $output["objectclass"] = $userChildrenArray["objectclass"];
         if(array_key_exists("sspublickey", $userChildrenArray)){
             $output["sshpublickey"] = $userChildrenArray["sshpublickey"];

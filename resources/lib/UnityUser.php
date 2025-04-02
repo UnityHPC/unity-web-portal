@@ -640,7 +640,7 @@ class UnityUser
         }
 
         if (!$ignorecache) {
-            $this->REDIS->setCache($this->getUID(), "groups", $cache_arr);
+            $this->REDIS->setCache($this->getUID(), "pi_groups", $cache_arr);
         }
 
         return $out;
