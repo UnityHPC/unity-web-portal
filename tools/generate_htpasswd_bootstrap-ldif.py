@@ -251,6 +251,11 @@ def main():
     ), f"test cases have made {len(pi_group_membership)} PIs, which already exceeds NUM_PIS=={NUM_PIS}!"
     filler_user_nums = range(cur_user_num, NUM_USERS)
     filler_pi_user_nums = random.sample(filler_user_nums, k=(NUM_PIS - len(pi_group_membership)))
+
+    print(
+        f"adding in {len(filler_user_nums)} filler users, {len(filler_pi_user_nums)} of which are filler PIs",
+        file=sys.stderr,
+    )
     for user_num in filler_user_nums:
         org = random.choice(list(org_group_membership.keys()))
         num_pubkeys = random.randint(0, 3)
