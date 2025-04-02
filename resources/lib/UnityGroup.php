@@ -460,7 +460,9 @@ class UnityGroup
     {
         $pi_group = $this->getLDAPPiGroup();
         $members = $pi_group->getAttribute("memberuid");
-
+        if (is_null($members)){
+            return [];
+        }
         return $members;
     }
 
