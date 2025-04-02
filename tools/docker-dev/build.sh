@@ -9,6 +9,7 @@ eval "$output"
 set -x
 mv "$LDAP_BOOTSTRAP_LDIF_PATH" ./tools/docker-dev/identity/bootstrap.ldif
 mv "$HTPASSWD_PATH" ./tools/docker-dev/web/htpasswd
+mv "$SQL_BOOTSTRAP_USERS_PATH" ./tools/docker-dev/sql/bootstrap-users.sql
 cd ./tools/docker-dev
 docker-compose down
 docker-compose build

@@ -9,13 +9,16 @@ RUN apt-get update && apt-get install -y \
     phpmyadmin
 RUN sed -i '/bind-address/c\bind-address = 0.0.0.0' /etc/mysql/mariadb.conf.d/50-server.cnf
 COPY bootstrap.sql /tmp/bootstrap.sql
+COPY bootstrap-users.sql /tmp/bootstrap-users.sql
 
+# fixme these should be && not ;
 RUN service mariadb start; \
     mariadb -e "CREATE DATABASE unity"; \
     mariadb -e "CREATE USER 'unity'@'%' IDENTIFIED BY 'password'"; \
     mariadb -e "GRANT ALL PRIVILEGES ON unity.* TO 'unity'@'%'"; \
     mariadb -e "FLUSH PRIVILEGES"; \
-    mariadb unity < /tmp/bootstrap.sql
+    mariadb unity < /tmp/bootstrap.sql; \
+    mariadb unity < /tmp/bootstrap-users.sql
 
 RUN rm -rf /tmp/bootstrap.sql
 
