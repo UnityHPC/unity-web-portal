@@ -21,7 +21,7 @@ if (array_key_exists("f", $options)) {
     $REDIS->flushAll();
 }
 
-if (!is_null($REDIS->getCache("initialized", "") and !array_key_exists("u", $options))) {
+if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $options)))) {
     echo "cache is already initialized, nothing doing. use -f argument to flush cache, or -u argument to update without flush.\n";
 } else {
     echo "updating cache...\n";
