@@ -104,8 +104,7 @@ action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/account.php">
                 key: key
             },
             success: function(result) {
-                const res = result.replace(key, "");
-                if (res == "true") {
+                if (result == "true") {
                     $("input[id=add-key]").prop("disabled", false);
                     $("textarea[name=key]").css("box-shadow", "none");
                 } else {
@@ -115,5 +114,8 @@ action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/account.php">
             }
         });
     });
+
+    $("input[id=add-key]").prop("disabled", true);
+    $("textarea[name=key]").css("box-shadow", "0 0 0 0.3rem rgba(220, 53, 69, 0.25)");
 
 </script>

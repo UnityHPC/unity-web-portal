@@ -2,11 +2,8 @@
 
 require "../../../resources/autoload.php";
 
-use phpseclib3\Crypt\PublicKeyLoader;
-
-try {
-    PublicKeyLoader::load($_POST['key'], $password = false);
+if ($SITE->testValidSSHKey($_POST["key"])){
     echo "true";
-} catch (Exception $e) {
+} else {
     echo "false";
 }
