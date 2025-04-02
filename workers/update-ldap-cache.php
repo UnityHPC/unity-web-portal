@@ -54,7 +54,7 @@ if (!is_null($REDIS->getCache("initialized", ""))) {
     foreach($pi_groups as $pi_group){
         $REDIS->setCache($pi_group["cn"][0], "members", $pi_group["memberuid"]);
         foreach($pi_group["memberuid"] as $member_uid){
-            $REDIS->appendCacheArray($member_uid, "groups", $pi_group["cn"][0]);
+            $REDIS->appendCacheArray($member_uid, "pi_groups", $pi_group["cn"][0]);
         }
     }
     $REDIS->setCache("initializing", "", false);

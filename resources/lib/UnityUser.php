@@ -610,7 +610,7 @@ class UnityUser
         $out = array();
 
         if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->getUID(), "groups");
+            $cached_val = $this->REDIS->getCache($this->getUID(), "pi_groups");
             if (!is_null($cached_val)) {
                 $groups = $cached_val;
                 foreach ($groups as $group) {
