@@ -62,8 +62,14 @@ class UnityGroup
      *
      * @return bool true if yes, false if no
      */
-    public function exists()
+    public function exists($ignorecache = false)
     {
+        if (!$ignorecache) {
+            $cached_val = $this->REDIS->getCache($this->getPIUID(), "members");
+            if (!is_null($cached_val)) {
+                return true;
+            }
+        }
         return $this->getLDAPPiGroup()->exists();
     }
 
