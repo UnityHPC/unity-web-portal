@@ -69,6 +69,7 @@ class UnityLDAP extends ldapConn
         $this->STR_ADMINGROUP = $admin_group;
 
       // Get Global Entries
+      // FIXME cache these
         $this->userOU = $this->getEntry($user_ou);
         $this->groupOU = $this->getEntry($group_ou);
         $this->pi_groupOU = $this->getEntry($pigroup_ou);
