@@ -603,9 +603,8 @@ class UnityUser
     /**
      * Gets the groups this user is assigned to, can be more than one
      * @return [type]
-     * FIXME this does not include user groups or org groups
      */
-    public function getGroups($ignorecache = false)
+    public function getPIGroups($ignorecache = false)
     {
         $out = array();
 

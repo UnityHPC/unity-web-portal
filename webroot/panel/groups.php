@@ -50,7 +50,7 @@ include $LOC_HEADER;
 <hr>
 
 <?php
-$groups = $USER->getGroups();
+$pi_groups = $USER->getPIGroups();
 
 $requests = $SQL->getRequestsByUser($USER->getUID());
 
@@ -77,19 +77,19 @@ if (count($req_filtered) > 0) {
     }
     echo "</table>";
 
-    if (count($groups) > 0) {
+    if (count($pi_groups) > 0) {
         echo "<hr>";
     }
 }
 
 echo "<h5>Current Groups</h5>";
 
-if ($USER->isPI() && count($groups) == 1) {
+if ($USER->isPI() && count($pi_groups) == 1) {
     echo "You are only a member of your own PI group. 
     Navigate to the <a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>my users</a> page to see your group.";
 }
 
-if (count($groups) == 0) {
+if (count($pi_groups) == 0) {
     echo "You are not a member of any groups. Request to join a PI using the button below, 
     or request your own PI account on the <a href='" . $CONFIG["site"]["prefix"] .
     "/panel/account.php'>account settings</a> page";
@@ -97,7 +97,7 @@ if (count($groups) == 0) {
 
 echo "<table>";
 
-foreach ($groups as $group) {
+foreach ($pi_groups as $group) {
     $owner = $group->getOwner();
 
     if ($USER->getUID() == $owner->getUID()) {

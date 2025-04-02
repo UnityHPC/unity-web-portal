@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
             break;
         case "account_deletion_request":
-            $hasGroups = count($USER->getGroups()) > 0;
+            $hasGroups = count($USER->getPIGroups()) > 0;
             if ($hasGroups) {
                 // FIXME make an error message?
                 die();
@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 <?php
 
-$isActive = count($USER->getGroups()) > 0;
+$isActive = count($USER->getPIGroups()) > 0;
 $isPI = $USER->isPI();
 
 if ($isPI) {
@@ -243,7 +243,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 
 <h5>Account Deletion</h5>
 <?php
-$hasGroups = count($USER->getGroups()) > 0;
+$hasGroups = count($USER->getPIGroups()) > 0;
 
 if ($hasGroups) {
     echo "<p>You cannot request to delete your account while you are in a PI group.</p>";
