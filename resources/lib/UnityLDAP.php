@@ -377,6 +377,8 @@ class UnityLDAP extends ldapConn
         $output["objectclass"] = $userChildrenArray["objectclass"];
         if(array_key_exists("sspublickey", $userChildrenArray)){
             $output["sshpublickey"] = $userChildrenArray["sshpublickey"];
+        } else {
+            $output["sshpublickey"] = [];
         }
         return $output;
     }
