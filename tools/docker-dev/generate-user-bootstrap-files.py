@@ -75,7 +75,8 @@ SHELL_CHOICES = ["/bin/bash", "/bin/zsh", "foobar"]
 MAX_PUBKEYS = 100  # TODO integrate with UnityConfig
 MAX_PIS_MEMBER_OF = 100  # TODO integrate with UnityConfig
 SQL_ACCT_DEL_REQ_TABLE = "account_deletion_requests"  # FIXME integrate somehow
-SQL_PI_MEMBER_REQ_TABLE = "requests"  # FIXME integrate somehow
+SQL_REQUESTS_TABLE = "requests"  # FIXME integrate somehow
+SQL_PI_PROMOTION = "admin"  # FIXME integrate UnitySQL::REQUEST_PI_PROMOTION
 
 with open("example-ssh-public-keys.json", "r", encoding="utf8") as public_keys_file:
     pubkeys = json.load(public_keys_file)
@@ -168,6 +169,7 @@ def main():
     filler_user_names = []
     filler_pi_names = []
     users_requested_deletion = []
+    users_requested_pi_promotion = []
     locked_users = []
     web_admins_group_members = [WEB_ADMIN_USER["cn"]]
     users_need_pis = {}
@@ -181,52 +183,57 @@ def main():
     cur_user_num = NUM_RESERVED_USER_NUMBERS
     for is_admin in [True, False]:
         for has_requested_deletion in [True, False]:
-            for is_locked in [True, False]:
-                for is_pi in [True, False]:
-                    for num_pi_group_members in [0, 1, ALL_FILLER_USERS]:
-                        for num_pubkeys in [0, 1, MAX_PUBKEYS]:
-                            for num_pi_group_member_of in [0, 1, MAX_PIS_MEMBER_OF]:
-                                for num_pi_group_requests in [0, 1, MAX_PIS_MEMBER_OF]:
-                                    # PIs are not allowed to request account deletion
-                                    if has_requested_deletion and is_pi:
-                                        continue
-                                    if not is_pi and num_pi_group_members > 0:
-                                        continue
-                                    # skipped just to reduce number of test cases
-                                    if has_requested_deletion and is_admin:
-                                        continue
-                                    # skipped just to reduce number of test cases
-                                    if is_locked and is_admin:
-                                        continue
-                                    org = random.choice(list(org_group_membership.keys()))
-                                    uid, user_attributes, user_group_attributes = make_random_user(
-                                        cur_user_num, org, num_pubkeys
-                                    )
-                                    org_group_membership[org].add(uid)
-                                    users.append(user_attributes)
-                                    user_pi_group_membership[uid] = set()
-                                    user_groups.append(user_group_attributes)
-                                    if is_admin:
-                                        web_admins_group_members.append(uid)
-                                    if has_requested_deletion:
-                                        users_requested_deletion.append(uid)
-                                    if is_locked:
-                                        locked_users.append(uid)
-                                    if is_pi:
-                                        pi_group_membership[f"pi_{uid}"] = set()
-                                        if num_pi_group_members == ALL_FILLER_USERS:
-                                            pis_need_all_filler_users.append(f"pi_{uid}")
-                                        elif num_pi_group_members > 0:
-                                            pis_need_users[f"pi_{uid}"] = num_pi_group_members
-                                    if num_pi_group_member_of > 0:
-                                        users_need_pis[uid] = num_pi_group_member_of
-                                    # reduce number of PI requests to stay under limit
-                                    if num_pi_group_requests == MAX_PIS_MEMBER_OF:
+            for has_requested_pi_promotion in [True, False]:
+                for is_locked in [True, False]:
+                    for is_pi in [True, False]:
+                        for num_pi_group_members in [0, 1, ALL_FILLER_USERS]:
+                            for num_pubkeys in [0, 1, MAX_PUBKEYS]:
+                                for num_pi_group_member_of in [0, 1, MAX_PIS_MEMBER_OF]:
+                                    for num_pi_group_requests in [0, 1, MAX_PIS_MEMBER_OF]:
+                                        # PIs are not allowed to request account deletion
+                                        if has_requested_deletion and is_pi:
+                                            continue
+                                        if not is_pi and num_pi_group_members > 0:
+                                            continue
+                                        if is_pi and has_requested_pi_promotion:
+                                            continue
+                                        # skipped just to reduce number of test cases
+                                        if has_requested_deletion and is_admin:
+                                            continue
+                                        # skipped just to reduce number of test cases
+                                        if is_locked and is_admin:
+                                            continue
+                                        org = random.choice(list(org_group_membership.keys()))
+                                        uid, user_attributes, user_group_attributes = (
+                                            make_random_user(cur_user_num, org, num_pubkeys)
+                                        )
+                                        org_group_membership[org].add(uid)
+                                        users.append(user_attributes)
+                                        user_pi_group_membership[uid] = set()
+                                        user_groups.append(user_group_attributes)
+                                        if is_admin:
+                                            web_admins_group_members.append(uid)
+                                        if has_requested_deletion:
+                                            users_requested_deletion.append(uid)
+                                        if has_requested_pi_promotion:
+                                            users_requested_pi_promotion.append(uid)
+                                        if is_locked:
+                                            locked_users.append(uid)
                                         if is_pi:
-                                            num_pi_group_requests -= 1
-                                        num_pi_group_requests -= num_pi_group_member_of
-                                    users_num_pi_requests[uid] = num_pi_group_requests
-                                    cur_user_num += 1
+                                            pi_group_membership[f"pi_{uid}"] = set()
+                                            if num_pi_group_members == ALL_FILLER_USERS:
+                                                pis_need_all_filler_users.append(f"pi_{uid}")
+                                            elif num_pi_group_members > 0:
+                                                pis_need_users[f"pi_{uid}"] = num_pi_group_members
+                                        if num_pi_group_member_of > 0:
+                                            users_need_pis[uid] = num_pi_group_member_of
+                                        # reduce number of PI requests to stay under limit
+                                        if num_pi_group_requests == MAX_PIS_MEMBER_OF:
+                                            if is_pi:
+                                                num_pi_group_requests -= 1
+                                            num_pi_group_requests -= num_pi_group_member_of
+                                        users_num_pi_requests[uid] = num_pi_group_requests
+                                        cur_user_num += 1
 
     print(
         f"test cases made {cur_user_num} users and {len(pi_group_membership)} PIs", file=sys.stderr
@@ -286,10 +293,19 @@ def main():
             user_pi_group_membership[uid].add(pi)
 
     with tempfile.NamedTemporaryFile(mode="w+", delete=False) as sql_tempfile:
-        users_escaped = [f"('{x}')" for x in users_requested_deletion]
         sql_tempfile.write(
-            f"insert into {SQL_ACCT_DEL_REQ_TABLE} (uid) values {",".join(users_escaped)};\n"
+            "insert into %s (uid) values %s;\n"
+            % (SQL_ACCT_DEL_REQ_TABLE, ",".join([f"('{x}')" for x in users_requested_deletion]))
         )
+
+        sql_tempfile.write(
+            "insert into %s (uid, request_for) values %s;\n"
+            % (
+                SQL_REQUESTS_TABLE,
+                ",".join([f"('{x}', '{SQL_PI_PROMOTION}')" for x in users_requested_pi_promotion]),
+            )
+        )
+
         for uid, num_requests in users_num_pi_requests.items():
             if num_requests > 0:
                 pis_not_already_member_of = set(filler_pi_names) - user_pi_group_membership[uid]
@@ -299,7 +315,7 @@ def main():
                 pis_to_request = random.sample(list(pis_not_already_member_of), k=num_requests)
                 for pi in pis_to_request:
                     sql_tempfile.write(
-                        f"insert into {SQL_PI_MEMBER_REQ_TABLE} (uid, request_for) values ('{uid}', '{pi}');\n"
+                        f"insert into {SQL_REQUESTS_TABLE} (uid, request_for) values ('{uid}', '{pi}');\n"
                     )
     print(f"export SQL_BOOTSTRAP_USERS_PATH={sql_tempfile.name}")
 
