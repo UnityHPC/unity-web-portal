@@ -156,6 +156,11 @@ $count_before = count($USER->getSSHKeys(true));
 add_ssh_keys_github([]);
 assert(count($USER->getSSHKeys(true)) == $count_before);
 
+// test github multiple valid keys that don't exist yet
+$count_before = count($USER->getSSHKeys(true));
+add_ssh_keys_github([]);
+assert(count($USER->getSSHKeys(true)) == $count_before);
+
 // test github invalid key
 // FIXME webroot php does not check validity
 // assert(!in_array($invalid_ssh_key, $USER->getSSHKeys(true)));

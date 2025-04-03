@@ -9,8 +9,6 @@ import string
 import random
 import tempfile
 
-from beartype import beartype
-
 NUM_USERS = 10000
 NUM_PIS = 1000  # should be >= (the number of PIs created by test cases + MAX_PIS_MEMBER_OF)
 NUM_ORGS = 25
@@ -79,8 +77,9 @@ MAX_PIS_MEMBER_OF = 100  # TODO integrate with UnityConfig
 SQL_ACCT_DEL_REQ_TABLE = "account_deletion_requests"  # FIXME integrate somehow
 SQL_PI_MEMBER_REQ_TABLE = "requests"  # FIXME integrate somehow
 
-with open("./public-keys.json", "r", encoding="utf8") as public_keys_file:
-    PUBKEY_CHOICES = json.load(public_keys_file)
+with open("example-ssh-public-keys.json", "r", encoding="utf8") as public_keys_file:
+    pubkeys = json.load(public_keys_file)
+    PUBKEY_CHOICES = pubkeys["small_keys"] + pubkeys["big_keys"]
     assert len(PUBKEY_CHOICES) >= MAX_PUBKEYS, "not enough pubkeys in public-keys.json!"
 
 
@@ -99,7 +98,6 @@ def org_num2gid(org_num: int) -> int:
     return org_num + 3000000
 
 
-@beartype
 def make_random_user(
     user_num: int, org: str, num_pubkeys: int
 ) -> tuple[str, dict[str, object], dict[str, object]]:
@@ -143,7 +141,6 @@ def make_random_user(
     )
 
 
-@beartype
 def dict2ldif(x: dict) -> str:
     output = ""
     for k, v in x.items():
