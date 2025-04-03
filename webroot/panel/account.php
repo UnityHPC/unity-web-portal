@@ -4,66 +4,68 @@ require_once "../../resources/autoload.php";
 
 require_once $LOC_HEADER;
 
-$invalid_ssh_dialogue = "<script type='text/javascript'>
-alert('Invalid SSH key. Please verify your public key file is valid.');
+$invalid_ssh_dialogue = "
+<script type='text/javascript'>
+  alert('One or more of your SSH keys is invalid.');
 </script>";
-$too_many_ssh_dialogue = "<script type='text/javascript'>
-alert('You have already uploaded the maximum number of SSH keys.');
+
+$too_many_ssh_dialogue = "
+<script type='text/javascript'>
+  alert('Adding these SSH keys would exceed the maximum number allowed.');
+</script>";
+
+$github_user_not_found_or_no_keys_dialogue = "
+<script type='text/javascript'>
+  alert('Github user not found, or Github user has no keys.');
 </script>";
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     switch ($_POST["form_type"]) {
         case "addKey":
-            $existing_keys = $USER->getSSHKeys(true);
-            if(count($existing_keys) >= $CONFIG["ldap"]["max_num_ssh_keys"]){
-                echo $too_many_ssh_dialogue;
-                break;
-            }
-            $added_keys = array();
-
+            $added_keys = null;
             switch ($_POST["add_type"]) {
                 case "paste":
-                    // FIXME sanitize input
                     $key = $_POST["key"];
-                    if ($SITE->testValidSSHKey($key)) {
-                        array_push($added_keys, $key);
-                    } else {
-                        echo $invalid_ssh_dialogue;
-                    }
+                    $added_keys = [$key];
                     break;
                 case "import":
-                    $keyfile = $_FILES["keyfile"]["tmp_name"];
-                    // FIXME sanitize input
-                    $key = file_get_contents($keyfile);
-                    if ($SITE->testValidSSHKey($key)) {
-                        array_push($added_keys, $key);
-                    } else {
-                        echo $invalid_ssh_dialogue;
-                    }
+                    $key = file_get_contents($_FILES["keyfile"]["tmp_name"]);
+                    $added_keys = [$key];
                     break;
                 case "generate":
-                    // FIXME check valid key, sanitize input
-                    array_push($added_keys, $_POST["gen_key"]);
+                    $key = $_POST["gen_key"];
+                    $added_keys = [$key];
                     break;
                 case "github":
-                    // FIXME check valid key, sanitize input
-                    $gh_user = $_POST["gh_user"];
-                    if (empty($gh_user)) {
-                        break; // FIXME this should be an error
-                    }
-                    $keys = $SITE->getGithubKeys($gh_user);
-                    foreach ($keys as $key) {
-                        // FIXME this should be an error
-                        if ($SITE->testValidSSHKey($key)) {
-                            array_push($added_keys, $key);
-                        }
+                    try {
+                        $keys = $SITE->getGithubKeys($_POST["gh_user"]);
+                        $added_keys = $keys;
+                    } catch (UnityWebPortal\lib\GithubUserNotFoundOrNoKeysException $e) {
+                        echo $github_user_not_found_or_no_keys_dialogue;
                     }
                     break;
+                // FIXME invalid add_type should be an error
             }
-
-            if (!empty($added_keys)) {
-                $added_keys = $SITE->removeTrailingWhitespace($added_keys);
-                $totalKeys = array_merge($existing_keys, $added_keys);
+            if (is_null($added_keys)) {
+                break;
+            }
+            $added_keys = array_map(function($x){return trim($x);}, $added_keys);
+            $all_are_valid = true;
+            foreach ($added_keys as $key) {
+                if (!$SITE->testValidSSHKey($key)) {
+                    $all_are_valid = false;
+                }
+            }
+            if (!$all_are_valid) {
+                echo $invalid_ssh_dialogue;
+                break;
+            }
+            // TODO when do I ignore cache and when do I not?
+            $existing_keys = $USER->getSSHKeys(true);
+            $totalKeys = array_merge($existing_keys, $added_keys);
+            if(count($totalKeys) >= $CONFIG["ldap"]["max_num_ssh_keys"]){
+                echo $too_many_ssh_dialogue;
+            } else {
                 $USER->setSSHKeys($totalKeys, $OPERATOR);
             }
             break;
@@ -76,7 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $USER->setSSHKeys($keys, $OPERATOR);  // Update user keys
             break;
         case "loginshell":
-            // FIXME sanitize input
             if ($_POST["shellSelect"] == "custom") {
                 $USER->setLoginShell($_POST["shell"], $OPERATOR);
             } else {
@@ -84,7 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
             break;
         case "pi_request":
+            // FIXME this should be an error
             if (!$USER->isPI()) {
+                // FIXME this should be an error
                 if (!$SQL->requestExists($USER->getUID())) {
                     $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
                 }
@@ -93,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         case "account_deletion_request":
             $hasGroups = count($USER->getPIGroups()) > 0;
             if ($hasGroups) {
-                // FIXME make an error message?
+                // FIXME this should be an error
                 die();
                 break;
             }

@@ -3,6 +3,9 @@
 namespace UnityWebPortal\lib;
 
 use phpseclib3\Crypt\PublicKeyLoader;
+use Exception;
+
+class GithubUserNotFoundOrNoKeysException extends Exception {}
 
 class UnitySite
 {
@@ -12,17 +15,6 @@ class UnitySite
             header("Location: $destination");
             die("Redirect failed, click <a href='$destination'>here</a> to continue.");
         }
-    }
-
-    public function removeTrailingWhitespace($arr)
-    {
-        $out = array();
-        foreach ($arr as $str) {
-            $new_string = rtrim($str);
-            array_push($out, $new_string);
-        }
-
-        return $out;
     }
 
     public function getGithubKeys($username)
@@ -36,15 +28,13 @@ class UnitySite
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        $output = json_decode(curl_exec($curl), true);
+        $keys = json_decode(curl_exec($curl), false);
         curl_close($curl);
 
-        $out = array();
-        foreach ($output as $value) {
-            array_push($out, $value["key"]);
+        if ((!is_array($keys)) || (count($keys) == 0)) {
+            throw new GithubUserNotFoundOrNoKeysException();
         }
-
-        return $out;
+        return array_map(function($x){return $x["key"];}, $keys);
     }
 
     public function testValidSSHKey($key_str)
