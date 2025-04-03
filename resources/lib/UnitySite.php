@@ -21,6 +21,7 @@ class UnitySite
         header("HTTP/1.1 400 Bad Request");
         $full_msg = "<pre>ERROR: bad request. Please contact Unity support.\n$msg</pre>";
         error_log($full_msg);
+        error_log((new Exception())->getTraceAsString());
         die($full_msg);
     }
 
