@@ -15,7 +15,7 @@ use UnityWebPortal\lib\{
 };
 use PHPOpenLDAPer\LDAPEntry;
 
-$options = getopt("f");
+$options = getopt("fu");
 if (array_key_exists("f", $options)) {
     echo "flushing cache...\n";
     $REDIS->flushAll();
