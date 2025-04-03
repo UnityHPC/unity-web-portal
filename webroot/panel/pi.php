@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             break;
         case "disband":
             $group->removeGroup();
-            UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/account.php");
+            $SITE->redirect($CONFIG["site"]["prefix"] . "/panel/account.php");
 
             break;
     }
