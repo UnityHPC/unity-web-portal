@@ -181,9 +181,10 @@ def main():
     # test case users
     # start counting at the end of the reserved user number range
     cur_user_num = NUM_RESERVED_USER_NUMBERS
-    for is_admin in [True, False]:
-        for has_requested_deletion in [True, False]:
-            for has_requested_pi_promotion in [True, False]:
+
+    for has_requested_deletion in [True, False]:
+        for has_requested_pi_promotion in [True, False]:
+            for is_admin in [True, False]:
                 for is_locked in [True, False]:
                     for is_pi in [True, False]:
                         for num_pi_group_members in [0, 1, ALL_FILLER_USERS]:
