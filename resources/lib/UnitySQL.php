@@ -20,10 +20,11 @@ class UnitySQL
     // private const TABLE_GROUP_JOIN_REQUESTS = "groupJoinRequests";
 
 
-    private const REQUEST_ADMIN = "admin";
+    // FIXME "admin" is legacy, should be changed to something more intuitive
+    // this requires messing with the production database
+    private const REQUEST_PI_PROMOTION = "admin";
 
     private $conn;
-
     public function __construct($db_host, $db, $db_user, $db_pass)
     {
         $this->conn = new PDO("mysql:host=" . $db_host . ";dbname=" . $db, $db_user, $db_pass);
@@ -38,10 +39,10 @@ class UnitySQL
     //
     // requests table methods
     //
-    public function addRequest($requestor, $dest = self::REQUEST_ADMIN)
+    public function addRequest($requestor, $request_for = self::REQUEST_PI_PROMOTION)
     {
         // FIXME this should be an error
-        if ($this->requestExists($requestor, $dest)) {
+        if ($this->requestExists($requestor, $request_for)) {
             return;
         }
 
@@ -49,15 +50,15 @@ class UnitySQL
             "INSERT INTO " . self::TABLE_REQS . " (uid, request_for) VALUES (:uid, :request_for)"
         );
         $stmt->bindParam(":uid", $requestor);
-        $stmt->bindParam(":request_for", $dest);
+        $stmt->bindParam(":request_for", $request_for);
 
         $stmt->execute();
     }
 
-    public function removeRequest($requestor, $dest = self::REQUEST_ADMIN)
+    public function removeRequest($requestor, $request_for = self::REQUEST_PI_PROMOTION)
     {
         // FIXME this should be an error
-        if (!$this->requestExists($requestor, $dest)) {
+        if (!$this->requestExists($requestor, $request_for)) {
             return;
         }
 
@@ -65,40 +66,40 @@ class UnitySQL
             "DELETE FROM " . self::TABLE_REQS . " WHERE uid=:uid and request_for=:request_for"
         );
         $stmt->bindParam(":uid", $requestor);
-        $stmt->bindParam(":request_for", $dest);
+        $stmt->bindParam(":request_for", $request_for);
 
         $stmt->execute();
     }
 
-    public function removeRequests($dest = self::REQUEST_ADMIN)
+    public function removeRequests($request_for = self::REQUEST_PI_PROMOTION)
     {
         $stmt = $this->conn->prepare(
             "DELETE FROM " . self::TABLE_REQS . " WHERE request_for=:request_for"
         );
-        $stmt->bindParam(":request_for", $dest);
+        $stmt->bindParam(":request_for", $request_for);
 
         $stmt->execute();
     }
 
-    public function requestExists($requestor, $dest = self::REQUEST_ADMIN)
+    public function requestExists($requestor, $request_for = self::REQUEST_PI_PROMOTION)
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid and request_for=:request_for"
         );
         $stmt->bindParam(":uid", $requestor);
-        $stmt->bindParam(":request_for", $dest);
+        $stmt->bindParam(":request_for", $request_for);
 
         $stmt->execute();
 
         return count($stmt->fetchAll()) > 0;
     }
 
-    public function getRequests($dest = self::REQUEST_ADMIN)
+    public function getRequests($request_for = self::REQUEST_PI_PROMOTION)
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_REQS . " WHERE request_for=:request_for"
         );
-        $stmt->bindParam(":request_for", $dest);
+        $stmt->bindParam(":request_for", $request_for);
 
         $stmt->execute();
 

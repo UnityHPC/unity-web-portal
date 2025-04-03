@@ -62,6 +62,8 @@ $requests = $SQL->getRequestsByUser($USER->getUID());
 
 $req_filtered = array();
 foreach ($requests as $request) {
+    // FIXME "admin" is UnitySQL::REQUEST_PI_PROMOTION
+    // should implement UnitySQL::getPiPromotionRequests
     if ($request["request_for"] != "admin") {  // put this in config later for gypsum
         array_push($req_filtered, $request);
     }
