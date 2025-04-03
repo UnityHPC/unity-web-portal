@@ -229,7 +229,7 @@ class UnityGroup
             }
             $this->REDIS->removeCacheArray("sorted_pi_groups", "", $this->getPIUID());
             foreach ($users as $user) {
-                $this->REDIS->removeCacheArray($user->getUID(), "groups", $this->getPIUID());
+                $this->REDIS->removeCacheArray($user->getUID(), "pi_groups", $this->getPIUID());
             }
         }
 
@@ -522,7 +522,7 @@ class UnityGroup
         }
 
         $this->REDIS->appendCacheArray($this->getPIUID(), "members", $new_user->getUID());
-        $this->REDIS->appendCacheArray($new_user->getUID(), "groups", $this->getPIUID());
+        $this->REDIS->appendCacheArray($new_user->getUID(), "pi_groups", $this->getPIUID());
     }
 
     private function removeUserFromGroup($old_user)
@@ -536,7 +536,7 @@ class UnityGroup
         }
 
         $this->REDIS->removeCacheArray($this->getPIUID(), "members", $old_user->getUID());
-        $this->REDIS->removeCacheArray($old_user->getUID(), "groups", $this->getPIUID());
+        $this->REDIS->removeCacheArray($old_user->getUID(), "pi_groups", $this->getPIUID());
     }
 
     public function userExists($user)
