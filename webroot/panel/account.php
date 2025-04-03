@@ -58,7 +58,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if (is_null($added_keys)) {
                 break;
             }
-            $added_keys = array_map(function($x){return trim($x);}, $added_keys);
             $all_are_valid = true;
             foreach ($added_keys as $key) {
                 if (!$SITE->testValidSSHKey($key)) {

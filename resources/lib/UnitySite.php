@@ -45,15 +45,16 @@ class UnitySite
         return array_map(function($x){return $x->key;}, $keys);
     }
 
-    public function testValidSSHKey($key_str)
+    public function testValidSSHKey(string $key_str)
     {
+        $key_str = trim($key_str);
         if ($key_str == ""){
             return false;
         }
         try {
             PublicKeyLoader::load($key_str);
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
