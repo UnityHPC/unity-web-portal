@@ -41,7 +41,7 @@ class UnitySite
         if ((!is_array($keys)) || (count($keys) == 0)) {
             throw new GithubUserNotFoundOrNoKeysException();
         }
-        return array_map(function($x){return $x["key"];}, $keys);
+        return array_map(function($x){return $x->key;}, $keys);
     }
 
     public function testValidSSHKey($key_str)
