@@ -14,6 +14,7 @@ if (!$USER->isPI()) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["uid"])) {
         $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        // FIXME error if user does not exist, see groups.php
     }
 
     switch ($_POST["form_name"]) {
@@ -35,6 +36,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $SITE->redirect($CONFIG["site"]["prefix"] . "/panel/account.php");
 
             break;
+        default:
+            $SITE->bad_request("invalid form_name '" . $_POST["form_name"] . "'");
     }
 }
 

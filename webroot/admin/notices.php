@@ -20,6 +20,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $SQL->deleteNotice($_POST["id"]);
 
             break;
+        default:
+            $SITE->bad_request("invalid form_type '" . $_POST["form_type"] . "'");
     }
 }
 

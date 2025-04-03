@@ -32,6 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
         } elseif ($_POST["new_user_sel"] == "not_pi") {
             $form_group->newUserRequest($USER);
+        } else {
+            $SITE->bad_request("invalid new_user_sel '" . $_POST["new_user_sel"] . "'");
         }
     }
 }

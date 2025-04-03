@@ -9,6 +9,8 @@ if (!$USER->isAdmin()) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($_POST["pageSel"])) {
         $SQL->editPage($_POST["pageSel"], $_POST["content"], $USER);
+    } else {
+        $SITE->bad_request("");
     }
 }
 

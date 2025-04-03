@@ -3,7 +3,6 @@
 require_once "../../resources/autoload.php";
 
 require_once $LOC_HEADER;
-
 $invalid_ssh_dialogue = "
 <script type='text/javascript'>
   alert('One or more of your SSH keys is invalid.');
@@ -44,7 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                         echo $github_user_not_found_or_no_keys_dialogue;
                     }
                     break;
-                // FIXME invalid add_type should be an error
+                default:
+                    $SITE->bad_request("invalid add_type '" . $_POST["add_type"] . "'");
             }
             if (is_null($added_keys)) {
                 break;
@@ -104,6 +104,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 $USER->requestAccountDeletion();
             }
             break;
+        default:
+            $SITE->bad_request("invalid form_Type '$form_type'");
     }
 }
 ?>

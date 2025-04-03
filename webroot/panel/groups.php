@@ -45,6 +45,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Remove PI form
                 $pi_account->removeUser($USER);
                 break;
+            default:
+                $SITE->bad_request("invalid form_name '" . $_POST["form_name"] . "'");
         }
     }
 }

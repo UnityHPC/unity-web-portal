@@ -12,6 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["viewUser"] = $_POST["uid"];
             $SITE->redirect($CONFIG["site"]["prefix"] . "/panel");
             break;
+        default:
+            $SITE->bad_request("invalid form_name '" . $_POST["form_name"] . "'");
     }
 }
 

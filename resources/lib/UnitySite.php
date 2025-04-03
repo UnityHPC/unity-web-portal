@@ -17,6 +17,13 @@ class UnitySite
         }
     }
 
+    public function bad_request($msg){
+        header("HTTP/1.1 400 Bad Request");
+        $full_msg = "<pre>ERROR: bad request. Please contact Unity support.\n$msg</pre>";
+        error_log($full_msg);
+        die($full_msg);
+    }
+
     public function getGithubKeys($username)
     {
         $url = "https://api.github.com/users/$username/keys";
