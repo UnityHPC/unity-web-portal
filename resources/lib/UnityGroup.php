@@ -65,10 +65,8 @@ class UnityGroup
     public function exists($ignorecache = false)
     {
         if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->getPIUID(), "members");
-            if (!is_null($cached_val)) {
-                return true;
-            }
+            $cached_pi_groups = $this->REDIS->getCache("sorted_pi_groups", "");
+            return in_array($this->getPIUID(), $cached_pi_groups);
         }
         return $this->getLDAPPiGroup()->exists();
     }
@@ -229,7 +227,6 @@ class UnityGroup
             if (!$ldapPiGroupEntry->delete()) {
                 throw new Exception("Unable to delete PI ldap group");
             }
-
             $this->REDIS->removeCacheArray("sorted_pi_groups", "", $this->getPIUID());
             foreach ($users as $user) {
                 $this->REDIS->removeCacheArray($user->getUID(), "groups", $this->getPIUID());

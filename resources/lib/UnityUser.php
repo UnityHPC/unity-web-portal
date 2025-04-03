@@ -158,10 +158,8 @@ class UnityUser
     public function exists($ignorecache = false)
     {
         if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->uid, "cn");
-            if (!is_null($cached_val)) {
-                return true;
-            }
+            $cached_users = $this->REDIS->getCache("sorted_users", "");
+            return in_array($this->getUID(), $cached_users);
         }
         return $this->getLDAPUser()->exists() && $this->getLDAPGroup()->exists();
     }
