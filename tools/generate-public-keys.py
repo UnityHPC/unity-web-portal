@@ -36,36 +36,7 @@ def get_public_key_openssh(private_key):
     ).decode()
 
 
-def generate_keys():
-    public_keys = []
-    for i in range(NUM_KEYS):
-        key_type = random.choice(["rsa", "ed25519", "ecdsa"])
-        if key_type == "rsa":
-            print("generating rsa key...")
-            private_key = generate_rsa_key()
-        elif key_type == "ed25519":
-            print("generating ed25519 key...")
-            private_key = generate_ed25519_key()
-        elif key_type == "ecdsa":
-            print("generating ecdsa key...")
-            private_key = generate_ecdsa_key()
-        else:
-            raise RuntimeError("invalid key_type")
-
-        public_key = get_public_key_openssh(private_key)
-        public_keys.append(public_key)
-        print(f"completed {i} / {NUM_KEYS}")
-
-    return public_keys
-
-
-def main():
-    public_keys = generate_keys()
-    with open("public-keys.json", "w") as f:
-        json.dump(public_keys, f, indent=2)
-
-    print(f"{NUM_KEYS} public keys have been generated and saved to public-keys.json")
-
-
-if __name__ == "__main__":
-    main()
+key_funcs = random.choices([generate_rsa_key, generate_ed25519_key, generate_ecdsa_key], k=NUM_KEYS)
+private_keys = [func() for func in key_funcs]
+public_keys = [get_public_key_openssh(x) for x in private_keys]
+print(json.dumps(public_keys))
