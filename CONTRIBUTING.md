@@ -33,7 +33,7 @@ The following users are available for testing:
 
 * `web_admin@unityhpc.test` - portal administrator, also has PI group `pi_web_admin_unityhpc_test`
 
-The test environment ships with a randomly generated (with hard coded seed) set of organizations, PI groups, and user accounts. See `tools/generate_htpasswd_bootstrap-ldif.py`. Use PHPLDAPAdmin to view them. The UIDs are of the form `user0001_org01_test`, `user0002_org02_test`, ... . The lowest user numbers are deliberatly left out, so that you can test the creation of new users. To log in as a user, you can clear your cookies and do HTTP basic auth with their `mail` attribute and password "password", or you can log in as `web_admin` and switch to their account from the user management page.
+The test environment ships with a randomly generated (with hard coded seed) set of organizations, PI groups, and user accounts. See `tools/docker-dev/generate-user-bootstrap-files-.py`. Use PHPLDAPAdmin to view them. The UIDs are of the form `user0001_org01_test`, `user0002_org02_test`, ... . The lowest user numbers are deliberatly left out, so that you can test the creation of new users. To log in as a user, you can clear your cookies and do HTTP basic auth with their `mail` attribute and password "password", or you can log in as `web_admin` and switch to their account from the user management page.
 
 ### Changes to Dev Environment
 
