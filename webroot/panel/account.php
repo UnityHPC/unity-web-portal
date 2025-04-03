@@ -28,7 +28,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     $added_keys = [$key];
                     break;
                 case "import":
+                    // FIXME the upload button should not work until an actual upload has been done
+                    if ($_FILES["keyfile"]["tmp_name"] == "") {
+                        echo $invalid_ssh_dialogue;
+                        break;
+                    }
                     $key = file_get_contents($_FILES["keyfile"]["tmp_name"]);
+                    if ($key === FALSE){
+                        echo $invalid_ssh_dialogue;
+                        break;
+                    }
                     $added_keys = [$key];
                     break;
                 case "generate":
