@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 case "import":
                     // FIXME the upload button should not work until an actual upload has been done
                     if ($_FILES["keyfile"]["tmp_name"] == "") {
-                        echo $invalid_ssh_dialogue;
                         $SITE->alert("No file uploaded.");
                         break;
                     }
@@ -61,12 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             // TODO when do I ignore cache and when do I not?
             $existing_keys = $USER->getSSHKeys(true);
             $totalKeys = array_merge($existing_keys, $added_keys);
-            if(count($totalKeys) >= $CONFIG["ldap"]["max_num_ssh_keys"]){
-                echo $too_many_ssh_dialogue;
+            if(count($totalKeys) > $CONFIG["ldap"]["max_num_ssh_keys"]){
                 $SITE->alert("Adding these SSH keys would exceed the maximum number allowed.");
-            } else {
-                $USER->setSSHKeys($totalKeys, $OPERATOR);
+                break;
             }
+            $USER->setSSHKeys($totalKeys, $OPERATOR);
             break;
         case "delKey":
             $delIndex = $SITE->array_get_or_bad_request("delIndex", $_POST);
