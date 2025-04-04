@@ -100,14 +100,14 @@ class UnityUser
         //
         // add to org group
         //
-        $orgEntry = $this->getOrgGroup();
+        $orgGroup = $this->getOrgGroup();
         // create organization if it doesn't exist
-        if (!$orgEntry->exists()) {
-            $orgEntry->init();
+        if (!$orgGroup->exists()) {
+            $orgGroup->init();
         }
 
-        if (!$orgEntry->inOrg($this->uid)) {
-            $orgEntry->addUser($this);
+        if (!$orgGroup->inOrg($this->uid)) {
+            $orgGroup->addUser($this);
         }
 
         // add user to cache

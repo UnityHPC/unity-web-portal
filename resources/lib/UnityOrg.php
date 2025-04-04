@@ -62,6 +62,10 @@ class UnityOrg
     {
         $org_group = $this->getLDAPOrgGroup();
         $members = $org_group->getAttribute("memberuid");
+        // empty array is null in LDAP land
+        if (is_null($members)) {
+            return false;
+        }
         return in_array($user, $members);
     }
 
