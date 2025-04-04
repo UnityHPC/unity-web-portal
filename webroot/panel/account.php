@@ -101,8 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         case "account_deletion_request":
             $hasGroups = count($USER->getPIGroups()) > 0;
             if ($hasGroups) {
-                // FIXME this should be an error
-                die();
+                $SITE->alert("You must leave your PI groups before you can request account deletion.");
                 break;
             }
             if (!$SQL->accDeletionRequestExists($USER->getUID())) {

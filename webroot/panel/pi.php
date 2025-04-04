@@ -7,7 +7,7 @@ require_once "../../resources/autoload.php";
 $group = $USER->getPIGroup();
 
 if (!$USER->isPI()) {
-    die();
+    $SITE->bad_request("User is not a PI");
 }
 
 include $LOC_HEADER;

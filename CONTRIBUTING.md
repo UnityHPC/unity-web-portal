@@ -24,6 +24,11 @@ All pages under `admin/` should check `$USER->isAdmin()` and do `UnitySite::forb
 
 Use `UnitySite::alert` to make a popup. Be sure to break out of whatever logic branch you're in.
 
+### die()
+
+Don't use `die()`. Throw an exception.
+
+
 ## Development Environment
 
 ### Setting up your Environment

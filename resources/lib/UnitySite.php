@@ -6,6 +6,8 @@ use phpseclib3\Crypt\PublicKeyLoader;
 use Exception;
 
 class GithubUserNotFoundOrNoKeysException extends Exception {}
+class BadRequestException extends Exception {}
+class ForbiddenException extends Exception {}
 
 class UnitySite
 {
@@ -13,7 +15,8 @@ class UnitySite
     {
         if ($_SERVER["PHP_SELF"] != $destination) {
             header("Location: $destination");
-            die("Redirect failed, click <a href='$destination'>here</a> to continue.");
+            echo("Redirect failed, click <a href='$destination'>here</a> to continue.");
+            throw new RedirectFailedException();
         }
     }
 
@@ -29,7 +32,8 @@ class UnitySite
         $full_msg = "<pre>ERROR: bad request. Please contact Unity support.\n$msg</pre>";
         error_log($full_msg);
         error_log((new Exception())->getTraceAsString());
-        die($full_msg);
+        echo $full_msg;
+        throw new BadRequestException;
     }
 
     // FIXME move this function somewhere with these globals defined?
@@ -44,7 +48,7 @@ class UnitySite
             "access_denied",
             $USER->getUID()
         );
-        die();
+        throw new ForbiddenException();
     }
 
     public function alert(string $msg): void{
