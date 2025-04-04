@@ -20,6 +20,10 @@ This code base is currently using PHP version 8.3. All files are required to be 
 
 All pages under `admin/` should check `$USER->isAdmin()` and do `UnitySite::forbidden($USER, $SQL)` if not admin. This should be redundant since the web server should also be doing this on `admin/` as a whole.
 
+### error messages
+
+Use `UnitySite::alert` to make a popup. Be sure to break out of whatever logic branch you're in.
+
 ## Development Environment
 
 ### Setting up your Environment
