@@ -25,6 +25,10 @@ class UnitySite
         die($full_msg);
     }
 
+    public function alert(string $msg): void{
+        echo "<script type='text/javascript'>alert(" . json_encode($msg) . ");</script>";
+    }
+
     public function getGithubKeys($username)
     {
         $url = "https://api.github.com/users/$username/keys";

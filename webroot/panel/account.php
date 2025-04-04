@@ -3,20 +3,6 @@
 require_once "../../resources/autoload.php";
 
 require_once $LOC_HEADER;
-$invalid_ssh_dialogue = "
-<script type='text/javascript'>
-  alert('One or more of your SSH keys is invalid.');
-</script>";
-
-$too_many_ssh_dialogue = "
-<script type='text/javascript'>
-  alert('Adding these SSH keys would exceed the maximum number allowed.');
-</script>";
-
-$github_user_not_found_or_no_keys_dialogue = "
-<script type='text/javascript'>
-  alert('Github user not found, or Github user has no keys.');
-</script>";
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     switch ($_POST["form_type"]) {
@@ -31,11 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     // FIXME the upload button should not work until an actual upload has been done
                     if ($_FILES["keyfile"]["tmp_name"] == "") {
                         echo $invalid_ssh_dialogue;
+                        $SITE->alert("No file uploaded.");
                         break;
                     }
                     $key = file_get_contents($_FILES["keyfile"]["tmp_name"]);
                     if ($key === FALSE){
-                        echo $invalid_ssh_dialogue;
+                        $SITE->alert("File upload failed.");
                         break;
                     }
                     $added_keys = [$key];
@@ -49,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                         $keys = $SITE->getGithubKeys($_POST["gh_user"]);
                         $added_keys = $keys;
                     } catch (UnityWebPortal\lib\GithubUserNotFoundOrNoKeysException $e) {
-                        echo $github_user_not_found_or_no_keys_dialogue;
+                        $SITE->alert("Github user not found, or Github user has no keys.");
                     }
                     break;
                 default:
@@ -65,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 }
             }
             if (!$all_are_valid) {
-                echo $invalid_ssh_dialogue;
+                $SITE->alert("One or more of your SSH keys is invalid.");
                 break;
             }
             // TODO when do I ignore cache and when do I not?
@@ -73,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $totalKeys = array_merge($existing_keys, $added_keys);
             if(count($totalKeys) >= $CONFIG["ldap"]["max_num_ssh_keys"]){
                 echo $too_many_ssh_dialogue;
+                $SITE->alert("Adding these SSH keys would exceed the maximum number allowed.");
             } else {
                 $USER->setSSHKeys($totalKeys, $OPERATOR);
             }
