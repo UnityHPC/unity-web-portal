@@ -4,7 +4,7 @@ $_SERVER = [
     "REMOTE_ADDR" => "127.0.0.1"
 ];
 
-require_once "../../resources/autoload.php";
+require "../../resources/autoload.php";
 
 ini_set("assert.exception", false);
 ini_set("assert.warning", true);
@@ -14,19 +14,20 @@ function switch_to_user(string $eppn, string $given_name, string $sn, string $ma
     unset($SSO);
     // unset($_SESSION);
     session_write_close();
-    session_id(str_replace("@", "-", str_replace(".", "-", $eppn)));
+    session_id(str_replace(["_", "@", "."], "-", $eppn));
     // init.php will call session_start()
     $_SERVER["REMOTE_USER"] = $eppn;
     $_SERVER["eppn"] = $eppn;
     $_SERVER["givenName"] = $given_name;
     $_SERVER["sn"] = $sn;
     ob_start();
-    include "../../resources/init.php";
+    require "../../resources/autoload.php";
     $_ = ob_get_clean();
     assert(isset($OPERATOR));
     assert(isset($SSO));
     assert(isset($_SESSION));
     assert(isset($USER));
+    assert(isset($SITE));
 }
 
 function post(string $phpfile, array $post_data): string {
@@ -40,9 +41,3 @@ function post(string $phpfile, array $post_data): string {
     unset($_SERVER["REQUEST_METHOD"]);
     return $output;
 }
-
-$pi_1 = ["user1@org1.test", "Givenname", "Surname", "user1@org1.test"];
-$user_in_pi_1 = ["user2@org1.test", "Givenname", "Surname", "user2@org1.test"];
-$new_user = ["FIXME", "Givenname", "Surname", "FIXME"];
-$valid_ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDWG37i3uTdnanD8SCY2UCUcuqYEszvb/eebyqfUHiRn foobar";
-$invalid_ssh_key = "foobar AAAAC3NzaC1lZDI1NTE5AAAAIDWG37i3uTdnanD8SCY2UCUcuqYEszvb/eebyqfUHiRn foobar";
