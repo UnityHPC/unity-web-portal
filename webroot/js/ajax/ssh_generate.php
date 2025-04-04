@@ -3,21 +3,24 @@
 require "../../../resources/autoload.php";
 
 use phpseclib3\Crypt\RSA;
-
-echo "<pre>";
+if ($_SERVER['REQUEST_METHOD'] != "GET") {
+    $SITE->bad_request("invalid request method '" . $_SERVER["REQUEST_METHOD"] . "'");
+}
 
 $private = RSA::createKey(2048);
 $public = $private->getPublicKey();
 
-echo "<section class='pubKey'>";
-echo $public->toString('OpenSSH');
-echo "</section>";
-echo "<section class='privKey'>";
-if (isset($_GET["type"]) && $_GET["type"] == "ppk") {
-    echo $private->toString('PuTTY');
-} else {
-    echo $private;
+switch ($_GET["type"]) {
+    case "key":
+        break;
+    case "ppk":
+        $private = $private->toString("PuTTY");
+        break;
+    default:
+        $SITE->bad_request("invalid type '" . $_GET["type"] . "'");
 }
-echo "</section>";
 
-echo "</pre>";
+echo json_encode([
+    "pubkey" => $public->toString('OpenSSH'),
+    "privkey" => $private
+]);
