@@ -112,10 +112,11 @@ CREATE TABLE `sitevars` (
   `value` varchar(768) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `sitevars` (`id`, `name`, `value`) VALUES
-(0, 'MAX_UID', '33129'),
-(1, 'MAX_GID', '33129'),
-(2, 'MAX_PIGID', '10284');
+-- this should be done in bootstrap-users.sql
+-- INSERT INTO `sitevars` (`id`, `name`, `value`) VALUES
+-- (0, 'MAX_UID', '33129'),
+-- (1, 'MAX_GID', '33129'),
+-- (2, 'MAX_PIGID', '10284');
 
 ALTER TABLE `account_deletion_requests`
   ADD PRIMARY KEY (`id`);

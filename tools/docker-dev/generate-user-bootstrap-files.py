@@ -76,6 +76,7 @@ MAX_PUBKEYS = 100  # TODO integrate with UnityConfig
 MAX_PIS_MEMBER_OF = 100  # TODO integrate with UnityConfig
 SQL_ACCT_DEL_REQ_TABLE = "account_deletion_requests"  # FIXME integrate somehow
 SQL_REQUESTS_TABLE = "requests"  # FIXME integrate somehow
+SQL_SITE_VARS_TABLE = "sitevars"  # FIXME integrate somehow
 SQL_PI_PROMOTION = "admin"  # FIXME integrate UnitySQL::REQUEST_PI_PROMOTION
 
 with open("example-ssh-public-keys.json", "r", encoding="utf8") as public_keys_file:
@@ -307,6 +308,20 @@ def main():
             )
         )
 
+        # set MAX_{UID,GID,PIGID} to the beginning of the reserved range so that new users will be created there
+        sql_tempfile.write(
+            "insert into %s (name, value) value ('MAX_UID', '%s');\n"
+            % (SQL_SITE_VARS_TABLE, user_num2id(0))
+        )
+        sql_tempfile.write(
+            "insert into %s (name, value) value ('MAX_GID', '%s');\n"
+            % (SQL_SITE_VARS_TABLE, user_num2id(0))
+        )
+        sql_tempfile.write(
+            "insert into %s (name, value) value ('MAX_PIGID', '%s');\n"
+            % (SQL_SITE_VARS_TABLE, pi_num2gid(0))
+        )
+
         for uid, num_requests in users_num_pi_requests.items():
             if num_requests > 0:
                 pis_not_already_member_of = set(filler_pi_names) - user_pi_group_membership[uid]
@@ -376,6 +391,10 @@ def main():
     print(f"export LDAP_BOOTSTRAP_LDIF_PATH={ldif_tempfile.name}")
 
     with tempfile.NamedTemporaryFile(mode="w+", delete=False) as htpasswd_tempfile:
+        for i in range(NUM_RESERVED_USER_NUMBERS):
+            eppn = f"user{str(i).zfill(ID_ZFILL)}@unityhpc.test"
+            # password is "password"
+            htpasswd_tempfile.write(f"{eppn}:$apr1$Rgrex74Z$rgJx6sCnGQN9UVMmhVG2R1\n")
         for user in users:
             # password is "password"
             htpasswd_tempfile.write(f"{user["mail"]}:$apr1$Rgrex74Z$rgJx6sCnGQN9UVMmhVG2R1\n")
