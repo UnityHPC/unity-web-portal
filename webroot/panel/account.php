@@ -5,12 +5,14 @@ require_once "../../resources/autoload.php";
 require_once $LOC_HEADER;
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    switch ($_POST["form_type"]) {
+    $form_type = $SITE->array_get_or_bad_request("form_type", $_POST);
+    switch ($form_type) {
         case "addKey":
             $added_keys = null;
-            switch ($_POST["add_type"]) {
+            $add_type = $SITE->array_get_or_bad_request("add_type", $_POST);
+            switch ($add_type) {
                 case "paste":
-                    $key = $_POST["key"];
+                    $key = $SITE->array_get_or_bad_request("key", $_POST);
                     $added_keys = [$key];
                     break;
                 case "import":
@@ -28,19 +30,20 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     $added_keys = [$key];
                     break;
                 case "generate":
-                    $key = $_POST["gen_key"];
+                    $key = $SITE->array_get_or_bad_request("gen_key", $_POST);
                     $added_keys = [$key];
                     break;
                 case "github":
                     try {
-                        $keys = $SITE->getGithubKeys($_POST["gh_user"]);
+                        $gh_user = $SITE->array_get_or_bad_request("gh_user", $_POST);
+                        $keys = $SITE->getGithubKeys($gh_user);
                         $added_keys = $keys;
                     } catch (UnityWebPortal\lib\GithubUserNotFoundOrNoKeysException $e) {
                         $SITE->alert("Github user not found, or Github user has no keys.");
                     }
                     break;
                 default:
-                    $SITE->bad_request("invalid add_type '" . $_POST["add_type"] . "'");
+                    $SITE->bad_request("invalid add_type '$add_type'");
             }
             if (is_null($added_keys)) {
                 break;
@@ -66,19 +69,27 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
             break;
         case "delKey":
+            $delIndex = $SITE->array_get_or_bad_request("delIndex", $_POST);
+            if (!preg_match("/^[0-9]+$/", $delIndex)) {
+                $SITE->bad_request("delIndex '$delIndex' is not digits");
+                break;
+            }
+            $delIndex = (int)$delIndex;
             $keys = $USER->getSSHKeys();
-            // FIXME check valid index
-            unset($keys[intval($_POST["delIndex"])]);  // remove key from array
+            if (!(($delIndex >= 0) && ($delIndex < count($keys)))){
+                $SITE->bad_request("delIndex $delIndex out of range");
+                break;
+            }
+            unset($keys[$delIndex]);  // remove key from array
             $keys = array_values($keys);
-
             $USER->setSSHKeys($keys, $OPERATOR);  // Update user keys
             break;
         case "loginshell":
-            if ($_POST["shellSelect"] == "custom") {
-                $USER->setLoginShell($_POST["shell"], $OPERATOR);
-            } else {
-                $USER->setLoginShell($_POST["shellSelect"], $OPERATOR);
+            $shell = $SITE->array_get_or_bad_request("shellSelect", $_POST);
+            if ($shell == "custom") {
+                $shell = $SITE->array_get_or_bad_request("shell", $_POST);
             }
+            $USER->setLoginShell($shell, $OPERATOR);
             break;
         case "pi_request":
             // FIXME this should be an error

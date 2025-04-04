@@ -17,6 +17,13 @@ class UnitySite
         }
     }
 
+    public function array_get_or_bad_request(mixed $key, array $array){
+        if (!array_key_exists($key, $array)){
+            $this->bad_request("missing $key");
+        }
+        return $array[$key];
+    }
+
     public function bad_request($msg){
         header("HTTP/1.1 400 Bad Request");
         $full_msg = "<pre>ERROR: bad request. Please contact Unity support.\n$msg</pre>";
