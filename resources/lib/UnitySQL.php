@@ -5,6 +5,9 @@ namespace UnityWebPortal\lib;
 use Exception;
 use PDO;
 
+class UnitySQLRecordNotFoundException extends Exception {}
+class UnitySQLRecordNotUniqueException extends Exception {}
+
 class UnitySQL
 {
     private const TABLE_REQS = "requests";
@@ -41,9 +44,11 @@ class UnitySQL
     //
     public function addRequest($requestor, $request_for = self::REQUEST_PI_PROMOTION)
     {
-        // FIXME this should be an error
         if ($this->requestExists($requestor, $request_for)) {
-            return;
+            throw new UnitySQLRecordNotFoundException(json_encode([
+                "requestor" => $requestor,
+                "request_for" => $request_for
+            ]));
         }
 
         $stmt = $this->conn->prepare(
@@ -57,9 +62,11 @@ class UnitySQL
 
     public function removeRequest($requestor, $request_for = self::REQUEST_PI_PROMOTION)
     {
-        // FIXME this should be an error
         if (!$this->requestExists($requestor, $request_for)) {
-            return;
+            throw new UnitySQLRecordNotFoundException(json_encode([
+                "requestor" => $requestor,
+                "request_for" => $request_for
+            ]));
         }
 
         $stmt = $this->conn->prepare(
@@ -151,6 +158,7 @@ class UnitySQL
 
     public function editNotice($id, $title, $date, $content)
     {
+        $this->getNotice($id); // fail if notice does not exist
         $stmt = $this->conn->prepare(
             "UPDATE " . self::TABLE_NOTICES . " SET date=:date, title=:title, message=:message WHERE id=:id"
         );
@@ -164,6 +172,7 @@ class UnitySQL
 
     public function deleteNotice($id)
     {
+        $this->getNotice($id); // fail if notice does not exist
         $stmt = $this->conn->prepare(
             "DELETE FROM " . self::TABLE_NOTICES . " WHERE id=:id"
         );
@@ -181,7 +190,14 @@ class UnitySQL
 
         $stmt->execute();
 
-        return $stmt->fetchAll()[0];
+        $sql_results = $stmt->fetchAll();
+        if (count($sql_results) == 0) {
+            throw new UnitySQLRecordNotFoundException($id);
+        }
+        if (count($sql_results) > 1) {
+            throw new UnitySQLRecordNotUniqueException($id);
+        }
+        return $sql_results[0];
     }
 
     public function getNotices()
@@ -212,12 +228,19 @@ class UnitySQL
         $stmt->bindParam(":id", $id);
 
         $stmt->execute();
-
-        return $stmt->fetchAll()[0];
+        $sql_results = $stmt->fetchAll();
+        if (count($sql_results) == 0) {
+            throw new UnitySQLRecordNotFoundException($id);
+        }
+        if (count($sql_results) > 1) {
+            throw new UnitySQLRecordNotUniqueException($id);
+        }
+        return $sql_results[0];
     }
 
     public function editPage($id, $content, $operator)
     {
+        $this->getPage($id); // fail if page doesn't exist
         $stmt = $this->conn->prepare(
             "UPDATE " . self::TABLE_PAGES . " SET content=:content WHERE page=:id"
         );
@@ -281,18 +304,19 @@ class UnitySQL
         $stmt->bindParam(":name", $name);
 
         $stmt->execute();
-        $result = $stmt->fetchAll();
-        if (empty($result)) {
-            throw new Exception("Site variable with name '$name' not found.");
+        $sql_results = $stmt->fetchAll();
+        if (count($sql_results) == 0) {
+            throw new UnitySQLRecordNotFoundException($id);
         }
-        if (count($result) > 1) {
-            throw new Exception("Multiple site variables found with name '$name'. Expected only one.");
+        if (count($sql_results) > 1) {
+            throw new UnitySQLRecordNotUniqueException($id);
         }
-        return $result[0]['value'];
+        return $sql_results[0]["value"];
     }
 
     public function updateSiteVar($name, $value)
     {
+        $this->getSiteVar($name); // fail if notice does not exist
         $stmt = $this->conn->prepare(
             "UPDATE " . self::TABLE_SITEVARS . " SET value=:value WHERE name=:name"
         );
