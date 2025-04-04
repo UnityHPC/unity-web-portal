@@ -207,6 +207,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 
 <hr>
 
+<h5>Login Shell</h5>
 <form action="" method="POST">
 
     <input type="hidden" name="form_type" value="loginshell">
