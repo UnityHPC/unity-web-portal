@@ -10,6 +10,16 @@ When submitting pull requests, the pull request should be made to the version yo
 
 This code base is currently using PHP version 8.3. All files are required to be linted with PSR-12 standard. This repository will automatically check PRs for linting compliance.
 
+### handling HTTP headers
+
+* the web page header `LOC_HEADER` should be included before handling HTTP headers
+* all expected headers should be fetched using `UnitySite::array_get_or_bad_request`
+* all headers which are expected to be one of a set of hard coded values should use a switch case where the default case is `UnitySite::bad_request("invalid <header-name>")`
+
+### admin access control
+
+All pages under `admin/` should check `$USER->isAdmin()` and do `UnitySite::forbidden($USER, $SQL)` if not admin. This should be redundant since the web server should also be doing this on `admin/` as a whole.
+
 ## Development Environment
 
 ### Setting up your Environment
