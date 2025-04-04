@@ -3,15 +3,12 @@
 require_once "../../resources/autoload.php";
 
 if (!$USER->isAdmin()) {
-    die();
+    $SITE->forbidden($SQL, $USER);
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (!empty($_POST["pageSel"])) {
-        $SQL->editPage($_POST["pageSel"], $_POST["content"], $USER);
-    } else {
-        $SITE->bad_request("");
-    }
+    $page_sel = $SITE->array_get_or_bad_request("pageSel", $_POST);
+    $SQL->editPage($_POST["pageSel"], $_POST["content"], $USER);
 }
 
 include $LOC_HEADER;

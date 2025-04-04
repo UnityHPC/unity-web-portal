@@ -3,25 +3,43 @@
 require_once "../../resources/autoload.php";
 
 if (!$USER->isAdmin()) {
-    die();
+    $SITE->forbidden($SQL, $USER);
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    switch ($_POST["form_type"]) {
+    $form_type = $SITE->array_get_or_bad_request("form_type", $_POST);
+    switch ($form_type) {
         case "newNotice":
-            $SQL->addNotice($_POST["title"], $_POST["date"], $_POST["content"], $USER);
-
+            $title = $SITE->array_get_or_bad_request("title", $_POST);
+            $date = $SITE->array_get_or_bad_request("date", $_POST);
+            $content = $SITE->array_get_or_bad_request("content", $_POST);
+            $SQL->addNotice($title, $date, $content, $USER);
             break;
         case "editNotice":
-            $SQL->editNotice($_POST["id"], $_POST["title"], $_POST["date"], $_POST["content"]);
-
+            $id = $SITE->array_get_or_bad_request("id", $_POST);
+            $title = $SITE->array_get_or_bad_request("title", $_POST);
+            $date = $SITE->array_get_or_bad_request("date", $_POST);
+            $content = $SITE->array_get_or_bad_request("content", $_POST);
+            try {
+                $SQL->editNotice($id, $title, $date, $content, $USER);
+            } catch (UnitySQLRecordNotFoundException $e) {
+                $SITE->bad_request("notice '$id' not found");
+            } catch (UnitySQLRecordNotUniqueException $e) {
+                $SITE->bad_request("notice id '$id' not unique");
+            }
             break;
         case "delNotice":
-            $SQL->deleteNotice($_POST["id"]);
-
+            $id = $SITE->array_get_or_bad_request("id", $_POST);
+            try {
+                $SQL->deleteNotice($id);
+            } catch (UnitySQLRecordNotFoundException $e) {
+                $SITE->bad_request("notice '$id' not found");
+            } catch (UnitySQLRecordNotUniqueException $e) {
+                $SITE->bad_request("notice id '$id' not unique");
+            }
             break;
         default:
-            $SITE->bad_request("invalid form_type '" . $_POST["form_type"] . "'");
+            $SITE->bad_request("invalid form_type '$form_type'");
     }
 }
 

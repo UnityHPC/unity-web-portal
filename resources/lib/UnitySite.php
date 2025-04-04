@@ -24,12 +24,27 @@ class UnitySite
         return $array[$key];
     }
 
-    public function bad_request($msg){
+    public function bad_request(string $msg): void {
         header("HTTP/1.1 400 Bad Request");
         $full_msg = "<pre>ERROR: bad request. Please contact Unity support.\n$msg</pre>";
         error_log($full_msg);
         error_log((new Exception())->getTraceAsString());
         die($full_msg);
+    }
+
+    // FIXME move this function somewhere with these globals defined?
+    public function forbidden(UnitySQL $SQL, UnityUser $USER): void{
+        header("HTTP/1.1 403 Forbidden");
+        echo "<pre>Access denied. This incident has been recorded.</pre>";
+        error_log("user-mgmt.php: access denied to '" . $USER->getUID() . "'");
+        error_log((new Exception())->getTraceAsString());
+        $SQL->addLog(
+            $USER->getUID(),
+            $_SERVER['REMOTE_ADDR'],
+            "access_denied",
+            $USER->getUID()
+        );
+        die();
     }
 
     public function alert(string $msg): void{

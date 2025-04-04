@@ -2,8 +2,10 @@
 
 require_once "../../resources/autoload.php";
 
+include $LOC_HEADER;
+
 if (!$USER->isAdmin()) {
-    die();
+    $SITE->forbidden($SQL, $USER);
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -12,12 +14,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["viewUser"] = $_POST["uid"];
             $SITE->redirect($CONFIG["site"]["prefix"] . "/panel");
             break;
+        case "clearView":
+            // header.php redirects to here after handling clearView
+            break;
         default:
             $SITE->bad_request("invalid form_name '" . $_POST["form_name"] . "'");
     }
 }
 
-include $LOC_HEADER;
 ?>
 
 <h1>User Management</h1>

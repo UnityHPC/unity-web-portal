@@ -1,53 +1,42 @@
 <?php
 
+namespace UnityWebPortal\lib;
+
 require_once "../../resources/autoload.php";
 
-use UnityWebPortal\lib\UnityGroup;
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $modalErrors = array();
-    $errors = array();
-
-    if (isset($_POST["form_name"])) {
-        if (isset($_POST["pi"])) {
-            $pi_account = new UnityGroup(trim($_POST["pi"]), $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-            if (!$pi_account->exists()) {
-                // "\'"  instead of "'", otherwise it will close a single quote used to place the message
-                array_push($modalErrors, "This PI doesn\'t exist");
+    if (isset($_POST["pi"])) {
+        $pi_account = new UnityGroup(trim($_POST["pi"]), $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        if (!$pi_account->exists()) {
+            $SITE->bad_request("pi '" . $_POST["pi"] . "' does not exist");
+        }
+    }
+    $form_name = $SITE->array_get_or_bad_request("form_name", $_POST);
+    switch ($form_name) {
+        case "addPIform":
+            $pi_groups = $USER->getPIGroups();
+            $requests = $SQL->getRequestsByUser($USER->getUID());
+            $max = $CONFIG["ldap"]["max_num_pi_groups_per_user"];
+            if (count($pi_groups) + count($requests) >= $max) {
+                $SITE->alert("You've already requested or joined the maximum number of PI groups");
+                break;
             }
-        }
-
-        switch ($_POST["form_name"]) {
-            case "addPIform":
-                // The new PI modal was submitted
-                // existing PI request
-
-                if ($pi_account->requestExists($USER)) {
-                    array_push($modalErrors, "You\'ve already requested this");
-                }
-
-                if ($pi_account->userExists($USER)) {
-                    array_push($modalErrors, "You\'re already in this PI group");
-                }
-
-                $pi_groups = $USER->getPIGroups();
-                $requests = $SQL->getRequestsByUser($USER->getUID());
-                if (count($pi_groups) + count($requests) >= $CONFIG["ldap"]["max_num_pi_groups_per_user"]) {
-                    array_push($modalErrors, "You\'ve already requested or joined the maximum number of PI groups");
-                }
-
-                // Add row to sql
-                if (empty($modalErrors)) {
-                    $pi_account->newUserRequest($USER);
-                }
-                break;
-            case "removePIForm":
-                // Remove PI form
-                $pi_account->removeUser($USER);
-                break;
-            default:
-                $SITE->bad_request("invalid form_name '" . $_POST["form_name"] . "'");
-        }
+            try {
+                $pi_account->newUserRequest($USER);
+            } catch (UnityGroupUserRequestAlreadyMemberException $e) {
+                $SITE->alert("You're already a member of this group.");
+            } catch (UnityGroupDuplicateUserRequestException $e) {
+                $SITE->alert("You've already requested to join this group.");
+            } catch (UnityGroupUserRequestInvalidUserException $e) {
+                $SITE->alert("You cannot request to join a group after requesting account deletion.");
+            }
+            break;
+        case "removePIForm":
+            // Remove PI form
+            $pi_account->removeUser($USER);
+            break;
+        default:
+            $SITE->bad_request("invalid form_name '" . $_POST["form_name"] . "'");
     }
 }
 
@@ -154,19 +143,6 @@ if ($SQL->accDeletionRequestExists($USER->getUID())) {
     $("button.btnAddPI").click(function() {
         openModal("Add New PI", "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/new_pi.php");
     });
-
-    <?php
-    // This is here to re-open the modal if there are errors
-    if (isset($modalErrors) && is_array($modalErrors) && count($modalErrors) > 0) {
-        $errorHTML = "";
-        foreach ($modalErrors as $error) {
-            $errorHTML .= "<span>$error</span>";
-        }
-
-        echo "openModal('Add New PI', '" .
-        $CONFIG["site"]["prefix"] . "/panel/modal/new_pi.php', '" . $errorHTML . "');";
-    }
-    ?>
 
     var ajax_url = "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/ajax/get_group_members.php?pi_uid=";
 </script>

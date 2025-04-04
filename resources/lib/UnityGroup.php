@@ -4,6 +4,10 @@ namespace UnityWebPortal\lib;
 
 use Exception;
 
+class UnityGroupUserRequestAlreadyMemberException extends Exception {}
+class UnityGroupDuplicateUserRequestException extends Exception {}
+class UnityGroupUserRequestInvalidUserException extends Exception {}
+
 /**
  * Class that represents a single PI group in the Unity Cluster.
  */
@@ -357,20 +361,16 @@ class UnityGroup
 
     public function newUserRequest($new_user, $send_mail = true)
     {
-        // FIXME requesting to join a group you're already in should be an error
         if ($this->userExists($new_user)) {
-            return;
+            throw new UnityGroupUserRequestAlreadyMemberException();
         }
-
-        // FIXME requesting to join a group multiple times should be an error
         if ($this->requestExists($new_user)) {
-            return;
+            throw new UnityGroupDuplicateUserRequestException();
         }
-
         // check if account deletion request already exists
         // FIXME remove this. it's not harmful, making function noop is bad experience
         if ($this->SQL->accDeletionRequestExists($new_user->getUID())) {
-            return;
+            throw new UnityGroupUserRequestInvalidUserException();
         }
 
         $this->addRequest($new_user->getUID());

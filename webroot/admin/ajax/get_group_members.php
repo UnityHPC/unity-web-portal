@@ -5,14 +5,14 @@ require_once "../../../resources/autoload.php";
 use UnityWebPortal\lib\UnityGroup;
 
 if (!$USER->isAdmin()) {
-    die();
+    $SITE->forbidden($SQL, $USER);
 }
 
-if (!isset($_GET["pi_uid"])) {
-    die("PI UID not set");
+if ($_SERVER["REQUEST_METHOD"] != "GET"){
+    $SITE->bad_request("invalid request method");
 }
-
-$group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+$pi_uid = $SITE->array_get_or_bad_request("pi_uid", $_GET);
+$group = new UnityGroup($pi_uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
 $members = $group->getGroupMembers();
 $requests = $group->getRequests();
 

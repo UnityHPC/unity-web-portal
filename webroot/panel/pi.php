@@ -1,9 +1,8 @@
 <?php
 
-require_once "../../resources/autoload.php";
+namespace UnityWebPortal\lib;
 
-use UnityWebPortal\lib\UnityUser;
-use UnityWebPortal\lib\UnitySite;
+require_once "../../resources/autoload.php";
 
 $group = $USER->getPIGroup();
 
@@ -11,37 +10,54 @@ if (!$USER->isPI()) {
     die();
 }
 
+include $LOC_HEADER;
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST["uid"])) {
-        $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-        // FIXME error if user does not exist, see groups.php
-    }
-
-    switch ($_POST["form_name"]) {
+    $form_name = $SITE->array_get_or_bad_request("form_name", $_POST);
+    switch ($form_name) {
         case "userReq":
-            if ($_POST["action"] == "Approve") {
-                $group->approveUser($form_user);
-            } elseif ($_POST["action"] == "Deny") {
-                $group->denyUser($form_user);
+            $action = $SITE->array_get_or_bad_request("action", $_POST);
+            switch ($action) {
+                case "Approve":
+                    $uid = $SITE->array_get_or_bad_request("uid", $_POST);
+                    $form_user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+                    try {
+                        $group->approveUser($form_user);
+                    } catch (UnitySQLRecordNotFoundException $e) {
+                        $SITE->bad_request(
+                            "no request for '" . $group->getPIUID() . "' from uid '$uid'"
+                        );
+                    }
+                    break;
+                case "Deny":
+                    $uid = $SITE->array_get_or_bad_request("uid", $_POST);
+                    $form_user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+                    try {
+                        $group->denyUser($form_user);
+                    } catch (UnitySQLRecordNotFoundException $e) {
+                        $SITE->bad_request(
+                            "no request for '" . $group->getPIUID() . "' from uid '$uid'"
+                        );
+                    }
+                    break;
+                default:
+                    $SITE->bad_request("invalid action '$action'");
+                    break;
             }
-
             break;
         case "remUser":
-            // remove user button clicked
             $group->removeUser($form_user);
-
             break;
         case "disband":
             $group->removeGroup();
             $SITE->redirect($CONFIG["site"]["prefix"] . "/panel/account.php");
-
             break;
         default:
             $SITE->bad_request("invalid form_name '" . $_POST["form_name"] . "'");
+            break;
     }
 }
 
-include $LOC_HEADER;
 ?>
 
 <h1>My Users</h1>

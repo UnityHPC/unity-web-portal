@@ -11,30 +11,34 @@ if ($USER->exists()) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $errors = array();
-
-    if (!isset($_POST["eula"]) || $_POST["eula"] != "agree") {
-        // checkbox was not checked
-        array_push($errors, "Accepting the EULA is required");
+    $account_request_is_valid = true;
+    $eula_accepted = $SITE->array_get_or_bad_request("eula", $_POST);
+    if ($eula_accepted != "agree"){
+        $SITE->alert("Accepting the EULA is required");
+        $account_request_is_valid = false;
     }
-
-    if ($_POST["new_user_sel"] == "not_pi") {
+    $pi_or_not_pi = $SITE->array_get_or_bad_request("new_user_sel", $_POST);
+    if ($pi_or_not_pi == "not_pi") {
         $form_group = new UnityGroup(trim($_POST["pi"]), $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
         if (!$form_group->exists()) {
-            array_push($errors, "The selected PI does not exist");
+            $SITE->alert("The selected PI does not exist");
+            $account_request_is_valid = false;
         }
     }
-
-    // Request Account Form was Submitted
-    if (count($errors) == 0) {
-        if ($_POST["new_user_sel"] == "pi") {
-            // requesting a PI account
-            $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
-        } elseif ($_POST["new_user_sel"] == "not_pi") {
-            $form_group->newUserRequest($USER);
-        } else {
-            $SITE->bad_request("invalid new_user_sel '" . $_POST["new_user_sel"] . "'");
-        }
+    switch ($pi_or_not_pi) {
+        case "pi":
+            if ($account_request_is_valid) {
+                $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
+            }
+            break;
+        case "not_pi":
+            if ($account_request_is_valid) {
+                $form_group->newUserRequest($USER);
+            }
+            break;
+        default:
+            $SITE->bad_request("invalid new_user_sel '$pi_or_not_pi'");
+            break;
     }
 }
 
