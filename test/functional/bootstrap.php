@@ -12,6 +12,35 @@ require "../../resources/autoload.php";
 
 // ini_set("error_log", "/dev/null");
 
+global $HTTP_HEADER_TEST_INPUTS;
+// in theory
+$HTTP_HEADER_TEST_INPUTS = [
+    '',
+    null,
+    'a',
+    'Hello, World!',
+    '  Some text  ',
+    '   ',
+    '12345',
+    'abc123',
+    'Hello@World!',
+    str_repeat('a', 8190), // https://httpd.apache.org/docs/2.2/mod/core.html#limitrequestfieldsize
+    '<p>This is a paragraph</p>',
+    "'; DROP TABLE users; --",
+    "<script>alert('XSS');</script>",
+    'こんにちは世界',
+    "Hello 👋 World 🌍",
+    "Line 1\nLine 2",
+    "Column1\tColumn2",
+    'MiXeD cAsE',
+    'https://www.example.com',
+    'user@example.com',
+    '{"key": "value"}',
+    'SGVsbG8sIFdvcmxkIQ==',
+    "Hello\x00World",
+    mb_convert_encoding("Hello, World!", "UTF-16")
+];
+
 function switch_to_user(string $eppn, string $given_name, string $sn, string $mail): void {
     global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     unset($SSO);

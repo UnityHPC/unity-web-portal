@@ -3,17 +3,20 @@
 namespace UnityWebPortal\lib;
 
 use Mockery;
-use Exception;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class SSHKeyAddTest extends TestCase {
-    private static $max_number_of_valid_ssh_keys;
     private static $initial_keys;
 
     public static function setUpBeforeClass(): void{
         global $USER;
-        self::$max_number_of_valid_ssh_keys = self::get_max_number_of_valid_ssh_keys();
         self::$initial_keys = $USER->getSSHKeys();
+    }
+
+    protected function tearDown(): void {
+        global $USER;
+        $USER->setSSHKeys(self::$initial_keys);
     }
 
     private static function get_max_number_of_valid_ssh_keys(){
@@ -31,11 +34,18 @@ class SSHKeyAddTest extends TestCase {
         throw new Exception("could not find any user with max ssh keys!");
     }
 
-    private function delete_ssh_key(mixed $index): void {
-        post(
-            "../../webroot/panel/account.php",
-            ["form_type" => "delKey", "delIndex" => $index]
-        );
+    public static function ssh_key_provider() {
+        global $HTTP_HEADER_TEST_INPUTS;
+        $max_number_of_valid_ssh_keys = self::get_max_number_of_valid_ssh_keys();
+        return [
+            [[]],
+            [["foobar"]],
+            [[$max_number_of_valid_ssh_keys[0]]],
+            [[$max_number_of_valid_ssh_keys[0], "foobar"]],
+            [$max_number_of_valid_ssh_keys],
+            [array_slice($max_number_of_valid_ssh_keys, 0, -1) + ["foobar"]],
+        ] + array_map(function($x){return [[$x]];}, $HTTP_HEADER_TEST_INPUTS);
+        // TODO don't need to do HTTP_HEADER_TEST_INPUTS if we add unit tests
     }
 
     private function add_ssh_key_paste(string $key): void {
@@ -135,19 +145,23 @@ class SSHKeyAddTest extends TestCase {
         return $output;
     }
 
-    private function test_add_ssh_keys_paste(array $add_keys): string{
+    #[DataProvider("ssh_key_provider")]
+    public function test_add_ssh_keys_paste(array $add_keys): string{
         return $this->test_add_ssh_keys_not_github($add_keys, $this->add_ssh_key_paste(...));
     }
 
-    private function test_add_ssh_keys_import(array $add_keys): string{
+    #[DataProvider("ssh_key_provider")]
+    public function test_add_ssh_keys_import(array $add_keys): string{
         return $this->test_add_ssh_keys_not_github($add_keys, $this->add_ssh_key_import(...));
     }
 
-    private function test_add_ssh_keys_generate(array $add_keys): string{
+    #[DataProvider("ssh_key_provider")]
+    public function test_add_ssh_keys_generate(array $add_keys): string{
         return $this->test_add_ssh_keys_not_github($add_keys, $this->add_ssh_key_generate(...));
     }
 
-    private function test_add_ssh_keys_github(array $add_keys): string{
+    #[DataProvider("ssh_key_provider")]
+    public function test_add_ssh_keys_github(array $add_keys): string{
         // test adding SSH keys using the github method, taking into account how many
         // keys the user already has, how many are valid, and how many the user is
         // actually allowed to import before they hit the limit
@@ -186,137 +200,5 @@ class SSHKeyAddTest extends TestCase {
         // ], JSON_PRETTY_PRINT));
         $this->assertEquals($expected_keys_after, $keys_after);
         return $output;
-    }
-
-    protected function tearDown(): void {
-        global $USER;
-        $USER->setSSHKeys(self::$initial_keys);
-    }
-
-    // BEGIN TEST CASES //////////////////////////////////////////////////////////////////////////
-    // empty
-    public function test_add_ssh_keys_paste_empty(){
-        $input = [];
-        $this->test_add_ssh_keys_paste($input);
-    }
-
-    public function test_add_ssh_keys_import_empty(){
-        $input = [];
-        $this->test_add_ssh_keys_import($input);
-    }
-
-    public function test_add_ssh_keys_generate_empty(){
-        $input = [];
-        $this->test_add_ssh_keys_generate($input);
-    }
-
-    public function test_add_ssh_keys_github_empty(){
-        $input = [];
-        $this->test_add_ssh_keys_github($input);
-    }
-
-    // single invalid key
-    public function test_add_ssh_keys_paste_single_invalid(){
-        $input = ["foobar"];
-        $this->test_add_ssh_keys_paste($input);
-    }
-
-    public function test_add_ssh_keys_import_single_invalid(){
-        $input = ["foobar"];
-        $this->test_add_ssh_keys_import($input);
-    }
-
-    public function test_add_ssh_keys_generate_single_invalid(){
-        $input = ["foobar"];
-        $this->test_add_ssh_keys_generate($input);
-    }
-
-    public function test_add_ssh_keys_github_single_invalid(){
-        $input = ["foobar"];
-        $this->test_add_ssh_keys_github($input);
-    }
-
-    // single valid key
-    public function test_add_ssh_keys_paste_single_valid(){
-        $input = [self::$max_number_of_valid_ssh_keys[0]];
-        $this->test_add_ssh_keys_paste($input);
-    }
-
-    public function test_add_ssh_keys_import_single_valid(){
-        $input = [self::$max_number_of_valid_ssh_keys[0]];
-        $this->test_add_ssh_keys_import($input);
-    }
-
-    public function test_add_ssh_keys_generate_single_valid(){
-        $input = [self::$max_number_of_valid_ssh_keys[0]];
-        $this->test_add_ssh_keys_generate($input);
-    }
-
-    public function test_add_ssh_keys_github_single_valid(){
-        $input = [self::$max_number_of_valid_ssh_keys[0]];
-        $this->test_add_ssh_keys_github($input);
-    }
-
-    // one valid one invalid
-    public function test_add_ssh_keys_paste_one_valid_one_invalid(){
-        $input = [self::$max_number_of_valid_ssh_keys[0], "foobar"];
-        $this->test_add_ssh_keys_paste($input);
-    }
-
-    public function test_add_ssh_keys_import_one_valid_one_invalid(){
-        $input = [self::$max_number_of_valid_ssh_keys[0], "foobar"];
-        $this->test_add_ssh_keys_import($input);
-    }
-
-    public function test_add_ssh_keys_generate_one_valid_one_invalid(){
-        $input = [self::$max_number_of_valid_ssh_keys[0], "foobar"];
-        $this->test_add_ssh_keys_generate($input);
-    }
-
-    public function test_add_ssh_keys_github_one_valid_one_invalid(){
-        $input = [self::$max_number_of_valid_ssh_keys[0], "foobar"];
-        $this->test_add_ssh_keys_github($input);
-    }
-
-    // max number of valid keys
-    public function test_add_ssh_keys_paste_max_valid(){
-        $input = self::$max_number_of_valid_ssh_keys;
-        $this->test_add_ssh_keys_paste($input);
-    }
-
-    public function test_add_ssh_keys_import_max_valid(){
-        $input = self::$max_number_of_valid_ssh_keys;
-        $this->test_add_ssh_keys_import($input);
-    }
-
-    public function test_add_ssh_keys_generate_max_valid(){
-        $input = self::$max_number_of_valid_ssh_keys;
-        $this->test_add_ssh_keys_generate($input);
-    }
-
-    public function test_add_ssh_keys_github_max_valid(){
-        $input = self::$max_number_of_valid_ssh_keys;
-        $this->test_add_ssh_keys_github($input);
-    }
-
-    // max number of mixed valid/invalid keys
-    public function test_add_ssh_keys_paste_max_valid_and_invalid(){
-        $input = array_slice(self::$max_number_of_valid_ssh_keys, 0, -1) + ["foobar"];
-        $this->test_add_ssh_keys_paste($input);
-    }
-
-    public function test_add_ssh_keys_import_max_valid_and_invalid(){
-        $input = array_slice(self::$max_number_of_valid_ssh_keys, 0, -1) + ["foobar"];
-        $this->test_add_ssh_keys_import($input);
-    }
-
-    public function test_add_ssh_keys_generate_max_valid_and_invalid(){
-        $input = array_slice(self::$max_number_of_valid_ssh_keys, 0, -1) + ["foobar"];
-        $this->test_add_ssh_keys_generate($input);
-    }
-
-    public function test_add_ssh_keys_github_max_valid_and_invalid(){
-        $input = array_slice(self::$max_number_of_valid_ssh_keys, 0, -1) + ["foobar"];
-        $this->test_add_ssh_keys_github($input);
     }
 }

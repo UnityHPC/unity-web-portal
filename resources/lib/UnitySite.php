@@ -2,6 +2,7 @@
 namespace UnityWebPortal\lib;
 
 use phpseclib3\Crypt\PublicKeyLoader;
+use Error;
 use Exception;
 
 class GithubUserNotFoundOrNoKeysException extends Exception {}
@@ -81,10 +82,18 @@ class UnitySite
         if ($key_str == ""){
             return false;
         }
+        // warning: Attempt to read property "keys" on int
+        if (preg_match("/^[0-9]+$/", $key_str)) {
+            return false;
+        }
+        // warning: Undefined property: stdClass::$keys
+        if (!is_null(@json_decode($key_str))){
+            return false;
+        }
         try {
             PublicKeyLoader::load($key_str);
             return true;
-        } catch (Exception $e) {
+        } catch (Exception|Error $e) {
             return false;
         }
     }
