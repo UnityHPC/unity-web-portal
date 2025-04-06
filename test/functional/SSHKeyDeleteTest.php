@@ -21,7 +21,7 @@ class SSHKeyDeleteTest extends TestCase {
         );
     }
 
-    private function test_delete_ssh_key(string $index): string {
+    private function test_delete_ssh_key(string $index): void {
         // take into account whether index is valid
         // at the end, return keys to their initial state
         global $USER, $CONFIG, $SITE;
@@ -42,16 +42,19 @@ class SSHKeyDeleteTest extends TestCase {
             $expected_keys_after = $keys_before;
             unset($expected_keys_after[$index_int]);
         }
-        ob_start();
         $this->delete_ssh_key($index);
-        $output = ob_get_clean();
         $keys_after = $USER->getSSHKeys();
         $this->assertEquals(array_values($expected_keys_after), array_values($keys_after));
-        return $output;
+    }
+
+    protected function setUp(): void {
+        // expectException prevents ob_get_clean from running
+        ob_start();
     }
 
     protected function tearDown(): void {
         global $USER;
+        ob_get_clean();
         $USER->setSSHKeys(self::$initial_keys);
     }
 
