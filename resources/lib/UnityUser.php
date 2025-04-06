@@ -440,7 +440,7 @@ class UnityUser
 
             return $keys;
         }
-
+        // FIXME this should be an error, in other functions as well
         return null;
     }
 

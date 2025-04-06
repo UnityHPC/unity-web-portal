@@ -4,67 +4,63 @@ namespace UnityWebPortal\lib;
 
 use Mockery;
 use Exception;
+use PHPUnit\Framework\TestCase;
 
-require_once "panel-bootstrap.php";
-require_once "panel-account-ssh-keys.php";
+class SSHKeyDeleteTest extends TestCase {
+    private function delete_ssh_key(string $index): void {
+        post(
+            "../../webroot/panel/account.php",
+            ["form_type" => "delKey", "delIndex" => $index]
+        );
+    }
 
-class SSHKeyDeleteTest {
-    private static function test_delete_ssh_key(mixed $index): void {
+    private function test_delete_ssh_key(string $index): string {
+        // take into account whether index is valid
+        // at the end, return keys to their initial state
         global $USER, $CONFIG, $SITE;
         $keys_before = $USER->getSSHKeys();
         $expect_bad_request_exception = false;
-        if (is_string($index) && !preg_match("/^[0-9]+$/", $index)) {
+        if (!preg_match("/^[0-9]+$/", $index)) {
             $expected_keys_after = $keys_before;
-            $expect_bad_request_exception = true;
-        } elseif ($index < 0){
+            $this->expectException(BadRequestException::class);
+        }
+        $index_int = intval($index);
+        if ($index_int < 0){
             $expected_keys_after = $keys_before;
-            $expect_bad_request_exception = true;
-        } elseif ($index >= count($keys_before)){
+            $this->expectException(BadRequestException::class);
+        } elseif ($index_int >= count($keys_before)){
             $expected_keys_after = $keys_before;
-            $expect_bad_request_exception = true;
+            $this->expectException(BadRequestException::class);
         } else {
             $expected_keys_after = $keys_before;
-            unset($expected_keys_after[intval($index)]);
+            unset($expected_keys_after[$index_int]);
         }
         ob_start();
-        try {
-            self::delete_ssh_key($index);
-        } catch (BadRequestException $e) {
-            if (!$expect_bad_request_exception) {
-                throw $e;
-            }
-        } finally {
-            $output = ob_get_clean();
-        }
+        $this->delete_ssh_key($index);
+        $output = ob_get_clean();
         $keys_after = $USER->getSSHKeys();
-        assert($keys_after == $expected_keys_after);
-        // FIXME set back to original state
+        $this->assertEquals(array_values($keys_after), array_values($expected_keys_after));
+        $USER->setSSHKeys($keys_before);
+        return $output;
     }
 
-    private static function test_delete_ssh_keys_all_inputs(){
+    public function test_delete_negative1() {
+        $this->test_delete_ssh_key("-1");
+    }
+
+    public function test_delete_0() {
+        $this->test_delete_ssh_key("0");
+    }
+
+    public function test_delete_too_big() {
         global $CONFIG;
-        $inputs = [-1, 0, intval($CONFIG["ldap"]["max_num_ssh_keys"]), "foobar"];
-        foreach ($inputs as $input){
-            echo "###############################################################\n";
-            echo "delete key index '$input'\n";
-            self::test_delete_ssh_key($input);
-            echo "\n";
-        }
+        $max = intval($CONFIG["ldap"]["max_num_ssh_keys"]);
+        $this->test_delete_ssh_key((string)($max + 1));
     }
 
-    public static function test_delete_ssh_keys_all_inputs_multi_users(){
-        // user with 0 keys
-        switch_to_user("web_admin@unityhpc.test", "Web", "Admin", "web_admin@unityhpc.test");
-        self::test_delete_ssh_keys_all_inputs();
-
-        // user with > 0 keys and > 0 key slots open
-        switch_to_user("user0110@org22.edu", "Foo", "Bar", "user0110@org22.edu");
-        self::test_delete_ssh_keys_all_inputs();
-
-        // user with no empty key slots
-        switch_to_user("user0151@org18.edu", "Foo", "Bar", "user0151@org18.edu");
-        self::test_delete_ssh_keys_all_inputs();
+    public function test_delete_non_number() {
+        $this->test_delete_ssh_key("foobar");
     }
 }
 
-
+p
