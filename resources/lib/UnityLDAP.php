@@ -315,25 +315,25 @@ class UnityLDAP extends ldapConn
 
     public function getUserEntry($uid)
     {
-        $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=$uid," . $this->STR_USEROU);
+        $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=" . ldap_escape($uid, LDAP_ESCAPE_DN) . "," . $this->STR_USEROU);
         return $ldap_entry;
     }
 
     public function getGroupEntry($gid)
     {
-        $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=$gid," . $this->STR_GROUPOU);
+        $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=" . ldap_escape($gid, LDAP_ESCAPE_DN) . "," . $this->STR_GROUPOU);
         return $ldap_entry;
     }
 
     public function getPIGroupEntry($gid)
     {
-        $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=$gid," . $this->STR_PIGROUPOU);
+        $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=" . ldap_escape($gid, LDAP_ESCAPE_DN) . "," . $this->STR_PIGROUPOU);
         return $ldap_entry;
     }
 
     public function getOrgGroupEntry($gid)
     {
-        $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=$gid," . $this->STR_ORGGROUPOU);
+        $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=" . ldap_escape($gid, LDAP_ESCAPE_DN) . "," . $this->STR_ORGGROUPOU);
         return $ldap_entry;
     }
 }
