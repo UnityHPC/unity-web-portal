@@ -1,5 +1,4 @@
 <?php
-
 namespace UnityWebPortal\lib;
 
 use phpseclib3\Crypt\PublicKeyLoader;
@@ -30,8 +29,9 @@ class UnitySite
     public function bad_request(string $msg): void {
         header("HTTP/1.1 400 Bad Request");
         $full_msg = "<pre>ERROR: bad request. Please contact Unity support.\n$msg</pre>";
-        error_log($full_msg);
-        error_log((new Exception())->getTraceAsString());
+        // this clogs up phpunit output
+        // error_log($full_msg);
+        // error_log((new Exception())->getTraceAsString());
         echo $full_msg;
         throw new BadRequestException;
     }
@@ -40,8 +40,8 @@ class UnitySite
     public function forbidden(UnitySQL $SQL, UnityUser $USER): void{
         header("HTTP/1.1 403 Forbidden");
         echo "<pre>Access denied. This incident has been recorded.</pre>";
-        error_log("user-mgmt.php: access denied to '" . $USER->getUID() . "'");
-        error_log((new Exception())->getTraceAsString());
+        // error_log("user-mgmt.php: access denied to '" . $USER->getUID() . "'");
+        // error_log((new Exception())->getTraceAsString());
         $SQL->addLog(
             $USER->getUID(),
             $_SERVER['REMOTE_ADDR'],
