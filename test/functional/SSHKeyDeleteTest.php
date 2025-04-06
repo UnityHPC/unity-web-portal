@@ -32,10 +32,7 @@ class SSHKeyDeleteTest extends TestCase {
             $this->expectException(BadRequestException::class);
         }
         $index_int = intval($index);
-        if ($index_int < 0){
-            $expected_keys_after = $keys_before;
-            $this->expectException(BadRequestException::class);
-        } elseif ($index_int >= count($keys_before)){
+        if ($index_int >= count($keys_before)){
             $expected_keys_after = $keys_before;
             $this->expectException(BadRequestException::class);
         } else {
