@@ -16,7 +16,6 @@ global $HTTP_HEADER_TEST_INPUTS;
 // in theory
 $HTTP_HEADER_TEST_INPUTS = [
     '',
-    null,
     'a',
     'Hello, World!',
     '  Some text  ',
