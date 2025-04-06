@@ -7,6 +7,13 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 
 class SSHKeyDeleteTest extends TestCase {
+    private static $initial_keys;
+
+    public static function setUpBeforeClass(): void{
+        global $USER;
+        self::$initial_keys = $USER->getSSHKeys();
+    }
+
     private function delete_ssh_key(string $index): void {
         post(
             "../../webroot/panel/account.php",
@@ -39,9 +46,13 @@ class SSHKeyDeleteTest extends TestCase {
         $this->delete_ssh_key($index);
         $output = ob_get_clean();
         $keys_after = $USER->getSSHKeys();
-        $this->assertEquals(array_values($keys_after), array_values($expected_keys_after));
-        $USER->setSSHKeys($keys_before);
+        $this->assertEquals(array_values($expected_keys_after), array_values($keys_after));
         return $output;
+    }
+
+    protected function tearDown(): void {
+        global $USER;
+        $USER->setSSHKeys(self::$initial_keys);
     }
 
     public function test_delete_negative1() {
@@ -62,5 +73,3 @@ class SSHKeyDeleteTest extends TestCase {
         $this->test_delete_ssh_key("foobar");
     }
 }
-
-p

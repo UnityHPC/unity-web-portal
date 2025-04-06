@@ -1,7 +1,7 @@
 #!/bin/bash
 # here is where we will select which users are right for which tests
-REMOTE_USER=web_admin@unityhpc.test ../../vendor/bin/phpunit --bootstrap=./bootstrap ./SSHKeyAddTest.php
-REMOTE_USER=web_admin@unityhpc.test ../../vendor/bin/phpunit --bootstrap=./bootstrap ./SSHKeyDeleteTest.php
+REMOTE_USER=web_admin@unityhpc.test ../../vendor/bin/phpunit --bootstrap=./bootstrap.php ./SSHKeyAddTest.php
+REMOTE_USER=web_admin@unityhpc.test ../../vendor/bin/phpunit --bootstrap=./bootstrap.php ./SSHKeyDeleteTest.php
 # public static function test_delete_ssh_keys_all_inputs_all_methods_multi_users(){
 #     // user with 0 keys
 #     switch_to_user("web_admin@unityhpc.test", "Web", "Admin", "web_admin@unityhpc.test");

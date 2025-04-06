@@ -9,7 +9,8 @@ require "../../resources/autoload.php";
 
 // ini_set("assert.exception", false);
 // ini_set("assert.warning", true);
-ini_set("error_log", "/dev/null");
+
+// ini_set("error_log", "/dev/null");
 
 function switch_to_user(string $eppn, string $given_name, string $sn, string $mail): void {
     global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;

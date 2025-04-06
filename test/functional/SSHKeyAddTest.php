@@ -8,9 +8,12 @@ use PHPUnit\Framework\TestCase;
 
 class SSHKeyAddTest extends TestCase {
     private static $max_number_of_valid_ssh_keys;
+    private static $initial_keys;
 
     public static function setUpBeforeClass(): void{
+        global $USER;
         self::$max_number_of_valid_ssh_keys = self::get_max_number_of_valid_ssh_keys();
+        self::$initial_keys = $USER->getSSHKeys();
     }
 
     private static function get_max_number_of_valid_ssh_keys(){
@@ -99,29 +102,27 @@ class SSHKeyAddTest extends TestCase {
         // actually allowed to import before they hit the limit
         // at the end, return keys to their initial state
         global $USER, $CONFIG, $SITE;
-        $keys_before = $USER->getSSHKeys();
-        $new_keys = array_diff($add_keys, $keys_before);
+        $new_keys = array_diff($add_keys, self::$initial_keys);
         $new_valid_keys = array_filter(
             $new_keys,
             function($x) {global $SITE; return $SITE->testValidSSHKey($x);}
         );
-        $open_key_slots = $CONFIG["ldap"]["max_num_ssh_keys"] - count($keys_before);
+        $open_key_slots = $CONFIG["ldap"]["max_num_ssh_keys"] - count(self::$initial_keys);
         if (count($new_valid_keys) > $open_key_slots) {
             $expected_added_keys = array_slice($new_valid_keys, 0, $open_key_slots);
         } else {
             $expected_added_keys = $new_valid_keys;
         }
-        $expected_keys_after = array_merge($keys_before, $expected_added_keys);
+        $expected_keys_after = array_merge(self::$initial_keys, $expected_added_keys);
         ob_start();
         foreach($add_keys as $new_key){
             $func($new_key);
         }
         $output = ob_get_clean();
         $keys_after = $USER->getSSHKeys();
-        $this->assertEquals($keys_after, $expected_keys_after);
-        // echo json_encode([
+        // error_log(json_encode([
         //     "method" => $func_name,
-        //     "keys_before" => $keys_before,
+        //     "keys_before" => self::$initial_keys,
         //     "add_keys" => $add_keys,
         //     "new_keys" => $new_keys,
         //     "new_valid_keys" => $new_valid_keys,
@@ -129,8 +130,8 @@ class SSHKeyAddTest extends TestCase {
         //     "expected_added_keys" => $expected_added_keys,
         //     "expected_keys_after" => $expected_keys_after,
         //     "keys_after" => $keys_after,
-        // ], JSON_PRETTY_PRINT);
-        $USER->setSSHKeys($keys_before);
+        // ], JSON_PRETTY_PRINT));
+        $this->assertEquals($expected_keys_after, $keys_after);
         return $output;
     }
 
@@ -156,33 +157,25 @@ class SSHKeyAddTest extends TestCase {
         // actually allowed to import before they hit the limit
         // at the end, return keys to their initial state
         global $USER, $CONFIG, $SITE;
-        $keys_before = $USER->getSSHKeys();
-        $new_keys = array_diff($add_keys, $keys_before);
+        $new_keys = array_diff($add_keys, self::$initial_keys);
         $new_valid_keys = array_filter(
             $new_keys,
             function($x) {global $SITE; return $SITE->testValidSSHKey($x);}
         );
-        $open_key_slots = $CONFIG["ldap"]["max_num_ssh_keys"] - count($keys_before);
-        if (count($new_valid_keys) > $open_key_slots) {
-            $expected_added_keys = array_slice($new_valid_keys, 0, $open_key_slots);
+        $open_key_slots = $CONFIG["ldap"]["max_num_ssh_keys"] - count(self::$initial_keys);
+         // github key add method does nothing if limit is reached or any key is invalid
+        if ((count($new_valid_keys) != count($new_keys)) || (count($add_keys) > $open_key_slots)){
+            $expected_keys_after = self::$initial_keys;
         } else {
-            $expected_added_keys = $new_valid_keys;
+            $expected_keys_after = self::$initial_keys + $add_keys;
         }
-        $expected_keys_after = array_merge($keys_before, $expected_added_keys);
         ob_start();
         $this->add_ssh_keys_github($add_keys);
         $output = ob_get_clean();
-         // github key add method does nothing if limit is reached or any key is invalid
-        if ((count($new_valid_keys) != count($new_keys)) || (count($new_valid_keys) > $open_key_slots)){
-            $expected_keys_after = $keys_before;
-        }
         $keys_after = $USER->getSSHKeys();
-        $this->assertNotNull($keys_after);
-        $this->assertNotNull($expected_keys_after);
-        $this->assertEquals($keys_after, $expected_keys_after);
-        // echo json_encode([
+        // error_log(json_encode([
         //     "method" => "github",
-        //     "keys_before" => $keys_before,
+        //     "keys_before" => self::$initial_keys,
         //     "add_keys" => $add_keys,
         //     "new_keys" => $new_keys,
         //     "new_valid_keys" => $new_valid_keys,
@@ -190,9 +183,14 @@ class SSHKeyAddTest extends TestCase {
         //     "expected_added_keys" => $expected_added_keys,
         //     "expected_keys_after" => $expected_keys_after,
         //     "keys_after" => $keys_after,
-        // ], JSON_PRETTY_PRINT);
-        $USER->setSSHKeys($keys_before);
+        // ], JSON_PRETTY_PRINT));
+        $this->assertEquals($expected_keys_after, $keys_after);
         return $output;
+    }
+
+    protected function tearDown(): void {
+        global $USER;
+        $USER->setSSHKeys(self::$initial_keys);
     }
 
     // BEGIN TEST CASES //////////////////////////////////////////////////////////////////////////
