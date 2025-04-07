@@ -49,6 +49,18 @@ class UnitySite
 
     public static function testValidSSHKey($key_str)
     {
+        $key_str = trim($key_str);
+        if ($key_str == ""){
+            return false;
+        }
+        // PHP warning when key_str is digits: Attempt to read property "keys" on int
+        if (preg_match("/^[0-9]+$/", $key_str)) {
+            return false;
+        }
+        // PHP warning when key_str is JSON: Undefined property: stdClass::$keys
+        if (!is_null(@json_decode($key_str))){
+            return false;
+        }
         try {
             PublicKeyLoader::load($key_str);
             return true;
