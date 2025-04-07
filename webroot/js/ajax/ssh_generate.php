@@ -19,4 +19,3 @@ echo json_encode([
     "pubkey" => $public->toString('OpenSSH'),
     "privkey" => $private
 ]);
-
