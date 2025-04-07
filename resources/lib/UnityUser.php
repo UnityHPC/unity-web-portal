@@ -562,6 +562,7 @@ class UnityUser
     public function isAdmin()
     {
         $admins = $this->LDAP->getAdminGroup()->getAttribute("memberuid");
+        $admins = (is_null($admins) ? [] : $admins);
         return in_array($this->uid, $admins);
     }
 
