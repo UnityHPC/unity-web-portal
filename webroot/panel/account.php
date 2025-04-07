@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
 
             if (!empty($added_keys)) {
-                $added_keys = UnitySite::removeTrailingWhitespace($added_keys);
+                $added_keys = array_map(trim, $added_keys);
                 $totalKeys = array_merge($USER->getSSHKeys(), $added_keys);
                 $USER->setSSHKeys($totalKeys, $OPERATOR);
             }

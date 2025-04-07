@@ -14,17 +14,6 @@ class UnitySite
         }
     }
 
-    public static function removeTrailingWhitespace($arr)
-    {
-        $out = array();
-        foreach ($arr as $str) {
-            $new_string = rtrim($str);
-            array_push($out, $new_string);
-        }
-
-        return $out;
-    }
-
     public static function getGithubKeys($username)
     {
         $url = "https://api.github.com/users/$username/keys";
