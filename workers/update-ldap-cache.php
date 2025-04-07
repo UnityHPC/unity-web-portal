@@ -34,9 +34,9 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     // phpcs:enable
     sort($user_CNs);
     $REDIS->setCache("sorted_users", "", $user_CNs);
-    foreach($users as $user) {
+    foreach ($users as $user) {
         $attribute_array = UnityLDAP::parseUserChildrenArray($user);
-        foreach($attribute_array as $key => $val) {
+        foreach ($attribute_array as $key => $val) {
             $REDIS->setCache($user["cn"][0], $key, $val);
         }
     }
@@ -50,7 +50,7 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     // phpcs:enable
     sort($org_group_CNs);
     $REDIS->setCache("sorted_orgs", "", $org_group_CNs);
-    foreach($org_groups as $org_group) {
+    foreach ($org_groups as $org_group) {
         $REDIS->setCache($org_group["cn"][0], "members", $org_group["memberuid"]);
     }
 
