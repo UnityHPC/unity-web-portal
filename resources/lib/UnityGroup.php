@@ -408,6 +408,17 @@ class UnityGroup
         return $out;
     }
 
+    public function getGroupMembers($ignorecache = false)
+    {
+        $memberuids = $this->getGroupMemberUIDs($ignorecache);
+        $out = array();
+        foreach ($memberuids as $uid) {
+            $user_obj = new UnityUser($uid, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS, $this->WEBHOOK);
+            array_push($out, $user_obj);
+        }
+        return $out;
+    }
+
     public function getGroupMemberUIDs($ignorecache = false): array
     {
         if (!$ignorecache) {
@@ -422,18 +433,6 @@ class UnityGroup
         sort($members);
         $this->REDIS->setCache($this->getPIUID(), "members", $members);
         return $members;
-    }
-
-
-    public function getGroupMembers($ignorecache = false)
-    {
-        $memberuids = $this->getGroupMemberUIDs($ignorecache);
-        $out = array();
-        foreach ($memberuids as $uid) {
-            $user_obj = new UnityUser($uid, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS, $this->WEBHOOK);
-            array_push($out, $user_obj);
-        }
-        return $out;
     }
 
     public function requestExists($user)
