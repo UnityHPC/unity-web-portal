@@ -9,11 +9,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors = array();
 
     if (isset($_POST["form_name"])) {
+        $ok = true;
         if (isset($_POST["pi"])) {
             $pi_account = new UnityGroup(trim($_POST["pi"]), $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             if (!$pi_account->exists()) {
-                // "\'"  instead of "'", otherwise it will close a single quote used to place the message
-                array_push($modalErrors, "This PI doesn\'t exist");
+                $SITE->alert("This PI doesn't exist");
+                $ok = false;
             }
         }
 
@@ -23,15 +24,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // existing PI request
 
                 if ($pi_account->requestExists($USER)) {
-                    array_push($modalErrors, "You\'ve already requested this");
+                    $SITE->alert("You\'ve already requested this");
+                    $ok = false;
                 }
 
                 if ($pi_account->userExists($USER)) {
-                    array_push($modalErrors, "You\'re already in this PI group");
+                    $SITE->alert("You\'re already in this PI group");
+                    $ok = false;
                 }
 
                 // Add row to sql
-                if (empty($modalErrors)) {
+                if ($ok) {
                     $pi_account->newUserRequest($USER);
                 }
                 break;
@@ -144,19 +147,6 @@ if ($SQL->accDeletionRequestExists($USER->getUID())) {
     $("button.btnAddPI").click(function() {
         openModal("Add New PI", "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/new_pi.php");
     });
-
-    <?php
-    // This is here to re-open the modal if there are errors
-    if (isset($modalErrors) && is_array($modalErrors) && count($modalErrors) > 0) {
-        $errorHTML = "";
-        foreach ($modalErrors as $error) {
-            $errorHTML .= "<span>$error</span>";
-        }
-
-        echo "openModal('Add New PI', '" .
-        $CONFIG["site"]["prefix"] . "/panel/modal/new_pi.php', '" . $errorHTML . "');";
-    }
-    ?>
 
     var ajax_url = "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/ajax/get_group_members.php?pi_uid=";
 </script>

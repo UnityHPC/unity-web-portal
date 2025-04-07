@@ -6,9 +6,7 @@ use UnityWebPortal\lib\UnitySite;
 
 require_once $LOC_HEADER;
 
-$invalid_ssh_dialogue = "<script type='text/javascript'>
-alert('Invalid SSH key. Please verify your public key file is valid.');
-</script>";
+$invalid_ssh_dialogue = "Invalid SSH key. Please verify your public key file is valid.";
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     switch ($_POST["form_type"]) {
@@ -21,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     if (UnitySite::testValidSSHKey($key)) {
                         array_push($added_keys, $key);
                     } else {
-                        echo $invalid_ssh_dialogue;
+                        $SITE->alert($invalid_ssh_dialogue);
                     }
                     break;
                 case "import":
@@ -30,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     if (UnitySite::testValidSSHKey($key)) {
                         array_push($added_keys, $key);
                     } else {
-                        echo $invalid_ssh_dialogue;
+                        $SITE->alert($invalid_ssh_dialogue);
                     }
                     break;
                 case "generate":
