@@ -13,8 +13,6 @@ switch ($_GET["type"]) {
     case "ppk":
         $private = $private->toString("PuTTY");
         break;
-    default:
-        $SITE->bad_request("invalid type '" . $_GET["type"] . "'");
 }
 
 echo json_encode([
