@@ -31,7 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `account_deletion_requests` (
   `id` int(11) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
-  `uid` varchar(1000) NOT NULL
+  `uid` varchar(128) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -43,10 +43,10 @@ CREATE TABLE `account_deletion_requests` (
 CREATE TABLE `audit_log` (
   `id` int(11) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
-  `operator` varchar(1000) NOT NULL,
-  `operator_ip` varchar(1000) NOT NULL,
-  `action_type` varchar(1000) NOT NULL,
-  `recipient` varchar(1000) NOT NULL
+  `operator` varchar(128) NOT NULL,
+  `operator_ip` varchar(15) NOT NULL,
+  `action_type` varchar(768) NOT NULL,
+  `recipient` varchar(128) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -57,7 +57,7 @@ CREATE TABLE `audit_log` (
 
 CREATE TABLE `events` (
   `id` int(11) NOT NULL,
-  `operator` varchar(300) NOT NULL,
+  `operator` varchar(128) NOT NULL,
   `action` varchar(300) NOT NULL,
   `entity` varchar(300) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
@@ -71,8 +71,8 @@ CREATE TABLE `events` (
 
 CREATE TABLE `groupJoinRequests` (
   `id` int(11) NOT NULL,
-  `group_name` varchar(1000) NOT NULL,
-  `requestor` varchar(1000) NOT NULL,
+  `group_name` varchar(768) NOT NULL,
+  `requestor` varchar(768) NOT NULL,
   `requested_on` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -84,9 +84,9 @@ CREATE TABLE `groupJoinRequests` (
 
 CREATE TABLE `groupRequests` (
   `id` int(11) NOT NULL,
-  `group_type` varchar(1000) NOT NULL,
-  `group_name` varchar(1000) NOT NULL,
-  `requestor` varchar(1000) NOT NULL,
+  `group_type` varchar(768) NOT NULL,
+  `group_name` varchar(768) NOT NULL,
+  `requestor` varchar(128) NOT NULL,
   `requested_on` timestamp NOT NULL DEFAULT current_timestamp(),
   `start_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
@@ -100,9 +100,9 @@ CREATE TABLE `groupRequests` (
 
 CREATE TABLE `groupRoleAssignments` (
   `id` int(11) NOT NULL,
-  `user` varchar(1000) NOT NULL,
-  `role` varchar(1000) NOT NULL,
-  `group` varchar(1000) NOT NULL
+  `user` varchar(128) NOT NULL,
+  `role` varchar(768) NOT NULL,
+  `group` varchar(768) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -113,11 +113,11 @@ CREATE TABLE `groupRoleAssignments` (
 
 CREATE TABLE `groupRoles` (
   `id` int(11) NOT NULL,
-  `name` varchar(1000) NOT NULL,
-  `slug` varchar(1000) NOT NULL,
+  `name` varchar(768) NOT NULL,
+  `slug` varchar(768) NOT NULL,
   `priority` int(11) NOT NULL,
-  `color` varchar(1000) NOT NULL,
-  `perms` varchar(1000) NOT NULL
+  `color` varchar(768) NOT NULL,
+  `perms` varchar(768) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -128,12 +128,12 @@ CREATE TABLE `groupRoles` (
 
 CREATE TABLE `groupTypes` (
   `id` int(11) NOT NULL,
-  `name` varchar(1000) NOT NULL,
-  `slug` varchar(1000) NOT NULL,
-  `color` varchar(1000) NOT NULL,
+  `name` varchar(768) NOT NULL,
+  `slug` varchar(768) NOT NULL,
+  `color` varchar(768) NOT NULL,
   `time_limited` tinyint(1) NOT NULL,
-  `def_role` varchar(1000) NOT NULL,
-  `av_roles` varchar(1000) NOT NULL,
+  `def_role` varchar(768) NOT NULL,
+  `av_roles` varchar(768) NOT NULL,
   `can_request` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -186,8 +186,8 @@ INSERT INTO `pages` (`id`, `page`, `content`) VALUES
 
 CREATE TABLE `requests` (
   `id` int(11) NOT NULL,
-  `request_for` varchar(1000) NOT NULL,
-  `uid` varchar(1000) NOT NULL,
+  `request_for` varchar(131) NOT NULL,
+  `uid` varchar(128) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -199,8 +199,8 @@ CREATE TABLE `requests` (
 
 CREATE TABLE `sitevars` (
   `id` int(11) NOT NULL,
-  `name` varchar(1000) NOT NULL,
-  `value` varchar(1000) NOT NULL
+  `name` varchar(768) NOT NULL,
+  `value` varchar(768) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

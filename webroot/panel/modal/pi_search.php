@@ -24,11 +24,11 @@ foreach ($assocs as $assoc_obj) {
     $fn = strtolower($assoc_obj->getOwner()->getFullName());
     if (strpos($fn, strtolower($search_query)) !== false) {
         if (!in_array($assoc, $out)) {
-               array_push($out, $assoc);
-               if (count($out) >= $MAX_COUNT) {
-                   break;
-               }
-       }
+            array_push($out, $assoc);
+            if (count($out) >= $MAX_COUNT) {
+                break;
+            }
+        }
     }
 }
 
