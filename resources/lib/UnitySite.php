@@ -50,7 +50,7 @@ class UnitySite
     public static function testValidSSHKey($key_str)
     {
         $key_str = trim($key_str);
-        if ($key_str == ""){
+        if ($key_str == "") {
             return false;
         }
         // PHP warning when key_str is digits: Attempt to read property "keys" on int
@@ -58,7 +58,7 @@ class UnitySite
             return false;
         }
         // PHP warning when key_str is JSON: Undefined property: stdClass::$keys
-        if (!is_null(@json_decode($key_str))){
+        if (!is_null(@json_decode($key_str))) {
             return false;
         }
         try {
