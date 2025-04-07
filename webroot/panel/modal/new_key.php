@@ -64,21 +64,13 @@ action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/account.php">
     });
 
     function generateKey(type) {
-        var pubSection = "<section class='pubKey'>";
-        var privSection = "<section class='privKey'>";
-        var endingSection = "</section>";
-
         $.ajax({
             url: "<?php echo $CONFIG["site"]["prefix"]; ?>/js/ajax/ssh_generate.php?type=" + type,
             success: function(result) {
-                var pubKey = result.substr(result.indexOf(pubSection) + pubSection.length,
-                result.indexOf(endingSection) - result.indexOf(pubSection) - pubSection.length);
-                var privKey = result.substr(result.indexOf(privSection) + privSection.length,
-                result.indexOf(endingSection, result.indexOf(endingSection) + 1) -
-                result.indexOf(privSection) - privSection.length);
-                $("input[type=hidden][name=gen_key]").val(pubKey);
-                downloadFile(privKey, "privkey." + type); // Force download of private key
-
+            success: function(outputJsonStr) {
+                const output = JSON.parse(outputJsonStr);
+                $("input[type=hidden][name=gen_key]").val(output.pubkey);
+                downloadFile(output.privkey, `privkey.${type}`); // Force download of private key
                 $("#newKeyform").submit();
             }
         });
@@ -104,8 +96,7 @@ action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/account.php">
                 key: key
             },
             success: function(result) {
-                const res = result.replace(key, "");
-                if (res == "true") {
+                if (result == "true") {
                     $("input[id=add-key]").prop("disabled", false);
                     $("textarea[name=key]").css("box-shadow", "none");
                 } else {
