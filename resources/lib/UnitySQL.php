@@ -21,7 +21,8 @@ class UnitySQL
     private const TABLE_GROUP_JOIN_REQUESTS = "groupJoinRequests";
 
 
-    private const REQUEST_ADMIN = "admin";
+    // FIXME this string should be changed to something more intuitive, requires production sql change
+    private const REQUEST_BECOME_PI = "admin";
 
     private $conn;
 
@@ -39,7 +40,7 @@ class UnitySQL
     //
     // requests table methods
     //
-    public function addRequest($requestor, $dest = self::REQUEST_ADMIN)
+    public function addRequest($requestor, $dest = self::REQUEST_BECOME_PI)
     {
         if ($this->requestExists($requestor, $dest)) {
             return;
@@ -54,7 +55,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function removeRequest($requestor, $dest = self::REQUEST_ADMIN)
+    public function removeRequest($requestor, $dest = self::REQUEST_BECOME_PI)
     {
         if (!$this->requestExists($requestor, $dest)) {
             return;
@@ -69,7 +70,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function removeRequests($dest = self::REQUEST_ADMIN)
+    public function removeRequests($dest = self::REQUEST_BECOME_PI)
     {
         $stmt = $this->conn->prepare(
             "DELETE FROM " . self::TABLE_REQS . " WHERE request_for=:request_for"
@@ -79,7 +80,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function requestExists($requestor, $dest = self::REQUEST_ADMIN)
+    public function requestExists($requestor, $dest = self::REQUEST_BECOME_PI)
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid and request_for=:request_for"
@@ -92,7 +93,7 @@ class UnitySQL
         return count($stmt->fetchAll()) > 0;
     }
 
-    public function getRequests($dest = self::REQUEST_ADMIN)
+    public function getRequests($dest = self::REQUEST_BECOME_PI)
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_REQS . " WHERE request_for=:request_for"
