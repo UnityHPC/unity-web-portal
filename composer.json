@@ -5,6 +5,6 @@
         "phpmailer/phpmailer": ">=6.9.3",
         "hakasapl/phpopenldaper": ">=1.0.5",
         "mockery/mockery": ">=1.6.12",
-        "phpunit/phpunit": ">=12.0.10"
+        "phpunit/phpunit": "<12.1"
     }
 }
