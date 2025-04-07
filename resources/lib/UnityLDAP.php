@@ -150,7 +150,7 @@ class UnityLDAP extends ldapConn
     private function IDNumInUse(int $id): bool
     {
         // id reserved for debian packages
-        if (($id >= 100 && $id <= 999) || ($id >= 60000 && $id <= 64999)){
+        if (($id >= 100 && $id <= 999) || ($id >= 60000 && $id <= 64999)) {
             return true;
         }
         $users = $this->userOU->getChildrenArray(true);
