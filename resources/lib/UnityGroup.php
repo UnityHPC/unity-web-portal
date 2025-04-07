@@ -506,7 +506,7 @@ class UnityGroup
         $this->REDIS->removeCacheArray($old_user->getUID(), "groups", $this->getPIUID());
     }
 
-    public function userExists(UnityUser $user): bool
+    public function userExists(UnityUser $user, $ignorecache = false): bool
     {
         $members = $this->getGroupMemberUIDs($ignorecache);
         return in_array($user->getUID(), $members);
