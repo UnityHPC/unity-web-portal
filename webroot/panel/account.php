@@ -105,10 +105,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         case "account_deletion_request":
             $hasGroups = count($USER->getPIGroups()) > 0;
             if ($hasGroups) {
-                $SITE->alert("You must leave your PI groups before you can request account deletion.");
+                $SITE->bad_request("User still in PI groups but requested account deletion.");
                 break;
             }
-            if (!$SQL->accDeletionRequestExists($USER->getUID())) {
+            if ($SQL->accDeletionRequestExists($USER->getUID())) {
+                $SITE->bad_request("duplicate account deletion request");
+            } else {
                 $USER->requestAccountDeletion();
             }
             break;
