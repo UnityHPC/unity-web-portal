@@ -38,9 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     break;
                 case "github":
                     $gh_user = $_POST["gh_user"];
-                    if (empty($gh_user)) {
-                        break;
-                    }
                     $keys = UnitySite::getGithubKeys($gh_user);
                     foreach ($keys as $key) {
                         if (UnitySite::testValidSSHKey($key)) {
