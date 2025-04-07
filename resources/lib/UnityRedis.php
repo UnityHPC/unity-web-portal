@@ -96,7 +96,8 @@ class UnityRedis
         }
     }
 
-    public function flushAll(){
+    public function flushAll()
+    {
         $this->client->flushAll();
     }
 }

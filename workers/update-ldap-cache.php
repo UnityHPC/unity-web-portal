@@ -29,7 +29,9 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     echo "waiting for LDAP response (users)...\n";
     $users = $user_ou->getChildrenArray(true);
     echo "response received.\n";
-    $user_CNs = array_map(function($x){return $x["cn"][0];}, $users);
+    // phpcs:disable
+    $user_CNs = array_map(function ($x){return $x["cn"][0];}, $users);
+    // phpcs:enable
     sort($user_CNs);
     $REDIS->setCache("sorted_users", "", $user_CNs);
     foreach($users as $user){
@@ -43,7 +45,9 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     echo "waiting for LDAP response (org_groups)...\n";
     $org_groups = $org_group_ou->getChildrenArray(true);
     echo "response received.\n";
+    // phpcs:disable
     $org_group_CNs = array_map(function($x){return $x["cn"][0];}, $org_groups);
+    // phpcs:enable
     sort($org_group_CNs);
     $REDIS->setCache("sorted_orgs", "", $org_group_CNs);
     foreach($org_groups as $org_group){
@@ -54,25 +58,27 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     echo "waiting for LDAP response (pi_groups)...\n";
     $pi_groups = $pi_group_ou->getChildrenArray(true);
     echo "response received.\n";
+    // phpcs:disable
     $pi_group_CNs = array_map(function($x){return $x["cn"][0];}, $pi_groups);
+    // phpcs:enable
     sort($pi_group_CNs);
     // FIXME should be sorted_pi_groups
     $REDIS->setCache("sorted_groups", "", $pi_group_CNs);
     $user_pi_group_member_of = [];
-    foreach($user_CNs as $uid){
+    foreach ($user_CNs as $uid){
         $user_pi_group_member_of[$uid] = [];
     }
-    foreach($pi_groups as $pi_group){
-        if (array_key_exists("memberuid", $pi_group)){
+    foreach ($pi_groups as $pi_group) {
+        if (array_key_exists("memberuid", $pi_group)) {
             $REDIS->setCache($pi_group["cn"][0], "members", $pi_group["memberuid"]);
-            foreach($pi_group["memberuid"] as $member_uid){
+            foreach ($pi_group["memberuid"] as $member_uid) {
                 array_push($user_pi_group_member_of[$member_uid], $pi_group["cn"][0]);
             }
         } else {
             $REDIS->setCache($pi_group["cn"][0], "members", []);
         }
     }
-    foreach($user_pi_group_member_of as $uid => $pi_groups){
+    foreach ($user_pi_group_member_of as $uid => $pi_groups) {
         // FIXME should be pi_groups
         $REDIS->setCache($uid, "groups", $pi_groups);
     }
@@ -80,4 +86,3 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     $REDIS->setCache("initialized", "", true);
     echo "done!\n";
 }
-
