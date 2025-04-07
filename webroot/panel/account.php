@@ -92,27 +92,26 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $USER->setLoginShell($shell, $OPERATOR);
             break;
         case "pi_request":
-            try {
-                $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
-            } catch (UnityGroupDuplicateRequestException $e) {
+            if ($SQL->requestExists($USER->getUID())) {
                 $SITE->bad_request("duplicate PI become request");
-            } catch (UnityGroupRequestGroupAlreadyExistsException $e) {
+            }
+            if ($USER->isPI()) {
                 $SITE->bad_request("PI request to become PI");
-            } catch (UnityGroupRequestUserRequestedAccountDeletionException $e) {
+            }
+            if ($SQL->accDeletionRequestExists($USER->getUID())) {
                 $SITE->bad_request("User requested account deletion also request to become PI");
             }
+            $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
             break;
         case "account_deletion_request":
             $hasGroups = count($USER->getPIGroups()) > 0;
             if ($hasGroups) {
                 $SITE->bad_request("User still in PI groups but requested account deletion.");
-                break;
             }
             if ($SQL->accDeletionRequestExists($USER->getUID())) {
                 $SITE->bad_request("duplicate account deletion request");
-            } else {
-                $USER->requestAccountDeletion();
             }
+            $USER->requestAccountDeletion();
             break;
         default:
             $SITE->bad_request("invalid form_Type '$form_type'");
