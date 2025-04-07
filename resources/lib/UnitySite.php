@@ -45,7 +45,9 @@ class UnitySite
         if ((!is_array($keys)) || (count($keys) == 0)) {
             return [];
         }
+        // phpcs:disable
         return array_map(function($x){return $x->key;}, $keys);
+        // phpcs:enable
     }
 
     public static function testValidSSHKey($key_str)
