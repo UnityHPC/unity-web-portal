@@ -3,11 +3,11 @@
 require_once "../../../resources/autoload.php";
 
 if (!$USER->isAdmin()) {
-    die();
+    throw new Exception("not an admin");
 }
 
 if (!isset($_GET["pageid"])) {
-    die("Pageid not found");
+    throw new Exception("Pageid not found");
 }
 
 $page = $SQL->getPage($_GET["pageid"]);

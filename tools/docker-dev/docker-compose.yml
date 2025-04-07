@@ -5,6 +5,7 @@ services:
     build: identity
     ports:
       - "8010:80"
+      - "389:389"
   web:
     hostname: web
     build: web
@@ -12,6 +13,11 @@ services:
       - "8000:80"
     volumes:
       - ../../:/var/www/unity-web-portal
+    depends_on:
+      - redis
+      - identity
+      - sql
+      - smtp
   sql:
     hostname: sql
     build: sql

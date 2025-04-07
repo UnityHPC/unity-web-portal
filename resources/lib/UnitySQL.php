@@ -283,6 +283,20 @@ class UnitySQL
         return count($stmt->fetchAll()) > 0;
     }
 
+    public function removeAccountDeletionRequest($uid)
+    {
+        $stmt = $this->conn->prepare(
+            "DELETE FROM " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " WHERE uid=:uid"
+        );
+        $stmt->bindParam(":uid", $uid);
+        $stmt->execute();
+        $stmt = $this->conn->prepare(
+            "INSERT INTO " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " (uid) VALUE (:uid)"
+        );
+        $stmt->bindParam(":uid", $uid);
+        $stmt->execute();
+    }
+
     public function getSiteVar($name)
     {
         $stmt = $this->conn->prepare(
