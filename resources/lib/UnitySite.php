@@ -57,7 +57,8 @@ class UnitySite
         }
     }
 
-    public function alert(string $msg): void{
+    public function alert(string $msg): void
+    {
         echo "<script type='text/javascript'>alert(" . json_encode($msg) . ");</script>";
     }
 }
