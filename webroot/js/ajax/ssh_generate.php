@@ -20,4 +20,3 @@ echo json_encode([
     "privkey" => $private
 ]);
 
-
