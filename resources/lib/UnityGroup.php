@@ -538,7 +538,7 @@ class UnityGroup
         );
     }
 
-    public function GetLDAPEntry(): LdapEntry
+    public function getLDAPEntry(): LdapEntry
     {
         return $this->LDAP->getPIGroupEntry($this->pi_uid);
     }
