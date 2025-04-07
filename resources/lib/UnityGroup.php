@@ -432,7 +432,6 @@ class UnityGroup
         foreach ($memberuids as $uid) {
             $user_obj = new UnityUser($uid, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS, $this->WEBHOOK);
             array_push($out, $user_obj);
-            array_push($cache_arr, $user_obj->getUID());
         }
         return $out;
     }
