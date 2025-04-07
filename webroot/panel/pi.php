@@ -46,7 +46,7 @@ include $LOC_HEADER;
 
 <?php
 $requests = $group->getRequests();
-$assocs = $group->getMembers();
+$assocs = $group->getGroupMembers();
 
 if (count($requests) + count($assocs) == 1) {
     echo "<p>You do not have any users attached to your PI account. 

@@ -214,7 +214,7 @@ class UnityGroup
         }
 
         // first, we must record the users in the group currently
-        $users = $this->getMembers();
+        $users = $this->getGroupMembers();
 
         // now we delete the ldap entry
         $ldapPiGroupEntry = $this->GetLDAPEntry();
@@ -408,7 +408,7 @@ class UnityGroup
         return $out;
     }
 
-    public function getMemberUIDs($ignorecache = false): array
+    public function getGroupMemberUIDs($ignorecache = false): array
     {
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->getPIUID(), "members");
@@ -425,9 +425,9 @@ class UnityGroup
     }
 
 
-    public function getMembers($ignorecache = false)
+    public function getGroupMembers($ignorecache = false)
     {
-        $memberuids = $this->getMemberUIDs($ignorecache);
+        $memberuids = $this->getGroupMemberUIDs($ignorecache);
         $out = array();
         foreach ($members as $member) {
             $user_obj = new UnityUser($member, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS, $this->WEBHOOK);
@@ -510,7 +510,7 @@ class UnityGroup
 
     public function userExists(UnityUser $user): bool
     {
-        $members = $this->getMemberUIDs($ignorecache);
+        $members = $this->getGroupMemberUIDs($ignorecache);
         return in_array($user->getUID(), $members);
     }
 

@@ -61,11 +61,11 @@ class UnityOrg
 
     public function userExists(UnityUser $user, $ignorecache = false): bool
     {
-        $members = $this->getMemberUIDs($ignorecache);
+        $members = $this->getOrgMemberUIDs($ignorecache);
         return in_array($user->getUID(), $members);
     }
 
-    public function getMemberUIDs($ignorecache = false): array
+    public function getOrgMemberUIDs($ignorecache = false): array
     {
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->getOrgID(), "members");
@@ -81,9 +81,9 @@ class UnityOrg
         return $members;
     }
 
-    public function getMembers($ignorecache = false)
+    public function getOrgMembers($ignorecache = false)
     {
-        $memberuids = $this->getMemberUIDs($ignorecache);
+        $memberuids = $this->getOrgMemberUIDs($ignorecache);
         $out = array();
         foreach ($members as $member) {
             $user_obj = new UnityUser($member, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS, $this->WEBHOOK);

@@ -633,7 +633,7 @@ class UnityUser
         $cache_arr = array();
 
         foreach ($all_pi_groups as $pi_group) {
-            if (in_array($this->getUID(), $pi_group->getMemberUIDs())) {
+            if (in_array($this->getUID(), $pi_group->getGroupMemberUIDs())) {
                 array_push($out, $pi_group);
                 array_push($cache_arr, $pi_group->getPIUID());
             }
@@ -695,6 +695,6 @@ class UnityUser
             $group_checked = $group;
         }
 
-        return in_array($uid, $group_checked->getMemberUIDs());
+        return in_array($uid, $group_checked->getGroupMemberUIDs());
     }
 }
