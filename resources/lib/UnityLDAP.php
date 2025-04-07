@@ -115,82 +115,62 @@ class UnityLDAP extends ldapConn
   //
   // ID Number selection functions
   //
-    public function getNextUIDNumber($UnitySQL)
+    public function getNextUIDNumber(UnitySQL $UnitySQL): int
     {
-        $max_uid = $UnitySQL->getSiteVar('MAX_UID');
-        $new_uid = $max_uid + 1;
-
-        while ($this->UIDNumInUse($new_uid)) {
-            $new_uid++;
+        $new_id = $UnitySQL->getSiteVar('MAX_UID') + 1;
+        while ($this->IDNumInUse($new_id)) {
+            $new_id++;
         }
-
-        $UnitySQL->updateSiteVar('MAX_UID', $new_uid);
-
-        return $new_uid;
+        $UnitySQL->updateSiteVar('MAX_UID', $new_id);
+        return $new_id;
     }
 
-    public function getNextPiGIDNumber($UnitySQL)
+    public function getNextPiGIDNumber(UnitySQL $UnitySQL): int
     {
         $max_pigid = $UnitySQL->getSiteVar('MAX_PIGID');
         $new_pigid = $max_pigid + 1;
-
-        while ($this->PIGIDNumInUse($new_pigid)) {
+        while ($this->IDNumInUse($new_pigid)) {
             $new_pigid++;
         }
-
         $UnitySQL->updateSiteVar('MAX_PIGID', $new_pigid);
-
         return $new_pigid;
     }
 
-    public function getNextOrgGIDNumber($UnitySQL)
+    public function getNextOrgGIDNumber(UnitySQL $UnitySQL): int
     {
         $max_gid = $UnitySQL->getSiteVar('MAX_GID');
         $new_gid = $max_gid + 1;
-
-        while ($this->GIDNumInUse($new_gid)) {
+        while ($this->IDNumInUse($new_gid)) {
             $new_gid++;
         }
-
         $UnitySQL->updateSiteVar('MAX_GID', $new_gid);
-
         return $new_gid;
     }
 
-    private function UIDNumInUse($id)
+    private function IDNumInUse(int $id): bool
     {
+        // id reserved for debian packages
+        if (($id >= 100 && $id <= 999) || ($id >= 60000 && $id <= 64999)){
+            return true;
+        }
         $users = $this->userOU->getChildrenArray(true);
         foreach ($users as $user) {
             if ($user["uidnumber"][0] == $id) {
                 return true;
             }
         }
-
-        return false;
-    }
-
-    private function PIGIDNumInUse($id)
-    {
         $pi_groups = $this->pi_groupOU->getChildrenArray(true);
         foreach ($pi_groups as $pi_group) {
             if ($pi_group["gidnumber"][0] == $id) {
                 return true;
             }
         }
-
-        return false;
-    }
-
-    private function GIDNumInUse($id)
-    {
         $groups = $this->groupOU->getChildrenArray(true);
         foreach ($groups as $group) {
             if ($group["gidnumber"][0] == $id) {
                 return true;
             }
         }
-
-        return false;
     }
 
     public function getUnassignedID($uid, $UnitySQL)
@@ -208,7 +188,7 @@ class UnityLDAP extends ldapConn
 
                     if ($uid == $netid_match || $netid == $netid_match) {
                         // found a match
-                        if (!$this->UIDNumInUse($uid_match) && !$this->GIDNumInUse($uid_match)) {
+                        if (!$this->IDNumInUse($uid_match)) {
                             return $uid_match;
                         }
                     }
