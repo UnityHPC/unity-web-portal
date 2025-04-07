@@ -1,5 +1,7 @@
 <?php
 
+namespace UnityWebPortal\lib;
+
 require_once "../../resources/autoload.php";
 
 require_once $LOC_HEADER;
@@ -37,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                         $gh_user = $SITE->array_get_or_bad_request("gh_user", $_POST);
                         $keys = $SITE->getGithubKeys($gh_user);
                         $added_keys = $keys;
-                    } catch (UnityWebPortal\lib\GithubUserNotFoundOrNoKeysException $e) {
+                    } catch (GithubUserNotFoundOrNoKeysException $e) {
                         $SITE->alert("Github user not found, or Github user has no keys.");
                     }
                     break;
@@ -90,12 +92,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $USER->setLoginShell($shell, $OPERATOR);
             break;
         case "pi_request":
-            // FIXME this should be an error
-            if (!$USER->isPI()) {
-                // FIXME this should be an error
-                if (!$SQL->requestExists($USER->getUID())) {
-                    $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
-                }
+            try {
+                $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
+            } catch (UnityGroupDuplicateRequestException $e) {
+                $SITE->bad_request("duplicate PI become request");
+            } catch (UnityGroupRequestGroupAlreadyExistsException $e) {
+                $SITE->bad_request("PI request to become PI");
+            } catch (UnityGroupRequestUserRequestedAccountDeletionException $e) {
+                $SITE->bad_request("User requested account deletion also request to become PI");
             }
             break;
         case "account_deletion_request":

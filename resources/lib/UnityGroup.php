@@ -7,6 +7,9 @@ use Exception;
 class UnityGroupUserRequestAlreadyMemberException extends Exception {}
 class UnityGroupDuplicateUserRequestException extends Exception {}
 class UnityGroupUserRequestInvalidUserException extends Exception {}
+class UnityGroupRequestGroupAlreadyExistsException extends Exception {}
+class UnityGroupDuplicateRequestException extends Exception {}
+class UnityGroupRequestUserRequestedAccountDeletionException extends Exception {}
 
 /**
  * Class that represents a single PI group in the Unity Cluster.
@@ -81,15 +84,14 @@ class UnityGroup
 
     public function requestGroup($send_mail_to_admins, $send_mail = true)
     {
-        // check for edge cases...
         if ($this->exists()) {
-            return; // FIXME requesting a group that already exists should be an error
+            throw new UnityGroupRequestGroupAlreadyExistsException();
         }
-
-        // check if account deletion request already exists
-        // FIXME remove this. it's not harmful, making function noop is bad experience
-        if ($this->SQL->accDeletionRequestExists($this->getOwner()->getUID())) {
-            return;
+        if ($this->SQL->requestExists($this->getOwner()->getUID())) {
+            throw new UnityGroupDuplicateRequestException();
+        }
+        if ($this->getOwner()->hasRequestedAccountDeletion()) {
+            throw new UnityGroupRequestUserRequestedAccountDeletionException();
         }
 
         $this->SQL->addRequest($this->getOwner()->getUID());

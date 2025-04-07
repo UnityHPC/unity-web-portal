@@ -7,4 +7,4 @@ ARGS="--display-incomplete --display-skipped --display-deprecations --display-ph
 # REMOTE_USER=web_admin@unityhpc.test ../../vendor/bin/phpunit $ARGS ./SSHKeyDeleteTest.php
 # REMOTE_USER=web_admin@unityhpc.test ../../vendor/bin/phpunit $ARGS ./LoginShellSetTest.php
 # TODO make sure this also runs with a PI user
-REMOTE_USER=web_admin@unityhpc.test ../../vendor/bin/phpunit $ARGS ./PiBecomeRequestTest.php
+REMOTE_USER=user0100@org04.edu ../../vendor/bin/phpunit $ARGS ./PiBecomeRequestTest.php

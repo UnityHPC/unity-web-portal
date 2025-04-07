@@ -7,6 +7,7 @@ use PDO;
 
 class UnitySQLRecordNotFoundException extends Exception {}
 class UnitySQLRecordNotUniqueException extends Exception {}
+class UnitySQLDuplicateRequestException extends Exception {}
 
 class UnitySQL
 {
@@ -45,7 +46,7 @@ class UnitySQL
     public function addRequest($requestor, $request_for = self::REQUEST_PI_PROMOTION)
     {
         if ($this->requestExists($requestor, $request_for)) {
-            throw new UnitySQLRecordNotFoundException(json_encode([
+            throw new UnitySQLDuplicateRequestException(json_encode([
                 "requestor" => $requestor,
                 "request_for" => $request_for
             ]));
