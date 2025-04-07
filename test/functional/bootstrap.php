@@ -60,9 +60,14 @@ function post(string $phpfile, array $post_data): void {
     global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     $_SERVER["REQUEST_METHOD"] = "POST";
     $_POST = $post_data;
-    include $phpfile;
-    unset($_POST);
-    unset($_SERVER["REQUEST_METHOD"]);
+    ob_start();
+    try {
+        include $phpfile;
+    } finally {
+        unset($_POST);
+        unset($_SERVER["REQUEST_METHOD"]);
+        ob_get_clean();
+    }
 }
 
 switch_to_user(getenv("REMOTE_USER"), "foo", "bar", getenv("REMOTE_USER"));
