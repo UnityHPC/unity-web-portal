@@ -189,21 +189,6 @@ CREATE TABLE `sitevars` (
   `value` varchar(768) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `sso_log`
---
-
-CREATE TABLE `sso_log` (
-  `id` int(10) NOT NULL,
-  `uid` varchar(300) NOT NULL,
-  `firstname` varchar(300) NOT NULL,
-  `lastname` varchar(300) NOT NULL,
-  `mail` varchar(300) NOT NULL,
-  `org` varchar(300) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 --
 -- Indexes for dumped tables
 --
@@ -275,12 +260,6 @@ ALTER TABLE `sitevars`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `sso_log`
---
-ALTER TABLE `sso_log`
-  ADD PRIMARY KEY (`id`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -349,13 +328,6 @@ ALTER TABLE `requests`
 --
 ALTER TABLE `sitevars`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `sso_log`
---
-ALTER TABLE `sso_log`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

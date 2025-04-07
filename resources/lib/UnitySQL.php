@@ -8,7 +8,6 @@ class UnitySQL
 {
     private const TABLE_REQS = "requests";
     private const TABLE_NOTICES = "notices";
-    private const TABLE_SSOLOG = "sso_log";
     private const TABLE_PAGES = "pages";
     private const TABLE_AUDIT_LOG = "audit_log";
     private const TABLE_ACCOUNT_DELETION_REQUESTS = "account_deletion_requests";
