@@ -66,7 +66,9 @@ class UnityGroup
     {
         if (!$ignorecache) {
             $cached_pi_groups = $this->REDIS->getCache("sorted_pi_groups", "");
-            return in_array($this->getPIUID(), $cached_pi_groups);
+            if (!is_null($cached_pi_groups)) {
+                return in_array($this->getPIUID(), $cached_pi_groups);
+            }
         }
         return $this->getLDAPPiGroup()->exists();
     }
