@@ -154,8 +154,14 @@ class UnityUser
         return $this->LDAP->getGroupEntry($this->uid);
     }
 
-    public function exists()
+    public function exists($ignorecache = false)
     {
+        if (!$ignorecache) {
+            $cached_val = $this->REDIS->getCache($this->uid, "cn");
+            if (!is_null($cached_val)) {
+                return true;
+            }
+        }
         return $this->getLDAPUser()->exists() && $this->getLDAPGroup()->exists();
     }
 
