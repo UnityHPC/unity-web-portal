@@ -52,20 +52,6 @@ CREATE TABLE `audit_log` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `events`
---
-
-CREATE TABLE `events` (
-  `id` int(11) NOT NULL,
-  `operator` varchar(128) NOT NULL,
-  `action` varchar(300) NOT NULL,
-  `entity` varchar(300) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `groupJoinRequests`
 --
 
@@ -235,12 +221,6 @@ ALTER TABLE `audit_log`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `events`
---
-ALTER TABLE `events`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `groupJoinRequests`
 --
 ALTER TABLE `groupJoinRequests`
@@ -314,12 +294,6 @@ ALTER TABLE `account_deletion_requests`
 -- AUTO_INCREMENT for table `audit_log`
 --
 ALTER TABLE `audit_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `events`
---
-ALTER TABLE `events`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
