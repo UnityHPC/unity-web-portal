@@ -105,7 +105,7 @@ class UnityUser
             $orgEntry->init();
         }
 
-        if (!$orgEntry->inOrg($this->uid)) {
+        if (!$orgEntry->userExists($this)) {
             $orgEntry->addUser($this);
         }
 
@@ -139,7 +139,7 @@ class UnityUser
      *
      * @return ldapEntry posix account
      */
-    public function getLDAPUser()
+    public function getLDAPUser(): LdapEntry
     {
         return $this->LDAP->getUserEntry($this->uid);
     }
@@ -149,7 +149,7 @@ class UnityUser
      *
      * @return ldapEntry posix group
      */
-    public function getLDAPGroup()
+    public function getLDAPGroup(): LdapEntry
     {
         return $this->LDAP->getGroupEntry($this->uid);
     }
@@ -633,7 +633,7 @@ class UnityUser
         $cache_arr = array();
 
         foreach ($all_pi_groups as $pi_group) {
-            if (in_array($this->getUID(), $pi_group->getGroupMemberUIDs())) {
+            if (in_array($this->getUID(), $pi_group->getMemberUIDs())) {
                 array_push($out, $pi_group);
                 array_push($cache_arr, $pi_group->getPIUID());
             }
@@ -695,6 +695,6 @@ class UnityUser
             $group_checked = $group;
         }
 
-        return in_array($uid, $group_checked->getGroupMemberUIDs());
+        return in_array($uid, $group_checked->getMemberUIDs());
     }
 }

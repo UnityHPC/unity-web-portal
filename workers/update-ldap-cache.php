@@ -41,7 +41,7 @@ foreach ($groups as $group) {
     array_push($sorted_groups, $gid);
 
     $parsed_members = array();
-    foreach ($group->getGroupMembers(true) as $member) {
+    foreach ($group->getMembers(true) as $member) {
         array_push($parsed_members, $member->getUID());
     }
 
@@ -61,7 +61,7 @@ foreach ($orgs as $org) {
     array_push($sorted_orgs, $orgid);
 
     $parsed_orgs = array();
-    foreach ($org->getOrgMembers(true) as $member) {
+    foreach ($org->getMembers(true) as $member) {
         array_push($parsed_members, $member->getUID());
     }
 

@@ -3,6 +3,7 @@
 namespace UnityWebPortal\lib;
 
 use Exception;
+use PHPOpenLDAPer\LdapEntry;
 
 /**
  * Class that represents a single PI group in the Unity Cluster.
@@ -64,7 +65,7 @@ class UnityGroup
      */
     public function exists()
     {
-        return $this->getLDAPPiGroup()->exists();
+        return $this->GetLDAPEntry()->exists();
     }
 
     //
@@ -213,10 +214,10 @@ class UnityGroup
         }
 
         // first, we must record the users in the group currently
-        $users = $this->getGroupMembers();
+        $users = $this->getMembers();
 
         // now we delete the ldap entry
-        $ldapPiGroupEntry = $this->getLDAPPiGroup();
+        $ldapPiGroupEntry = $this->GetLDAPEntry();
         if ($ldapPiGroupEntry->exists()) {
             if (!$ldapPiGroupEntry->delete()) {
                 throw new Exception("Unable to delete PI ldap group");
@@ -407,52 +408,33 @@ class UnityGroup
         return $out;
     }
 
-    public function getGroupMembers($ignorecache = false)
+    public function getMemberUIDs($ignorecache = false): array
     {
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->getPIUID(), "members");
             if (!is_null($cached_val)) {
-                $members = $cached_val;
+                return $cached_val;
             }
         }
-
-        $updatecache = false;
-        if (!isset($members)) {
-            $pi_group = $this->getLDAPPiGroup();
-            $members = $pi_group->getAttribute("memberuid");
-            $updatecache = true;
-        }
-
-        $out = array();
-        $cache_arr = array();
-        $owner_uid = $this->getOwner()->getUID();
-        foreach ($members as $member) {
-                $user_obj = new UnityUser(
-                    $member,
-                    $this->LDAP,
-                    $this->SQL,
-                    $this->MAILER,
-                    $this->REDIS,
-                    $this->WEBHOOK
-                );
-                array_push($out, $user_obj);
-                array_push($cache_arr, $user_obj->getUID());
-        }
-
-        if (!$ignorecache && $updatecache) {
-            sort($cache_arr);
-            $this->REDIS->setCache($this->getPIUID(), "members", $cache_arr);
-        }
-
-        return $out;
+        $entry = $this->getLDAPEntry();
+        $members = $entry->getAttribute("memberuid");
+        $members = (is_null($members) ? [] : $members);
+        sort($members);
+        $this->REDIS->setCache($this->getPIUID(), "members", $members);
+        return $members;
     }
 
-    public function getGroupMemberUIDs()
-    {
-        $pi_group = $this->getLDAPPiGroup();
-        $members = $pi_group->getAttribute("memberuid");
 
-        return $members;
+    public function getMembers($ignorecache = false)
+    {
+        $memberuids = $this->getMemberUIDs($ignorecache);
+        $out = array();
+        foreach ($members as $member) {
+            $user_obj = new UnityUser($member, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS, $this->WEBHOOK);
+            array_push($out, $user_obj);
+            array_push($cache_arr, $user_obj->getUID());
+        }
+        return $out;
     }
 
     public function requestExists($user)
@@ -479,7 +461,7 @@ class UnityGroup
         $owner = $this->getOwner();
 
         // (1) Create LDAP PI group
-        $ldapPiGroupEntry = $this->getLDAPPiGroup();
+        $ldapPiGroupEntry = $this->GetLDAPEntry();
 
         if (!$ldapPiGroupEntry->exists()) {
             $nextGID = $this->LDAP->getNextPiGIDNumber($this->SQL);
@@ -501,7 +483,7 @@ class UnityGroup
     private function addUserToGroup($new_user)
     {
         // Add to LDAP Group
-        $pi_group = $this->getLDAPPiGroup();
+        $pi_group = $this->GetLDAPEntry();
         $pi_group->appendAttribute("memberuid", $new_user->getUID());
 
         if (!$pi_group->write()) {
@@ -515,7 +497,7 @@ class UnityGroup
     private function removeUserFromGroup($old_user)
     {
         // Remove from LDAP Group
-        $pi_group = $this->getLDAPPiGroup();
+        $pi_group = $this->GetLDAPEntry();
         $pi_group->removeAttributeEntryByValue("memberuid", $old_user->getUID());
 
         if (!$pi_group->write()) {
@@ -526,9 +508,10 @@ class UnityGroup
         $this->REDIS->removeCacheArray($old_user->getUID(), "groups", $this->getPIUID());
     }
 
-    public function userExists($user)
+    public function userExists(UnityUser $user): bool
     {
-        return in_array($user->getUID(), $this->getGroupMemberUIDs());
+        $members = $this->getMemberUIDs($ignorecache);
+        return in_array($user->getUID(), $members);
     }
 
     private function addRequest($uid)
@@ -557,7 +540,7 @@ class UnityGroup
         );
     }
 
-    public function getLDAPPiGroup()
+    public function GetLDAPEntry(): LdapEntry
     {
         return $this->LDAP->getPIGroupEntry($this->pi_uid);
     }

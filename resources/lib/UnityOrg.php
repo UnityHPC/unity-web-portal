@@ -3,6 +3,7 @@
 namespace UnityWebPortal\lib;
 
 use Exception;
+use PHPOpenLDAPer\LdapEntry;
 
 class UnityOrg
 {
@@ -27,15 +28,15 @@ class UnityOrg
 
     public function init()
     {
-        $org_group = $this->getLDAPOrgGroup();
+        $entry = $this->getLDAPEntry();
 
-        if (!$org_group->exists()) {
+        if (!$entry->exists()) {
             $nextGID = $this->LDAP->getNextOrgGIDNumber($this->SQL);
 
-            $org_group->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
-            $org_group->setAttribute("gidnumber", strval($nextGID));
+            $entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
+            $entry->setAttribute("gidnumber", strval($nextGID));
 
-            if (!$org_group->write()) {
+            if (!$entry->write()) {
                 throw new Exception("Failed to create POSIX group for " . $this->orgid);  // this shouldn't execute
             }
         }
@@ -45,10 +46,10 @@ class UnityOrg
 
     public function exists()
     {
-        return $this->getLDAPOrgGroup()->exists();
+        return $this->getLDAPEntry()->exists();
     }
 
-    public function getLDAPOrgGroup()
+    public function getLDAPEntry(): LdapEntry
     {
         return $this->LDAP->getOrgGroupEntry($this->orgid);
     }
@@ -58,51 +59,46 @@ class UnityOrg
         return $this->orgid;
     }
 
-    public function inOrg($user)
+    public function userExists(UnityUser $user, $ignorecache = false): bool
     {
-        $org_group = $this->getLDAPOrgGroup();
-        $members = $org_group->getAttribute("memberuid");
-        return in_array($user, $members);
+        $members = $this->getMemberUIDs($ignorecache);
+        return in_array($user->getUID(), $members);
     }
 
-    public function getOrgMembers($ignorecache = false)
+    public function getMemberUIDs($ignorecache = false): array
     {
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->getOrgID(), "members");
             if (!is_null($cached_val)) {
-                $members = $cached_val;
+                return $cached_val;
             }
         }
+        $entry = $this->getLDAPEntry();
+        $members = $entry->getAttribute("memberuid");
+        $members = (is_null($members) ? [] : $members);
+        sort($members);
+        $this->REDIS->setCache($this->getOrgID(), "members", $members);
+        return $members;
+    }
 
-        $updatecache = false;
-        if (!isset($members)) {
-            $org_group = $this->getLDAPOrgGroup();
-            $members = $org_group->getAttribute("memberuid");
-            $updatecache = true;
-        }
-
+    public function getMembers($ignorecache = false)
+    {
+        $memberuids = $this->getMemberUIDs($ignorecache);
         $out = array();
-        $cache_arr = array();
         foreach ($members as $member) {
             $user_obj = new UnityUser($member, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS, $this->WEBHOOK);
             array_push($out, $user_obj);
             array_push($cache_arr, $user_obj->getUID());
         }
-
-        if (!$ignorecache && $updatecache) {
-            sort($cache_arr);
-            $this->REDIS->setCache($this->getOrgID(), "members", $cache_arr);
-        }
-
         return $out;
     }
 
     public function addUser($user)
     {
-        $org_group = $this->getLDAPOrgGroup();
-        $org_group->appendAttribute("memberuid", $user->getUID());
+        $entry = $this->getLDAPEntry();
+        $entry->appendAttribute("memberuid", $user->getUID());
 
-        if (!$org_group->write()) {
+        if (!$entry->write()) {
             throw new Exception("Unable to write to org group");
         }
 
@@ -111,10 +107,10 @@ class UnityOrg
 
     public function removeUser($user)
     {
-        $org_group = $this->getLDAPOrgGroup();
-        $org_group->removeAttributeEntryByValue("memberuid", $user->getUID());
+        $entry = $this->getLDAPEntry();
+        $entry->removeAttributeEntryByValue("memberuid", $user->getUID());
 
-        if (!$org_group->write()) {
+        if (!$entry->write()) {
             throw new Exception("Unable to write to org group");
         }
 

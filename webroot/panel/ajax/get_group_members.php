@@ -9,7 +9,7 @@ if (!isset($_GET["pi_uid"])) {
 }
 
 $group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-$members = $group->getGroupMembers();
+$members = $group->getMembers();
 
 // verify that the user querying is actually in the group
 $found = false;
