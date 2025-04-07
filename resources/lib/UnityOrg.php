@@ -85,8 +85,8 @@ class UnityOrg
     {
         $memberuids = $this->getOrgMemberUIDs($ignorecache);
         $out = array();
-        foreach ($members as $member) {
-            $user_obj = new UnityUser($member, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS, $this->WEBHOOK);
+        foreach ($memberuids as $uid) {
+            $user_obj = new UnityUser($uid, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS, $this->WEBHOOK);
             array_push($out, $user_obj);
             array_push($cache_arr, $user_obj->getUID());
         }
