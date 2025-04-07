@@ -203,13 +203,13 @@ class UnityLDAP extends ldapConn
                 // found csv file
                 $handle = fopen($fileinfo->getPathname(), "r");
                 while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-                    $netid_match = $data[0];
-                    $uid_match = $data[1];
+                    $customMappingNetID = $data[0];
+                    $customMappingIDNumber = $data[1];
 
-                    if ($uid == $netid_match || $netid == $netid_match) {
+                    if ($uid == $customMappingNetID || $netid == $customMappingNetID) {
                         // found a match
-                        if (!$this->UIDNumInUse($uid_match) && !$this->GIDNumInUse($uid_match)) {
-                            return $uid_match;
+                        if (!$this->UIDNumInUse($customMappingIDNumber) && !$this->GIDNumInUse($customMappingIDNumber)) {
+                            return $CustomMappingIDNumber;
                         }
                     }
                 }
