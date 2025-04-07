@@ -56,6 +56,7 @@ $requests = $SQL->getRequestsByUser($USER->getUID());
 
 $req_filtered = array();
 foreach ($requests as $request) {
+    // FIXME "admin" -> UnitySQL::REQUEST_BECOME_PI
     if ($request["request_for"] != "admin") {  // put this in config later for gypsum
         array_push($req_filtered, $request);
     }
