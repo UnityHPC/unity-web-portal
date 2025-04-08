@@ -105,7 +105,7 @@ class UnityUser
             $orgEntry->init();
         }
 
-        if (!$orgEntry->inOrg($this->uid)) {
+        if (!$orgEntry->userExists($this)) {
             $orgEntry->addUser($this);
         }
 
@@ -139,7 +139,7 @@ class UnityUser
      *
      * @return ldapEntry posix account
      */
-    public function getLDAPUser()
+    public function getLDAPUser(): LdapEntry
     {
         return $this->LDAP->getUserEntry($this->uid);
     }
@@ -149,7 +149,7 @@ class UnityUser
      *
      * @return ldapEntry posix group
      */
-    public function getLDAPGroup()
+    public function getLDAPGroup(): LdapEntry
     {
         return $this->LDAP->getGroupEntry($this->uid);
     }
@@ -562,6 +562,7 @@ class UnityUser
     public function isAdmin()
     {
         $admins = $this->LDAP->getAdminGroup()->getAttribute("memberuid");
+        $admins = (is_null($admins) ? [] : $admins);
         return in_array($this->uid, $admins);
     }
 
