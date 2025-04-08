@@ -428,8 +428,7 @@ class UnityGroup
             }
         }
         $entry = $this->getLDAPEntry();
-        $members = $entry->getAttribute("memberuid");
-        $members = (is_null($members) ? [] : $members);
+        $members = $entry->getAttribute("memberuid") ?? [];
         sort($members);
         $this->REDIS->setCache($this->getPIUID(), "members", $members);
         return $members;
