@@ -1,0 +1,48 @@
+# intentionally malformed files
+# pre-commit automatically excludes submodules
+exclude: |
+  (?x)^(
+      .*\.dist|
+      roles/ood-head/files/auto-copy/var/www/ood/apps/common/common_attributes.yml|
+      roles/ood-head/files/auto-copy/var/www/ood/apps/sys/dashboard/config/locales/en.yml|
+      inventory.d/ipv4.py|
+      files/shibboleth/filtered-incommon-metadata.xml.j2|
+  )$
+
+repos:
+  # auto formatters (no work required) #############################################################
+  # - repo: https://github.com/pre-commit/pre-commit-hooks
+  #   rev: v5.0.0
+  #   hooks:
+  #     - id: trailing-whitespace
+  #     - id: end-of-file-fixer
+  - repo: local
+    hooks:
+      - id: phpcbf
+        name: PHP Code Beautifier and Fixer
+        entry: phpcbf
+        language: system
+        files: \.php$
+        args: [--standard=PSR2, --colors]
+
+  # linters (work required) ########################################################################
+  # - repo: https://github.com/pre-commit/pre-commit-hooks
+  #   rev: v5.0.0
+  #   hooks:
+  #     - id: check-yaml
+  #     - id: check-json
+  #     - id: check-xml
+  #     - id: check-added-large-files
+  #     - id: check-executables-have-shebangs
+  # - repo: https://github.com/gitleaks/gitleaks
+  #   rev: v8.23.1
+  #   hooks:
+  #     - id: gitleaks
+  - repo: local
+    hooks:
+      - id: phpcs
+        name: PHP CodeSniffer
+        entry: phpcs
+        language: system
+        files: \.php$
+        args: [--standard=PSR2, --colors, --warning-severity=0]
