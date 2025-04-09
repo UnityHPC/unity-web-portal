@@ -1,9 +1,13 @@
 <?php
+
 namespace UnityWebPortal\lib;
+
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-class UnitySiteTest extends TestCase {
-    public static function ssh_key_provider()
+
+class UnitySiteTest extends TestCase
+{
+    public static function SSHKeyProvider()
     {
         return [
             [false, ""],
@@ -17,8 +21,9 @@ class UnitySiteTest extends TestCase {
         ];
     }
 
-    #[DataProvider("ssh_key_provider")]
-    public function testTestValidSSHKey(bool $expected, string $key){
+    #[DataProvider("SSHKeyProvider")]
+    public function testTestValidSSHKey(bool $expected, string $key)
+    {
         $SITE = new UnitySite();
         $this->assertEquals($expected, $SITE->testValidSSHKey($key));
     }
