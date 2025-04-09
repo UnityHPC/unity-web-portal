@@ -2,10 +2,8 @@
 
 require_once "../../resources/autoload.php";
 
-use UnityWebPortal\lib\{
-    UnitySite,
-    UnityGroup
-};
+use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\UnityGroup;
 
 require_once $LOC_HEADER;
 

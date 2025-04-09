@@ -1,0 +1,13 @@
+<phpunit
+  bootstrap="test/unit/bootstrap.php"
+  failOnWarning="true"
+  failOnDeprecation="true"
+  failOnNotice="true"
+  restrictWarnings="true"
+>
+  <testsuites>
+    <testsuite name="unit">
+      <directory>test/unit</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>
