@@ -45,4 +45,4 @@ repos:
         entry: phpcs
         language: system
         files: \.php$
-        args: [--standard=PSR2, --colors, --warning-severity=0]
+        args: [--standard=PSR2, --colors]
