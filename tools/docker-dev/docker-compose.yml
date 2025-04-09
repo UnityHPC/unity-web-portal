@@ -1,4 +1,6 @@
-version: "3.9"
+networks:
+  default:
+    name: unity_dev_network
 services:
   identity:
     hostname: identity
@@ -6,6 +8,28 @@ services:
     ports:
       - "8010:80"
       - "389:389"
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "389"]
+  sql:
+    hostname: sql
+    build: sql
+    ports:
+      - "3306:3306"
+      - "8020:80"
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "3306"]
+  smtp:
+    hostname: smtp
+    image: schickling/mailcatcher
+    ports:
+      - "8030:1080"
+  redis:
+    hostname: redis
+    build: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "6379"]
   web:
     hostname: web
     build: web
@@ -18,19 +42,3 @@ services:
       - identity
       - sql
       - smtp
-  sql:
-    hostname: sql
-    build: sql
-    ports:
-      - "8020:80"
-  smtp:
-    hostname: smtp
-    image: schickling/mailcatcher
-    ports:
-      - "8030:1080"
-  redis:
-    hostname: redis
-    image: redis
-networks:
-  default:
-    name: unity_dev_network

@@ -6,7 +6,8 @@ RUN apt-get update && apt-get install -y \
     slapd \
     ldap-utils \
     apache2 \
-    phpldapadmin
+    phpldapadmin \
+    netcat-openbsd
 RUN rm -rf /var/lib/ldap
 RUN mkdir /var/lib/ldap
 RUN chown openldap:openldap /var/lib/ldap

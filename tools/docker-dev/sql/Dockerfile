@@ -6,7 +6,8 @@ RUN apt-get update && apt-get install -y \
     mariadb-client \
     apache2 \
     php8.3 \
-    phpmyadmin
+    phpmyadmin \
+    netcat-openbsd
 RUN sed -i '/bind-address/c\bind-address = 0.0.0.0' /etc/mysql/mariadb.conf.d/50-server.cnf
 COPY bootstrap.sql /tmp/bootstrap.sql
 COPY bootstrap-users.sql /tmp/bootstrap-users.sql
