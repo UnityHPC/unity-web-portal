@@ -4,8 +4,8 @@ require_once "../../../resources/autoload.php";  // Load required libs
 
 $search_query = $_GET["search"];  // Search is passed as a get var
 if (empty($search_query)) {
-    die("<span>No Results</span>");
-}
+    echo "<span>No Results</span>";
+} else {
 
 $assocs = $LDAP->getAllPIGroups($SQL, $MAILER, $REDIS, $WEBHOOK);
 
@@ -34,4 +34,6 @@ foreach ($assocs as $assoc_obj) {
 
 foreach ($out as $pi_acct) {
     echo "<span>$pi_acct</span>";
+}
+
 }

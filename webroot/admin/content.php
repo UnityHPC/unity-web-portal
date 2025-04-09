@@ -3,7 +3,7 @@
 require_once "../../resources/autoload.php";
 
 if (!$USER->isAdmin()) {
-    die();
+    throw new Exception("not an admin");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

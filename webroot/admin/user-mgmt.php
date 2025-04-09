@@ -5,7 +5,7 @@ require_once "../../resources/autoload.php";
 use UnityWebPortal\lib\UnitySite;
 
 if (!$USER->isAdmin()) {
-    die();
+    throw new Exception("not an admin");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

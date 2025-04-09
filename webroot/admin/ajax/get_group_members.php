@@ -5,11 +5,11 @@ require_once "../../../resources/autoload.php";
 use UnityWebPortal\lib\UnityGroup;
 
 if (!$USER->isAdmin()) {
-    die();
+    throw new Exception("not an admin");
 }
 
 if (!isset($_GET["pi_uid"])) {
-    die("PI UID not set");
+    throw new Exception("PI UID not set");
 }
 
 $group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);

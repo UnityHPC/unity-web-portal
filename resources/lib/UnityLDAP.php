@@ -315,25 +315,59 @@ class UnityLDAP extends ldapConn
 
     public function getUserEntry($uid)
     {
+        $uid = ldap_escape($uid, LDAP_ESCAPE_DN);
         $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=$uid," . $this->STR_USEROU);
         return $ldap_entry;
     }
 
     public function getGroupEntry($gid)
     {
+        $uid = ldap_escape($gid, LDAP_ESCAPE_DN);
         $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=$gid," . $this->STR_GROUPOU);
         return $ldap_entry;
     }
 
     public function getPIGroupEntry($gid)
     {
+        $uid = ldap_escape($gid, LDAP_ESCAPE_DN);
         $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=$gid," . $this->STR_PIGROUPOU);
         return $ldap_entry;
     }
 
     public function getOrgGroupEntry($gid)
     {
+        $uid = ldap_escape($gid, LDAP_ESCAPE_DN);
         $ldap_entry = new LDAPEntry($this->getConn(), unityLDAP::RDN . "=$gid," . $this->STR_ORGGROUPOU);
         return $ldap_entry;
+    }
+
+    public static function parseUserChildrenArray(array $userChildrenArray): array
+    {
+        // input comes from LdapEntry::getChildrenArray on a UnityUser
+        $output = [];
+        $required_string_attributes = [
+            "gidnumber",
+            "givenname",
+            "homedirectory",
+            "loginshell",
+            "mail",
+            "o",
+            "sn",
+            "uid",
+            "uidnumber",
+        ];
+        foreach ($required_string_attributes as $key) {
+            $output[$key] = $userChildrenArray[$key][0];
+        }
+        $output["firstname"] = $output["givenname"];
+        $output["lastname"] = $output["sn"];
+        $output["org"] = $output["o"];
+        $output["objectclass"] = $userChildrenArray["objectclass"];
+        if (array_key_exists("sspublickey", $userChildrenArray)) {
+            $output["sshpublickey"] = $userChildrenArray["sshpublickey"];
+        } else {
+            $output["sshpublickey"] = [];
+        }
+        return $output;
     }
 }
