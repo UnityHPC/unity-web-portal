@@ -52,12 +52,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
             if (!empty($added_keys)) {
                 $added_keys = UnitySite::removeTrailingWhitespace($added_keys);
-                $totalKeys = array_merge($USER->getSSHKeys(), $added_keys);
+                $totalKeys = array_merge($USER->getSSHKeys(true), $added_keys);
                 $USER->setSSHKeys($totalKeys, $OPERATOR);
             }
             break;
         case "delKey":
-            $keys = $USER->getSSHKeys();
+            $keys = $USER->getSSHKeys(true);
             unset($keys[intval($_POST["delIndex"])]);  // remove key from array
             $keys = array_values($keys);
 
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
             break;
         case "account_deletion_request":
-            $hasGroups = count($USER->getGroups()) > 0;
+            $hasGroups = count($USER->getGroups(true)) > 0;
             if ($hasGroups) {
                 die();
                 break;
@@ -99,9 +99,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 <p>
     <strong>Username</strong> <code><?php echo $USER->getUID(); ?></code>
     <br>
-    <strong>Organization</strong> <code><?php echo $USER->getOrg(); ?></code>
+    <strong>Organization</strong> <code><?php echo $USER->getOrg(true); ?></code>
     <br>
-    <strong>Email</strong> <code><?php echo $USER->getMail(); ?></code>
+    <strong>Email</strong> <code><?php echo $USER->getMail(true); ?></code>
 </p>
 
 <hr>
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 <?php
 
-$isActive = count($USER->getGroups()) > 0;
+$isActive = count($USER->getGroups(true)) > 0;
 $isPI = $USER->isPI();
 
 if ($isPI) {
@@ -156,7 +156,7 @@ if (!$isPI) {
 
 <h5>SSH Keys</h5>
 <?php
-$sshPubKeys = $USER->getSSHKeys();  // Get ssh public key attr
+$sshPubKeys = $USER->getSSHKeys(true);  // Get ssh public key attr
 
 if (count($sshPubKeys) == 0) {
     echo "<p>You do not have any SSH public keys, press the button below to add one.</p>";
@@ -190,7 +190,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
         <option value="" disabled hidden>Select Login Shell...</option>
 
         <?php
-        $cur_shell = $USER->getLoginShell();
+        $cur_shell = $USER->getLoginShell(true);
         $found_selector = false;
         foreach ($CONFIG["loginshell"]["shell"] as $shell) {
             if ($cur_shell == $shell) {
@@ -229,7 +229,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 
 <h5>Account Deletion</h5>
 <?php
-$hasGroups = count($USER->getGroups()) > 0;
+$hasGroups = count($USER->getGroups(true)) > 0;
 
 if ($hasGroups) {
     echo "<p>You cannot request to delete your account while you are in a PI group.</p>";
