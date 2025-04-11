@@ -47,7 +47,7 @@ repos:
         files: \.php$
         args: [--standard=PSR2, --colors]
       - id: php-l
-        name: PHP -l
+        name: php -l
         entry: php
         language: system
         files: \.php$
