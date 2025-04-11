@@ -30,7 +30,7 @@ class UnitySiteTest extends TestCase
         $this->assertEquals($expected, $SITE->testValidSSHKey($key));
     }
 
-    private static function providerTestGetGithubKeys()
+    public static function providerTestGetGithubKeys()
     {
         return [
             # empty
