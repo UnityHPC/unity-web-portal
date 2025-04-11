@@ -47,7 +47,7 @@ class UnitySiteTest extends TestCase
     }
 
     #[DataProvider("testGetGithubKeysProvider")]
-    public static function testGetGithubKeys(array $expected, string $username)
+    public static function testGetGithubKeys(string $username, array $expected)
     {
         $this->assertEquals($expected, $SITE->getGithubKeys($username));
     }
