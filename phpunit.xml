@@ -3,7 +3,7 @@
   failOnWarning="true"
   failOnDeprecation="true"
   failOnNotice="true"
-  restrictWarnings="true"
+  <!-- restrictWarnings="true" -->
 >
   <testsuites>
     <testsuite name="unit">
