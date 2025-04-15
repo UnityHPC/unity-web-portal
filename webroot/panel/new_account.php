@@ -74,8 +74,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<hr>";
 
         echo "<label><input type='checkbox' id='chk_eula' name='eula' value='agree' required>
-		I have read and accept the <a target='_blank' href='" . $CONFIG["site"]["prefix"] . "/priv.php'>
-		Unity EULA</a></label>";
+		I have read and accept the <a target='_blank' href='" . $CONFIG["site"]["terms_of_service_url"] . "'>
+		Unity Terms of Service</a></label>";
 
         echo "<br>";
         echo "<input style='margin-top: 10px;' type='submit' value='Request Account'>";
