@@ -24,11 +24,8 @@ class AjaxSshValidateTest extends TestCase
         $_SERVER["REQUEST_METHOD"] = "POST";
         $_POST["key"] = $pubkey;
         ob_start();
-        try {
-            include __DIR__ . "/../../webroot/js/ajax/ssh_validate.php";
-        } finally {
-            $output = ob_get_clean();
-        }
+        include __DIR__ . "/../../webroot/js/ajax/ssh_validate.php";
+        $output = ob_get_clean();
         if ($is_valid) {
             $this->assertEquals("true", $output);
         } else {
