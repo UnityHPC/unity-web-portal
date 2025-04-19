@@ -2,6 +2,7 @@ FROM ubuntu:20.04
 
 # Web Server Setup
 ARG DEBIAN_FRONTEND=noninteractive
+# php extensions also listed in .github/workflows/phpunit.yml
 RUN apt-get update && apt-get install -y \
     apache2 \
     apache2-utils \
