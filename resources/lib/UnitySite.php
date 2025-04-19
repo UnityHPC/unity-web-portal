@@ -52,6 +52,20 @@ class UnitySite
 
     public static function testValidSSHKey($key_str)
     {
+        $key_str = trim($key_str);
+        if ($key_str == "") {
+            return false;
+        }
+        // https://github.com/phpseclib/phpseclib/issues/2077
+        // key loader still throws exception, this just mutes a warning for phpunit
+        if (preg_match("/^[0-9]+$/", $key_str)) {
+            return false;
+        }
+        // https://github.com/phpseclib/phpseclib/issues/2076
+        // key loader still throws exception, this just mutes a warning for phpunit
+        if (!is_null(@json_decode($key_str))) {
+            return false;
+        }
         try {
             PublicKeyLoader::load($key_str);
             return true;

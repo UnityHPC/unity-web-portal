@@ -1,12 +1,6 @@
 <?php
 
-require "../../../resources/autoload.php";
+require_once __DIR__ . "/../../../resources/lib/UnitySite.php";
+use UnityWebPortal\lib\UnitySite;
 
-use phpseclib3\Crypt\PublicKeyLoader;
-
-try {
-    PublicKeyLoader::load($_POST['key'], $password = false);
-    echo "true";
-} catch (Exception $e) {
-    echo "false";
-}
+echo UnitySite::testValidSSHKey($_POST["key"]) ? "true" : "false";
