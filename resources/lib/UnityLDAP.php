@@ -171,6 +171,7 @@ class UnityLDAP extends ldapConn
                 return true;
             }
         }
+        return false;
     }
 
     public function getUnassignedID($uid, $UnitySQL)
