@@ -27,14 +27,6 @@ class UnitySiteTest extends TestCase
     public function testTestValidSSHKey(bool $expected, string $key)
     {
         $SITE = new UnitySite();
-        // https://github.com/phpseclib/phpseclib/issues/2077
-        if (preg_match("/^[0-9]+$/", $key)) {
-            $this->expectWarning();
-        }
-        // https://github.com/phpseclib/phpseclib/issues/2076
-        if (!is_null(@json_decode($key))) {
-            $this->expectWarning();
-        }
         $this->assertEquals($expected, $SITE->testValidSSHKey($key));
     }
 
