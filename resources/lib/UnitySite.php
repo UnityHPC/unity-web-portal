@@ -57,11 +57,8 @@ class UnitySite
         if ($key_str == "") {
             return false;
         }
-        // https://github.com/phpseclib/phpseclib/issues/2077
-        // if (preg_match("/^[0-9]+$/", $key_str)) {
-        //     return false;
-        // }
         // https://github.com/phpseclib/phpseclib/issues/2076
+        // https://github.com/phpseclib/phpseclib/issues/2077
         // there are actually valid JSON keys (JWK), but I don't think anybody uses it
         if (!is_null(@json_decode($key_str))) {
             return false;
