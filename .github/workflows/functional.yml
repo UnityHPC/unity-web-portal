@@ -1,4 +1,4 @@
-name: pre-commit
+name: docker-compose-phpunit-functional
 
 on:
   pull_request:
@@ -14,6 +14,9 @@ jobs:
       uses: hoverkraft-tech/compose-action@v2.0.1
       with:
         compose-file: "./tools/docker-dev/docker-compose.yml"
+    - name: Execute tests in the running services
+      run: |
+        docker compose exec -w '/var/www/unity-web-portal' web composer update
     - name: Execute tests in the running services
       run: |
         docker compose exec -w '/var/www/unity-web-portal' web ./vendor/bin/phpunit --testsuite=functional
