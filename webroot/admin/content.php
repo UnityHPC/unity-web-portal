@@ -1,6 +1,6 @@
 <?php
 
-require_once "../../resources/autoload.php";
+require_once __DIR__ . "/../../resources/autoload.php";
 
 if (!$USER->isAdmin()) {
     die();

@@ -1,6 +1,6 @@
 <?php
 
-require_once "../resources/autoload.php";
+require_once __DIR__ . "/../resources/autoload.php";
 
 // Get Users
 $users = $LDAP->getAllUsers($SQL, $MAILER, $REDIS, $WEBHOOK, true);

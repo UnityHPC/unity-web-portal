@@ -1,6 +1,6 @@
 <?php
 
-require_once "../../../resources/autoload.php";  // Load required libs
+require_once __DIR__ . "/../../../resources/autoload.php";  // Load required libs
 
 $search_query = $_GET["search"];  // Search is passed as a get var
 if (empty($search_query)) {

@@ -1,6 +1,6 @@
 <?php
 
-require_once "../../resources/autoload.php";
+require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnitySite;
 use UnityWebPortal\lib\UnityGroup;
@@ -50,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
     <p>Your unity cluster username will be <strong><?php echo $SSO["user"]; ?></strong></p>
 
-    <p>In order to activate your account on the Unity cluster, 
+    <p>In order to activate your account on the Unity cluster,
         you must join an existing PI group, or request your own PI group.</p>
 
     <hr>
@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pending_requests = $SQL->getRequestsByUser($USER->getUID());
     if (count($pending_requests) > 0) {
         // already has pending requests
-        echo "<p>Your request to activate your account has been submitted. 
+        echo "<p>Your request to activate your account has been submitted.
 		You will receive an email when your account is activated.</p>";
     } else {
         echo "<label><input type='radio' name='new_user_sel' value='pi'>Request a PI account (I am a PI)</label>";

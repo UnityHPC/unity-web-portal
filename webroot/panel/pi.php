@@ -1,6 +1,6 @@
 <?php
 
-require_once "../../resources/autoload.php";
+require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnitySite;
@@ -49,7 +49,7 @@ $requests = $group->getRequests();
 $assocs = $group->getGroupMembers();
 
 if (count($requests) + count($assocs) == 1) {
-    echo "<p>You do not have any users attached to your PI account. 
+    echo "<p>You do not have any users attached to your PI account.
     Ask your users to request to join your account on the <a href='" . $CONFIG["site"]["prefix"] .
     "/panel/groups.php'>My PIs</a> page.</p>";
 }
@@ -69,9 +69,9 @@ if (count($requests) > 0) {
         "<form action='' method='POST'>
         <input type='hidden' name='form_name' value='userReq'>
         <input type='hidden' name='uid' value='" . $request[0]->getUID() . "'>
-        <input type='submit' name='action' value='Approve' 
+        <input type='submit' name='action' value='Approve'
         onclick='return confirm(\"Are you sure you want to approve " . $request[0]->getUID() . "?\")'>
-        <input type='submit' name='action' value='Deny' 
+        <input type='submit' name='action' value='Deny'
         onclick='return confirm(\"Are you sure you want to deny " . $request[0]->getUID() . "?\")'>
         </form>";
         echo "</td>";
@@ -99,7 +99,7 @@ foreach ($assocs as $assoc) {
     "<form action='' method='POST'>
     <input type='hidden' name='form_name' value='remUser'>
     <input type='hidden' name='uid' value='" . $assoc->getUID() . "'>
-    <input type='submit' value='Remove' 
+    <input type='submit' value='Remove'
     onclick='return confirm(\"Are you sure you want to remove " . $assoc->getUID() . " from your PI group?\")'>
     </form>";
     echo "</td>";

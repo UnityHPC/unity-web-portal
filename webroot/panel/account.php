@@ -1,6 +1,6 @@
 <?php
 
-require_once "../../resources/autoload.php";
+require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnitySite;
 
@@ -77,7 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         case "account_deletion_request":
             $hasGroups = count($USER->getGroups()) > 0;
             if ($hasGroups) {
-                die();
                 break;
             }
             if (!$SQL->accDeletionRequestExists($USER->getUID())) {
@@ -115,8 +114,8 @@ if ($isPI) {
 } elseif ($isActive) {
     echo "<p>You are curently a <strong>user</strong> on the Unity Cluster</p>";
 } else {
-    echo "<p>You are currently not assigned to any PI, and will be 
-    <strong>unable to use the cluster</strong>. Go to the <a href='groups.php'>My PIs</a> 
+    echo "<p>You are currently not assigned to any PI, and will be
+    <strong>unable to use the cluster</strong>. Go to the <a href='groups.php'>My PIs</a>
     page to join a PI, or click on the button below if you are a PI</p>";
     echo "<p>Students should not request a PI account.</p>";
 }
@@ -124,7 +123,7 @@ if ($isPI) {
 if (!$isPI) {
     if ($SQL->accDeletionRequestExists($USER->getUID())) {
         echo
-        "<form action='' method='POST' id='piReq' 
+        "<form action='' method='POST' id='piReq'
         onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'>
         <input type='hidden' name='form_type' value='pi_request'>";
         echo "<input type='submit' value='Request PI Account' disabled>";
@@ -135,7 +134,7 @@ if (!$isPI) {
         echo "</form>";
     } else {
         echo
-        "<form action='' method='POST' id='piReq' 
+        "<form action='' method='POST' id='piReq'
         onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'>
         <input type='hidden' name='form_type' value='pi_request'>";
         if ($SQL->requestExists($USER->getUID())) {
@@ -163,7 +162,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
     echo
     "<div class='key-box'>
     <textarea spellcheck='false' readonly>" . $sshPubKeys[$i] . "</textarea>
-    <form action='' id='del-" . $i . "' 
+    <form action='' id='del-" . $i . "'
     onsubmit='return confirm(\"Are you sure you want to delete this SSH key?\");' method='POST'>
     <input type='hidden' name='delIndex' value='$i'>
     <input type='hidden' name='form_type' value='delKey'>
@@ -182,7 +181,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 
     <input type="hidden" name="form_type" value="loginshell">
 
-    <select id="loginSelector" name= "shellSelect"> 
+    <select id="loginSelector" name= "shellSelect">
 
         <option value="" disabled hidden>Select Login Shell...</option>
 
@@ -209,10 +208,10 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
     <?php
 
     if ($found_selector) {
-        echo "<input id='customLoginBox' type='text' 
+        echo "<input id='customLoginBox' type='text'
         placeholder='Enter login shell path (ie. /bin/bash)' name='shell'>";
     } else {
-        echo "<input id='customLoginBox' type='text' 
+        echo "<input id='customLoginBox' type='text'
         placeholder='Enter login shell path (ie. /bin/bash)' name='shell' value='$cur_shell'>";
     }
 
@@ -232,7 +231,7 @@ if ($hasGroups) {
     echo "<p>You cannot request to delete your account while you are in a PI group.</p>";
 } else {
     echo
-    "<form action='' method='POST' id='accDel' 
+    "<form action='' method='POST' id='accDel'
     onsubmit='return confirm(\"Are you sure you want to request an account deletion?\")'>
     <input type='hidden' name='form_type' value='account_deletion_request'>";
     if ($SQL->accDeletionRequestExists($USER->getUID())) {
