@@ -10,7 +10,6 @@ use UnityWebPortal\lib\UnityMailer;
 use UnityWebPortal\lib\UnitySQL;
 use UnityWebPortal\lib\UnitySSO;
 use UnityWebPortal\lib\UnityUser;
-use UnityWebPortal\lib\UnityRedis;
 use UnityWebPortal\lib\UnityWebhook;
 
 //
@@ -26,12 +25,6 @@ $CONFIG = UnityConfig::getConfig(__DIR__ . "/../defaults", __DIR__ . "/../deploy
 //
 // Service Init
 //
-
-// Creates REDIS service
-$REDIS = new UnityRedis(
-    $CONFIG["redis"]["host"] ?? "",
-    $CONFIG["redis"]["port"] ?? ""
-);
 
 // Creates LDAP service
 $LDAP = new UnityLDAP(
@@ -93,11 +86,11 @@ if (!is_null($SSO)) {
     // SSO is available
     $_SESSION["SSO"] = $SSO;
 
-    $OPERATOR = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+    $OPERATOR = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     $_SESSION["is_admin"] = $OPERATOR->isAdmin();
 
     if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
-        $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     } else {
         $USER = $OPERATOR;
     }
@@ -112,14 +105,6 @@ if (!is_null($SSO)) {
         "user_login",
         $OPERATOR->getUID()
     );
-
-    if (!$_SESSION["user_exists"]) {
-        // populate cache
-        $REDIS->setCache($SSO["user"], "org", $SSO["org"]);
-        $REDIS->setCache($SSO["user"], "firstname", $SSO["firstname"]);
-        $REDIS->setCache($SSO["user"], "lastname", $SSO["lastname"]);
-        $REDIS->setCache($SSO["user"], "mail", $SSO["mail"]);
-    }
 }
 
 //

@@ -12,7 +12,7 @@ jobs:
       with:
         php-version: "8.3"
         # php extensions also listed in tools/docker-dev/web/Dockerfile
-        extensions: curl,mysql,ldap,pdo,redis
+        extensions: curl,mysql,ldap,pdo
         tools: composer:v2
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress

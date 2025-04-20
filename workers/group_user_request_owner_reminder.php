@@ -9,7 +9,7 @@ require_once "../resources/autoload.php";
 use UnityWebPortal\lib\UnityGroup;
 
 $today = time();
-$accounts = $LDAP->getAllPIGroups($SQL, $MAILER, $REDIS, $WEBHOOK);
+$accounts = $LDAP->getAllPIGroups($SQL, $MAILER, $WEBHOOK);
 foreach ($accounts as $pi_group) {
     $pi_user = $pi_group->getOwner();
     $requests = $pi_group->getRequests();

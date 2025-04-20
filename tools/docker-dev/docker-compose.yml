@@ -25,14 +25,6 @@ services:
     image: schickling/mailcatcher
     ports:
       - "8030:1080"
-  redis:
-    hostname: redis
-    build: redis
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: ["CMD-SHELL", "if [ -f /tmp/up ]; then (nc -z localhost 6379 && touch /tmp/up); else true; fi"]
-      interval: 1s
   web:
     hostname: web
     build: web
@@ -47,5 +39,3 @@ services:
         condition: service_healthy
       smtp:
         condition: service_started
-      redis:
-        condition: service_healthy
