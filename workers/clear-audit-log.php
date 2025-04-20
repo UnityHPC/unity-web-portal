@@ -1,7 +1,7 @@
 <?php
 
-require_once "../resources/autoload.php";
-require_once "../resources/init.php";
+require_once __DIR__ . "/../resources/autoload.php";
+require_once __DIR__ . "/../resources/init.php";
 
 # Days to keep
 $days = 30;

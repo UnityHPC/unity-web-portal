@@ -1,6 +1,6 @@
 <?php
 
-require_once "../../resources/autoload.php";
+require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnitySite;
 
@@ -63,7 +63,7 @@ include $LOC_HEADER;
         }
         echo "</td>";
         echo "<td>";
-        echo "<form class='viewAsUserForm' action='' method='POST' 
+        echo "<form class='viewAsUserForm' action='' method='POST'
         onsubmit='return confirm(\"Are you sure you want to switch to the user " . $user->getUID() . "?\");'>
         <input type='hidden' name='form_name' value='viewAsUser'>
         <input type='hidden' name='uid' value='" . $user->getUID() . "'>
