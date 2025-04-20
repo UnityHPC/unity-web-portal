@@ -22,4 +22,4 @@ jobs:
       with:
         compose-file: "./tools/docker-dev/docker-compose.yml"
     - name: Execute tests in the running services
-      run: docker compose -f ./docker-dev/docker-compose.yml exec -w '/var/www/unity-web-portal' ./vendor/bin/phpunit --testsuite=functional
+      run: docker compose -f ./tools/docker-dev/docker-compose.yml exec -w '/var/www/unity-web-portal' ./vendor/bin/phpunit --testsuite=functional
