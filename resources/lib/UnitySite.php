@@ -52,10 +52,6 @@ class UnitySite
 
     public static function testValidSSHKey($key_str)
     {
-        $key_str = trim($key_str);
-        if ($key_str == "") {
-            return false;
-        }
         try {
             PublicKeyLoader::load($key_str);
             return true;
