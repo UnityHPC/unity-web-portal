@@ -7,7 +7,7 @@ if (empty($search_query)) {
     die("<span>No Results</span>");
 }
 
-$assocs = $LDAP->getAllPIGroups($SQL, $MAILER, $REDIS, $WEBHOOK);
+$assocs = $LDAP->getAllPIGroups($SQL, $MAILER, $WEBHOOK);
 
 $MAX_COUNT = 10;  // Max results of PI search
 

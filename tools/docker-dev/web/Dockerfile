@@ -11,7 +11,6 @@ RUN apt-get update && apt-get install -y \
     php-mysql \
     php-ldap \
     php-pdo \
-    php-redis \
     php-cli \
     php-mbstring \
     php-xml
@@ -30,4 +29,4 @@ RUN sed -i '/memory_limit/c\memory_limit = -1' /etc/php/8.3/apache2/php.ini
 # Start apache2 server
 EXPOSE 80
 
-CMD ["bash", "-c", "pushd /var/www/unity-web-portal/workers >/dev/null && echo 'updating LDAP cache...' && php ./update-ldap-cache.php && popd >/dev/null && apache2ctl -D FOREGROUND"]
+CMD ["apache2ctl", "-D", "FOREGROUND"]

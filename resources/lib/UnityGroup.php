@@ -18,7 +18,6 @@ class UnityGroup
     private $SQL;
     private $MAILER;
     private $WEBHOOK;
-    private $REDIS;
 
     /**
      * Constructor for the object
@@ -27,14 +26,13 @@ class UnityGroup
      * @param LDAP $LDAP LDAP Connection
      * @param SQL $SQL SQL Connection
      */
-    public function __construct($pi_uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
+    public function __construct($pi_uid, $LDAP, $SQL, $MAILER, $WEBHOOK)
     {
         $this->pi_uid = $pi_uid;
 
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
-        $this->REDIS = $REDIS;
         $this->WEBHOOK = $WEBHOOK;
     }
 
@@ -221,11 +219,6 @@ class UnityGroup
             if (!$ldapPiGroupEntry->delete()) {
                 throw new Exception("Unable to delete PI ldap group");
             }
-
-            $this->REDIS->removeCacheArray("sorted_groups", "", $this->getPIUID());
-            foreach ($users as $user) {
-                $this->REDIS->removeCacheArray($user->getUID(), "groups", $this->getPIUID());
-            }
         }
 
         // send email to every user of the now deleted PI group
@@ -398,7 +391,6 @@ class UnityGroup
                 $this->LDAP,
                 $this->SQL,
                 $this->MAILER,
-                $this->REDIS,
                 $this->WEBHOOK
             );
             array_push($out, [$user, $request["timestamp"]]);
@@ -407,24 +399,14 @@ class UnityGroup
         return $out;
     }
 
-    public function getGroupMembers($ignorecache = false)
+    public function getGroupMembers()
     {
-        if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->getPIUID(), "members");
-            if (!is_null($cached_val)) {
-                $members = $cached_val;
-            }
-        }
-
-        $updatecache = false;
         if (!isset($members)) {
             $pi_group = $this->getLDAPPiGroup();
             $members = $pi_group->getAttribute("memberuid");
-            $updatecache = true;
         }
 
         $out = array();
-        $cache_arr = array();
         $owner_uid = $this->getOwner()->getUID();
         foreach ($members as $member) {
                 $user_obj = new UnityUser(
@@ -432,18 +414,10 @@ class UnityGroup
                     $this->LDAP,
                     $this->SQL,
                     $this->MAILER,
-                    $this->REDIS,
                     $this->WEBHOOK
                 );
                 array_push($out, $user_obj);
-                array_push($cache_arr, $user_obj->getUID());
         }
-
-        if (!$ignorecache && $updatecache) {
-            sort($cache_arr);
-            $this->REDIS->setCache($this->getPIUID(), "members", $cache_arr);
-        }
-
         return $out;
     }
 
@@ -492,10 +466,6 @@ class UnityGroup
                 throw new Exception("Failed to create POSIX group for " . $owner->getUID());  // this shouldn't execute
             }
         }
-
-        $this->REDIS->appendCacheArray("sorted_groups", "", $this->getPIUID());
-
-        // TODO if we ever make this project based, we need to update the cache here with the memberuid
     }
 
     private function addUserToGroup($new_user)
@@ -507,9 +477,6 @@ class UnityGroup
         if (!$pi_group->write()) {
             throw new Exception("Unable to write PI group");
         }
-
-        $this->REDIS->appendCacheArray($this->getPIUID(), "members", $new_user->getUID());
-        $this->REDIS->appendCacheArray($new_user->getUID(), "groups", $this->getPIUID());
     }
 
     private function removeUserFromGroup($old_user)
@@ -521,9 +488,6 @@ class UnityGroup
         if (!$pi_group->write()) {
             throw new Exception("Unable to write PI group");
         }
-
-        $this->REDIS->removeCacheArray($this->getPIUID(), "members", $old_user->getUID());
-        $this->REDIS->removeCacheArray($old_user->getUID(), "groups", $this->getPIUID());
     }
 
     public function userExists($user)
@@ -552,7 +516,6 @@ class UnityGroup
             $this->LDAP,
             $this->SQL,
             $this->MAILER,
-            $this->REDIS,
             $this->WEBHOOK
         );
     }

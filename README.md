@@ -23,7 +23,6 @@ Unity Web Portal is a PHP application built in top of MariaDB and LDAP which act
     1. PHP Extensions
         1. `php-ldap`
         2. `php-curl`
-        3. `php-redis`
         4. `php-cli`
         5. `php-mysql`
         6. `php-pdo`

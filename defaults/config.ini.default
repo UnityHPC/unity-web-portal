@@ -39,10 +39,6 @@ user = ""  ; smtp username, if exists
 pass = ""  ; smtp password, if exists
 ssl_verify = "false"  ; set to true to verify ssl certificates
 
-[redis]
-host = "redis"
-port = "6379"
-
 [colors]
 light_background = "#ffffff"  ; Background color when in light mode
 light_foreground = "#1a1a1a"  ; Text color when in light mode
