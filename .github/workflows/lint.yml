@@ -39,4 +39,4 @@ jobs:
           php_codesniffer: true
           php_codesniffer_args:
             - --standard=psr12
-            - --ignore=test/*
+            - --ignore=test/**
