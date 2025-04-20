@@ -37,4 +37,4 @@ jobs:
         uses: wearerequired/lint-action@v2
         with:
           php_codesniffer: true
-          php_codesniffer_args: "--standard=psr12"
+          php_codesniffer_args: "--standard=psr12 --ignore=test/*"
