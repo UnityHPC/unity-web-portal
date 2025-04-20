@@ -1,22 +1,23 @@
-version: "3.9"
+networks:
+  default:
+    name: unity_dev_network
 services:
   identity:
     hostname: identity
     build: identity
     ports:
       - "8010:80"
-  web:
-    hostname: web
-    build: web
-    ports:
-      - "8000:80"
-    volumes:
-      - ../../:/var/www/unity-web-portal
+      - "389:389"
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "389"]
   sql:
     hostname: sql
     build: sql
     ports:
       - "8020:80"
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "3306"]
   smtp:
     hostname: smtp
     image: schickling/mailcatcher
@@ -24,7 +25,20 @@ services:
       - "8030:1080"
   redis:
     hostname: redis
-    image: redis
-networks:
-  default:
-    name: unity_dev_network
+    build: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "6379"]
+  web:
+    hostname: web
+    build: web
+    ports:
+      - "8000:80"
+    volumes:
+      - ../../:/var/www/unity-web-portal
+    depends_on:
+      - identity
+      - sql
+      - smtp
+      - redis
