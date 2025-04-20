@@ -2,11 +2,7 @@
 # pre-commit automatically excludes submodules
 exclude: |
   (?x)^(
-      .*\.dist|
-      roles/ood-head/files/auto-copy/var/www/ood/apps/common/common_attributes.yml|
-      roles/ood-head/files/auto-copy/var/www/ood/apps/sys/dashboard/config/locales/en.yml|
-      inventory.d/ipv4.py|
-      files/shibboleth/filtered-incommon-metadata.xml.j2|
+      test/.*|
   )$
 
 repos:

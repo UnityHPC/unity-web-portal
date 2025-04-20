@@ -446,6 +446,8 @@ class UnityUser
      */
     public function setLoginShell($shell, $operator = null, $send_mail = true)
     {
+        // FIXME throw error if shell is not ascii
+        // ldap schema syntax is "IA5 String (1.3.6.1.4.1.1466.115.121.1.26)"
         $ldapUser = $this->getLDAPUser();
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("loginshell", $shell);
