@@ -2,74 +2,87 @@
 
 require_once "../resources/autoload.php";
 
-// Get Users
-$users = $LDAP->getAllUsers($SQL, $MAILER, $REDIS, $WEBHOOK, true);
+use UnityWebPortal\lib\{
+    UnityConfig,
+    UnityLDAP,
+    UnityMailer,
+    UnitySQL,
+    UnitySite,
+    UnitySSO,
+    UnityUser,
+    UnityRedis,
+    UnityWebhook
+};
+use PHPOpenLDAPer\LDAPEntry;
 
-$sorted_uids = array();
-
-foreach ($users as $user) {
-    $uid = $user->getUID();
-    array_push($sorted_uids, $uid);
-
-    $REDIS->setCache($uid, "firstname", $user->getFirstname(true));
-    $REDIS->setCache($uid, "lastname", $user->getLastname(true));
-    $REDIS->setCache($uid, "org", $user->getOrg(true));
-    $REDIS->setCache($uid, "mail", $user->getMail(true));
-    $REDIS->setCache($uid, "sshkeys", $user->getSSHKeys(true));
-    $REDIS->setCache($uid, "loginshell", $user->getLoginShell(true));
-    $REDIS->setCache($uid, "homedir", $user->getHomeDir(true));
-
-    $parsed_groups = array();
-
-    foreach ($user->getGroups(true) as $cur_group) {
-        array_push($parsed_groups, $cur_group->getPIUID());
-    }
-
-    $REDIS->setCache($uid, "groups", $parsed_groups);
+$options = getopt("fu");
+if (array_key_exists("f", $options)) {
+    echo "flushing cache...\n";
+    $REDIS->flushAll();
 }
 
-sort($sorted_uids);
-$REDIS->setCache("sorted_users", "", $sorted_uids);
-
-// Get groups
-$groups = $LDAP->getAllPIGroups($SQL, $MAILER, $REDIS, $WEBHOOK, true);
-
-$sorted_groups = array();
-
-foreach ($groups as $group) {
-    $gid = $group->getPIUID();
-    array_push($sorted_groups, $gid);
-
-    $parsed_members = array();
-    foreach ($group->getGroupMembers(true) as $member) {
-        array_push($parsed_members, $member->getUID());
+if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $options)))) {
+    echo "cache is already initialized, nothing doing. use -f argument to flush cache, or -u argument to update without flush.\n";
+} else {
+    echo "updating cache...\n";
+    $user_ou = new LDAPEntry($LDAP->getConn(), $CONFIG["ldap"]["user_ou"]);
+    echo "waiting for LDAP response (users)...\n";
+    $users = $user_ou->getChildrenArray(true);
+    echo "response received.\n";
+    // phpcs:disable
+    $user_CNs = array_map(function ($x){return $x["cn"][0];}, $users);
+    // phpcs:enable
+    sort($user_CNs);
+    $REDIS->setCache("sorted_users", "", $user_CNs);
+    foreach ($users as $user) {
+        $attribute_array = UnityLDAP::parseUserChildrenArray($user);
+        foreach ($attribute_array as $key => $val) {
+            $REDIS->setCache($user["cn"][0], $key, $val);
+        }
     }
 
-    $REDIS->setCache($gid, "members", $parsed_members);
-}
-
-sort($sorted_groups);
-$REDIS->setCache("sorted_groups", "", $sorted_groups);
-
-// Get Orgs
-$orgs = $LDAP->getAllOrgGroups($SQL, $MAILER, $REDIS, $WEBHOOK, true);
-
-$sorted_orgs = array();
-
-foreach ($orgs as $org) {
-    $orgid = $org->getOrgID();
-    array_push($sorted_orgs, $orgid);
-
-    $parsed_orgs = array();
-    foreach ($org->getOrgMembers(true) as $member) {
-        array_push($parsed_members, $member->getUID());
+    $org_group_ou = new LDAPEntry($LDAP->getConn(), $CONFIG["ldap"]["orggroup_ou"]);
+    echo "waiting for LDAP response (org_groups)...\n";
+    $org_groups = $org_group_ou->getChildrenArray(true);
+    echo "response received.\n";
+    // phpcs:disable
+    $org_group_CNs = array_map(function($x){return $x["cn"][0];}, $org_groups);
+    // phpcs:enable
+    sort($org_group_CNs);
+    $REDIS->setCache("sorted_orgs", "", $org_group_CNs);
+    foreach ($org_groups as $org_group) {
+        $REDIS->setCache($org_group["cn"][0], "members", $org_group["memberuid"]);
     }
 
-    $REDIS->setCache($orgid, "members", $parsed_orgs);
+    $pi_group_ou = new LDAPEntry($LDAP->getConn(), $CONFIG["ldap"]["pigroup_ou"]);
+    echo "waiting for LDAP response (pi_groups)...\n";
+    $pi_groups = $pi_group_ou->getChildrenArray(true);
+    echo "response received.\n";
+    // phpcs:disable
+    $pi_group_CNs = array_map(function($x){return $x["cn"][0];}, $pi_groups);
+    // phpcs:enable
+    sort($pi_group_CNs);
+    // FIXME should be sorted_pi_groups
+    $REDIS->setCache("sorted_groups", "", $pi_group_CNs);
+    $user_pi_group_member_of = [];
+    foreach ($user_CNs as $uid) {
+        $user_pi_group_member_of[$uid] = [];
+    }
+    foreach ($pi_groups as $pi_group) {
+        if (array_key_exists("memberuid", $pi_group)) {
+            $REDIS->setCache($pi_group["cn"][0], "members", $pi_group["memberuid"]);
+            foreach ($pi_group["memberuid"] as $member_uid) {
+                array_push($user_pi_group_member_of[$member_uid], $pi_group["cn"][0]);
+            }
+        } else {
+            $REDIS->setCache($pi_group["cn"][0], "members", []);
+        }
+    }
+    foreach ($user_pi_group_member_of as $uid => $pi_groups) {
+        // FIXME should be pi_groups
+        $REDIS->setCache($uid, "groups", $pi_groups);
+    }
+    $REDIS->setCache("initializing", "", false);
+    $REDIS->setCache("initialized", "", true);
+    echo "done!\n";
 }
-
-sort($sorted_orgs);
-$REDIS->setCache("sorted_orgs", "", $sorted_orgs);
-
-// Confirmation Message
-echo "OK\n";
