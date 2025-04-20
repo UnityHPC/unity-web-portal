@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 
 # OpenLDAP Server
 ARG DEBIAN_FRONTEND=noninteractive
@@ -6,7 +6,8 @@ RUN apt-get update && apt-get install -y \
     slapd \
     ldap-utils \
     apache2 \
-    phpldapadmin
+    phpldapadmin \
+    netcat-openbsd
 RUN rm -rf /var/lib/ldap
 RUN mkdir /var/lib/ldap
 RUN chown openldap:openldap /var/lib/ldap
@@ -32,6 +33,7 @@ COPY phpldapadmin-apache.conf /etc/apache2/sites-available/phpldapadmin.conf
 RUN a2dissite 000-default
 RUN a2ensite phpldapadmin
 RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
+RUN sed -i '/memory_limit/c\memory_limit = -1' /etc/php/8.3/apache2/php.ini
 
 EXPOSE 80
 EXPOSE 389
