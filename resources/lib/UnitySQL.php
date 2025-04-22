@@ -285,7 +285,7 @@ class UnitySQL
 
     public function deleteAccountDeletionRequest($uid)
     {
-        if (!$this->accDeletionRequestExists($requestor, $dest)) {
+        if (!$this->accDeletionRequestExists($uid)) {
             return;
         }
         $stmt = $this->conn->prepare(
