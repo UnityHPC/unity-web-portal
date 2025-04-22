@@ -59,7 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if (!preg_match("/^[0-9]+$/", $indexStr)) {
                 break;
             }
-            unset($keys[intval($indexStr)]);  // remove key from array
+            $index = intval($indexStr);
+            if ($index >= count($keys)) {
+                break;
+            }
+            unset($keys[$index]);  // remove key from array
             $keys = array_values($keys);
 
             $USER->setSSHKeys($keys, $OPERATOR);  // Update user keys
