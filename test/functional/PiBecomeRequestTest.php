@@ -37,15 +37,37 @@ class PiBecomeRequestTest extends TestCase
         switchUser(...getUserNotPiNotRequestedBecomePi());
         $this->assertFalse($USER->isPI());
         $this->assertNumberPiBecomeRequests(0);
-        post(
-            __DIR__ . "/../../webroot/panel/account.php",
-            ["form_type" => "pi_request"]
-        );
-        $this->assertNumberPiBecomeRequests(1);
-        post(
-            __DIR__ . "/../../webroot/panel/account.php",
-            ["form_type" => "pi_request"]
-        );
-        $this->assertNumberPiBecomeRequests(1);
+        try {
+            post(
+                __DIR__ . "/../../webroot/panel/account.php",
+                ["form_type" => "pi_request"]
+            );
+            $this->assertNumberPiBecomeRequests(1);
+            post(
+                __DIR__ . "/../../webroot/panel/account.php",
+                ["form_type" => "pi_request"]
+            );
+            $this->assertNumberPiBecomeRequests(1);
+        } finally {
+            $SQL->removeRequest($USER->getUID());
+        }
+    }
+
+    public function testRequestBecomePiUserRequestedAccountDeletion()
+    {
+        global $USER, $SQL;
+        switchUser(...getUserNotPiNotRequestedBecomePiRequestedAccountDeletion());
+        $this->assertFalse($USER->isPI());
+        $this->assertNumberPiBecomeRequests(0);
+        $this->assertTrue($SQL->accDeletionRequestExists($USER->getUID()));
+        try {
+            post(
+                __DIR__ . "/../../webroot/panel/account.php",
+                ["form_type" => "pi_request"]
+            );
+            $this->assertNumberPiBecomeRequests(0);
+        } finally {
+            $SQL->removeRequest($USER->getUID());
+        }
     }
 }
