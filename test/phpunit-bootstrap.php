@@ -67,7 +67,10 @@ function post(string $phpfile, array $post_data): void
         include $phpfile;
         ob_get_clean(); // discard output
     } catch (Throwable $e) {
-        error_log(ob_get_clean()); // don't discard output
+        $output = ob_get_clean();
+        if (!empty($output)) {
+            error_log($output);
+        }
         throw $e;
     } finally {
         unset($_POST);
@@ -118,4 +121,9 @@ function getUserWithOneKey()
 function getUserIsPIHasNoMembersNoMemberRequests()
 {
     return ["user5@org2.test", "foo", "bar", "user5@org2.test"];
+}
+
+function getUserIsPIHasAtLeastOneMember()
+{
+    return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
 }
