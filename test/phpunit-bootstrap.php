@@ -93,3 +93,8 @@ function getUserHasNoSshKeys()
 {
     return ["user3@org1.test", "foo", "bar", "user3@org1.test"];
 }
+
+function getUserNotPiNotRequestedBecomePi()
+{
+    return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
+}
