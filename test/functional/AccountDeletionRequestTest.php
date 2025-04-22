@@ -37,16 +37,21 @@ class AccountDeletionRequestTest extends TestCase
         switchUser(...getUserHasNotRequestedAccountDeletionHasNoGroups());
         $this->assertEmpty($USER->getGroups());
         $this->assertNumberAccountDeletionRequests(0);
-        post(
-            __DIR__ . "/../../webroot/panel/account.php",
-            ["form_type" => "account_deletion_request"]
-        );
-        $this->assertNumberAccountDeletionRequests(1);
-        post(
-            __DIR__ . "/../../webroot/panel/account.php",
-            ["form_type" => "account_deletion_request"]
-        );
-        $this->assertNumberAccountDeletionRequests(1);
+        try {
+            post(
+                __DIR__ . "/../../webroot/panel/account.php",
+                ["form_type" => "account_deletion_request"]
+            );
+            $this->assertNumberAccountDeletionRequests(1);
+            post(
+                __DIR__ . "/../../webroot/panel/account.php",
+                ["form_type" => "account_deletion_request"]
+            );
+            $this->assertNumberAccountDeletionRequests(1);
+        } finally {
+            $SQL->deleteAccountDeletionRequest($USER->getUID());
+            $this->assertNumberAccountDeletionRequests(0);
+        }
     }
 
     public function testRequestAccountDeletionUserHasGroup()
@@ -56,10 +61,15 @@ class AccountDeletionRequestTest extends TestCase
         switchUser(...getUserHasNotRequestedAccountDeletionHasGroup());
         $this->assertNotEmpty($USER->getGroups());
         $this->assertNumberAccountDeletionRequests(0);
-        post(
-            __DIR__ . "/../../webroot/panel/account.php",
-            ["form_type" => "account_deletion_request"]
-        );
-        $this->assertNumberAccountDeletionRequests(0);
+        try {
+            post(
+                __DIR__ . "/../../webroot/panel/account.php",
+                ["form_type" => "account_deletion_request"]
+            );
+            $this->assertNumberAccountDeletionRequests(0);
+        } finally {
+            $SQL->deleteAccountDeletionRequest($USER->getUID());
+            $this->assertNumberAccountDeletionRequests(0);
+        }
     }
 }

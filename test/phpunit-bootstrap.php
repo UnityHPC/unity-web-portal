@@ -99,3 +99,8 @@ function getUserNotPiNotRequestedBecomePi()
 {
     return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
 }
+
+function getUserNotPiNotRequestedBecomePiRequestedAccountDeletion()
+{
+    return ["user4@org1.test", "foo", "bar", "user4@org1.test"];
+}
