@@ -55,7 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break;
         case "delKey":
             $keys = $USER->getSSHKeys();
-            unset($keys[intval($_POST["delIndex"])]);  // remove key from array
+            $indexStr = $_POST["delIndex"];
+            if (!preg_match("/^[0-9]+$/", $indexStr)) {
+                break;
+            }
+            unset($keys[intval($indexStr)]);  // remove key from array
             $keys = array_values($keys);
 
             $USER->setSSHKeys($keys, $OPERATOR);  // Update user keys
