@@ -49,7 +49,7 @@ class AccountDeletionRequestTest extends TestCase
             );
             $this->assertNumberAccountDeletionRequests(1);
         } finally {
-            $SQL->removeRequest($USER->getUID());
+            $SQL->deleteAccountDeletionRequest($USER->getUID());
             $this->assertNumberAccountDeletionRequests(0);
         }
     }
@@ -68,7 +68,7 @@ class AccountDeletionRequestTest extends TestCase
             );
             $this->assertNumberAccountDeletionRequests(0);
         } finally {
-            $SQL->removeRequest($USER->getUID());
+            $SQL->deleteAccountDeletionRequest($USER->getUID());
             $this->assertNumberAccountDeletionRequests(0);
         }
     }

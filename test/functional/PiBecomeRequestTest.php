@@ -35,18 +35,21 @@ class PiBecomeRequestTest extends TestCase
     {
         global $USER, $SQL;
         switchUser(...getUserNotPiNotRequestedBecomePi());
-        error_log(json_encode($SQL->getConn()->prepare("select * from requests"))->execute()->fetchAll());
         $this->assertFalse($USER->isPI());
         $this->assertNumberPiBecomeRequests(0);
-        post(
-            __DIR__ . "/../../webroot/panel/account.php",
-            ["form_type" => "pi_request"]
-        );
-        $this->assertNumberPiBecomeRequests(1);
-        post(
-            __DIR__ . "/../../webroot/panel/account.php",
-            ["form_type" => "pi_request"]
-        );
-        $this->assertNumberPiBecomeRequests(1);
+        try {
+            post(
+                __DIR__ . "/../../webroot/panel/account.php",
+                ["form_type" => "pi_request"]
+            );
+            $this->assertNumberPiBecomeRequests(1);
+            post(
+                __DIR__ . "/../../webroot/panel/account.php",
+                ["form_type" => "pi_request"]
+            );
+            $this->assertNumberPiBecomeRequests(1);
+        } finally {
+            $SQL->removeRequest($USER->getUID());
+        }
     }
 }
