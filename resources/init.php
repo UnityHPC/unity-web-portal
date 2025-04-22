@@ -12,6 +12,7 @@ use UnityWebPortal\lib\UnitySSO;
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityRedis;
 use UnityWebPortal\lib\UnityWebhook;
+use UnityWebPortal\lib\UnityGithub;
 
 //
 // Initialize Session
@@ -83,6 +84,8 @@ $WEBHOOK = new UnityWebhook(
     $CONFIG["webhook"]["url"],
     $CONFIG["site"]["url"] . $CONFIG["site"]["prefix"]
 );
+
+$GITHUB = new UnityGithub();
 
 //
 // SSO Init

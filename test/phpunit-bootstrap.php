@@ -13,6 +13,7 @@ require_once __DIR__ . "/../resources/lib/UnitySite.php";
 require_once __DIR__ . "/../resources/lib/UnityConfig.php";
 require_once __DIR__ . "/../resources/lib/UnityWebhook.php";
 require_once __DIR__ . "/../resources/lib/UnityRedis.php";
+require_once __DIR__ . "/../resources/lib/UnityGithub.php";
 
 global $HTTP_HEADER_TEST_INPUTS;
 $HTTP_HEADER_TEST_INPUTS = [
@@ -43,7 +44,7 @@ $HTTP_HEADER_TEST_INPUTS = [
 
 function switchUser(string $eppn, string $given_name, string $sn, string $mail): void
 {
-    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
+    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     session_write_close();
     session_id(str_replace(["_", "@", "."], "-", $eppn));
     // session_start will be called on the first post()
@@ -58,7 +59,7 @@ function switchUser(string $eppn, string $given_name, string $sn, string $mail):
 
 function post(string $phpfile, array $post_data): void
 {
-    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
+    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     $_SERVER["REQUEST_METHOD"] = "POST";
     $_POST = $post_data;
     ob_start();
@@ -87,6 +88,11 @@ function getUserHasNotRequestedAccountDeletionHasGroup()
 function getUserHasNotRequestedAccountDeletionHasNoGroups()
 {
     return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
+}
+
+function getUserHasNoSshKeys()
+{
+    return ["user3@org1.test", "foo", "bar", "user3@org1.test"];
 }
 
 function getUserNotPiNotRequestedBecomePi()
