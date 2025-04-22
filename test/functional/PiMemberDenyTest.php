@@ -1,0 +1,46 @@
+<?php
+
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use UnityWebPortal\lib\UnityUser;
+
+class PiMemberDenyTest extends TestCase {
+    static $requestUid;
+
+    public static function setUpBeforeClass(): void{
+        global $USER;
+        switchUser(...getNormalUser());
+        self::$requestUid = $USER->getUID();
+    }
+
+    private function denyUser(string $uid)
+    {
+        post(
+            __DIR__ . "/../../webroot/panel/pi.php",
+            ["form_type" => "userReq", "action" => "approve", "uid" => $uid]
+        );
+    }
+
+    public function testDenyRequest()
+    {
+        global $USER, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+        switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
+        $pi = $USER;
+        $piGroup = $USER->getPIGroup();
+        $this->assertTrue($piGroup->exists());
+        $this->assertEquals([$pi], $piGroup->getGroupMembers());
+        $this->assertEmpty($piGroup->getRequests());
+        $requestedUser = new UnityUser(self::$requestUid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        try {
+            $piGroup->newUserRequest($requestedUser);
+            $this->assertFalse($piGroup->userExists($requestedUser));
+
+            $piGroup->denyUser($requestedUser);
+            $this->assertEmpty($piGroup->getRequests());
+            $this->assertEquals([$pi], $piGroup->getGroupMembers());
+            $this->assertFalse($piGroup->userExists($requestedUser));
+        } finally {
+            $SQL->removeRequest(self::$requestUid, $piGroup->getPIUID());
+        }
+    }
+}

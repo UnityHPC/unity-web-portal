@@ -80,6 +80,11 @@ function getNormalUser()
     return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
 }
 
+function getNormalUser2()
+{
+    return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
+}
+
 function getUserHasNotRequestedAccountDeletionHasGroup()
 {
     return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
@@ -106,6 +111,11 @@ function getUserNotPiNotRequestedBecomePiRequestedAccountDeletion()
 }
 
 function getUserWithOneKey()
+{
+    return ["user5@org2.test", "foo", "bar", "user5@org2.test"];
+}
+
+function getUserIsPIHasNoMembersNoMemberRequests()
 {
     return ["user5@org2.test", "foo", "bar", "user5@org2.test"];
 }
