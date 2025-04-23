@@ -7,5 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: php-actions/composer@v6
-    - uses: php-actions/phpunit@v3
+    - name: setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: "8.3"
+        # php extensions also listed in tools/docker-dev/web/Dockerfile
+        extensions: curl,mysql,ldap,pdo,redis
+        tools: composer:v2
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+    - name: Run PHPUnit tests
+      run: vendor/bin/phpunit --colors=always --testsuite unit

@@ -1,6 +1,6 @@
 <?php
 
-require_once "../../resources/autoload.php";
+require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityGroup;
 
@@ -85,12 +85,12 @@ if (count($req_filtered) > 0) {
 echo "<h5>Current Groups</h5>";
 
 if ($USER->isPI() && count($groups) == 1) {
-    echo "You are only a member of your own PI group. 
+    echo "You are only a member of your own PI group.
     Navigate to the <a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>my users</a> page to see your group.";
 }
 
 if (count($groups) == 0) {
-    echo "You are not a member of any groups. Request to join a PI using the button below, 
+    echo "You are not a member of any groups. Request to join a PI using the button below,
     or request your own PI account on the <a href='" . $CONFIG["site"]["prefix"] .
     "/panel/account.php'>account settings</a> page";
 }
@@ -112,7 +112,7 @@ foreach ($groups as $group) {
     echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
     echo
     "<td>
-    <form action='' method='POST' 
+    <form action='' method='POST'
     onsubmit='return confirm(\"Are you sure you want to leave the PI group " . $group->getPIUID() . "?\")'>
     <input type='hidden' name='form_name' value='removePIForm'>
     <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>

@@ -5,7 +5,7 @@ Emails PIs that have oustanding member requests once a week for 4 weeks.
 Removes the request after 34 days have passed.
 */
 
-require_once "../resources/autoload.php";
+require_once __DIR__ . "/../resources/autoload.php";
 use UnityWebPortal\lib\UnityGroup;
 
 $today = time();

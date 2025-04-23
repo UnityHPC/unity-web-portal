@@ -11,6 +11,7 @@ name = "Unity Cluster"  ; Name of the website
 url = "https://127.0.0.1:8000/"  ; URL of the website
 description = "The Unity Web Portal is a lightweight HPC cluster front-end"  ; Description of the website
 logo = "logo.png"  ; path to logo file, in the webroot/assets/branding folder
+terms_of_service_url = "https://github.com" ; this can be external or a portal page created with "content management"
 
 [ldap]
 uri = "ldap://identity"  ; URI of remote LDAP server
@@ -100,4 +101,3 @@ url = "https://hooks.slack.com/services/T04BB3N3M26/B050A55CBNX/IGm1YA0VhjczAfs5
 [page]  ; which sql objects to use for the content on these pages
 home = "home"
 support = "support"
-policy = "policy"

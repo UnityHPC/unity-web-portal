@@ -1,6 +1,6 @@
 <?php
 
-require_once "../../resources/autoload.php";
+require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnitySite;
 use UnityWebPortal\lib\UnityGroup;
@@ -50,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
     <p>Your unity cluster username will be <strong><?php echo $SSO["user"]; ?></strong></p>
 
-    <p>In order to activate your account on the Unity cluster, 
+    <p>In order to activate your account on the Unity cluster,
         you must join an existing PI group, or request your own PI group.</p>
 
     <hr>
@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pending_requests = $SQL->getRequestsByUser($USER->getUID());
     if (count($pending_requests) > 0) {
         // already has pending requests
-        echo "<p>Your request to activate your account has been submitted. 
+        echo "<p>Your request to activate your account has been submitted.
 		You will receive an email when your account is activated.</p>";
     } else {
         echo "<label><input type='radio' name='new_user_sel' value='pi'>Request a PI account (I am a PI)</label>";
@@ -74,8 +74,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<hr>";
 
         echo "<label><input type='checkbox' id='chk_eula' name='eula' value='agree' required>
-		I have read and accept the <a target='_blank' href='" . $CONFIG["site"]["prefix"] . "/priv.php'>
-		Unity EULA</a></label>";
+		I have read and accept the <a target='_blank' href='" . $CONFIG["site"]["terms_of_service_url"] . "'>
+		Unity Terms of Service</a></label>";
 
         echo "<br>";
         echo "<input style='margin-top: 10px;' type='submit' value='Request Account'>";
