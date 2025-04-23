@@ -47,9 +47,7 @@ class PiDisbandTest extends TestCase {
             $this->assertEmpty($SQL->getRequests($piGroup->getPIUID()));
         } finally {
             $piGroupEntry->setAttributes($piGroupAttributesBefore);
-            if (!$piGroupEntry->write()) {
-                throw new Exception("Failed to recreate POSIX group $piGroupName");
-            }
+            $piGroupEntry->write();
         }
     }
 }

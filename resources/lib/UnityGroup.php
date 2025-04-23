@@ -487,10 +487,7 @@ class UnityGroup
             $ldapPiGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
             $ldapPiGroupEntry->setAttribute("gidnumber", strval($nextGID));
             $ldapPiGroupEntry->setAttribute("memberuid", array($owner->getUID()));
-
-            if (!$ldapPiGroupEntry->write()) {
-                throw new Exception("Failed to create POSIX group for " . $owner->getUID());  // this shouldn't execute
-            }
+            $ldapPiGroupEntry->write();
         }
 
         $this->REDIS->appendCacheArray("sorted_groups", "", $this->getPIUID());
@@ -503,11 +500,7 @@ class UnityGroup
         // Add to LDAP Group
         $pi_group = $this->getLDAPPiGroup();
         $pi_group->appendAttribute("memberuid", $new_user->getUID());
-
-        if (!$pi_group->write()) {
-            throw new Exception("Unable to write PI group");
-        }
-
+        $pi_group->write();
         $this->REDIS->appendCacheArray($this->getPIUID(), "members", $new_user->getUID());
         $this->REDIS->appendCacheArray($new_user->getUID(), "groups", $this->getPIUID());
     }
@@ -517,11 +510,7 @@ class UnityGroup
         // Remove from LDAP Group
         $pi_group = $this->getLDAPPiGroup();
         $pi_group->removeAttributeEntryByValue("memberuid", $old_user->getUID());
-
-        if (!$pi_group->write()) {
-            throw new Exception("Unable to write PI group");
-        }
-
+        $pi_group->write();
         $this->REDIS->removeCacheArray($this->getPIUID(), "members", $old_user->getUID());
         $this->REDIS->removeCacheArray($old_user->getUID(), "groups", $this->getPIUID());
     }

@@ -34,10 +34,7 @@ class UnityOrg
 
             $org_group->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
             $org_group->setAttribute("gidnumber", strval($nextGID));
-
-            if (!$org_group->write()) {
-                throw new Exception("Failed to create POSIX group for " . $this->orgid);  // this shouldn't execute
-            }
+            $org_group->write();
         }
 
         $this->REDIS->appendCacheArray("sorted_orgs", "", $this->getOrgID());
@@ -101,11 +98,7 @@ class UnityOrg
     {
         $org_group = $this->getLDAPOrgGroup();
         $org_group->appendAttribute("memberuid", $user->getUID());
-
-        if (!$org_group->write()) {
-            throw new Exception("Unable to write to org group");
-        }
-
+        $org_group->write();
         $this->REDIS->appendCacheArray($this->getOrgID(), "members", $user->getUID());
     }
 
@@ -113,11 +106,7 @@ class UnityOrg
     {
         $org_group = $this->getLDAPOrgGroup();
         $org_group->removeAttributeEntryByValue("memberuid", $user->getUID());
-
-        if (!$org_group->write()) {
-            throw new Exception("Unable to write to org group");
-        }
-
+        $org_group->write();
         $this->REDIS->removeCacheArray($this->getOrgID(), "members", $user->getUID());
     }
 }
