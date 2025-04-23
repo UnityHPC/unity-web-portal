@@ -36,7 +36,6 @@ class PiDisbandTest extends TestCase {
         $piGroup->approveGroup();
         $piGroupEntry = $piGroup->getLDAPPiGroup();
         $piGroupAttributesBefore = $piGroupEntry->getAttributes();
-        error_log(json_encode($piGroupAttributesBefore, JSON_PRETTY_PRINT));
         $piGroupName = $piGroup->getPIUID();
         $this->assertTrue($piGroup->exists());
         $this->assertEquals([$pi->getUID()], $piGroup->getGroupMemberUIDs());
