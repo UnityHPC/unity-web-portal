@@ -48,7 +48,7 @@ class LoginShellSetTest extends TestCase
         global $USER;
         // FIXME add check to avoid warning from ldap_modify
         if (!mb_check_encoding($shell, 'ASCII')) {
-            $this->expectException("Exception");
+            $this->expectException(RuntimeException::class);
         }
         // FIXME shell is not validated
         post(
