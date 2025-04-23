@@ -12,9 +12,7 @@ class AjaxSshValidateTest extends TestCase
         // sanity check only, see UnitySiteTest for more comprehensive test cases
         return [
             [false, "foobar"],
-            // phpcs:disable
             [true, "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+XqO25MUB9x/pS04I3JQ7rMGboWyGXh0GUzkOrTi7a"],
-            // phpcs:enable
         ];
     }
 
