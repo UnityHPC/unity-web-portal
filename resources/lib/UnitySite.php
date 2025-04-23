@@ -10,7 +10,7 @@ class UnitySite
     {
         if ($_SERVER["PHP_SELF"] != $destination) {
             header("Location: $destination");
-            die("Redirect failed, click <a href='$destination'>here</a> to continue.");
+            throw new RedirectException("Redirect failed, click <a href='$destination'>here</a> to continue.");
         }
     }
 
