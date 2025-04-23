@@ -24,6 +24,8 @@ class PiRemoveUserTest extends TestCase {
         $memberUIDs = $piGroup->getGroupMemberUIDs();
         // the 0th member of the PI group is the PI
         $this->assertGreaterThan(1, count($memberUIDs));
+        // the ordering of the uids in getGroupMemberUIDs is different each time
+        // use a linear search to find a user who is not the PI
         $memberToDelete = null;
         foreach ($memberUIDs as $uid) {
             if ($uid != $piUid) {
