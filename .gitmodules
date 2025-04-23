@@ -1,0 +1,3 @@
+[submodule "vendor/hakasapl/phpopenldaper"]
+	path = vendor/hakasapl/phpopenldaper
+	url = git@github.com:hakasapl/phpopenldaper.git
