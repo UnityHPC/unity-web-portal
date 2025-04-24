@@ -453,6 +453,9 @@ class UnityUser
         if ($shell != trim($shell)) {
             throw new Exception("leading/trailing whitespace is not allowed in a login shell!");
         }
+        if (empty($shell)) {
+            throw new Exception("login shell must not be empty!");
+        }
         $ldapUser = $this->getLDAPUser();
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("loginshell", $shell);
