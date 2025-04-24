@@ -257,7 +257,6 @@ if ($hasGroups) {
 
 <hr>
 
-
 <script>
     const sitePrefix = '<?php echo $CONFIG["site"]["prefix"]; ?>';
     const ldapLoginShell = '<?php echo $USER->getLoginShell(); ?>';
@@ -289,6 +288,57 @@ if ($hasGroups) {
     $("#loginSelector").change(showOrHideCustomLoginBox);
     showOrHideCustomLoginBox();
 
+    function getNewLoginShell() {
+        var loginSelectorVal = $("#loginSelector").val();
+        if (loginSelectorVal != "Custom") {
+            return loginSelectorVal;
+        }
+        return $("#customLoginBox").val();
+    }
+
+    function isLoginShellValid(x) {
+        if (x.trim().length === 0) {
+            return false;
+        }
+        // only ascii characters allowed
+        if (!(/^[\x00-\x7F]*$/.test(x))) {
+            return false;
+        }
+        return true;
+    }
+
+    function enableOrDisableCustomLoginBoxHighlight() {
+        if (
+            ($("#customLoginSelectorOption").prop("selected") == true) &&
+            !isLoginShellValid($("#customLoginBox").val())
+        ) {
+            $("#customLoginBox").css("box-shadow", "0 0 0 0.3rem rgba(220, 53, 69, 0.25)");
+        } else {
+            $("#customLoginBox").css("box-shadow", "none");
+        }
+    }
+    $("#customLoginBox").on("input", enableOrDisableCustomLoginBoxHighlight);
+    $("#loginSelector").change(enableOrDisableCustomLoginBoxHighlight);
+    enableOrDisableCustomLoginBoxHighlight();
+
+    function enableOrDisableSubmitLoginShell() {
+        var newLoginShell = getNewLoginShell();
+        if (!isLoginShellValid(newLoginShell)) {
+            $("#submitLoginShell").prop("disabled", true);
+            $("#submitLoginShell").prop("title", "Invalid Login Shell");
+            return;
+        }
+        if (newLoginShell == ldapLoginShell) {
+            $("#submitLoginShell").prop("disabled", true);
+            $("#submitLoginShell").prop("title", "Login Shell Unchanged");
+            return;
+        }
+        $("#submitLoginShell").prop("disabled", false);
+        $("#submitLoginShell").prop("title", "Submit Login Shell");
+    }
+    $("#customLoginBox").on("input", enableOrDisableSubmitLoginShell);
+    $("#loginSelector").change(enableOrDisableSubmitLoginShell);
+    enableOrDisableSubmitLoginShell()
 </script>
 
 <style>
