@@ -131,39 +131,33 @@ if ($isPI) {
 }
 
 if (!$isPI) {
+    echo "
+        <form
+            action=''
+            method='POST'
+            id='piReq'
+            onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'
+        >
+        <input type='hidden' name='form_type' value='pi_request'/>
+    ";
     if ($SQL->accDeletionRequestExists($USER->getUID())) {
+        echo "<input type='submit' value='Request PI Account' disabled />";
         echo "
-            <form
-                action=''
-                method='POST'
-                id='piReq'
-                onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'
-            >
-            <input type='hidden' name='form_type' value='pi_request'/>
-            <input type='submit' value='Request PI Account' disabled />
             <label style='margin-left: 10px'>
-            You cannot request PI Account while you have requested account deletion.
+                You cannot request PI Account while you have requested account deletion.
             </label>
-            </form>
+        ";
+    } elseif ($SQL->requestExists($USER->getUID())) {
+        echo "<input type='submit' value='Request PI Account' disabled />";
+        echo "
+            <label style='margin-left: 10px'>
+                Your request has been submitted and is currently pending
+            </label>
         ";
     } else {
-        echo "
-            <form
-                action=''
-                method='POST'
-                id='piReq'
-                onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'
-            >
-            <input type='hidden' name='form_type' value='pi_request'/>
-        ";
-        if ($SQL->requestExists($USER->getUID())) {
-            echo "<input type='submit' value='Request PI Account' disabled />";
-            echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
-        } else {
-            echo "<input type='submit' value='Request PI Account'/>";
-        }
-        echo "</form>";
+        echo "<input type='submit' value='Request PI Account'/>";
     }
+    echo "</form>";
 }
 ?>
 
@@ -210,7 +204,6 @@ foreach ($CONFIG["loginshell"]["shell"] as $shell) {
 </select>
 <br>
 <input id='submitLoginShell' type='submit' value='Set Login Shell' />
-<label id='labelSubmitLoginShell'> <!-- value set by JS --> </label>
 </form>
 <hr>
 
