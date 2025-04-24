@@ -142,10 +142,18 @@ if (!$isPI) {
     ";
     if ($SQL->accDeletionRequestExists($USER->getUID())) {
         echo "<input type='submit' value='Request PI Account' disabled />";
-        echo "<label>You cannot request PI Account while you have requested account deletion.</label>";
+        echo "
+            <label style='margin-left: 10px'>
+                You cannot request PI Account while you have requested account deletion.
+            </label>
+        ";
     } elseif ($SQL->requestExists($USER->getUID())) {
         echo "<input type='submit' value='Request PI Account' disabled />";
-        echo "<label>Your request has been submitted and is currently pending</label>";
+        echo "
+            <label style='margin-left: 10px'>
+                Your request has been submitted and is currently pending
+            </label>
+        ";
     } else {
         echo "<input type='submit' value='Request PI Account'/>";
     }
@@ -196,7 +204,6 @@ foreach ($CONFIG["loginshell"]["shell"] as $shell) {
 </select>
 <br>
 <input id='submitLoginShell' type='submit' value='Set Login Shell' />
-<label id='labelSubmitLoginShell'> <!-- value set by JS --> </label>
 </form>
 <hr>
 
