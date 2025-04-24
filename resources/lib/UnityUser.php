@@ -446,8 +446,16 @@ class UnityUser
      */
     public function setLoginShell($shell, $operator = null, $send_mail = true)
     {
-        // FIXME throw error if shell is not ascii
         // ldap schema syntax is "IA5 String (1.3.6.1.4.1.1466.115.121.1.26)"
+        if (!mb_check_encoding($shell, 'ASCII')) {
+            throw new Exception("non ascii characters are not allowed in a login shell!");
+        }
+        if ($shell != trim($shell)) {
+            throw new Exception("leading/trailing whitespace is not allowed in a login shell!");
+        }
+        if (empty($shell)) {
+            throw new Exception("login shell must not be empty!");
+        }
         $ldapUser = $this->getLDAPUser();
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("loginshell", $shell);

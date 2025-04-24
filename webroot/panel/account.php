@@ -69,11 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $USER->setSSHKeys($keys, $OPERATOR);  // Update user keys
             break;
         case "loginshell":
-            if ($_POST["shellSelect"] == "Custom") {
-                $USER->setLoginShell($_POST["shell"], $OPERATOR);
-            } else {
-                $USER->setLoginShell($_POST["shellSelect"], $OPERATOR);
-            }
+            $USER->setLoginShell($_POST["shellSelect"], $OPERATOR);
             break;
         case "pi_request":
             if (!$USER->isPI()) {
@@ -210,21 +206,11 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 foreach ($CONFIG["loginshell"]["shell"] as $shell) {
     echo "<option>$shell</option>";
 }
-echo "<option id='customLoginSelectorOption'>Custom</option>";
 ?>
 </select>
-<?php
-echo "
-    <input
-        id='customLoginBox'
-        type='text'
-        placeholder='Enter login shell path (ie. /bin/bash)'
-        name='shell'
-    />
-";
-?>
 <br>
 <input id='submitLoginShell' type='submit' value='Set Login Shell' />
+<label id='labelSubmitLoginShell'> <!-- value set by JS --> </label>
 </form>
 <hr>
 
@@ -257,7 +243,6 @@ if ($hasGroups) {
 
 <hr>
 
-
 <script>
     const sitePrefix = '<?php echo $CONFIG["site"]["prefix"]; ?>';
     const ldapLoginShell = '<?php echo $USER->getLoginShell(); ?>';
@@ -266,29 +251,21 @@ if ($hasGroups) {
         openModal("Add New Key", `${sitePrefix}/panel/modal/new_key.php`);
     });
 
-    var defaultShellSelected = false;
     $("#loginSelector option").each(function(i, e) {
         if ($(this).val() == ldapLoginShell) {
             $(this).prop("selected", true);
-            defaultShellSelected = true;
         }
     });
-    if (!defaultShellSelected) {
-        $("#customLoginBox").val(ldapLoginShell);
-        $("#customLoginSelectorOption").prop("selected", true);
-    }
 
-    function showOrHideCustomLoginBox() {
-        var customBox = $("#customLoginBox");
-        if($("#loginSelector").val() == "Custom") {
-            customBox.show();
+    function enableOrDisableSubmitLoginShell() {
+        if ($("#loginSelector").val() == ldapLoginShell) {
+            $("#submitLoginShell").prop("disabled", true);
         } else {
-            customBox.hide();
+            $("#submitLoginShell").prop("disabled", false);
         }
     }
-    $("#loginSelector").change(showOrHideCustomLoginBox);
-    showOrHideCustomLoginBox();
-
+    $("#loginSelector").change(enableOrDisableSubmitLoginShell);
+    enableOrDisableSubmitLoginShell()
 </script>
 
 <style>
