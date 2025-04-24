@@ -225,6 +225,7 @@ echo "
 ?>
 <br>
 <input id='submitLoginShell' type='submit' value='Set Login Shell' />
+<label id='labelSubmitLoginShell'> <!-- value set by JS --> </label>
 </form>
 <hr>
 
@@ -297,14 +298,17 @@ if ($hasGroups) {
     }
 
     function isLoginShellValid(x) {
-        if (x.trim().length === 0) {
-            return false;
+        if (/^\s|\s$/.test(x)) {
+            return [false, "must not have leading or trailing whitespace"];
+        }
+        if (x.length === 0) {
+            return [false, "must not be empty"];
         }
         // only ascii characters allowed
         if (!(/^[\x00-\x7F]*$/.test(x))) {
-            return false;
+            return [false, "must only contain ASCII characters"];
         }
-        return true;
+        return [true, ""];
     }
 
     function enableOrDisableCustomLoginBoxHighlight() {
@@ -323,18 +327,21 @@ if ($hasGroups) {
 
     function enableOrDisableSubmitLoginShell() {
         var newLoginShell = getNewLoginShell();
-        if (!isLoginShellValid(newLoginShell)) {
+        isValidArr = isLoginShellValid(newLoginShell);
+        isValid = isValidArr[0];
+        isValidReason = isValidArr[1];
+        if (!isValid) {
             $("#submitLoginShell").prop("disabled", true);
-            $("#submitLoginShell").prop("title", "Invalid Login Shell");
+            $("#labelSubmitLoginShell").text(`(invalid login shell: ${isValidReason})`);
             return;
         }
         if (newLoginShell == ldapLoginShell) {
             $("#submitLoginShell").prop("disabled", true);
-            $("#submitLoginShell").prop("title", "Login Shell Unchanged");
+            $("#labelSubmitLoginShell").text("(no change)");
             return;
         }
         $("#submitLoginShell").prop("disabled", false);
-        $("#submitLoginShell").prop("title", "Submit Login Shell");
+        $("#labelSubmitLoginShell").text("");
     }
     $("#customLoginBox").on("input", enableOrDisableSubmitLoginShell);
     $("#loginSelector").change(enableOrDisableSubmitLoginShell);
