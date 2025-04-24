@@ -69,11 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $USER->setSSHKeys($keys, $OPERATOR);  // Update user keys
             break;
         case "loginshell":
-            if ($_POST["shellSelect"] == "Custom") {
-                $USER->setLoginShell($_POST["shell"], $OPERATOR);
-            } else {
-                $USER->setLoginShell($_POST["shellSelect"], $OPERATOR);
-            }
+            $USER->setLoginShell($_POST["shellSelect"], $OPERATOR);
             break;
         case "pi_request":
             if (!$USER->isPI()) {
@@ -210,19 +206,8 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 foreach ($CONFIG["loginshell"]["shell"] as $shell) {
     echo "<option>$shell</option>";
 }
-echo "<option id='customLoginSelectorOption'>Custom</option>";
 ?>
 </select>
-<?php
-echo "
-    <input
-        id='customLoginBox'
-        type='text'
-        placeholder='Enter login shell path (ie. /bin/bash)'
-        name='shell'
-    />
-";
-?>
 <br>
 <input id='submitLoginShell' type='submit' value='Set Login Shell' />
 <label id='labelSubmitLoginShell'> <!-- value set by JS --> </label>
@@ -266,83 +251,19 @@ if ($hasGroups) {
         openModal("Add New Key", `${sitePrefix}/panel/modal/new_key.php`);
     });
 
-    var defaultShellSelected = false;
     $("#loginSelector option").each(function(i, e) {
         if ($(this).val() == ldapLoginShell) {
             $(this).prop("selected", true);
-            defaultShellSelected = true;
         }
     });
-    if (!defaultShellSelected) {
-        $("#customLoginBox").val(ldapLoginShell);
-        $("#customLoginSelectorOption").prop("selected", true);
-    }
-
-    function showOrHideCustomLoginBox() {
-        var customBox = $("#customLoginBox");
-        if($("#loginSelector").val() == "Custom") {
-            customBox.show();
-        } else {
-            customBox.hide();
-        }
-    }
-    $("#loginSelector").change(showOrHideCustomLoginBox);
-    showOrHideCustomLoginBox();
-
-    function getNewLoginShell() {
-        var loginSelectorVal = $("#loginSelector").val();
-        if (loginSelectorVal != "Custom") {
-            return loginSelectorVal;
-        }
-        return $("#customLoginBox").val();
-    }
-
-    function isLoginShellValid(x) {
-        if (/^\s|\s$/.test(x)) {
-            return [false, "must not have leading or trailing whitespace"];
-        }
-        if (x.length === 0) {
-            return [false, "must not be empty"];
-        }
-        if (!(/^[\x00-\x7F]*$/.test(x))) {
-            return [false, "must only contain ASCII characters"];
-        }
-        return [true, ""];
-    }
-
-    function enableOrDisableCustomLoginBoxHighlight() {
-        if (
-            ($("#customLoginSelectorOption").prop("selected") == true) &&
-            !isLoginShellValid($("#customLoginBox").val())
-        ) {
-            $("#customLoginBox").css("box-shadow", "0 0 0 0.3rem rgba(220, 53, 69, 0.25)");
-        } else {
-            $("#customLoginBox").css("box-shadow", "none");
-        }
-    }
-    $("#customLoginBox").on("input", enableOrDisableCustomLoginBoxHighlight);
-    $("#loginSelector").change(enableOrDisableCustomLoginBoxHighlight);
-    enableOrDisableCustomLoginBoxHighlight();
 
     function enableOrDisableSubmitLoginShell() {
-        var newLoginShell = getNewLoginShell();
-        isValidArr = isLoginShellValid(newLoginShell);
-        isValid = isValidArr[0];
-        isValidReason = isValidArr[1];
-        if (!isValid) {
+        if ($("#loginSelector").val() == ldapLoginShell) {
             $("#submitLoginShell").prop("disabled", true);
-            $("#labelSubmitLoginShell").text(`(invalid login shell: ${isValidReason})`);
-            return;
+        } else {
+            $("#submitLoginShell").prop("disabled", false);
         }
-        if (newLoginShell == ldapLoginShell) {
-            $("#submitLoginShell").prop("disabled", true);
-            $("#labelSubmitLoginShell").text("(no change)");
-            return;
-        }
-        $("#submitLoginShell").prop("disabled", false);
-        $("#labelSubmitLoginShell").text("");
     }
-    $("#customLoginBox").on("input", enableOrDisableSubmitLoginShell);
     $("#loginSelector").change(enableOrDisableSubmitLoginShell);
     enableOrDisableSubmitLoginShell()
 </script>
