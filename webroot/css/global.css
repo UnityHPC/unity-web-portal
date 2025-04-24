@@ -98,14 +98,16 @@ p {
     transform: translateY(-50%);
 }
 
-button.plusBtn {
+button.plusBtn span{
     font-size: 24pt;
-    display: block;
+    font-family: monospace;
+}
+
+button.plusBtn{
     width: 100%;
     max-width: 200px;
     padding: 0;
     overflow: hidden;
-    margin-top: 10px;
 }
 
 /* Form Elements */

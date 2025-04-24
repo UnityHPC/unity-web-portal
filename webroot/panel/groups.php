@@ -127,10 +127,10 @@ echo "</table>";
 
 <?php
 if ($SQL->accDeletionRequestExists($USER->getUID())) {
-    echo "<button type='button' class='plusBtn btnAddPI' disabled>&#43;</button>";
+    echo "<button type='button' class='plusBtn btnAddPI' disabled><span>&#43;</span></button>";
     echo "<label>You cannot join a PI while you have requested account deletion.</label>";
 } else {
-    echo "<button type='button' class='plusBtn btnAddPI'>&#43;</button>";
+    echo "<button type='button' class='plusBtn btnAddPI'><span>&#43;</span></button>";
 }
 ?>
 

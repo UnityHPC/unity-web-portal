@@ -92,21 +92,27 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 ?>
 
 <h1>Account Settings</h1>
-<hr>
 
+<hr>
 <h5>Account Details</h5>
-
-<p>
-    <strong>Username</strong> <code><?php echo $USER->getUID(); ?></code>
-    <br>
-    <strong>Organization</strong> <code><?php echo $USER->getOrg(); ?></code>
-    <br>
-    <strong>Email</strong> <code><?php echo $USER->getMail(); ?></code>
-</p>
+<table>
+    <tr>
+        <th>Username</th>
+        <td><code><?php echo $USER->getUID(); ?></code></td>
+    </tr>
+    <tr>
+        <th>Organization</th>
+        <td><code><?php echo $USER->getOrg(); ?></code></td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td><code><?php echo $USER->getMail(); ?></code></td>
+    </tr>
+</table>
 
 <hr>
-
 <h5>Account Status</h5>
+
 
 <?php
 
@@ -162,8 +168,8 @@ if (!$isPI) {
 ?>
 
 <hr>
-
 <h5>SSH Keys</h5>
+
 <?php
 $sshPubKeys = $USER->getSSHKeys();  // Get ssh public key attr
 
@@ -189,9 +195,10 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 
 ?>
 
-<button type="button" class="plusBtn btnAddKey">&#43;</button>
+<button type="button" class="plusBtn btnAddKey"><span>&#43;</span></button>
 
 <hr>
+<h5>Login Shell</h5>
 
 <form action="" method="POST">
 <input type="hidden" name="form_type" value="loginshell" />
@@ -205,9 +212,10 @@ foreach ($CONFIG["loginshell"]["shell"] as $shell) {
 <br>
 <input id='submitLoginShell' type='submit' value='Set Login Shell' />
 </form>
-<hr>
 
+<hr>
 <h5>Account Deletion</h5>
+
 <?php
 $hasGroups = count($USER->getGroups()) > 0;
 
@@ -233,8 +241,6 @@ if ($hasGroups) {
 }
 
 ?>
-
-<hr>
 
 <script>
     const sitePrefix = '<?php echo $CONFIG["site"]["prefix"]; ?>';
