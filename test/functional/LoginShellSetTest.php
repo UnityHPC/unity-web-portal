@@ -39,7 +39,7 @@ class LoginShellSetTest extends TestCase
         // FIXME shell is not validated
         post(
             __DIR__ . "/../../webroot/panel/account.php",
-            ["form_type" => "loginshell", "shellSelect" => "custom", "shell" => $shell]
+            ["form_type" => "loginshell", "shellSelect" => "Custom", "shell" => $shell]
         );
         $this->assertEquals($shell, $USER->getLoginShell());
     }

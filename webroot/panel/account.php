@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $USER->setSSHKeys($keys, $OPERATOR);  // Update user keys
             break;
         case "loginshell":
-            if ($_POST["shellSelect"] == "custom") {
+            if ($_POST["shellSelect"] == "Custom") {
                 $USER->setLoginShell($_POST["shell"], $OPERATOR);
             } else {
                 $USER->setLoginShell($_POST["shellSelect"], $OPERATOR);
@@ -186,49 +186,28 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 <hr>
 
 <form action="" method="POST">
-
-    <input type="hidden" name="form_type" value="loginshell">
-
-    <select id="loginSelector" name= "shellSelect">
-
-        <option value="" disabled hidden>Select Login Shell...</option>
-
-        <?php
-        $cur_shell = $USER->getLoginShell();
-        $found_selector = false;
-        foreach ($CONFIG["loginshell"]["shell"] as $shell) {
-            if ($cur_shell == $shell) {
-                echo "<option selected>$shell</option>";
-                $found_selector = true;
-            } else {
-                echo "<option>$shell</option>";
-            }
-        }
-
-        if ($found_selector) {
-            echo "<option value='custom'>Custom</option>";
-        } else {
-            echo "<option value='custom' selected>Custom</option>";
-        }
-        ?>
-    </select>
-
-    <?php
-
-    if ($found_selector) {
-        echo "<input id='customLoginBox' type='text'
-        placeholder='Enter login shell path (ie. /bin/bash)' name='shell'>";
-    } else {
-        echo "<input id='customLoginBox' type='text'
-        placeholder='Enter login shell path (ie. /bin/bash)' name='shell' value='$cur_shell'>";
-    }
-
-    ?>
-    <br>
-    <input type='submit' value='Set Login Shell'>
-
+<input type="hidden" name="form_type" value="loginshell">
+<select id="loginSelector" name="shellSelect">
+<?php
+foreach ($CONFIG["loginshell"]["shell"] as $shell) {
+    echo "<option>$shell</option>";
+}
+echo "<option id='customLoginSelectorOption'>Custom</option>";
+?>
+</select>
+<?php
+echo "
+    <input
+        id='customLoginBox'
+        type='text'
+        placeholder='Enter login shell path (ie. /bin/bash)'
+        name='shell'
+    >
+";
+?>
+<br>
+<input id='submitLoginShell' type='submit' value='Set Login Shell'>
 </form>
-
 <hr>
 
 <h5>Account Deletion</h5>
@@ -257,30 +236,36 @@ if ($hasGroups) {
 
 
 <script>
+    const sitePrefix = '<?php echo $CONFIG["site"]["prefix"]; ?>';
+    const ldapLoginShell = '<?php echo $USER->getLoginShell(); ?>';
+
     $("button.btnAddKey").click(function() {
-        openModal("Add New Key", "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/new_key.php");
+        openModal("Add New Key", `${sitePrefix}/panel/modal/new_key.php`);
     });
 
-    var customLoginBox = $("#customLoginBox");
-    if (customLoginBox.val() == "") {
-        // login box is empty, so we hide it by default
-        // if the login box had a value, that means it would be a custom shell
-        // and should not hide by default
-        customLoginBox.hide();
+    var defaultShellSelected = false;
+    $("#loginSelector option").each(function(i, e) {
+        if ($(this).val() == ldapLoginShell) {
+            $(this).prop("selected", true);
+            defaultShellSelected = true;
+        }
+    });
+    if (!defaultShellSelected) {
+        $("#customLoginBox").val(ldapLoginShell);
+        $("#customLoginSelectorOption").prop("selected", true);
     }
 
-    $("#loginSelector").change(function() {
+    function showOrHideCustomLoginBox() {
         var customBox = $("#customLoginBox");
-        if($(this).val() == "custom") {
+        if($("#loginSelector").val() == "Custom") {
             customBox.show();
         } else {
             customBox.hide();
         }
-    });
-
-    if ($("#loginSelector").val() == "custom") {
-        $("#customLoginBox").show();
     }
+    $("#loginSelector").change(showOrHideCustomLoginBox);
+    showOrHideCustomLoginBox();
+
 </script>
 
 <style>
