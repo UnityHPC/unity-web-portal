@@ -292,6 +292,7 @@ if ($hasGroups) {
         word-break: break-all;
         width: calc(100% - 44px);
         border-radius: 3px 0 0 3px;
+        font-family: monospace;
     }
 </style>
 
