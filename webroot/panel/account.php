@@ -122,34 +122,49 @@ if ($isPI) {
 } elseif ($isActive) {
     echo "<p>You are curently a <strong>user</strong> on the Unity Cluster</p>";
 } else {
-    echo "<p>You are currently not assigned to any PI, and will be
-    <strong>unable to use the cluster</strong>. Go to the <a href='groups.php'>My PIs</a>
-    page to join a PI, or click on the button below if you are a PI</p>";
-    echo "<p>Students should not request a PI account.</p>";
+    echo "
+        <p>
+            You are currently not assigned to any PI, and will be
+            <strong>unable to use the cluster</strong>.
+            Go to the
+            <a href='groups.php'>My PIs</a>
+            page to join a PI, or click on the button below if you are a PI.
+        </p>
+        <p>Students should not request a PI account.</p>
+    ";
 }
 
 if (!$isPI) {
     if ($SQL->accDeletionRequestExists($USER->getUID())) {
-        echo
-        "<form action='' method='POST' id='piReq'
-        onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'>
-        <input type='hidden' name='form_type' value='pi_request'>";
-        echo "<input type='submit' value='Request PI Account' disabled>";
-        echo
-        "<label style='margin-left: 10px'>
+        echo "
+            <form
+                action=''
+                method='POST'
+                id='piReq'
+                onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'
+            >
+            <input type='hidden' name='form_type' value='pi_request'/>
+            <input type='submit' value='Request PI Account' disabled />
+            <label style='margin-left: 10px'>
             You cannot request PI Account while you have requested account deletion.
-        </label>";
-        echo "</form>";
+            </label>
+            </form>
+        ";
     } else {
-        echo
-        "<form action='' method='POST' id='piReq'
-        onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'>
-        <input type='hidden' name='form_type' value='pi_request'>";
+        echo "
+            <form
+                action=''
+                method='POST'
+                id='piReq'
+                onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'
+            >
+            <input type='hidden' name='form_type' value='pi_request'/>
+        ";
         if ($SQL->requestExists($USER->getUID())) {
-            echo "<input type='submit' value='Request PI Account' disabled>";
+            echo "<input type='submit' value='Request PI Account' disabled />";
             echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
         } else {
-            echo "<input type='submit' value='Request PI Account'>";
+            echo "<input type='submit' value='Request PI Account'/>";
         }
         echo "</form>";
     }
@@ -169,13 +184,16 @@ if (count($sshPubKeys) == 0) {
 for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop through keys
     echo
     "<div class='key-box'>
-    <textarea spellcheck='false' readonly>" . $sshPubKeys[$i] . "</textarea>
-    <form action='' id='del-" . $i . "'
-    onsubmit='return confirm(\"Are you sure you want to delete this SSH key?\");' method='POST'>
-    <input type='hidden' name='delIndex' value='$i'>
-    <input type='hidden' name='form_type' value='delKey'>
-    <input type='submit' value='&times;'>
-    </form>
+        <textarea spellcheck='false' readonly>" . $sshPubKeys[$i] . "</textarea>
+        <form
+            action='' id='del-" . $i . "'
+            onsubmit='return confirm(\"Are you sure you want to delete this SSH key?\");'
+            method='POST'
+        >
+            <input type='hidden' name='delIndex' value='$i' />
+            <input type='hidden' name='form_type' value='delKey' />
+            <input type='submit' value='&times;' />
+        </form>
     </div>";
 }
 
@@ -186,7 +204,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 <hr>
 
 <form action="" method="POST">
-<input type="hidden" name="form_type" value="loginshell">
+<input type="hidden" name="form_type" value="loginshell" />
 <select id="loginSelector" name="shellSelect">
 <?php
 foreach ($CONFIG["loginshell"]["shell"] as $shell) {
@@ -202,11 +220,11 @@ echo "
         type='text'
         placeholder='Enter login shell path (ie. /bin/bash)'
         name='shell'
-    >
+    />
 ";
 ?>
 <br>
-<input id='submitLoginShell' type='submit' value='Set Login Shell'>
+<input id='submitLoginShell' type='submit' value='Set Login Shell' />
 </form>
 <hr>
 
@@ -217,15 +235,20 @@ $hasGroups = count($USER->getGroups()) > 0;
 if ($hasGroups) {
     echo "<p>You cannot request to delete your account while you are in a PI group.</p>";
 } else {
-    echo
-    "<form action='' method='POST' id='accDel'
-    onsubmit='return confirm(\"Are you sure you want to request an account deletion?\")'>
-    <input type='hidden' name='form_type' value='account_deletion_request'>";
+    echo "
+        <form
+            action=''
+            method='POST'
+            id='accDel'
+            onsubmit='return confirm(\"Are you sure you want to request an account deletion?\")'
+        >
+        <input type='hidden' name='form_type' value='account_deletion_request' />
+    ";
     if ($SQL->accDeletionRequestExists($USER->getUID())) {
-        echo "<input type='submit' value='Request Account Deletion' disabled>";
+        echo "<input type='submit' value='Request Account Deletion' disabled />";
         echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
     } else {
-        echo "<input type='submit' value='Request Account Deletion'>";
+        echo "<input type='submit' value='Request Account Deletion' />";
     }
     echo "</form>";
 }
