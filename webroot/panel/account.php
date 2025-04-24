@@ -304,7 +304,6 @@ if ($hasGroups) {
         if (x.length === 0) {
             return [false, "must not be empty"];
         }
-        // only ascii characters allowed
         if (!(/^[\x00-\x7F]*$/.test(x))) {
             return [false, "must only contain ASCII characters"];
         }
