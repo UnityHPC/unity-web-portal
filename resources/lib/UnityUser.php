@@ -450,6 +450,9 @@ class UnityUser
         if (!mb_check_encoding($shell, 'ASCII')) {
             throw new Exception("non ascii characters are not allowed in a login shell!");
         }
+        if ($shell != trim($shell)) {
+            throw new Exception("leading/trailing whitespace is not allowed in a login shell!");
+        }
         $ldapUser = $this->getLDAPUser();
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("loginshell", $shell);

@@ -36,6 +36,9 @@ class LoginShellSetTest extends TestCase
         if (!mb_check_encoding($shell, 'ASCII')) {
             $this->expectException("Exception");
         }
+        if ($shell != trim($shell)) {
+            $this->expectException("Exception");
+        }
         // FIXME shell is not validated
         post(
             __DIR__ . "/../../webroot/panel/account.php",
