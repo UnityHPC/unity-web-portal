@@ -28,19 +28,22 @@ class LoginShellSetTest extends TestCase
         // phpcs:enable
     }
 
+    private function isShellValid(string $shell)
+    {
+        return (
+            (mb_check_encoding($shell, 'ASCII')) &&
+            ($shell == trim($shell)) &&
+            (!empty($shell))
+        );
+    }
+
     #[DataProvider("getShells")]
     public function testSetLoginShellCustom(string $shell): void
     {
         global $USER;
-        // FIXME add check to avoid warning from ldap_modify
-        if (
-            (!mb_check_encoding($shell, 'ASCII')) ||
-            ($shell != trim($shell)) ||
-            (empty($shell))
-        ) {
-            $this->expectException("Exception");
+        if (!$this->isShellValid($shell)) {
+            $this->expectException(Exception::class);
         }
-        // FIXME shell is not validated
         post(
             __DIR__ . "/../../webroot/panel/account.php",
             ["form_type" => "loginshell", "shellSelect" => "Custom", "shell" => $shell]
@@ -52,11 +55,9 @@ class LoginShellSetTest extends TestCase
     public function testSetLoginShellSelect(string $shell): void
     {
         global $USER;
-        // FIXME add check to avoid warning from ldap_modify
-        if (!mb_check_encoding($shell, 'ASCII')) {
+        if (!$this->isShellValid($shell)) {
             $this->expectException("Exception");
         }
-        // FIXME shell is not validated
         post(
             __DIR__ . "/../../webroot/panel/account.php",
             ["form_type" => "loginshell", "shellSelect" => $shell]
