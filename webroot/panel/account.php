@@ -131,39 +131,25 @@ if ($isPI) {
 }
 
 if (!$isPI) {
+    echo "
+        <form
+            action=''
+            method='POST'
+            id='piReq'
+            onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'
+        >
+        <input type='hidden' name='form_type' value='pi_request'/>
+    ";
     if ($SQL->accDeletionRequestExists($USER->getUID())) {
-        echo "
-            <form
-                action=''
-                method='POST'
-                id='piReq'
-                onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'
-            >
-            <input type='hidden' name='form_type' value='pi_request'/>
-            <input type='submit' value='Request PI Account' disabled />
-            <label style='margin-left: 10px'>
-            You cannot request PI Account while you have requested account deletion.
-            </label>
-            </form>
-        ";
+        echo "<input type='submit' value='Request PI Account' disabled />";
+        echo "<label>You cannot request PI Account while you have requested account deletion.</label>";
+    } elseif ($SQL->requestExists($USER->getUID())) {
+        echo "<input type='submit' value='Request PI Account' disabled />";
+        echo "<label>Your request has been submitted and is currently pending</label>";
     } else {
-        echo "
-            <form
-                action=''
-                method='POST'
-                id='piReq'
-                onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'
-            >
-            <input type='hidden' name='form_type' value='pi_request'/>
-        ";
-        if ($SQL->requestExists($USER->getUID())) {
-            echo "<input type='submit' value='Request PI Account' disabled />";
-            echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
-        } else {
-            echo "<input type='submit' value='Request PI Account'/>";
-        }
-        echo "</form>";
+        echo "<input type='submit' value='Request PI Account'/>";
     }
+    echo "</form>";
 }
 ?>
 
