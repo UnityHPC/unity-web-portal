@@ -202,7 +202,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 
 <form action="" method="POST">
 <input type="hidden" name="form_type" value="loginshell" />
-<select id="loginSelector" name="shellSelect">
+<select id="loginSelector" class="code" name="shellSelect">
 <?php
 foreach ($CONFIG["loginshell"]["shell"] as $shell) {
     echo "<option>$shell</option>";
