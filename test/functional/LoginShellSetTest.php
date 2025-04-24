@@ -38,21 +38,7 @@ class LoginShellSetTest extends TestCase
     }
 
     #[DataProvider("getShells")]
-    public function testSetLoginShellCustom(string $shell): void
-    {
-        global $USER;
-        if (!$this->isShellValid($shell)) {
-            $this->expectException(Exception::class);
-        }
-        post(
-            __DIR__ . "/../../webroot/panel/account.php",
-            ["form_type" => "loginshell", "shellSelect" => "Custom", "shell" => $shell]
-        );
-        $this->assertEquals($shell, $USER->getLoginShell());
-    }
-
-    #[DataProvider("getShells")]
-    public function testSetLoginShellSelect(string $shell): void
+    public function testSetLoginShell(string $shell): void
     {
         global $USER;
         if (!$this->isShellValid($shell)) {
