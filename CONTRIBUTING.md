@@ -10,6 +10,11 @@ When submitting pull requests, the pull request should be made to the version yo
 
 This code base is currently using PHP version 7.4. All files are required to be linted with PSR-12 standard. This repository will automatically check PRs for linting compliance.
 
+Whenever frontend JS limits the possible values of a user input, PHP must do the same!
+There's nothing stopping a user from making custom HTTP POST requests.
+This can be done in `webroot/panel/*.php` while parsing headers, or preferrably in `resources/lib/*.php`.
+For example, both frontend JS and in the `UnityUser` class make sure that a login shell contains only ASCII characters.
+
 ## Development Environment
 
 ### Setting up your Environment
