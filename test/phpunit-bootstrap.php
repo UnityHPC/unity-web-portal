@@ -78,6 +78,22 @@ function post(string $phpfile, array $post_data): void
     }
 }
 
+function get(string $phpfile): void
+{
+    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
+    $_SERVER["REQUEST_METHOD"] = "GET";
+    ob_start();
+    try {
+        include $phpfile;
+        ob_get_clean(); // discard output
+    } catch (Throwable $e) {
+        error_log(ob_get_clean()); // don't discard output
+        throw $e;
+    } finally {
+        unset($_SERVER["REQUEST_METHOD"]);
+    }
+}
+
 function getNormalUser()
 {
     return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
@@ -111,4 +127,14 @@ function getUserNotPiNotRequestedBecomePiRequestedAccountDeletion()
 function getUserWithOneKey()
 {
     return ["user5@org2.test", "foo", "bar", "user5@org2.test"];
+}
+
+function getNonExistentUser()
+{
+    return ["user1@nonexistent.test", "foo", "bar", "user1@nonexistent.test"];
+}
+
+function getAdminUser()
+{
+    return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
 }
