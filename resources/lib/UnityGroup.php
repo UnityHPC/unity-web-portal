@@ -198,47 +198,47 @@ class UnityGroup
         }
     }
 
-    /**
-     * This method will delete the group, either by admin action or PI action
-     */
-    public function removeGroup($send_mail = true)
-    {
-        // remove any pending requests
-        // this will silently fail if the request doesn't exist (which is what we want)
-        $this->SQL->removeRequests($this->pi_uid);
+    // /**
+    //  * This method will delete the group, either by admin action or PI action
+    //  */
+    // public function removeGroup($send_mail = true)
+    // {
+    //     // remove any pending requests
+    //     // this will silently fail if the request doesn't exist (which is what we want)
+    //     $this->SQL->removeRequests($this->pi_uid);
 
-        // we don't need to do anything extra if the group is already deleted
-        if (!$this->exists()) {
-            return;
-        }
+    //     // we don't need to do anything extra if the group is already deleted
+    //     if (!$this->exists()) {
+    //         return;
+    //     }
 
-        // first, we must record the users in the group currently
-        $users = $this->getGroupMembers();
+    //     // first, we must record the users in the group currently
+    //     $users = $this->getGroupMembers();
 
-        // now we delete the ldap entry
-        $ldapPiGroupEntry = $this->getLDAPPiGroup();
-        if ($ldapPiGroupEntry->exists()) {
-            if (!$ldapPiGroupEntry->delete()) {
-                throw new Exception("Unable to delete PI ldap group");
-            }
+    //     // now we delete the ldap entry
+    //     $ldapPiGroupEntry = $this->getLDAPPiGroup();
+    //     if ($ldapPiGroupEntry->exists()) {
+    //         if (!$ldapPiGroupEntry->delete()) {
+    //             throw new Exception("Unable to delete PI ldap group");
+    //         }
 
-            $this->REDIS->removeCacheArray("sorted_groups", "", $this->getPIUID());
-            foreach ($users as $user) {
-                $this->REDIS->removeCacheArray($user->getUID(), "groups", $this->getPIUID());
-            }
-        }
+    //         $this->REDIS->removeCacheArray("sorted_groups", "", $this->getPIUID());
+    //         foreach ($users as $user) {
+    //             $this->REDIS->removeCacheArray($user->getUID(), "groups", $this->getPIUID());
+    //         }
+    //     }
 
-        // send email to every user of the now deleted PI group
-        if ($send_mail) {
-            foreach ($users as $user) {
-                $this->MAILER->sendMail(
-                    $user->getMail(),
-                    "group_disband",
-                    array("group_name" => $this->pi_uid)
-                );
-            }
-        }
-    }
+    //     // send email to every user of the now deleted PI group
+    //     if ($send_mail) {
+    //         foreach ($users as $user) {
+    //             $this->MAILER->sendMail(
+    //                 $user->getMail(),
+    //                 "group_disband",
+    //                 array("group_name" => $this->pi_uid)
+    //             );
+    //         }
+    //     }
+    // }
 
     /**
      * This method is executed when a user is approved to join the group (either by admin or the group owner)
