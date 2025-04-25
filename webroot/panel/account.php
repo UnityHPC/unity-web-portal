@@ -69,11 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $USER->setSSHKeys($keys, $OPERATOR);  // Update user keys
             break;
         case "loginshell":
-            if ($_POST["shellSelect"] == "custom") {
-                $USER->setLoginShell($_POST["shell"], $OPERATOR);
-            } else {
-                $USER->setLoginShell($_POST["shellSelect"], $OPERATOR);
-            }
+            $USER->setLoginShell($_POST["shellSelect"], $OPERATOR);
             break;
         case "pi_request":
             if (!$USER->isPI()) {
@@ -96,21 +92,27 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 ?>
 
 <h1>Account Settings</h1>
-<hr>
 
+<hr>
 <h5>Account Details</h5>
-
-<p>
-    <strong>Username</strong> <code><?php echo $USER->getUID(); ?></code>
-    <br>
-    <strong>Organization</strong> <code><?php echo $USER->getOrg(); ?></code>
-    <br>
-    <strong>Email</strong> <code><?php echo $USER->getMail(); ?></code>
-</p>
+<table>
+    <tr>
+        <th>Username</th>
+        <td><code><?php echo $USER->getUID(); ?></code></td>
+    </tr>
+    <tr>
+        <th>Organization</th>
+        <td><code><?php echo $USER->getOrg(); ?></code></td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td><code><?php echo $USER->getMail(); ?></code></td>
+    </tr>
+</table>
 
 <hr>
-
 <h5>Account Status</h5>
+
 
 <?php
 
@@ -122,43 +124,52 @@ if ($isPI) {
 } elseif ($isActive) {
     echo "<p>You are curently a <strong>user</strong> on the Unity Cluster</p>";
 } else {
-    echo "<p>You are currently not assigned to any PI, and will be
-    <strong>unable to use the cluster</strong>. Go to the <a href='groups.php'>My PIs</a>
-    page to join a PI, or click on the button below if you are a PI</p>";
-    echo "<p>Students should not request a PI account.</p>";
+    echo "
+        <p>
+            You are currently not assigned to any PI, and will be
+            <strong>unable to use the cluster</strong>.
+            Go to the
+            <a href='groups.php'>My PIs</a>
+            page to join a PI, or click on the button below if you are a PI.
+        </p>
+        <p>Students should not request a PI account.</p>
+    ";
 }
 
 if (!$isPI) {
+    echo "
+        <form
+            action=''
+            method='POST'
+            id='piReq'
+            onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'
+        >
+        <input type='hidden' name='form_type' value='pi_request'/>
+    ";
     if ($SQL->accDeletionRequestExists($USER->getUID())) {
-        echo
-        "<form action='' method='POST' id='piReq'
-        onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'>
-        <input type='hidden' name='form_type' value='pi_request'>";
-        echo "<input type='submit' value='Request PI Account' disabled>";
-        echo
-        "<label style='margin-left: 10px'>
-            You cannot request PI Account while you have requested account deletion.
-        </label>";
-        echo "</form>";
+        echo "<input type='submit' value='Request PI Account' disabled />";
+        echo "
+            <label style='margin-left: 10px'>
+                You cannot request PI Account while you have requested account deletion.
+            </label>
+        ";
+    } elseif ($SQL->requestExists($USER->getUID())) {
+        echo "<input type='submit' value='Request PI Account' disabled />";
+        echo "
+            <label style='margin-left: 10px'>
+                Your request has been submitted and is currently pending
+            </label>
+        ";
     } else {
-        echo
-        "<form action='' method='POST' id='piReq'
-        onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'>
-        <input type='hidden' name='form_type' value='pi_request'>";
-        if ($SQL->requestExists($USER->getUID())) {
-            echo "<input type='submit' value='Request PI Account' disabled>";
-            echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
-        } else {
-            echo "<input type='submit' value='Request PI Account'>";
-        }
-        echo "</form>";
+        echo "<input type='submit' value='Request PI Account'/>";
     }
+    echo "</form>";
 }
 ?>
 
 <hr>
-
 <h5>SSH Keys</h5>
+
 <?php
 $sshPubKeys = $USER->getSSHKeys();  // Get ssh public key attr
 
@@ -169,118 +180,91 @@ if (count($sshPubKeys) == 0) {
 for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop through keys
     echo
     "<div class='key-box'>
-    <textarea spellcheck='false' readonly>" . $sshPubKeys[$i] . "</textarea>
-    <form action='' id='del-" . $i . "'
-    onsubmit='return confirm(\"Are you sure you want to delete this SSH key?\");' method='POST'>
-    <input type='hidden' name='delIndex' value='$i'>
-    <input type='hidden' name='form_type' value='delKey'>
-    <input type='submit' value='&times;'>
-    </form>
+        <textarea spellcheck='false' readonly>" . $sshPubKeys[$i] . "</textarea>
+        <form
+            action='' id='del-" . $i . "'
+            onsubmit='return confirm(\"Are you sure you want to delete this SSH key?\");'
+            method='POST'
+        >
+            <input type='hidden' name='delIndex' value='$i' />
+            <input type='hidden' name='form_type' value='delKey' />
+            <input type='submit' value='&times;' />
+        </form>
     </div>";
 }
 
 ?>
 
-<button type="button" class="plusBtn btnAddKey">&#43;</button>
+<button type="button" class="plusBtn btnAddKey"><span>&#43;</span></button>
 
 <hr>
+<h5>Login Shell</h5>
 
 <form action="" method="POST">
-
-    <input type="hidden" name="form_type" value="loginshell">
-
-    <select id="loginSelector" name= "shellSelect">
-
-        <option value="" disabled hidden>Select Login Shell...</option>
-
-        <?php
-        $cur_shell = $USER->getLoginShell();
-        $found_selector = false;
-        foreach ($CONFIG["loginshell"]["shell"] as $shell) {
-            if ($cur_shell == $shell) {
-                echo "<option selected>$shell</option>";
-                $found_selector = true;
-            } else {
-                echo "<option>$shell</option>";
-            }
-        }
-
-        if ($found_selector) {
-            echo "<option value='custom'>Custom</option>";
-        } else {
-            echo "<option value='custom' selected>Custom</option>";
-        }
-        ?>
-    </select>
-
-    <?php
-
-    if ($found_selector) {
-        echo "<input id='customLoginBox' type='text'
-        placeholder='Enter login shell path (ie. /bin/bash)' name='shell'>";
-    } else {
-        echo "<input id='customLoginBox' type='text'
-        placeholder='Enter login shell path (ie. /bin/bash)' name='shell' value='$cur_shell'>";
-    }
-
-    ?>
-    <br>
-    <input type='submit' value='Set Login Shell'>
-
+<input type="hidden" name="form_type" value="loginshell" />
+<select id="loginSelector" class="code" name="shellSelect">
+<?php
+foreach ($CONFIG["loginshell"]["shell"] as $shell) {
+    echo "<option>$shell</option>";
+}
+?>
+</select>
+<br>
+<input id='submitLoginShell' type='submit' value='Set Login Shell' />
 </form>
 
 <hr>
-
 <h5>Account Deletion</h5>
+
 <?php
 $hasGroups = count($USER->getGroups()) > 0;
 
 if ($hasGroups) {
     echo "<p>You cannot request to delete your account while you are in a PI group.</p>";
 } else {
-    echo
-    "<form action='' method='POST' id='accDel'
-    onsubmit='return confirm(\"Are you sure you want to request an account deletion?\")'>
-    <input type='hidden' name='form_type' value='account_deletion_request'>";
+    echo "
+        <form
+            action=''
+            method='POST'
+            id='accDel'
+            onsubmit='return confirm(\"Are you sure you want to request an account deletion?\")'
+        >
+        <input type='hidden' name='form_type' value='account_deletion_request' />
+    ";
     if ($SQL->accDeletionRequestExists($USER->getUID())) {
-        echo "<input type='submit' value='Request Account Deletion' disabled>";
+        echo "<input type='submit' value='Request Account Deletion' disabled />";
         echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
     } else {
-        echo "<input type='submit' value='Request Account Deletion'>";
+        echo "<input type='submit' value='Request Account Deletion' />";
     }
     echo "</form>";
 }
 
 ?>
 
-<hr>
-
-
 <script>
+    const sitePrefix = '<?php echo $CONFIG["site"]["prefix"]; ?>';
+    const ldapLoginShell = '<?php echo $USER->getLoginShell(); ?>';
+
     $("button.btnAddKey").click(function() {
-        openModal("Add New Key", "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/new_key.php");
+        openModal("Add New Key", `${sitePrefix}/panel/modal/new_key.php`);
     });
 
-    var customLoginBox = $("#customLoginBox");
-    if (customLoginBox.val() == "") {
-        // login box is empty, so we hide it by default
-        // if the login box had a value, that means it would be a custom shell
-        // and should not hide by default
-        customLoginBox.hide();
-    }
-
-    $("#loginSelector").change(function() {
-        var customBox = $("#customLoginBox");
-        if($(this).val() == "custom") {
-            customBox.show();
-        } else {
-            customBox.hide();
+    $("#loginSelector option").each(function(i, e) {
+        if ($(this).val() == ldapLoginShell) {
+            $(this).prop("selected", true);
         }
     });
 
-    if ($("#loginSelector").val() == "custom") {
-        $("#customLoginBox").show();
+    function enableOrDisableSubmitLoginShell() {
+        if ($("#loginSelector").val() == ldapLoginShell) {
+            $("#submitLoginShell").prop("disabled", true);
+        } else {
+            $("#submitLoginShell").prop("disabled", false);
+        }
     }
+    $("#loginSelector").change(enableOrDisableSubmitLoginShell);
+    enableOrDisableSubmitLoginShell()
 </script>
 
 <style>
@@ -308,6 +292,7 @@ if ($hasGroups) {
         word-break: break-all;
         width: calc(100% - 44px);
         border-radius: 3px 0 0 3px;
+        font-family: monospace;
     }
 </style>
 

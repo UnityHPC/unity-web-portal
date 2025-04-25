@@ -26,31 +26,22 @@ class LoginShellSetTest extends TestCase
         return [["/bin/bash"]] + array_map(function($x){return [$x];}, $HTTP_HEADER_TEST_INPUTS);
     }
 
-    #[DataProvider("getShells")]
-    public function testSetLoginShellCustom(string $shell): void
+    private function isShellValid(string $shell)
     {
-        global $USER;
-        // FIXME add check to avoid warning from ldap_modify
-        if (!mb_check_encoding($shell, 'ASCII')) {
-            $this->expectException("Exception");
-        }
-        // FIXME shell is not validated
-        post(
-            __DIR__ . "/../../webroot/panel/account.php",
-            ["form_type" => "loginshell", "shellSelect" => "custom", "shell" => $shell]
+        return (
+            (mb_check_encoding($shell, 'ASCII')) &&
+            ($shell == trim($shell)) &&
+            (!empty($shell))
         );
-        $this->assertEquals($shell, $USER->getLoginShell());
     }
 
     #[DataProvider("getShells")]
-    public function testSetLoginShellSelect(string $shell): void
+    public function testSetLoginShell(string $shell): void
     {
         global $USER;
-        // FIXME add check to avoid warning from ldap_modify
-        if (!mb_check_encoding($shell, 'ASCII')) {
-            $this->expectException(RuntimeException::class);
+        if (!$this->isShellValid($shell)) {
+            $this->expectException("Exception");
         }
-        // FIXME shell is not validated
         post(
             __DIR__ . "/../../webroot/panel/account.php",
             ["form_type" => "loginshell", "shellSelect" => $shell]

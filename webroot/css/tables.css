@@ -16,7 +16,7 @@ table.longTable tr:not(:last-child) {
 
 table tr,
 table td {
-    padding: 8px 20px 8px 4px;
+    padding: 0 20px 0 4px;
     overflow: hidden;
     white-space: nowrap;
 }

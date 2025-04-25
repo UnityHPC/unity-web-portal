@@ -75,6 +75,7 @@ title[] = "Test Medium Footer"
 [loginshell]  ; Login shells that show up as options in the account settings page
 shell[] = "/bin/bash"
 shell[] = "/bin/zsh"
+shell[] = "/bin/tcsh"
 
 [menuitems]  ; menu items, add a label and link for each
 labels[] = "Global Menuitem 1"

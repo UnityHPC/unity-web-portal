@@ -27,11 +27,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
             break;
-        case "remGroup":
-            $remGroup = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-            $remGroup->removeGroup();
-
-            break;
         case "reqChild":
             $parent_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             if ($_POST["action"] == "Approve") {
@@ -128,15 +123,6 @@ include $LOC_HEADER;
         " " . $pi_user->getLastname() . "</td>";
         echo "<td>" . $pi_group->getPIUID() . "</td>";
         echo "<td><a href='mailto:" . $pi_user->getMail() . "'>" . $pi_user->getMail() . "</a></td>";
-        echo "<td>";
-        echo
-        "<form action='' method='POST'
-    onsubmit='return confirm(\"Are you sure you want to remove " . $pi_group->getPIUID() . "?\")'>
-        <input type='hidden' name='form_name' value='remGroup'>
-        <input type='hidden' name='pi' value='" . $pi_group->getPIUID() . "'>
-        <input type='submit' value='Remove'>
-    </form>";
-        echo "</td>";
         echo "</tr>";
     }
     ?>
