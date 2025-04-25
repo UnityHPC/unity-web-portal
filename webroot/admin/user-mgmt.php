@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     switch ($_POST["form_name"]) {
         case "viewAsUser":
             $_SESSION["viewUser"] = $_POST["uid"];
-            $SITE->redirect($CONFIG["site"]["prefix"] . "/panel");
+            $SITE->redirect($CONFIG["site"]["prefix"] . "/panel/account.php");
             break;
     }
 }
