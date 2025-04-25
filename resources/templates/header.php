@@ -1,10 +1,7 @@
 <?php
-
-use UnityWebPortal\lib\UnitySite;
-
 if (isset($SSO)) {
     if (!$_SESSION["user_exists"]) {
-        UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/new_account.php");
+        $SITE->redirect($CONFIG["site"]["prefix"] . "/panel/new_account.php");
     }
 }
 
@@ -119,7 +116,7 @@ if (isset($SSO)) {
     if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"]) {
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["form_name"]) && $_POST["form_name"] == "clearView") {
             unset($_SESSION["viewUser"]);
-            UnitySite::redirect($CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
+            $SITE->redirect($CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
         }
 
         if (isset($_SESSION["viewUser"])) {

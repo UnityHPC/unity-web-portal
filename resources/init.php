@@ -13,6 +13,7 @@ use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityRedis;
 use UnityWebPortal\lib\UnityWebhook;
 use UnityWebPortal\lib\UnityGithub;
+use UnityWebPortal\lib\UnitySite;
 
 //
 // Initialize Session
@@ -124,6 +125,8 @@ if (!is_null($SSO)) {
         $REDIS->setCache($SSO["user"], "mail", $SSO["mail"]);
     }
 }
+
+$SITE = new UnitySite();
 
 //
 // Define vars

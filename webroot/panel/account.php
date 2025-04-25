@@ -2,8 +2,6 @@
 
 require_once __DIR__ . "/../../resources/autoload.php";
 
-use UnityWebPortal\lib\UnitySite;
-
 require_once $LOC_HEADER;
 
 $invalid_ssh_dialogue = "<script type='text/javascript'>
@@ -18,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             switch ($_POST["add_type"]) {
                 case "paste":
                     $key = $_POST["key"];
-                    if (UnitySite::testValidSSHKey($key)) {
+                    if ($SITE->testValidSSHKey($key)) {
                         array_push($added_keys, $key);
                     } else {
                         echo $invalid_ssh_dialogue;
@@ -27,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 case "import":
                     $keyfile = $_FILES["keyfile"]["tmp_name"];
                     $key = file_get_contents($keyfile);
-                    if (UnitySite::testValidSSHKey($key)) {
+                    if ($SITE->testValidSSHKey($key)) {
                         array_push($added_keys, $key);
                     } else {
                         echo $invalid_ssh_dialogue;
@@ -40,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     $gh_user = $_POST["gh_user"];
                     $keys = $GITHUB->getSshPublicKeys($gh_user);
                     foreach ($keys as $key) {
-                        if (UnitySite::testValidSSHKey($key)) {
+                        if ($SITE->testValidSSHKey($key)) {
                             array_push($added_keys, $key);
                         }
                     }
@@ -48,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
 
             if (!empty($added_keys)) {
-                $added_keys = UnitySite::removeTrailingWhitespace($added_keys);
+                $added_keys = $SITE->removeTrailingWhitespace($added_keys);
                 $totalKeys = array_merge($USER->getSSHKeys(), $added_keys);
                 $USER->setSSHKeys($totalKeys, $OPERATOR);
             }

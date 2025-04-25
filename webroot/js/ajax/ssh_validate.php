@@ -1,6 +1,5 @@
 <?php
 
-require_once __DIR__ . "/../../../resources/lib/UnitySite.php";
-require_once __DIR__ . "/../../../vendor/autoload.php";
+require_once __DIR__ . "/../../../resources/autoload.php";
 
-echo UnityWebPortal\lib\UnitySite::testValidSSHKey($_POST["key"]) ? "true" : "false";
+echo $SITE->testValidSSHKey($_POST["key"]) ? "true" : "false";
