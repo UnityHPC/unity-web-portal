@@ -5,7 +5,7 @@ require_once __DIR__ . "/../../resources/autoload.php";
 use UnityWebPortal\lib\UnitySite;
 
 if (!$USER->isAdmin()) {
-    die();
+    throw new Exception("access denied");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

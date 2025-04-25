@@ -3,11 +3,11 @@
 require_once __DIR__ . "/../../../resources/autoload.php";
 
 if (!$USER->isAdmin()) {
-    die();
+    throw new Exception("access denied");
 }
 
 if (!isset($_GET["pageid"])) {
-    die("Pageid not found");
+    throw new Exception("Pageid not defined");
 }
 
 $page = $SQL->getPage($_GET["pageid"]);
