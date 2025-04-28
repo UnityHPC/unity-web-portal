@@ -74,12 +74,22 @@ function post(string $phpfile, array $post_data): void
     ob_start();
     try {
         include $phpfile;
-        ob_get_clean(); // discard output
-    } catch (Throwable $e) {
-        error_log(ob_get_clean()); // don't discard output
-        throw $e;
     } finally {
+        ob_get_clean(); // discard output
         unset($_POST);
+        unset($_SERVER["REQUEST_METHOD"]);
+    }
+}
+
+function get(string $phpfile): void
+{
+    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
+    $_SERVER["REQUEST_METHOD"] = "GET";
+    ob_start();
+    try {
+        include $phpfile;
+    } finally {
+        ob_get_clean(); // discard output
         unset($_SERVER["REQUEST_METHOD"]);
     }
 }
