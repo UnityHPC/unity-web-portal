@@ -42,20 +42,11 @@ $HTTP_HEADER_TEST_INPUTS = [
     mb_convert_encoding("Hello, World!", "UTF-16")
 ];
 
-function switchUser(
-    string $eppn,
-    string $given_name,
-    string $sn,
-    string $mail,
-    string|null $session_id = null
-): void {
+function switchUser(string $eppn, string $given_name, string $sn, string $mail): void
+{
     global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     session_write_close();
-    if (is_null($session_id)) {
-        session_id(str_replace(["_", "@", "."], "-", uniqid($eppn . "_")));
-    } else {
-        session_id($session_id);
-    }
+    session_id(str_replace(["_", "@", "."], "-", $eppn));
     // session_start will be called on the first post()
     $_SERVER["REMOTE_USER"] = $eppn;
     $_SERVER["REMOTE_ADDR"] = "127.0.0.1";
@@ -74,22 +65,12 @@ function post(string $phpfile, array $post_data): void
     ob_start();
     try {
         include $phpfile;
-    } finally {
         ob_get_clean(); // discard output
+    } catch (Throwable $e) {
+        error_log(ob_get_clean()); // don't discard output
+        throw $e;
+    } finally {
         unset($_POST);
-        unset($_SERVER["REQUEST_METHOD"]);
-    }
-}
-
-function get(string $phpfile): void
-{
-    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
-    $_SERVER["REQUEST_METHOD"] = "GET";
-    ob_start();
-    try {
-        include $phpfile;
-    } finally {
-        ob_get_clean(); // discard output
         unset($_SERVER["REQUEST_METHOD"]);
     }
 }
@@ -127,14 +108,4 @@ function getUserNotPiNotRequestedBecomePiRequestedAccountDeletion()
 function getUserWithOneKey()
 {
     return ["user5@org2.test", "foo", "bar", "user5@org2.test"];
-}
-
-function getNonExistentUser()
-{
-    return ["user1@nonexistent.test", "foo", "bar", "user1@nonexistent.test"];
-}
-
-function getAdminUser()
-{
-    return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
 }
