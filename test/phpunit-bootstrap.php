@@ -42,11 +42,20 @@ $HTTP_HEADER_TEST_INPUTS = [
     mb_convert_encoding("Hello, World!", "UTF-16")
 ];
 
-function switchUser(string $eppn, string $given_name, string $sn, string $mail): void
-{
+function switchUser(
+    string $eppn,
+    string $given_name,
+    string $sn,
+    string $mail,
+    string|null $session_id = null
+): void {
     global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     session_write_close();
-    session_id(str_replace(["_", "@", "."], "-", $eppn));
+    if (is_null($session_id)) {
+        session_id(str_replace(["_", "@", "."], "-", uniqid($eppn . "_")));
+    } else {
+        session_id($session_id);
+    }
     // session_start will be called on the first post()
     $_SERVER["REMOTE_USER"] = $eppn;
     $_SERVER["REMOTE_ADDR"] = "127.0.0.1";
