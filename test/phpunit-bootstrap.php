@@ -128,3 +128,13 @@ function getUserWithOneKey()
 {
     return ["user5@org2.test", "foo", "bar", "user5@org2.test"];
 }
+
+function getNonExistentUser()
+{
+    return ["user1@nonexistent.test", "foo", "bar", "user1@nonexistent.test"];
+}
+
+function getAdminUser()
+{
+    return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
+}
