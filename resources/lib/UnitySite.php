@@ -48,7 +48,7 @@ class UnitySite
                     "REMOTE_USER" => @$_SERVER["REMOTE_USER"],
                     "REMOTE_ADDR" => @$_SERVER["REMOTE_ADDR"],
                     // getTrace() is a list but the JSON is very verbose
-                    "trace" => explode(PHP_EOL, (new \Exception())->getTraceAsString())
+                    "trace" => (new \Exception())->getTraceAsString()
                 ]
             )
         );
