@@ -48,3 +48,10 @@ repos:
         language: system
         files: \.php$
         args: [-l]
+  - repo: local
+    hooks:
+      - id: assert-no-die
+        name: Assert No Die
+        entry: ./test/assert-no-die.bash
+        language: system
+        files: \.php$
