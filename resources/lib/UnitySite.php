@@ -50,7 +50,14 @@ class UnitySite
     {
         self::headerResponseCode(400);
         self::errorLog("bad request", $message);
-        self::die($message);
+        self::die();
+    }
+
+    public static function unauthorized($message)
+    {
+        self::headerResponseCode(401);
+        self::errorLog("unauthorized", $message);
+        self::die();
     }
 
     public static function removeTrailingWhitespace($arr)

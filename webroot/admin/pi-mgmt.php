@@ -7,7 +7,7 @@ use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnitySite;
 
 if (!$USER->isAdmin()) {
-    UnitySite::die();
+    UnitySite::unauthorized("not an admin");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

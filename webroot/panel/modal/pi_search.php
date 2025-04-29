@@ -7,7 +7,7 @@ use UnityWebPortal\lib\UnitySite;
 $search_query = $_GET["search"];  // Search is passed as a get var
 if (empty($search_query)) {
     echo "<span>No Results</span>";
-    UnitySite::die("no results");
+    UnitySite::die();
 }
 
 $assocs = $LDAP->getAllPIGroups($SQL, $MAILER, $REDIS, $WEBHOOK);

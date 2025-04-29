@@ -21,7 +21,7 @@ foreach ($members as $member) {
 }
 
 if ($found) {
-    UnitySite::die("not a group member");
+    UnitySite::unauthorized("not a group member");
 }
 
 $count = count($members);

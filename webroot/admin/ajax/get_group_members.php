@@ -6,7 +6,7 @@ use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnitySite;
 
 if (!$USER->isAdmin()) {
-    UnitySite::die();
+    UnitySite::unauthorized("not an admin");
 }
 
 if (!isset($_GET["pi_uid"])) {
