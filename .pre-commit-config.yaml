@@ -50,8 +50,8 @@ repos:
         args: [-l]
   - repo: local
     hooks:
-      - id: assert-no-die
-        name: Assert No Die
-        entry: ./test/assert-no-die.bash
+      - id: assert-no-die-exit
+        name: Assert no die()/exit()
+        entry: ./test/assert-no-die-exit.bash
         language: system
         files: \.php$
