@@ -3,7 +3,7 @@
 require_once __DIR__ . "/../../resources/autoload.php";
 
 if (!$USER->isAdmin()) {
-    throw new Exception("access denied");
+    die();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

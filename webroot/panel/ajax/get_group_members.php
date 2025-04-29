@@ -5,7 +5,7 @@ require_once __DIR__ . "/../../../resources/autoload.php";
 use UnityWebPortal\lib\UnityGroup;
 
 if (!isset($_GET["pi_uid"])) {
-    throw new Exception("PI UID not set");
+    die("PI UID not set");
 }
 
 $group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);

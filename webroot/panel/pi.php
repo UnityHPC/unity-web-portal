@@ -8,7 +8,7 @@ use UnityWebPortal\lib\UnitySite;
 $group = $USER->getPIGroup();
 
 if (!$USER->isPI()) {
-    throw new Exception("access denied");
+    die();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

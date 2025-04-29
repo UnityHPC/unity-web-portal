@@ -6,7 +6,7 @@ use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityGroup;
 
 if (!$USER->isAdmin()) {
-    throw new Exception("access denied");
+    die();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

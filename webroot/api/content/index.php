@@ -11,7 +11,7 @@ if (isset($_GET["line_wrap"])) {
 }
 
 if (!isset($_GET["content_name"])) {
-    throw new Exception("content_name not set");
+    die();
 }
 
 echo $SQL->getPage($_GET["content_name"])["content"];
