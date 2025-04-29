@@ -32,10 +32,9 @@ class UnitySite
         }
     }
 
-    public static function headerResponseCode(int $code)
+    public static function headerResponseCode(int $code, string $reason)
     {
-        $responseCodeMessage = @http_response_code($code) ?? "";
-        $msg = $_SERVER["SERVER_PROTOCOL"] . " " . strval($code) . " " . $responseCodeMessage;
+        $msg = $_SERVER["SERVER_PROTOCOL"] . " " . strval($code) . " " . $reason;
         header($msg, true, $code);
     }
 
@@ -56,14 +55,14 @@ class UnitySite
 
     public static function badRequest($message)
     {
-        self::headerResponseCode(400);
+        self::headerResponseCode(400, "bad request");
         self::errorLog("bad request", $message);
         self::die();
     }
 
     public static function forbidden($message)
     {
-        self::headerResponseCode(403);
+        self::headerResponseCode(403, "forbidden");
         self::errorLog("forbidden", $message);
         self::die();
     }
