@@ -84,7 +84,7 @@ function http_post(string $phpfile, array $post_data): void
     }
 }
 
-function get(string $phpfile): void
+function http_get(string $phpfile): void
 {
     global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     $_SERVER["REQUEST_METHOD"] = "GET";
