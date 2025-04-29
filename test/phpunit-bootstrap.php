@@ -99,7 +99,7 @@ function get(string $phpfile): void
 
 function getNormalUser()
 {
-    return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
+    return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
 }
 
 function getUserHasNotRequestedAccountDeletionHasGroup()
