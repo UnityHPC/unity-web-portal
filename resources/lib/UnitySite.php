@@ -7,12 +7,20 @@ use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
 
 class UnitySite
 {
-    public static function die($x)
+    public static function die($x = null)
     {
         if (@$GLOBALS["PHPUNIT_NO_DIE_PLEASE"] == true) {
-            throw new PhpUnitNoDieException(strval($x));
+            if (is_null($x)) {
+                throw new PhpUnitNoDieException();
+            } else {
+                throw new PhpUnitNoDieException($x);
+            }
         } else {
-            die($x);
+            if (is_null($x)) {
+                die();
+            } else {
+                die($x);
+            }
         }
     }
 
@@ -28,7 +36,7 @@ class UnitySite
     {
         $responseCodeMessage = @http_response_code($code) ?? "";
         $msg = $_SERVER["SERVER_PROTOCOL"] . " " . strval($code) . " " . $responseCodeMessage;
-        header($msg, true, $ncode);
+        header($msg, true, $code);
     }
 
     public static function errorLog(string $title, string $message)
@@ -53,10 +61,10 @@ class UnitySite
         self::die();
     }
 
-    public static function unauthorized($message)
+    public static function forbidden($message)
     {
-        self::headerResponseCode(401);
-        self::errorLog("unauthorized", $message);
+        self::headerResponseCode(403);
+        self::errorLog("forbidden", $message);
         self::die();
     }
 
