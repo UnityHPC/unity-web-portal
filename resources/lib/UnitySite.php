@@ -37,8 +37,8 @@ class UnitySite
             "$title: " . json_encode(
                 [
                     "message" => $message,
-                    "REMOTE_USER" => @$_SERVER["REMOTE_USER"], // "@": allow null default value
-                    "REMOTE_ADDR" => @$_SERVER["REMOTE_ADDR"], // "@": allow null default value
+                    "REMOTE_USER" => @$_SERVER["REMOTE_USER"],
+                    "REMOTE_ADDR" => @$_SERVER["REMOTE_ADDR"],
                     // getTrace() is a list but the JSON is very verbose
                     "trace" => explode(PHP_EOL, (new \Exception())->getTraceAsString())
                 ]
