@@ -12,7 +12,7 @@ class UnitySite
         if (@$GLOBALS["PHPUNIT_NO_DIE_PLEASE"] == true) {
             throw new PhpUnitNoDieException(strval($x));
         } else {
-            \die($x);
+            die($x);
         }
     }
 
