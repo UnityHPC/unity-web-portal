@@ -3,7 +3,6 @@
 use UnityWebPortal\lib\UnitySite;
 use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
 
 class ViewAsUserTest extends TestCase
 {
