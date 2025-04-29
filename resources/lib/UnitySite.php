@@ -2,6 +2,7 @@
 
 namespace UnityWebPortal\lib;
 
+use \UnityWebPortal\lib\exceptions\RedirectException;
 use phpseclib3\Crypt\PublicKeyLoader;
 
 class UnitySite
@@ -10,7 +11,9 @@ class UnitySite
     {
         if ($_SERVER["PHP_SELF"] != $destination) {
             header("Location: $destination");
-            die("Redirect failed, click <a href='$destination'>here</a> to continue.");
+            // kill current PHP process, user's browser will start a new one when they HTTP GET $destination
+            echo "Redirect failed, click <a href='$destination'>here</a> to continue.";
+            throw new RedirectException($destination);
         }
     }
 
