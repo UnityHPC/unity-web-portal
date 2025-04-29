@@ -3,8 +3,14 @@
 require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\exceptions\RedirectException;
 
-require_once $LOC_HEADER;
+try {
+    include $LOC_HEADER;
+} catch (RedirectException $e) {
+    echo $e->getMessage();
+    return;
+}
 
 $invalid_ssh_dialogue = "<script type='text/javascript'>
 alert('Invalid SSH key. Please verify your public key file is valid.');
