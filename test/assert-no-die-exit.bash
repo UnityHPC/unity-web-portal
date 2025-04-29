@@ -5,6 +5,8 @@ if [[ $# -lt 1 ]]; then
     exit 1
 fi
 
+rc=0
+
 # --color=never because magit git output log doesn't support it
 die_occurrences="$(
     grep -H --color=never --line-number -P '\bdie\s*[\(;]' "$@" | grep -v -P 'UnitySite::die'
@@ -12,7 +14,7 @@ die_occurrences="$(
 if [ -n "$die_occurrences" ]; then
     echo "die is not allowed! use UnitySite::die() instead."
     echo "$die_occurrences"
-    exit 1
+    rc=1
 fi
 
 # --color=never because magit git output log doesn't support it
@@ -20,5 +22,7 @@ exit_occurrences="$(grep -H --color=never --line-number -P '\bexit\s*[\(;]' "$@"
 if [ -n "$exit_occurrences" ]; then
     echo "exit is not allowed! use UnitySite::die() instead."
     echo "$exit_occurrences"
-    exit 1
+    rc=1
 fi
+
+exit "$rc"
