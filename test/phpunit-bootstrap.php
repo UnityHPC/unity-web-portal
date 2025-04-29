@@ -69,7 +69,7 @@ function switchUser(
     assert(!is_null($USER));
 }
 
-function post(string $phpfile, array $post_data): void
+function http_post(string $phpfile, array $post_data): void
 {
     global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     $_SERVER["REQUEST_METHOD"] = "POST";

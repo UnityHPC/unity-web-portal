@@ -38,12 +38,12 @@ class AccountDeletionRequestTest extends TestCase
         $this->assertEmpty($USER->getGroups());
         $this->assertNumberAccountDeletionRequests(0);
         try {
-            post(
+            http_post(
                 __DIR__ . "/../../webroot/panel/account.php",
                 ["form_type" => "account_deletion_request"]
             );
             $this->assertNumberAccountDeletionRequests(1);
-            post(
+            http_post(
                 __DIR__ . "/../../webroot/panel/account.php",
                 ["form_type" => "account_deletion_request"]
             );
@@ -62,7 +62,7 @@ class AccountDeletionRequestTest extends TestCase
         $this->assertNotEmpty($USER->getGroups());
         $this->assertNumberAccountDeletionRequests(0);
         try {
-            post(
+            http_post(
                 __DIR__ . "/../../webroot/panel/account.php",
                 ["form_type" => "account_deletion_request"]
             );
