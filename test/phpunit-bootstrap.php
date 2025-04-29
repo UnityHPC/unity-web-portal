@@ -14,6 +14,9 @@ require_once __DIR__ . "/../resources/lib/UnityConfig.php";
 require_once __DIR__ . "/../resources/lib/UnityWebhook.php";
 require_once __DIR__ . "/../resources/lib/UnityRedis.php";
 require_once __DIR__ . "/../resources/lib/UnityGithub.php";
+require_once __DIR__ . "/../resources/lib/exceptions/PhpUnitNoDieException.php";
+
+$GLOBALS["PHPUNIT_NO_DIE_PLEASE"] = true;
 
 global $HTTP_HEADER_TEST_INPUTS;
 $HTTP_HEADER_TEST_INPUTS = [

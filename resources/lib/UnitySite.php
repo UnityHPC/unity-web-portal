@@ -3,13 +3,13 @@
 namespace UnityWebPortal\lib;
 
 use phpseclib3\Crypt\PublicKeyLoader;
-use UnityWebPortal\lib\exceptions\TestingDieException;
+use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
 
 class UnitySite
 {
     public static function die($x)
     {
-        if ($GLOBALS["PHPUNIT_NO_DIE_PLEASE"] ?? false) {
+        if (@$GLOBALS["PHPUNIT_NO_DIE_PLEASE"] == true) {
             throw new PhpUnitNoDieException(strval($x));
         } else {
             \die($x);
@@ -20,8 +20,37 @@ class UnitySite
     {
         if ($_SERVER["PHP_SELF"] != $destination) {
             header("Location: $destination");
-            die("Redirect failed, click <a href='$destination'>here</a> to continue.");
+            self::die("Redirect failed, click <a href='$destination'>here</a> to continue.");
         }
+    }
+
+    public static function headerResponseCode(int $code)
+    {
+        $responseCodeMessage = @http_response_code($code) ?? "";
+        $msg = $_SERVER["SERVER_PROTOCOL"] . " " . strval($code) . " " . $responseCodeMessage;
+        header($msg, true, $ncode);
+    }
+
+    public static function errorLog(string $title, string $message)
+    {
+        error_log(
+            "$title: " . json_encode(
+                [
+                    "message" => $message,
+                    "REMOTE_USER" => @$_SERVER["REMOTE_USER"], // "@": allow null default value
+                    "REMOTE_ADDR" => @$_SERVER["REMOTE_ADDR"], // "@": allow null default value
+                    // getTrace() is a list but the JSON is very verbose
+                    "trace" => explode(PHP_EOL, (new \Exception())->getTraceAsString())
+                ]
+            )
+        );
+    }
+
+    public static function badRequest($message)
+    {
+        self::headerResponseCode(400);
+        self::errorLog("bad request", $message);
+        self::die($message);
     }
 
     public static function removeTrailingWhitespace($arr)
