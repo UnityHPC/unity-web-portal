@@ -3,9 +3,19 @@
 namespace UnityWebPortal\lib;
 
 use phpseclib3\Crypt\PublicKeyLoader;
+use UnityWebPortal\lib\exceptions\TestingDieException;
 
 class UnitySite
 {
+    public static function die($x)
+    {
+        if ($GLOBALS["PHPUNIT_NO_DIE_PLEASE"] ?? false) {
+            throw new PhpUnitNoDieException(strval($x));
+        } else {
+            \die($x);
+        }
+    }
+
     public static function redirect($destination)
     {
         if ($_SERVER["PHP_SELF"] != $destination) {
