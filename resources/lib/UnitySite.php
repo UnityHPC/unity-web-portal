@@ -32,7 +32,7 @@ class UnitySite
         }
     }
 
-    public static function headerResponseCode(int $code, string $reason)
+    private static function headerResponseCode(int $code, string $reason)
     {
         $msg = $_SERVER["SERVER_PROTOCOL"] . " " . strval($code) . " " . $reason;
         header($msg, true, $code);
