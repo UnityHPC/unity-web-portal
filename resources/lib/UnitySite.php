@@ -6,7 +6,7 @@ use phpseclib3\Crypt\PublicKeyLoader;
 
 class UnitySite
 {
-    public function redirect($destination)
+    public static function redirect($destination)
     {
         if ($_SERVER["PHP_SELF"] != $destination) {
             header("Location: $destination");
@@ -14,7 +14,7 @@ class UnitySite
         }
     }
 
-    public function removeTrailingWhitespace($arr)
+    public static function removeTrailingWhitespace($arr)
     {
         $out = array();
         foreach ($arr as $str) {
@@ -25,7 +25,7 @@ class UnitySite
         return $out;
     }
 
-    public function testValidSSHKey($key_str)
+    public static function testValidSSHKey($key_str)
     {
         // key loader still throws, these just mute warnings for phpunit
         // https://github.com/phpseclib/phpseclib/issues/2079
