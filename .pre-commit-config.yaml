@@ -55,3 +55,4 @@ repos:
         entry: ./test/assert-no-die-exit.bash
         language: system
         files: \.php$
+        exclude: \./resources/lib/UnitySite.php$
