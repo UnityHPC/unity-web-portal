@@ -4,6 +4,8 @@ require "../../../resources/autoload.php";
 
 use phpseclib3\Crypt\RSA;
 
+header('Content-type: text/plain');
+
 $private = RSA::createKey(2048);
 $public = $private->getPublicKey();
 
