@@ -21,22 +21,24 @@ foreach ($members as $member) {
 }
 
 if ($found) {
-    $count = count($members);
-    foreach ($members as $key => $member) {
-        if ($member->getUID() == $group->getOwner()->getUID()) {
-            continue;
-        }
+    UnitySite::die();
+}
 
-        if ($key >= $count - 1) {
-            echo "<tr class='expanded $key last'>";
-        } else {
-            echo "<tr class='expanded $key'>";
-        }
-
-        echo "<td>" . $member->getFullname() . "</td>";
-        echo "<td>" . $member->getUID() . "</td>";
-        echo "<td><a href='mailto:" . $member->getMail() . "'>" . $member->getMail() . "</a></td>";
-        echo "<td><input type='hidden' name='uid' value='" . $member->getUID() . "'></td>";
-        echo "</tr>";
+$count = count($members);
+foreach ($members as $key => $member) {
+    if ($member->getUID() == $group->getOwner()->getUID()) {
+        continue;
     }
+
+    if ($key >= $count - 1) {
+        echo "<tr class='expanded $key last'>";
+    } else {
+        echo "<tr class='expanded $key'>";
+    }
+
+    echo "<td>" . $member->getFullname() . "</td>";
+    echo "<td>" . $member->getUID() . "</td>";
+    echo "<td><a href='mailto:" . $member->getMail() . "'>" . $member->getMail() . "</a></td>";
+    echo "<td><input type='hidden' name='uid' value='" . $member->getUID() . "'></td>";
+    echo "</tr>";
 }
