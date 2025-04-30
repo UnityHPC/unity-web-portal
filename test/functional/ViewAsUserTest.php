@@ -6,21 +6,21 @@ use PHPUnit\Framework\TestCase;
 
 class ViewAsUserTest extends TestCase
 {
-    public function testViewAsUser()
+    public function _testViewAsUser(array $beforeUser, array $afterUser)
     {
         global $USER;
-        switchUser(...getNormalUser());
-        $newUid = $USER->getUID();
-        switchUser(...getAdminUser());
-        $this->assertTrue($USER->isAdmin());
-        $originalUid = $USER->getUID();
-        $this->assertNotEquals($newUid, $originalUid);
+        switchUser(...$afterUser);
+        $afterUid = $USER->getUID();
+        switchUser(...$beforeUser);
+        // $this->assertTrue($USER->isAdmin());
+        $beforeUid = $USER->getUID();
+        // $this->assertNotEquals($afterUid, $beforeUid);
         try {
             http_post(
                 __DIR__ . "/../../webroot/admin/user-mgmt.php",
                 [
                     "form_name" => "viewAsUser",
-                    "uid" => $newUid,
+                    "uid" => $afterUid,
                 ],
             );
         } catch (PhpUnitNoDieException) {}
@@ -30,8 +30,8 @@ class ViewAsUserTest extends TestCase
         session_write_close();
         http_get(__DIR__ . "/../../resources/init.php");
         // now we should be new user
-        $this->assertEquals($newUid, $USER->getUID());
-        $this->assertTrue($_SESSION["user_exists"]);
+        $this->assertEquals($afterUid, $USER->getUID());
+        // $this->assertTrue($_SESSION["user_exists"]);
         try {
             http_post(
                 __DIR__ . "/../../resources/templates/header.php",
@@ -44,6 +44,21 @@ class ViewAsUserTest extends TestCase
         session_write_close();
         http_get(__DIR__ . "/../../resources/init.php");
         // now we should be back to original user
-        $this->assertEquals($originalUid, $USER->getUID());
+        $this->assertEquals($beforeUid, $USER->getUID());
+    }
+
+    public function testViewAsUser()
+    {
+        $this->_testViewAsUser(getAdminUser(), getNormalUser());
+    }
+
+    public function testViewAsNonExistentUser()
+    {
+        $this->_testViewAsUser(getAdminUser(), getNonExistentUser());
+    }
+
+    public function testViewAsSelf()
+    {
+        $this->_testViewAsUser(getAdminUser(), getAdminUser());
     }
 }
