@@ -34,7 +34,8 @@ class UnitySite
 
     private static function headerResponseCode(int $code, string $reason)
     {
-        $msg = $_SERVER["SERVER_PROTOCOL"] . " " . strval($code) . " " . $reason;
+        $protocol = @$_SERVER["SERVER_PROTOCOL"] ?? "HTTP/1.1";
+        $msg = $protocol . " " . strval($code) . " " . $reason;
         header($msg, true, $code);
     }
 
