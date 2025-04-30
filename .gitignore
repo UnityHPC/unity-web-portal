@@ -9,10 +9,7 @@ resources/custom_user_mappings/*.csv
 **/.rnd
 
 # don't track vendor files from composer
-vendor/**
-!vendor/hakasapl/
-!vendor/hakasapl/phpopenldaper/
-!vendor/hakasapl/phpopenldaper/**
+vendor
 composer.lock
 
 # don't track site configs
