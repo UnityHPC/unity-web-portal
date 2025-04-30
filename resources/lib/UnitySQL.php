@@ -8,9 +8,7 @@ class UnitySQL
 {
     private const TABLE_REQS = "requests";
     private const TABLE_NOTICES = "notices";
-    private const TABLE_SSOLOG = "sso_log";
     private const TABLE_PAGES = "pages";
-    private const TABLE_EVENTS = "events";
     private const TABLE_AUDIT_LOG = "audit_log";
     private const TABLE_ACCOUNT_DELETION_REQUESTS = "account_deletion_requests";
     private const TABLE_SITEVARS = "sitevars";
@@ -233,18 +231,6 @@ class UnitySQL
             "edited_page",
             $operator
         );
-    }
-
-    public function addEvent($operator, $action, $entity)
-    {
-        $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_EVENTS . " (operator, action, entity) VALUE (:operator, :action, :entity)"
-        );
-        $stmt->bindParam(":operator", $operator);
-        $stmt->bindParam(":action", $action);
-        $stmt->bindParam(":entity", $entity);
-
-        $stmt->execute();
     }
 
     // audit log table methods
