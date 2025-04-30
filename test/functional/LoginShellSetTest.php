@@ -42,7 +42,7 @@ class LoginShellSetTest extends TestCase
         if (!$this->isShellValid($shell)) {
             $this->expectException("Exception");
         }
-        post(
+        http_post(
             __DIR__ . "/../../webroot/panel/account.php",
             ["form_type" => "loginshell", "shellSelect" => $shell]
         );

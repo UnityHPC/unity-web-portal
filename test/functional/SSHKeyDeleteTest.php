@@ -13,7 +13,7 @@ class SSHKeyDeleteTest extends TestCase {
     }
 
     private function deleteKey(string $index): void {
-        post(
+        http_post(
             __DIR__ . "/../../webroot/panel/account.php",
             ["form_type" => "delKey", "delIndex" => $index]
         );

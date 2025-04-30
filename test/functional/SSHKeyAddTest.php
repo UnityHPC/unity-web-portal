@@ -9,7 +9,7 @@ class SSHKeyAddTest extends TestCase
 {
     private function addSshKeysPaste(array $keys): void {
         foreach ($keys as $key) {
-            post(
+            http_post(
                 __DIR__ . "/../../webroot/panel/account.php",
                 [
                     "form_type" => "addKey",
@@ -27,7 +27,7 @@ class SSHKeyAddTest extends TestCase
             fwrite($tmp, $key);
             $_FILES["keyfile"] = ["tmp_name" => $tmp_path];
             try {
-                post(
+                http_post(
                     __DIR__ . "/../../webroot/panel/account.php",
                     ["form_type" => "addKey", "add_type" => "import"]
                 );
@@ -40,7 +40,7 @@ class SSHKeyAddTest extends TestCase
 
     private function addSshKeysGenerate(array $keys): void {
         foreach ($keys as $key) {
-            post(
+            http_post(
                 __DIR__ . "/../../webroot/panel/account.php",
                 [
                     "form_type" => "addKey",
@@ -57,7 +57,7 @@ class SSHKeyAddTest extends TestCase
         $GITHUB = $this->createMock(UnityGithub::class);
         $GITHUB->method("getSshPublicKeys")->willReturn($keys);
         try {
-            post(
+            http_post(
                 __DIR__ . "/../../webroot/panel/account.php",
                 [
                     "form_type" => "addKey",

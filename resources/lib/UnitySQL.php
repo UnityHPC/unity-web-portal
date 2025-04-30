@@ -8,9 +8,7 @@ class UnitySQL
 {
     private const TABLE_REQS = "requests";
     private const TABLE_NOTICES = "notices";
-    private const TABLE_SSOLOG = "sso_log";
     private const TABLE_PAGES = "pages";
-    private const TABLE_EVENTS = "events";
     private const TABLE_AUDIT_LOG = "audit_log";
     private const TABLE_ACCOUNT_DELETION_REQUESTS = "account_deletion_requests";
     private const TABLE_SITEVARS = "sitevars";
@@ -21,7 +19,8 @@ class UnitySQL
     private const TABLE_GROUP_JOIN_REQUESTS = "groupJoinRequests";
 
 
-    private const REQUEST_ADMIN = "admin";
+    // FIXME this string should be changed to something more intuitive, requires production sql change
+    private const REQUEST_BECOME_PI = "admin";
 
     private $conn;
 
@@ -39,7 +38,7 @@ class UnitySQL
     //
     // requests table methods
     //
-    public function addRequest($requestor, $dest = self::REQUEST_ADMIN)
+    public function addRequest($requestor, $dest = self::REQUEST_BECOME_PI)
     {
         if ($this->requestExists($requestor, $dest)) {
             return;
@@ -54,7 +53,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function removeRequest($requestor, $dest = self::REQUEST_ADMIN)
+    public function removeRequest($requestor, $dest = self::REQUEST_BECOME_PI)
     {
         if (!$this->requestExists($requestor, $dest)) {
             return;
@@ -69,7 +68,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function removeRequests($dest = self::REQUEST_ADMIN)
+    public function removeRequests($dest = self::REQUEST_BECOME_PI)
     {
         $stmt = $this->conn->prepare(
             "DELETE FROM " . self::TABLE_REQS . " WHERE request_for=:request_for"
@@ -79,7 +78,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function requestExists($requestor, $dest = self::REQUEST_ADMIN)
+    public function requestExists($requestor, $dest = self::REQUEST_BECOME_PI)
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid and request_for=:request_for"
@@ -92,7 +91,7 @@ class UnitySQL
         return count($stmt->fetchAll()) > 0;
     }
 
-    public function getRequests($dest = self::REQUEST_ADMIN)
+    public function getRequests($dest = self::REQUEST_BECOME_PI)
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_REQS . " WHERE request_for=:request_for"
@@ -232,18 +231,6 @@ class UnitySQL
             "edited_page",
             $operator
         );
-    }
-
-    public function addEvent($operator, $action, $entity)
-    {
-        $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_EVENTS . " (operator, action, entity) VALUE (:operator, :action, :entity)"
-        );
-        $stmt->bindParam(":operator", $operator);
-        $stmt->bindParam(":action", $action);
-        $stmt->bindParam(":entity", $entity);
-
-        $stmt->execute();
     }
 
     // audit log table methods

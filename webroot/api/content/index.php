@@ -1,5 +1,7 @@
 <?php
 
+use UnityWebPortal\lib\UnitySite;
+
 header('Content-type: text/plain');
 
 require_once __DIR__ . "/../../../resources/autoload.php";
@@ -11,7 +13,7 @@ if (isset($_GET["line_wrap"])) {
 }
 
 if (!isset($_GET["content_name"])) {
-    die();
+    UnitySite::badRequest("content_name not set");
 }
 
 echo $SQL->getPage($_GET["content_name"])["content"];

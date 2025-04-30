@@ -4,6 +4,8 @@ namespace UnityWebPortal\lib;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+// use PHPUnit\Framework\Attributes\BackupGlobals;
+// use PHPUnit\Framework\Attributes\RunTestsInSeparateProcess;
 
 class UnitySiteTest extends TestCase
 {
@@ -75,8 +77,28 @@ class UnitySiteTest extends TestCase
     #[DataProvider("SSHKeyProvider")]
     public function testTestValidSSHKey(bool $expected, string $key)
     {
-        $SITE = new UnitySite();
-        $this->assertEquals($expected, $SITE->testValidSSHKey($key));
+        $this->assertEquals($expected, UnitySite::testValidSSHKey($key));
     }
 
+    // I suspect that this test could have unexpected interactions with other tests.
+    // even with RunTestsInSeparateProcess and BackupGlobalState, http_response_code()
+    // still persists to the next test. header("HTTP/1.1 false") puts it back to its
+    // initial value, but this is a hack and does not inspire confidence.
+    // #[BackupGlobals(true)]
+    // #[RunTestsInSeparateProcess]
+    // public function testHeaderResponseCode()
+    // {
+    //     $this->assertEquals(false, http_response_code());
+    //     $this->assertArrayNotHasKey("SERVER_PROTOCOL", $_SERVER);
+    //     try {
+    //         $_SERVER["SERVER_PROTOCOL"] = "HTTP/1.1";
+    //         UnitySite::headerResponseCode(400);
+    //         $this->assertEquals(400, http_response_code());
+    //         UnitySite::headerResponseCode(401);
+    //         $this->assertEquals(401, http_response_code());
+    //     } finally {
+    //         unset($_SERVER["SERVER_PROTOCOL"]);
+    //         header("HTTP/1.1 false");
+    //     }
+    // }
 }

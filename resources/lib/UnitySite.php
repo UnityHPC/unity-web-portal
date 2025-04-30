@@ -3,15 +3,68 @@
 namespace UnityWebPortal\lib;
 
 use phpseclib3\Crypt\PublicKeyLoader;
+use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
 
 class UnitySite
 {
+    public static function die($x = null)
+    {
+        if (@$GLOBALS["PHPUNIT_NO_DIE_PLEASE"] == true) {
+            if (is_null($x)) {
+                throw new PhpUnitNoDieException();
+            } else {
+                throw new PhpUnitNoDieException($x);
+            }
+        } else {
+            if (is_null($x)) {
+                die();
+            } else {
+                die($x);
+            }
+        }
+    }
+
     public static function redirect($destination)
     {
         if ($_SERVER["PHP_SELF"] != $destination) {
             header("Location: $destination");
-            die("Redirect failed, click <a href='$destination'>here</a> to continue.");
+            self::die("Redirect failed, click <a href='$destination'>here</a> to continue.");
         }
+    }
+
+    private static function headerResponseCode(int $code, string $reason)
+    {
+        $protocol = @$_SERVER["SERVER_PROTOCOL"] ?? "HTTP/1.1";
+        $msg = $protocol . " " . strval($code) . " " . $reason;
+        header($msg, true, $code);
+    }
+
+    public static function errorLog(string $title, string $message)
+    {
+        error_log(
+            "$title: " . json_encode(
+                [
+                    "message" => $message,
+                    "REMOTE_USER" => @$_SERVER["REMOTE_USER"],
+                    "REMOTE_ADDR" => @$_SERVER["REMOTE_ADDR"],
+                    "trace" => (new \Exception())->getTraceAsString()
+                ]
+            )
+        );
+    }
+
+    public static function badRequest($message)
+    {
+        self::headerResponseCode(400, "bad request");
+        self::errorLog("bad request", $message);
+        self::die();
+    }
+
+    public static function forbidden($message)
+    {
+        self::headerResponseCode(403, "forbidden");
+        self::errorLog("forbidden", $message);
+        self::die();
     }
 
     public static function removeTrailingWhitespace($arr)

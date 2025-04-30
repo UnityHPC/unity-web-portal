@@ -11,10 +11,6 @@ use PHPOpenLDAPer\LDAPEntry;
 class UnityLDAP extends ldapConn
 {
   // User Specific Constants
-    private const ID_MAP = array(1000, 9999);
-    private const PI_ID_MAP = array(10000, 19999);
-    private const ORG_ID_MAP = array(20000, 29999);
-
     private const RDN = "cn";  // The defauls RDN for LDAP entries is set to "common name"
 
     public const POSIX_ACCOUNT_CLASS = array(
@@ -315,21 +311,25 @@ class UnityLDAP extends ldapConn
 
     public function getUserEntry($uid)
     {
+        $uid = ldap_escape($uid, LDAP_ESCAPE_DN);
         return $this->getEntry(unityLDAP::RDN . "=$uid," . $this->STR_USEROU);
     }
 
     public function getGroupEntry($gid)
     {
+        $uid = ldap_escape($gid, LDAP_ESCAPE_DN);
         return $this->getEntry(unityLDAP::RDN . "=$gid," . $this->STR_GROUPOU);
     }
 
     public function getPIGroupEntry($gid)
     {
+        $uid = ldap_escape($gid, LDAP_ESCAPE_DN);
         return $this->getEntry(unityLDAP::RDN . "=$gid," . $this->STR_PIGROUPOU);
     }
 
     public function getOrgGroupEntry($gid)
     {
+        $uid = ldap_escape($gid, LDAP_ESCAPE_DN);
         return $this->getEntry(unityLDAP::RDN . "=$gid," . $this->STR_ORGGROUPOU);
     }
 }
