@@ -10,6 +10,10 @@ require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/../vendor/hakasapl/phpopenldaper/src/PHPOpenLDAPer/LDAPEntry.php";
 require_once __DIR__ . "/../vendor/hakasapl/phpopenldaper/src/PHPOpenLDAPer/LDAPConn.php";
 
+// submodule
+require_once __DIR__ . "/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPEntry.php";
+require_once __DIR__ . "/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPConn.php";
+
 // load libs
 require_once __DIR__ . "/lib/UnityLDAP.php";
 require_once __DIR__ . "/lib/UnityUser.php";

@@ -29,7 +29,8 @@ Unity Web Portal is a PHP application built in top of MariaDB and LDAP which act
         6. `php-pdo`
 2. Composer packages
     1. `cd` to this repository
-    2. Install packages `composer update`
+    1. Setup git submodules `git submodule update --init --checkout`
+    1. Install packages `composer update`
 3. Setup config file `config/config.ini` according to your site deployment
 4. Setup branding file `config/branding/config.ini` according to your site deployment
 5. Point your web server's document root to `webroot` in this repo
