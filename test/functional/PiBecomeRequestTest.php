@@ -38,12 +38,12 @@ class PiBecomeRequestTest extends TestCase
         $this->assertFalse($USER->isPI());
         $this->assertNumberPiBecomeRequests(0);
         try {
-            post(
+            http_post(
                 __DIR__ . "/../../webroot/panel/account.php",
                 ["form_type" => "pi_request"]
             );
             $this->assertNumberPiBecomeRequests(1);
-            post(
+            http_post(
                 __DIR__ . "/../../webroot/panel/account.php",
                 ["form_type" => "pi_request"]
             );
@@ -61,7 +61,7 @@ class PiBecomeRequestTest extends TestCase
         $this->assertNumberPiBecomeRequests(0);
         $this->assertTrue($SQL->accDeletionRequestExists($USER->getUID()));
         try {
-            post(
+            http_post(
                 __DIR__ . "/../../webroot/panel/account.php",
                 ["form_type" => "pi_request"]
             );

@@ -8,7 +8,7 @@ use UnityWebPortal\lib\UnitySite;
 $group = $USER->getPIGroup();
 
 if (!$USER->isPI()) {
-    die();
+    UnitySite::forbidden("not a PI");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

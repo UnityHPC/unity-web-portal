@@ -16,3 +16,5 @@ composer.lock
 deployment/*
 !deployment/**/README.md
 !deployment/deploy.sh
+
+.phpunit.result.cache
