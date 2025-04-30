@@ -61,4 +61,23 @@ class ViewAsUserTest extends TestCase
     {
         $this->_testViewAsUser(getAdminUser(), getAdminUser());
     }
+
+    public function testNonAdminViewAsAdmin()
+    {
+        global $USER;
+        switchUser(...getAdminUser());
+        $adminUid = $USER->getUID();
+        $this->assertTrue($USER->isAdmin());
+        switchUser(...getNormalUser());
+        try {
+            http_post(
+                __DIR__ . "/../../webroot/admin/user-mgmt.php",
+                [
+                    "form_name" => "viewAsUser",
+                    "uid" => $adminUid,
+                ],
+            );
+        } catch (PhpUnitNoDieException) {}
+        $this->assertArrayNotHasKey("viewUser", $_SESSION);
+    }
 }
