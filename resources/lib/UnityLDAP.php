@@ -11,10 +11,6 @@ use PHPOpenLDAPer\LDAPEntry;
 class UnityLDAP extends ldapConn
 {
   // User Specific Constants
-    private const ID_MAP = array(1000, 9999);
-    private const PI_ID_MAP = array(10000, 19999);
-    private const ORG_ID_MAP = array(20000, 29999);
-
     private const RDN = "cn";  // The defauls RDN for LDAP entries is set to "common name"
 
     public const POSIX_ACCOUNT_CLASS = array(
