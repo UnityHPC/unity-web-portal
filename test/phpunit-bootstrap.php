@@ -17,7 +17,6 @@ require_once __DIR__ . "/../resources/lib/UnityConfig.php";
 require_once __DIR__ . "/../resources/lib/UnityWebhook.php";
 require_once __DIR__ . "/../resources/lib/UnityRedis.php";
 require_once __DIR__ . "/../resources/lib/UnityGithub.php";
-require_once __DIR__ . "/../resources/lib/exceptions/RedirectException.php";
 
 global $HTTP_HEADER_TEST_INPUTS;
 $HTTP_HEADER_TEST_INPUTS = [
