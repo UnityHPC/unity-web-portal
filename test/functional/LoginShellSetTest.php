@@ -23,9 +23,7 @@ class LoginShellSetTest extends TestCase
     public static function getShells()
     {
         global $HTTP_HEADER_TEST_INPUTS;
-        // phpcs:disable
         return [["/bin/bash"]] + array_map(function($x){return [$x];}, $HTTP_HEADER_TEST_INPUTS);
-        // phpcs:enable
     }
 
     private function isShellValid(string $shell)
