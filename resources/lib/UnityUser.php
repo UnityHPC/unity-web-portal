@@ -71,6 +71,7 @@ class UnityUser
             $ldapUserEntry->setAttribute("uid", $this->uid);
             $ldapUserEntry->setAttribute("givenname", $this->getFirstname());
             $ldapUserEntry->setAttribute("sn", $this->getLastname());
+            $ldapUserEntry->setAttribute("gecos", "{$this->getFirstname()} {$this->getLastname()}");
             $ldapUserEntry->setAttribute("mail", $this->getMail());
             $ldapUserEntry->setAttribute("o", $this->getOrg());
             $ldapUserEntry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
