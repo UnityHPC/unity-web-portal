@@ -317,19 +317,19 @@ class UnityLDAP extends ldapConn
 
     public function getGroupEntry($gid)
     {
-        $uid = ldap_escape($gid, LDAP_ESCAPE_DN);
+        $gid = ldap_escape($gid, LDAP_ESCAPE_DN);
         return $this->getEntry(unityLDAP::RDN . "=$gid," . $this->STR_GROUPOU);
     }
 
     public function getPIGroupEntry($gid)
     {
-        $uid = ldap_escape($gid, LDAP_ESCAPE_DN);
+        $gid = ldap_escape($gid, LDAP_ESCAPE_DN);
         return $this->getEntry(unityLDAP::RDN . "=$gid," . $this->STR_PIGROUPOU);
     }
 
     public function getOrgGroupEntry($gid)
     {
-        $uid = ldap_escape($gid, LDAP_ESCAPE_DN);
+        $gid = ldap_escape($gid, LDAP_ESCAPE_DN);
         return $this->getEntry(unityLDAP::RDN . "=$gid," . $this->STR_ORGGROUPOU);
     }
 }
