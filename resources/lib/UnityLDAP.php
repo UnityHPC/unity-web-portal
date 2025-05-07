@@ -243,10 +243,10 @@ class UnityLDAP extends ldapConn
             }
         }
 
-        $users = $this->userOU->getChildren(true);
-
+        $users = $this->siteSpecificUsersGroupEntry->getAttribute("memberuid");
+        sort($users);
         foreach ($users as $user) {
-            $params = array($user->getAttribute("cn")[0], $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook);
+            $params = array($user, $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook);
             array_push($out, new UnityUser(...$params));
         }
 
