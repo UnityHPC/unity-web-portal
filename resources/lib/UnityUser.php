@@ -106,7 +106,7 @@ class UnityUser
             $orgEntry->addUser($this);
         }
 
-        // add to site-specific users group
+        // add to user group as well as user OU
         $this->LDAP->getUserGroup()->appendAttribute("memberuid", $this->getUID());
         $this->LDAP->getUserGroup()->write();
 
