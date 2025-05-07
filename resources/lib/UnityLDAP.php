@@ -53,7 +53,7 @@ class UnityLDAP extends ldapConn
         $pigroup_ou,
         $orggroup_ou,
         $admin_group,
-        $site_specific_users_group_dn,
+        $user_group_dn,
         $def_user_shell
     ) {
         parent::__construct($host, $dn, $pass);
@@ -70,7 +70,7 @@ class UnityLDAP extends ldapConn
         $this->pi_groupOU = $this->getEntry($pigroup_ou);
         $this->org_groupOU = $this->getEntry($orggroup_ou);
         $this->adminGroup = $this->getEntry($admin_group);
-        $this->siteSpecificUsersGroupEntry = $this->getEntry($site_specific_users_group_dn);
+        $this->userGroup = $this->getEntry($user_group_dn);
 
         $this->custom_mappings_path = $custom_user_mappings;
 
@@ -105,9 +105,9 @@ class UnityLDAP extends ldapConn
         return $this->adminGroup;
     }
 
-    public function getSiteSpecificUsersGroupEntry()
+    public function getUserGroup()
     {
-        return $this->siteSpecificUsersGroupEntry;
+        return $this->userGroup;
     }
 
     public function getDefUserShell()
@@ -243,7 +243,7 @@ class UnityLDAP extends ldapConn
             }
         }
 
-        $users = $this->siteSpecificUsersGroupEntry->getAttribute("memberuid");
+        $users = $this->userGroup->getAttribute("memberuid");
         sort($users);
         foreach ($users as $user) {
             $params = array($user, $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook);
