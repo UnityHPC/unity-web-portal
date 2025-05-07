@@ -53,6 +53,7 @@ class UnityLDAP extends ldapConn
         $pigroup_ou,
         $orggroup_ou,
         $admin_group,
+        $site_specific_users_group_dn,
         $def_user_shell
     ) {
         parent::__construct($host, $dn, $pass);
@@ -69,6 +70,7 @@ class UnityLDAP extends ldapConn
         $this->pi_groupOU = $this->getEntry($pigroup_ou);
         $this->org_groupOU = $this->getEntry($orggroup_ou);
         $this->adminGroup = $this->getEntry($admin_group);
+        $this->siteSpecificUsersGroupEntry = $this->getEntry($site_specific_users_group_dn);
 
         $this->custom_mappings_path = $custom_user_mappings;
 
@@ -101,6 +103,11 @@ class UnityLDAP extends ldapConn
     public function getAdminGroup()
     {
         return $this->adminGroup;
+    }
+
+    public function getSiteSpecificUsersGroupEntry()
+    {
+        return $this->siteSpecificUsersGroupEntry;
     }
 
     public function getDefUserShell()

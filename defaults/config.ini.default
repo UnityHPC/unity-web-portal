@@ -24,6 +24,8 @@ pigroup_ou = "ou=pi_groups,dc=unityhpc,dc=test"  ; PI Group organizational unit
 orggroup_ou = "ou=org_groups,dc=unityhpc,dc=test"  ; ORG group organizational unit
 admin_group = "cn=web_admins,dc=unityhpc,dc=test"  ; admin dn (members of this group are admins on the web portal)
 def_user_shell = "/bin/bash"  ; Default shell for new users
+; now that our LDAP is going to hold more than just Unity users, we need a group for just Unity users.
+site_specific_users_group = "cn=unityusers,dc=unityhpc,dc=test"
 
 [sql]
 host = "sql"  ; mariadb hostname

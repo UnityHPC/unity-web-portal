@@ -106,6 +106,10 @@ class UnityUser
             $orgEntry->addUser($this);
         }
 
+        // add to site-specific users group
+        $this->LDAP->getSiteSpecificUsersGroupEntry()->appendAttribute("memberuid", $this->getUID());
+        $this->LDAP->getSiteSpecificUsersGroupEntry()->write();
+
         // add user to cache
         $this->REDIS->appendCacheArray("sorted_users", "", $this->getUID());
 
