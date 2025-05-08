@@ -13,8 +13,8 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: "8.3"
-        # php extensions also listed in tools/docker-dev/web/Dockerfile
-        extensions: curl,mysql,ldap,pdo,redis
+        # php extensions also listed in tools/docker-dev/web/Dockerfile and README.md
+        extensions: curl,mysql,ldap,pdo,redis,intl
         tools: composer:v2
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
