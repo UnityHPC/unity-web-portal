@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
     php-redis \
     php-cli \
     php-mbstring \
-    php-xml
+    php-xml \
+    php-intl
 COPY htpasswd /etc/apache2/.htpasswd
 RUN chown www-data /etc/apache2/.htpasswd
 COPY unity-apache.conf /etc/apache2/sites-available/unity.conf
