@@ -2,7 +2,7 @@ FROM ubuntu:24.04
 
 # Web Server Setup
 ARG DEBIAN_FRONTEND=noninteractive
-# php extensions also listed in .github/workflows/phpunit.yml
+# php extensions also listed in .github/workflows/phpunit.yml and README.md
 RUN apt-get update && apt-get install -y \
     apache2 \
     apache2-utils \
