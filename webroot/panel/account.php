@@ -6,51 +6,35 @@ use UnityWebPortal\lib\UnitySite;
 
 require_once $LOC_HEADER;
 
-$invalid_ssh_dialogue = "<script type='text/javascript'>
-alert('Invalid SSH key. Please verify your public key file is valid.');
-</script>";
-
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    switch ($_POST["form_type"]) {
+    switch (UnitySite::arrayGetOrBadRequest($_POST, "form_type")) {
         case "addKey":
-            $added_keys = array();
-
-            switch ($_POST["add_type"]) {
+            $keys = array();
+            switch (UnitySite::arrayGetOrBadRequest($_POST, "add_type")) {
                 case "paste":
-                    $key = $_POST["key"];
-                    if (UnitySite::testValidSSHKey($key)) {
-                        array_push($added_keys, $key);
-                    } else {
-                        echo $invalid_ssh_dialogue;
-                    }
+                    array_push($keys, UnitySite::arrayGetOrBadRequest($_POST, "key"));
                     break;
                 case "import":
-                    $keyfile = $_FILES["keyfile"]["tmp_name"];
-                    $key = file_get_contents($keyfile);
-                    if (UnitySite::testValidSSHKey($key)) {
-                        array_push($added_keys, $key);
-                    } else {
-                        echo $invalid_ssh_dialogue;
-                    }
+                    $keyPath = UnitySite::arrayGetOrBadRequest($_FILES, "keyfile", "tmp_name");
+                    $key = file_get_contents($keyPath);
+                    array_push($keys, $key);
                     break;
                 case "generate":
-                    array_push($added_keys, $_POST["gen_key"]);
+                    array_push($keys, UnitySite::arrayGetOrBadRequest($_POST, "gen_key"));
                     break;
                 case "github":
-                    $gh_user = $_POST["gh_user"];
-                    $keys = $GITHUB->getSshPublicKeys($gh_user);
-                    foreach ($keys as $key) {
-                        if (UnitySite::testValidSSHKey($key)) {
-                            array_push($added_keys, $key);
-                        }
-                    }
+                    $githubUsername = UnitySite::arrayGetOrBadRequest($_POST, "gh_user");
+                    $githubKeys = $GITHUB->getSshPublicKeys($githubUsername);
+                    $keys = array_merge($keys, $githubKeys);
                     break;
             }
-
-            if (!empty($added_keys)) {
-                $added_keys = UnitySite::removeTrailingWhitespace($added_keys);
-                $totalKeys = array_merge($USER->getSSHKeys(), $added_keys);
-                $USER->setSSHKeys($totalKeys, $OPERATOR);
+            if (!empty($keys)) {
+                $keys = array_map("trim", $keys);
+                $validKeys = array_filter($keys, ["UnityWebPortal\lib\UnitySite", "testValidSSHKey"]);
+                $USER->setSSHKeys(array_merge($USER->getSSHKeys(), $validKeys));
+                if (count($keys) != count($validKeys)) {
+                    UnitySite::alert("invalid SSH key");
+                }
             }
             break;
         case "delKey":

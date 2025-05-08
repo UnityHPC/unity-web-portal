@@ -67,15 +67,24 @@ class UnitySite
         self::die();
     }
 
-    public static function removeTrailingWhitespace($arr)
+    public static function arrayGetOrBadRequest(array $array, ...$keys)
     {
-        $out = array();
-        foreach ($arr as $str) {
-            $new_string = rtrim($str);
-            array_push($out, $new_string);
+        $cursor = $array;
+        $keysTraversed = [];
+        foreach ($keys as $key) {
+            array_push($keysTraversed, $key);
+            if (!isset($cursor[$key])) {
+                self::badRequest("array key not found: " . json_encode($keysTraversed));
+            }
+            $cursor = $cursor[$key];
         }
+        return $cursor;
+    }
 
-        return $out;
+    public static function alert(string $message)
+    {
+        // json_encode escapes quotes
+        echo "<script type='text/javascript'>alert(" . json_encode($message) . ");</script>";
     }
 
     public static function testValidSSHKey($key_str)
