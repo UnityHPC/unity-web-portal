@@ -181,7 +181,7 @@ function ensureUserDoesNotExist(string $uid)
         }
         $user_entry->delete();
     }
-    $user_group_entry = $LDAP->getGroupEntry($uid);
+    $user_group_entry = $LDAP->getUserGroupEntry($uid);
     if ($user_group_entry->exists()) {
         $user_group_entry->delete();
     }
@@ -314,13 +314,13 @@ class UnityWebPortalTestCase extends TestCase
                 // FIXME uncomment this after https://github.com/UnityHPC/account-portal/pull/473
                 // $this->assertFalse($USER->getFlag(UserFlag::QUALIFIED));
                 $this->assertTrue($LDAP->getUserEntry($USER->uid)->exists());
-                $this->assertTrue($LDAP->getGroupEntry($USER->uid)->exists());
+                $this->assertTrue($LDAP->getUserGroupEntry($USER->uid)->exists());
                 $this->assertTrue($LDAP->getOrgGroupEntry($USER->getOrg())->exists());
                 break;
             case "CustomMapped555":
                 $this->assertFalse($USER->exists());
                 $this->assertFalse($LDAP->getUserEntry($USER->uid)->exists());
-                $this->assertFalse($LDAP->getGroupEntry($USER->uid)->exists());
+                $this->assertFalse($LDAP->getUserGroupEntry($USER->uid)->exists());
                 break;
             case "EmptyPIGroupOwner":
                 $this->assertTrue($USER->isPI());
@@ -362,7 +362,7 @@ class UnityWebPortalTestCase extends TestCase
             case "NonExistent":
                 $this->assertFalse($USER->exists());
                 $this->assertFalse($LDAP->getUserEntry($USER->uid)->exists());
-                $this->assertFalse($LDAP->getGroupEntry($USER->uid)->exists());
+                $this->assertFalse($LDAP->getUserGroupEntry($USER->uid)->exists());
                 break;
             case "Normal":
                 $this->assertTrue($USER->exists());
@@ -375,7 +375,7 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertFalse($USER->getFlag(UserFlag::LOCKED));
                 $this->assertTrue($USER->getFlag(UserFlag::QUALIFIED));
                 $this->assertTrue($LDAP->getUserEntry($USER->uid)->exists());
-                $this->assertTrue($LDAP->getGroupEntry($USER->uid)->exists());
+                $this->assertTrue($LDAP->getUserGroupEntry($USER->uid)->exists());
                 $this->assertTrue($LDAP->getOrgGroupEntry($USER->getOrg())->exists());
                 break;
             case "NormalPI":

@@ -54,7 +54,7 @@ class UnityUser
         string $org,
         bool $send_mail = true,
     ): void {
-        $ldapGroupEntry = $this->getGroupEntry();
+        $ldapGroupEntry = $this->getUserGroupEntry();
         $id = $this->LDAP->getNextUIDGIDNumber($this->uid);
         \ensure(!$ldapGroupEntry->exists());
         $ldapGroupEntry->create([
@@ -139,14 +139,14 @@ class UnityUser
     /**
      * Returns the ldap group entry corresponding to the user
      */
-    public function getGroupEntry(): LDAPEntry
+    public function getUserGroupEntry(): LDAPEntry
     {
-        return $this->LDAP->getGroupEntry($this->uid);
+        return $this->LDAP->getUserGroupEntry($this->uid);
     }
 
     public function exists(): bool
     {
-        return $this->entry->exists() && $this->getGroupEntry()->exists();
+        return $this->entry->exists() && $this->getUserGroupEntry()->exists();
     }
 
     public function setOrg(string $org): void

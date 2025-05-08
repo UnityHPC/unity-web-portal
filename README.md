@@ -142,6 +142,7 @@ rm "$prod" && ln -s "$old" "$prod"
   scp tools/docker-dev/identity/unity-cluster-schema.ldif root@your-ldap-server:/root/unity-cluster-schema.ldif
   ssh root@your-ldap-server ldapadd -Y EXTERNAL -H ldapi:/// -f /root/unity-cluster-schema.ldif
   ```
+- the `[ldap]group_ou` option has been renamed to `[ldap]usergroup_ou`
 
 ### 1.5 -> 1.6
 
