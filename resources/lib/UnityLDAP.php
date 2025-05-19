@@ -38,6 +38,7 @@ class UnityLDAP extends ldapConn
     private $pi_groupOU;
     private $org_groupOU;
     private $adminGroup;
+    private $userGroup;
 
     private $custom_mappings_path;
 
