@@ -198,6 +198,40 @@ class UnityGroup
         }
     }
 
+    public function cancelGroupRequest($send_mail = true)
+    {
+        if (!$this->SQL->requestExists($this->getOwner()->getUID())) {
+            return;
+        }
+
+        $this->SQL->deleteGroupRequestByUserAndPI($this->getOwner()->getUID(), "admin");
+
+        if ($send_mail) {
+            // send email to requestor
+            $this->MAILER->sendMail(
+                "admin",
+                "group_request_cancelled"
+            );
+        }
+    }
+
+    public function cancelGroupJoinRequest($user, $send_mail = true)
+    {
+        if (!$this->requestExists($user)) {
+            return;
+        }
+
+        $this->SQL->deleteGroupRequestByUserAndPI($user->getUID(), $this->pi_uid);
+
+        if ($send_mail) {
+            // send email to requestor
+            $this->MAILER->sendMail(
+                $this->getOwner()->getMail(),
+                "group_request_cancelled"
+            );
+        }
+    }
+
     // /**
     //  * This method will delete the group, either by admin action or PI action
     //  */

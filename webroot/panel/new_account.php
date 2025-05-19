@@ -11,6 +11,8 @@ if ($USER->exists()) {
     UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/index.php");  // Redirect if account already exists
 }
 
+$pending_requests = $SQL->getRequestsByUser($USER->getUID());
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors = array();
 
@@ -35,6 +37,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $form_group->newUserRequest($USER);
         }
     }
+    header("Location: ${_SERVER['PHP_SELF']}");
+    die();
+}
+
+if (isset($_GET['cancel']) && count($pending_requests) > 0) {
+    foreach ($pending_requests as $request) {
+        print("cancelling");
+        if ($request["request_for"] == "admin") {
+            // cancel PI request
+            $pi_group = new UnityGroup(UnityGroup::getPIUIDfromUID($USER->getUID()), $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+            $pi_group->cancelGroupRequest();
+        }
+        else {
+            $pi_group = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+            $pi_group->cancelGroupJoinRequest($user=$USER);
+        }
+    }
+    header("Location: ${_SERVER['PHP_SELF']}");
+    die();
 }
 
 ?>
@@ -42,56 +63,66 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <h1>Request Account</h1>
 <hr>
 
-<form id="newAccountForm" action="" method="POST">
-    <p>Please verify that the information below is correct before continuing</p>
-    <div>
-        <strong>Name&nbsp;&nbsp;</strong><?php echo $SSO["firstname"] . " " . $SSO["lastname"]; ?><br>
-        <strong>Email&nbsp;&nbsp;</strong><?php echo $SSO["mail"]; ?>
-    </div>
-    <p>Your unity cluster username will be <strong><?php echo $SSO["user"]; ?></strong></p>
+<?php if (count($pending_requests) > 0): ?>
+    <p>You have pending account activation requests:</p>
+    <?php foreach ($pending_requests as $request): ?>
+        <?php
+            $pi_uid = $request["request_for"];
+            if ($pi_uid == "admin") {
+                echo "<p>Requesting a PI account</p>";
+                echo "<p>You will receive an email when your account has been approved.</p><p>Email <a href=\"mailto:{$CONFIG['mail']['support']}\">{$CONFIG['mail']['support_name']}</a> if you have not heard back in one business day. </p>";
+            } else {
+                $owner_uid = UnityGroup::getUIDfromPIUID($pi_uid);
+                echo "<p>Joining existing group owned by " . $owner_uid . "</p>";
+                echo "<p>You will receive an email when your account has been approved by the PI. You may need to remind them.</p>";
+            }
+        ?>
+        <a href="?cancel=true">Cancel Request</a>
+    <?php endforeach; ?>
+<?php else: ?>
 
-    <p>In order to activate your account on the Unity cluster,
-        you must join an existing PI group, or request your own PI group.</p>
+    <form id="newAccountForm" action="" method="POST">
+        <p>Please verify that the information below is correct before continuing</p>
+        <div>
+            <strong>Name&nbsp;&nbsp;</strong><?php echo $SSO["firstname"] . " " . $SSO["lastname"]; ?><br>
+            <strong>Email&nbsp;&nbsp;</strong><?php echo $SSO["mail"]; ?>
+        </div>
+        <p>Your unity cluster username will be <strong><?php echo $SSO["user"]; ?></strong></p>
 
-    <hr>
+        <p>In order to activate your account on the Unity cluster,
+            you must join an existing PI group, or request your own PI group.</p>
 
-    <?php
-    $pending_requests = $SQL->getRequestsByUser($USER->getUID());
-    if (count($pending_requests) > 0) {
-        // already has pending requests
-        echo "<p>Your request to activate your account has been submitted.
-		You will receive an email when your account is activated.</p>";
-    } else {
-        echo "<label><input type='radio' name='new_user_sel' value='pi'>Request a PI account (I am a PI)</label>";
-        echo "<br>";
-        echo "<label><input type='radio' name='new_user_sel' value='not_pi' checked>Join an existing PI group</label>";
+        <hr>
 
-        echo "<div style='position: relative;' id='piSearchWrapper'>";
-        echo "<input type='text' id='pi_search' name='pi' placeholder='Search PI by NetID' required>";
-        echo "<div class='searchWrapper' style='display: none;'></div>";
-        echo "</div>";
+        <label><input type='radio' name='new_user_sel' value='pi'>Request a PI account (I am a PI)</label>
+        <br>
+        <label><input type='radio' name='new_user_sel' value='not_pi' checked>Join an existing PI group</label>
 
-        echo "<hr>";
+        <div style='position: relative;' id='piSearchWrapper'>
+            <input type='text' id='pi_search' name='pi' placeholder='Search PI by NetID' required>
+            <div class='searchWrapper' style='display: none;'></div>
+        </div>
 
-        echo "<label><input type='checkbox' id='chk_eula' name='eula' value='agree' required>
-		I have read and accept the <a target='_blank' href='" . $CONFIG["site"]["terms_of_service_url"] . "'>
-		Unity Terms of Service</a></label>";
+        <hr>
 
-        echo "<br>";
-        echo "<input style='margin-top: 10px;' type='submit' value='Request Account'>";
-    }
-    ?>
+        <label><input type='checkbox' id='chk_eula' name='eula' value='agree' required>
+            I have read and accept the <a target='_blank' href='<?php echo $CONFIG["site"]["terms_of_service_url"]; ?>'>
+                Unity Terms of Service</a></label>
 
-    <?php
-    if (isset($errors)) {
-        echo "<div class='message'>";
-        foreach ($errors as $err) {
-            echo "<p class='message-failure'>" . $err . "</p>";
+        <br>
+        <input style='margin-top: 10px;' type='submit' value='Request Account'>
+
+        <?php
+        if (isset($errors)) {
+            echo "<div class='message'>";
+            foreach ($errors as $err) {
+                echo "<p class='message-failure'>" . $err . "</p>";
+            }
+            echo "</div>";
         }
-        echo "</div>";
-    }
-    ?>
-</form>
+        ?>
+    </form>
+<?php endif; ?>
 
 <script>
     $('input[type=radio][name=new_user_sel]').change(function() {
