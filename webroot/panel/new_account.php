@@ -43,10 +43,11 @@ if (isset($_GET['cancel']) && count($pending_requests) > 0) {
     foreach ($pending_requests as $request) {
         if ($request["request_for"] == "admin") {
             // cancel PI request
-            $pi_group = new UnityGroup(UnityGroup::getPIUIDfromUID($USER->getUID()), $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+            $pi_group = new UnityGroup(UnityGroup::getPIUIDfromUID(
+                $USER->getUID()
+            ), $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             $pi_group->cancelGroupRequest();
-        }
-        else {
+        } else {
             $pi_group = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             $pi_group->cancelGroupJoinRequest($user=$USER);
         }
@@ -60,24 +61,26 @@ if (isset($_GET['cancel']) && count($pending_requests) > 0) {
 <h1>Request Account</h1>
 <hr>
 
-<?php if (count($pending_requests) > 0): ?>
+<?php if (count($pending_requests) > 0) : ?>
     <p>You have pending account activation requests:</p>
-    <?php foreach ($pending_requests as $request): ?>
+    <?php foreach ($pending_requests as $request) : ?>
         <?php
             $pi_uid = $request["request_for"];
-            if ($pi_uid == "admin") {
-                echo "<p>Requesting a PI account</p>";
-                echo "<p>You will receive an email when your account has been approved.</p><p>Email <a href=\"mailto:{$CONFIG['mail']['support']}\">{$CONFIG['mail']['support_name']}</a> if you have not heard back in one business day. </p>";
-            } else {
-                $owner_uid = UnityGroup::getUIDfromPIUID($pi_uid);
-                echo "<p>Joining existing group owned by " . $owner_uid . "</p>";
-                echo "<p>You will receive an email when your account has been approved by the PI. You may need to remind them.</p>";
-            }
+        if ($pi_uid == "admin") {
+            echo "<p>Requesting a PI account</p>";
+            echo "<p>You will receive an email when your account has been approved.</p>";
+            echo "<p>Email <a href=\"mailto:{$CONFIG['mail']['support']}\">{$CONFIG['mail']['support_name']}</a>";
+            echo "if you have not heard back in one business day. </p>";
+        } else {
+            $owner_uid = UnityGroup::getUIDfromPIUID($pi_uid);
+            echo "<p>Joining existing group owned by " . $owner_uid . "</p>";
+            echo "<p>You will receive an email when your account has been approved by the PI.";
+            echo "You may need to remind them.</p>";
+        }
         ?>
         <a href="?cancel=true">Cancel Request</a>
     <?php endforeach; ?>
-<?php else: ?>
-
+<?php else : ?>
     <form id="newAccountForm" action="" method="POST">
         <p>Please verify that the information below is correct before continuing</p>
         <div>
