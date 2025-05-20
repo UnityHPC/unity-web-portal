@@ -6,7 +6,6 @@ use UnityWebPortal\lib\UnitySite;
 use UnityWebPortal\lib\UnityGroup;
 
 require_once $LOC_HEADER;
-
 if ($USER->exists()) {
     UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/index.php");  // Redirect if account already exists
 }
@@ -27,7 +26,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             array_push($errors, "The selected PI does not exist");
         }
     }
-
     // Request Account Form was Submitted
     if (count($errors) == 0) {
         if ($_POST["new_user_sel"] == "pi") {
@@ -37,13 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $form_group->newUserRequest($USER);
         }
     }
-    header("Location: ${_SERVER['PHP_SELF']}");
-    die();
+    header("Location: {$_SERVER['PHP_SELF']}");
+    UnitySite::die();
 }
 
 if (isset($_GET['cancel']) && count($pending_requests) > 0) {
     foreach ($pending_requests as $request) {
-        print("cancelling");
         if ($request["request_for"] == "admin") {
             // cancel PI request
             $pi_group = new UnityGroup(UnityGroup::getPIUIDfromUID($USER->getUID()), $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
@@ -54,8 +51,8 @@ if (isset($_GET['cancel']) && count($pending_requests) > 0) {
             $pi_group->cancelGroupJoinRequest($user=$USER);
         }
     }
-    header("Location: ${_SERVER['PHP_SELF']}");
-    die();
+    header("Location: {$_SERVER['PHP_SELF']}");
+    UnitySite::die();
 }
 
 ?>

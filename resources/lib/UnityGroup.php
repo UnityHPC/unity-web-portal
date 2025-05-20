@@ -227,7 +227,8 @@ class UnityGroup
             // send email to requestor
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
-                "group_request_cancelled"
+                "group_join_request_cancelled",
+                ["group" => $this->pi_uid]
             );
         }
     }
