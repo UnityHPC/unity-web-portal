@@ -90,7 +90,7 @@ function http_post(string $phpfile, array $post_data): void
     }
 }
 
-function http_get(string $phpfile, array $get_data): void
+function http_get(string $phpfile, array $get_data = array()): void
 {
     global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
