@@ -53,17 +53,6 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function deleteGroupRequestByUserAndPI($user, $pi_uid)
-    {
-        $stmt = $this->conn->prepare(
-            "DELETE FROM " . self::TABLE_REQS . " WHERE uid=:uid AND request_for=:request_for"
-        );
-        $stmt->bindParam(":uid", $user);
-        $stmt->bindParam(":request_for", $pi_uid);
-
-        $stmt->execute();
-    }
-
     public function removeRequest($requestor, $dest = self::REQUEST_BECOME_PI)
     {
         if (!$this->requestExists($requestor, $dest)) {

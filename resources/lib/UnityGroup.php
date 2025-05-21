@@ -204,7 +204,7 @@ class UnityGroup
             return;
         }
 
-        $this->SQL->deleteGroupRequestByUserAndPI($this->getOwner()->getUID(), "admin");
+        $this->SQL->removeRequest($this->getOwner()->getUID());
 
         if ($send_mail) {
             // send email to requestor
@@ -221,7 +221,7 @@ class UnityGroup
             return;
         }
 
-        $this->SQL->deleteGroupRequestByUserAndPI($user->getUID(), $this->pi_uid);
+        $this->SQL->removeRequest($user->getUID(), $this->pi_uid);
 
         if ($send_mail) {
             // send email to requestor
@@ -286,7 +286,7 @@ class UnityGroup
         $this->addUserToGroup($new_user);
 
         // remove request, this will fail silently if the request doesn't exist
-        $this->removeRequest($new_user->getUID());
+        $this->SQL->removeRequest($new_user->getUID(), $this->pi_uid);
 
         // send email to the requestor
         if ($send_mail) {
@@ -318,7 +318,7 @@ class UnityGroup
         }
 
         // remove request, this will fail silently if the request doesn't exist
-        $this->removeRequest($new_user->getUID());
+        $this->SQL->removeRequest($new_user->getUID(), $this->pi_uid);
 
         if ($send_mail) {
             // send email to the user
@@ -555,11 +555,6 @@ class UnityGroup
     private function addRequest($uid)
     {
         $this->SQL->addRequest($uid, $this->pi_uid);
-    }
-
-    private function removeRequest($uid)
-    {
-        $this->SQL->removeRequest($uid, $this->pi_uid);
     }
 
     //
