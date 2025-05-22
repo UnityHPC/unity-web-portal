@@ -12,6 +12,7 @@ url = "https://127.0.0.1:8000/"  ; URL of the website
 description = "The Unity Web Portal is a lightweight HPC cluster front-end"  ; Description of the website
 logo = "logo.png"  ; path to logo file, in the webroot/assets/branding folder
 terms_of_service_url = "https://github.com" ; this can be external or a portal page created with "content management"
+account_policy_url = "https://github.com" ; this can be external or a portal page created with "content management"
 
 [ldap]
 uri = "ldap://identity"  ; URI of remote LDAP server

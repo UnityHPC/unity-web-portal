@@ -29,6 +29,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Request Account Form was Submitted
     if (count($errors) == 0) {
         if ($_POST["new_user_sel"] == "pi") {
+            if (!isset($_POST["chk_pi"]) || $_POST["chk_pi"] != "agree") {
+                // checkbox was not checked
+                array_push($errors, "Please confirm you have read the account policy guidelines.");
+            }
             // requesting a PI account
             $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
         } elseif ($_POST["new_user_sel"] == "not_pi") {
@@ -94,7 +98,12 @@ if (isset($_GET['cancel']) && count($pending_requests) > 0) {
 
         <hr>
 
-        <label><input type='radio' name='new_user_sel' value='pi'>Request a PI account (I am a PI)</label>
+        <label><input type='radio' name='new_user_sel' value='pi'>Request a PI account</label>
+        <div style='position: relative;display: none;' id='piConfirmWrapper'>
+        <label><input type='checkbox' id='chk_pi' name='confirm_pi' value='agree' required>
+           I have read the PI <a href="<?php echo $CONFIG["site"]["account_policy_url"]; ?>">
+            account policy</a> guidelines. </label>
+        </div>
         <br>
         <label><input type='radio' name='new_user_sel' value='not_pi' checked>Join an existing PI group</label>
 
@@ -126,12 +135,17 @@ if (isset($_GET['cancel']) && count($pending_requests) > 0) {
 
 <script>
     $('input[type=radio][name=new_user_sel]').change(function() {
+        let pi_cnf_text = $('#piConfirmWrapper');
         let pi_sel_text = $('#piSearchWrapper');
         if (this.value == 'not_pi') {
+            pi_cnf_text.hide();
             pi_sel_text.show();
+            $("#chk_pi").prop("required", false);
             $("#pi_search").prop("required", true);
         } else if (this.value == 'pi') {
+            pi_cnf_text.show();
             pi_sel_text.hide();
+            $("#chk_pi").prop("required", true);
             $("#pi_search").prop("required", false);
         }
     });
