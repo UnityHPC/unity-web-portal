@@ -13,7 +13,6 @@ if ($USER->exists()) {
 $pending_requests = $SQL->getRequestsByUser($USER->getUID());
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    echo json_encode($_POST);
     if (isset($_POST["new_user_sel"])) {
         if (($_POST["eula"] ?? "disagree") != "agree") {
             UnitySite::badRequest("user did not agree to EULA");
