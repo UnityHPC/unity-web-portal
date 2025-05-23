@@ -31,7 +31,7 @@ class CancelRequestTest extends TestCase
         try {
             http_post(
                 __DIR__ . "/../../webroot/panel/new_account.php",
-                ["cancel" => "true"]
+                ["cancel" => "agree"]
             );
         } catch (PhpUnitNoDieException $e) {
             // Ignore the exception from http_post
@@ -60,7 +60,7 @@ class CancelRequestTest extends TestCase
         try {
             http_post(
                 __DIR__ . "/../../webroot/panel/new_account.php",
-                ["cancel" => "true"]
+                ["cancel" => "agree"]
             );
         } catch (PhpUnitNoDieException $e) {
             // Ignore the exception from http_post
