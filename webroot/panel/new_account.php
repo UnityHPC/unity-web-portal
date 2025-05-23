@@ -4,57 +4,48 @@ require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnitySite;
 use UnityWebPortal\lib\UnityGroup;
+use UnityWebPortal\lib\UnitySQL;
 
-require_once $LOC_HEADER;
 if ($USER->exists()) {
-    UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/index.php");  // Redirect if account already exists
+    UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/index.php");
 }
 
 $pending_requests = $SQL->getRequestsByUser($USER->getUID());
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $errors = array();
-
-    if (!isset($_POST["eula"]) || $_POST["eula"] != "agree") {
-        // checkbox was not checked
-        array_push($errors, "Accepting the EULA is required");
-    }
-
-    if ($_POST["new_user_sel"] == "not_pi") {
-        $form_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-        if (!$form_group->exists()) {
-            array_push($errors, "The selected PI does not exist");
+    if (isset($_POST["new_user_sel"])) {
+        if (!isset($_POST["eula"]) || $_POST["eula"] != "agree") {
+            UnitySite::badRequest("user did not agree to EULA");
         }
-    }
-    // Request Account Form was Submitted
-    if (count($errors) == 0) {
-        if ($_POST["new_user_sel"] == "pi") {
-            if (!isset($_POST["chk_pi"]) || $_POST["chk_pi"] != "agree") {
-                // checkbox was not checked
-                array_push($errors, "Please confirm you have read the account policy guidelines.");
+        if ($_POST["new_user_sel"] == "not_pi") {
+            $form_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+            if (!$form_group->exists()) {
+                UnitySite::badRequest("The selected PI does not exist");
             }
-            // requesting a PI account
-            $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
-        } elseif ($_POST["new_user_sel"] == "not_pi") {
             $form_group->newUserRequest($USER);
         }
-    }
-    UnitySite::redirect($_SERVER['PHP_SELF']);
-}
-
-if (isset($_GET['cancel']) && count($pending_requests) > 0) {
-    foreach ($pending_requests as $request) {
-        if ($request["request_for"] == "admin") {
-            // cancel PI request
-            $USER->getPIGroup()->cancelGroupRequest();
-        } else {
-            $pi_group = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-            $pi_group->cancelGroupJoinRequest($user=$USER);
+        if ($_POST["new_user_sel"] == "pi") {
+            if (!isset($_POST["confirm_pi"]) || $_POST["confirm_pi"] != "agree") {
+                UnitySite::badRequest("user did not agree to account policy");
+            }
+            $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
         }
     }
+    elseif (isset($_POST["cancel"])) {
+        foreach ($pending_requests as $request) {
+            if ($request["request_for"] == "admin") {
+                $USER->getPIGroup()->cancelGroupRequest();
+            } else {
+                $pi_group = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+                $pi_group->cancelGroupJoinRequest($user=$USER);
+            }
+        }
+    } else {
+        UnitySite::badRequest("neither 'new_user_sel' or 'cancel' are set!");
+    }
     UnitySite::redirect($_SERVER['PHP_SELF']);
 }
-
+require_once $LOC_HEADER;
 ?>
 
 <h1>Request Account</h1>
@@ -63,21 +54,30 @@ if (isset($_GET['cancel']) && count($pending_requests) > 0) {
 <?php if (count($pending_requests) > 0) : ?>
     <p>You have pending account activation requests:</p>
     <?php foreach ($pending_requests as $request) : ?>
+        <ul><li>
         <?php
-            $pi_uid = $request["request_for"];
-        if ($pi_uid == "admin") {
-            echo "<p>Requesting a PI account</p>";
-            echo "<p>You will receive an email when your account has been approved.</p>";
-            echo "<p>Email <a href=\"mailto:{$CONFIG['mail']['support']}\">{$CONFIG['mail']['support_name']}</a>";
-            echo " if you have not heard back in one business day. </p>";
+        $pi_uid = $request["request_for"];
+        if ($pi_uid == UnitySQL::REQUEST_BECOME_PI) {
+            $group_uid = $USER->getPIGroup()->getPIUID();
+            echo "<p>Ownership of PI Account/Group: <code>$group_uid</code> </p>";
         } else {
             $owner_uid = UnityGroup::getUIDfromPIUID($pi_uid);
-            echo "<p>Joining existing group owned by " . $owner_uid . "</p>";
-            echo "<p>You will receive an email when your account has been approved by the PI.";
-            echo "You may need to remind them.</p>";
+            echo "<p>Membership in PI Group owned by: <code>$owner_uid</code></p>";
         }
         ?>
-        <a href="?cancel=true">Cancel Request</a>
+        </li></ul>
+        <hr>
+        <p><strong>Requesting Ownership of PI Account/Group</strong></p>
+        <p>You will receive an email when your account has been approved.</p>
+        <p>Email <a href="mailto:<?php echo $CONFIG['mail']['support']; ?>"><?php echo $CONFIG['mail']['support_name']; ?></a> if you have not heard back in one business day. </p>
+        <br>
+        <p><strong>Requesting Membership in a PI Group</strong></p>
+        <p>You will receive an email when your account has been approved by the PI.</p>
+        <p>You may need to remind them.</p>
+        <hr>
+        <form action="" method="POST">
+            <input name="cancel" style='margin-top: 10px;' type='submit' value='Cancel Request'/>
+        </form>
     <?php endforeach; ?>
 <?php else : ?>
     <form id="newAccountForm" action="" method="POST">
@@ -116,16 +116,6 @@ if (isset($_GET['cancel']) && count($pending_requests) > 0) {
 
         <br>
         <input style='margin-top: 10px;' type='submit' value='Request Account'>
-
-        <?php
-        if (isset($errors)) {
-            echo "<div class='message'>";
-            foreach ($errors as $err) {
-                echo "<p class='message-failure'>" . $err . "</p>";
-            }
-            echo "</div>";
-        }
-        ?>
     </form>
 <?php endif; ?>
 

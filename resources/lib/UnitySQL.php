@@ -20,7 +20,7 @@ class UnitySQL
 
 
     // FIXME this string should be changed to something more intuitive, requires production sql change
-    private const REQUEST_BECOME_PI = "admin";
+    public const REQUEST_BECOME_PI = "admin";
 
     private $conn;
 

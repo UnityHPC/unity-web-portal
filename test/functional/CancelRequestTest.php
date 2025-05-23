@@ -19,7 +19,7 @@ class CancelRequestTest extends TestCase
         try {
             http_post(
                 __DIR__ . "/../../webroot/panel/new_account.php",
-                ["new_user_sel" => "pi", "eula" => "agree"]
+                ["new_user_sel" => "pi", "eula" => "agree", "confirm_pi" => "agree"]
             );
         } catch (PhpUnitNoDieException $e) {
             // Ignore the exception from http_post
@@ -29,9 +29,9 @@ class CancelRequestTest extends TestCase
 
         // Now try to cancel it
         try {
-            http_get(
+            http_post(
                 __DIR__ . "/../../webroot/panel/new_account.php",
-                ["cancel" => "true"]
+                ["cancel" => "true"] # value of cancel is arbitrary
             );
         } catch (PhpUnitNoDieException $e) {
             // Ignore the exception from http_post
@@ -58,9 +58,9 @@ class CancelRequestTest extends TestCase
 
         // Now try to cancel it
         try {
-            http_get(
+            http_post(
                 __DIR__ . "/../../webroot/panel/new_account.php",
-                ["cancel" => "true"]
+                ["cancel" => "true"] # value of cancel is arbitrary
             );
         } catch (PhpUnitNoDieException $e) {
             // Ignore the exception from http_post
