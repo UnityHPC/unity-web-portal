@@ -39,8 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $form_group->newUserRequest($USER);
         }
     }
-    header("Location: {$_SERVER['PHP_SELF']}");
-    UnitySite::die();
+    UnitySite::redirect($_SERVER['PHP_SELF']);
 }
 
 if (isset($_GET['cancel']) && count($pending_requests) > 0) {
@@ -56,8 +55,7 @@ if (isset($_GET['cancel']) && count($pending_requests) > 0) {
             $pi_group->cancelGroupJoinRequest($user=$USER);
         }
     }
-    header("Location: {$_SERVER['PHP_SELF']}");
-    UnitySite::die();
+    UnitySite::redirect($_SERVER['PHP_SELF']);
 }
 
 ?>
@@ -74,7 +72,7 @@ if (isset($_GET['cancel']) && count($pending_requests) > 0) {
             echo "<p>Requesting a PI account</p>";
             echo "<p>You will receive an email when your account has been approved.</p>";
             echo "<p>Email <a href=\"mailto:{$CONFIG['mail']['support']}\">{$CONFIG['mail']['support_name']}</a>";
-            echo "if you have not heard back in one business day. </p>";
+            echo " if you have not heard back in one business day. </p>";
         } else {
             $owner_uid = UnityGroup::getUIDfromPIUID($pi_uid);
             echo "<p>Joining existing group owned by " . $owner_uid . "</p>";
@@ -100,7 +98,7 @@ if (isset($_GET['cancel']) && count($pending_requests) > 0) {
 
         <label><input type='radio' name='new_user_sel' value='pi'>Request a PI account</label>
         <div style='position: relative;display: none;' id='piConfirmWrapper'>
-        <label><input type='checkbox' id='chk_pi' name='confirm_pi' value='agree' required>
+        <label><input type='checkbox' id='chk_pi' name='confirm_pi' value='agree'>
            I have read the PI <a href="<?php echo $CONFIG["site"]["account_policy_url"]; ?>">
             account policy</a> guidelines. </label>
         </div>

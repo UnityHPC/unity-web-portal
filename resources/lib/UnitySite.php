@@ -26,10 +26,8 @@ class UnitySite
 
     public static function redirect($destination)
     {
-        if ($_SERVER["PHP_SELF"] != $destination) {
-            header("Location: $destination");
-            self::die("Redirect failed, click <a href='$destination'>here</a> to continue.");
-        }
+        header("Location: $destination");
+        die("Redirect failed, click <a href='$destination'>here</a> to continue.");
     }
 
     private static function headerResponseCode(int $code, string $reason)
