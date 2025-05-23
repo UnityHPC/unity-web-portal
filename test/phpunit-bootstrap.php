@@ -159,7 +159,7 @@ function getUserIsPIHasAtLeastOneMember()
 
 function getNonExistentUser()
 {
-    return ["user1@nonexistent.test", "foo", "bar", "user1@nonexistent.test"];
+    return ["user2000@org2.test", "foo", "bar", "user2000@org2.test"];
 }
 
 function getAdminUser()
