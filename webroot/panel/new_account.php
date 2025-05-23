@@ -14,7 +14,7 @@ $pending_requests = $SQL->getRequestsByUser($USER->getUID());
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["new_user_sel"])) {
-        if (($_POST["eula"] ?? "disagree") != "agree") {
+        if (!isset($_POST["eula"]) || $_POST["eula"] != "agree") {
             UnitySite::badRequest("user did not agree to EULA");
         }
         if ($_POST["new_user_sel"] == "not_pi") {
@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $form_group->newUserRequest($USER);
         }
         if ($_POST["new_user_sel"] == "pi") {
-            if (($_POST["confirm_pi"] ?? "disagree") != "agree") {
+        if (!isset($_POST["confirm_pi"]) || $_POST["confirm_pi"] != "agree") {
                 UnitySite::badRequest("user did not agree to account policy");
             }
             $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
