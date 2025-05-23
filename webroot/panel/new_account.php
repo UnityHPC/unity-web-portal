@@ -25,13 +25,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $form_group->newUserRequest($USER);
         }
         if ($_POST["new_user_sel"] == "pi") {
-        if (!isset($_POST["confirm_pi"]) || $_POST["confirm_pi"] != "agree") {
+            if (!isset($_POST["confirm_pi"]) || $_POST["confirm_pi"] != "agree") {
                 UnitySite::badRequest("user did not agree to account policy");
             }
             $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
         }
     }
-    else if (isset($_POST["cancel"])) {
+    elseif (isset($_POST["cancel"])) {
         foreach ($pending_requests as $request) {
             if ($request["request_for"] == "admin") {
                 $USER->getPIGroup()->cancelGroupRequest();
