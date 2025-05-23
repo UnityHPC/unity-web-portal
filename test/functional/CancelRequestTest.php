@@ -29,7 +29,7 @@ class CancelRequestTest extends TestCase
 
         // Now try to cancel it
         try {
-            http_get(
+            http_post(
                 __DIR__ . "/../../webroot/panel/new_account.php",
                 ["cancel" => "true"]
             );
@@ -58,7 +58,7 @@ class CancelRequestTest extends TestCase
 
         // Now try to cancel it
         try {
-            http_get(
+            http_post(
                 __DIR__ . "/../../webroot/panel/new_account.php",
                 ["cancel" => "true"]
             );
