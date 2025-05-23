@@ -1,10 +1,10 @@
 <?php
 
+require_once __DIR__ . "/../../resources/autoload.php";
+
 use UnityWebPortal\lib\UnitySite;
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnitySQL;
-
-require_once __DIR__ . "/../../resources/autoload.php";
 
 if ($USER->exists()) {
     UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/index.php");
