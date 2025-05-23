@@ -40,7 +40,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $pi_group->cancelGroupJoinRequest($user=$USER);
             }
         }
-        UnitySite::redirect($_SERVER['PHP_SELF']);
     } else {
         UnitySite::badRequest("neither 'new_user_sel' or 'cancel' are set!");
     }
