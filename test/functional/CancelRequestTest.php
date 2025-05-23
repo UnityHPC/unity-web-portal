@@ -19,7 +19,7 @@ class CancelRequestTest extends TestCase
         try {
             http_post(
                 __DIR__ . "/../../webroot/panel/new_account.php",
-                ["new_user_sel" => "pi", "eula" => "agree", "confirm_pi" => "true"]
+                ["new_user_sel" => "pi", "eula" => "agree", "confirm_pi" => "agree"]
             );
         } catch (PhpUnitNoDieException $e) {
             // Ignore the exception from http_post
