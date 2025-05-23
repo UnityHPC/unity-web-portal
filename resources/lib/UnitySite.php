@@ -27,7 +27,7 @@ class UnitySite
     public static function redirect($destination)
     {
         header("Location: $destination");
-        die("Redirect failed, click <a href='$destination'>here</a> to continue.");
+        self::die("Redirect failed, click <a href='$destination'>here</a> to continue.");
     }
 
     private static function headerResponseCode(int $code, string $reason)
