@@ -46,10 +46,7 @@ if (isset($_GET['cancel']) && count($pending_requests) > 0) {
     foreach ($pending_requests as $request) {
         if ($request["request_for"] == "admin") {
             // cancel PI request
-            $pi_group = new UnityGroup(UnityGroup::getPIUIDfromUID(
-                $USER->getUID()
-            ), $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-            $pi_group->cancelGroupRequest();
+            $USER->getPIGroup()->cancelGroupRequest();
         } else {
             $pi_group = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             $pi_group->cancelGroupJoinRequest($user=$USER);
