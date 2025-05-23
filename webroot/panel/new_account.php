@@ -118,16 +118,6 @@ require_once $LOC_HEADER;
 
         <br>
         <input style='margin-top: 10px;' type='submit' value='Request Account'>
-
-        <?php
-        if (isset($errors)) {
-            echo "<div class='message'>";
-            foreach ($errors as $err) {
-                echo "<p class='message-failure'>" . $err . "</p>";
-            }
-            echo "</div>";
-        }
-        ?>
     </form>
 <?php endif; ?>
 
