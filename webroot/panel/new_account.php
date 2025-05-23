@@ -94,12 +94,6 @@ if (isset($_GET['cancel']) && count($pending_requests) > 0) {
         <hr>
 
         <label><input type='radio' name='new_user_sel' value='pi'>Request a PI account</label>
-        <div style='position: relative;display: none;' id='piConfirmWrapper'>
-        <label><input type='checkbox' id='chk_pi' name='confirm_pi' value='agree'>
-           I have read the PI <a href="<?php echo $CONFIG["site"]["account_policy_url"]; ?>">
-            account policy</a> guidelines. </label>
-        </div>
-        <br>
         <label><input type='radio' name='new_user_sel' value='not_pi' checked>Join an existing PI group</label>
 
         <div style='position: relative;' id='piSearchWrapper'>
@@ -108,6 +102,13 @@ if (isset($_GET['cancel']) && count($pending_requests) > 0) {
         </div>
 
         <hr>
+
+        <div style='position: relative;display: none;' id='piConfirmWrapper'>
+        <label><input type='checkbox' id='chk_pi' name='confirm_pi' value='agree'>
+           I have read the PI <a href="<?php echo $CONFIG["site"]["account_policy_url"]; ?>">
+            account policy</a> guidelines. </label>
+        </div>
+        <br>
 
         <label><input type='checkbox' id='chk_eula' name='eula' value='agree' required>
             I have read and accept the <a target='_blank' href='<?php echo $CONFIG["site"]["terms_of_service_url"]; ?>'>
