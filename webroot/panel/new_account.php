@@ -111,7 +111,7 @@ if (isset($_GET['cancel']) && count($pending_requests) > 0) {
 
         <label><input type='checkbox' id='chk_eula' name='eula' value='agree' required>
             I have read and accept the <a target='_blank' href='<?php echo $CONFIG["site"]["terms_of_service_url"]; ?>'>
-                Unity Terms of Service</a></label>
+                Unity Terms of Service</a>.</label>
 
         <br>
         <input style='margin-top: 10px;' type='submit' value='Request Account'>
