@@ -47,6 +47,11 @@ class UnityGroup
         return $this->getPIUID() == $other_group->getPIUID();
     }
 
+    public function __toString()
+    {
+        return $this->getPIUID();
+    }
+
     /**
      * Returns this group's PI UID
      *
@@ -133,6 +138,12 @@ class UnityGroup
      */
     public function approveGroup($operator = null, $send_mail = true)
     {
+        if (!$this->SQL->requestExists($this->getOwner()->getUID())) {
+            throw new Exception(
+                "attempt to approve nonexistent request for group='{$this->getPIUID()}' uid='$new_user'"
+            );
+        }
+
         // check for edge cases...
         if ($this->exists()) {
             return;
@@ -277,6 +288,12 @@ class UnityGroup
      */
     public function approveUser($new_user, $send_mail = true)
     {
+        if (!$this->requestExists($new_user)) {
+            throw new Exception(
+                "attempt to approve nonexistent request for group='{$this->getPIUID()}' uid='$new_user'"
+            );
+        }
+
         // check if user exists
         if (!$new_user->exists()) {
             $new_user->init();
@@ -382,15 +399,17 @@ class UnityGroup
     public function newUserRequest($new_user, $send_mail = true)
     {
         if ($this->userExists($new_user)) {
+            UnitySite::errorLog("warning", "user '$new_user' already in group");
             return;
         }
 
         if ($this->requestExists($new_user)) {
+            UnitySite::errorLog("warning", "user '$new_user' already requested group membership");
             return;
         }
 
-        // check if account deletion request already exists
         if ($this->SQL->accDeletionRequestExists($new_user->getUID())) {
+            throw new Exception("user '$new_user' requested account deletion");
             return;
         }
 
