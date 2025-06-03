@@ -4,6 +4,7 @@ namespace UnityWebPortal\lib;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
 // use PHPUnit\Framework\Attributes\BackupGlobals;
 // use PHPUnit\Framework\Attributes\RunTestsInSeparateProcess;
 
@@ -78,6 +79,62 @@ class UnitySiteTest extends TestCase
     public function testTestValidSSHKey(bool $expected, string $key)
     {
         $this->assertEquals($expected, UnitySite::testValidSSHKey($key));
+    }
+
+    public function testArrayGetOrBadRequestReturnsValueWhenKeyExists()
+    {
+        $array = [
+            'a' => [
+                'b' => [
+                    'c' => 123
+                ]
+            ]
+        ];
+        $result = UnitySite::arrayGetOrBadRequest($array, 'a', 'b', 'c');
+        $this->assertSame(123, $result);
+    }
+
+    public function testArrayGetOrBadRequestReturnsArrayWhenTraversingPartially()
+    {
+        $array = [
+            'foo' => [
+                'bar' => 'baz'
+            ]
+        ];
+        $result = UnitySite::arrayGetOrBadRequest($array, 'foo');
+        $this->assertSame(['bar' => 'baz'], $result);
+    }
+
+    public function testArrayGetOrBadRequestThrowsOnMissingKeyFirstLevel()
+    {
+        $array = ['x' => 1];
+        $this->expectException(PhpUnitNoDieException::class);
+        $this->expectExceptionMessage('["y"]');
+        UnitySite::arrayGetOrBadRequest($array, 'y');
+    }
+
+    public function testArrayGetOrBadRequestThrowsOnMissingKeyNested()
+    {
+        $array = ['a' => []];
+        $this->expectException(PhpUnitNoDieException::class);
+        // Should include both levels
+        $this->expectExceptionMessage('["a","b"]');
+        UnitySite::arrayGetOrBadRequest($array, 'a', 'b');
+    }
+
+    public function testArrayGetOrBadRequestThrowsWhenValueIsNullButKeyNotSet()
+    {
+        $array = ['a' => null];
+        $this->expectException(PhpUnitNoDieException::class);
+        $this->expectExceptionMessage('["a"]');
+        UnitySite::arrayGetOrBadRequest($array, 'a');
+    }
+
+    public function testArrayGetOrBadRequestReturnsValueWhenValueIsFalsyButSet()
+    {
+        $array = ['a' => 0];
+        $result = UnitySite::arrayGetOrBadRequest($array, 'a');
+        $this->assertSame(0, $result);
     }
 
     // I suspect that this test could have unexpected interactions with other tests.
