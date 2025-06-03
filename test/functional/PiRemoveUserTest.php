@@ -7,7 +7,7 @@ use UnityWebPortal\lib\UnityUser;
 class PiRemoveUserTest extends TestCase {
     private function removeUser(string $uid)
     {
-        post(
+        http_post(
             __DIR__ . "/../../webroot/panel/pi.php",
             ["form_name" => "remUser", "uid" => $uid]
         );
