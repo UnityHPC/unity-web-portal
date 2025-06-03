@@ -30,8 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
         }
-    }
-    elseif (isset($_POST["cancel"])) {
+    } elseif (isset($_POST["cancel"])) {
         foreach ($pending_requests as $request) {
             if ($request["request_for"] == "admin") {
                 $USER->getPIGroup()->cancelGroupRequest();
@@ -69,7 +68,13 @@ require_once $LOC_HEADER;
         <hr>
         <p><strong>Requesting Ownership of PI Account/Group</strong></p>
         <p>You will receive an email when your account has been approved.</p>
-        <p>Email <a href="mailto:<?php echo $CONFIG['mail']['support']; ?>"><?php echo $CONFIG['mail']['support_name']; ?></a> if you have not heard back in one business day. </p>
+        <p>
+        <?php
+        $addr = $CONFIG['mail']['support'];
+        $name = $CONFIG['mail']['support_name'];
+        echo 'Email <a href="mailto:$addr">$name</a> if you have not heard back in one business day.';
+        ?>
+        </p>
         <br>
         <p><strong>Requesting Membership in a PI Group</strong></p>
         <p>You will receive an email when your account has been approved by the PI.</p>
