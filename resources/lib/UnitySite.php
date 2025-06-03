@@ -54,12 +54,14 @@ class UnitySite
     public static function badRequest($message)
     {
         self::headerResponseCode(400, "bad request");
+        self::errorLog("bad request", $message);
         self::die($message);
     }
 
     public static function forbidden($message)
     {
         self::headerResponseCode(403, "forbidden");
+        self::errorLog("forbidden", $message);
         self::die($message);
     }
 
