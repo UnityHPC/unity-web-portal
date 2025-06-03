@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         UnitySite::badRequest("neither 'new_user_sel' or 'cancel' are set!");
     }
 }
-require_once $LOC_HEADER;
+include $LOC_HEADER;
 ?>
 
 <h1>Request Account</h1>
