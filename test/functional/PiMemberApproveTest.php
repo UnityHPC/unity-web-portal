@@ -31,7 +31,12 @@ class PiMemberApproveTest extends TestCase {
         $pi = $USER;
         $piGroup = $USER->getPIGroup();
         $this->assertTrue($piGroup->exists());
-        $this->assertEquals([$pi->getUID()], $piGroup->getGroupMemberUIDs());
+        $this->assertTrue(
+            arraysAreEqualUnOrdered(
+                [$pi->getUID()],
+                $piGroup->getGroupMemberUIDs()
+            )
+        );
         $this->assertEmpty($piGroup->getRequests());
         $requestedUser = new UnityUser(self::$requestUid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
         try {
@@ -41,7 +46,12 @@ class PiMemberApproveTest extends TestCase {
             $piGroup->approveUser($requestedUser);
             $this->assertEmpty($piGroup->getRequests());
 
-            $this->assertEquals([$pi->getUID(), self::$requestUid], $piGroup->getGroupMemberUIDs());
+            $this->assertTrue(
+                arraysAreEqualUnOrdered(
+                    [$pi->getUID(), self::$requestUid],
+                    $piGroup->getGroupMemberUIDs()
+                )
+            );
             $this->assertTrue($piGroup->userExists($requestedUser));
         } finally {
             $piGroup->removeUser($requestedUser);
@@ -56,7 +66,12 @@ class PiMemberApproveTest extends TestCase {
         $pi = $USER;
         $piGroup = $USER->getPIGroup();
         $this->assertTrue($piGroup->exists());
-        $this->assertEquals([$pi->getUID()], $piGroup->getGroupMemberUIDs());
+        $this->assertTrue(
+            arraysAreEqualUnOrdered(
+                [$pi->getUID()],
+                $piGroup->getGroupMemberUIDs()
+            )
+        );
         $this->assertEmpty($piGroup->getRequests());
 
         $notRequestedUser = new UnityUser(self::$noRequestUid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);

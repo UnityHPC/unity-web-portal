@@ -49,6 +49,12 @@ $HTTP_HEADER_TEST_INPUTS = [
     mb_convert_encoding("Hello, World!", "UTF-16")
 ];
 
+function arraysAreEqualUnOrdered(array $a, array $b): bool
+{
+    return (array_diff($a, $b) == [] && array_diff($b, $a) == []);
+}
+
+
 function switchUser(
     string $eppn,
     string $given_name,
