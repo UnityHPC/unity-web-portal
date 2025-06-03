@@ -462,7 +462,6 @@ class UnityGroup
     {
         $members = $this->getGroupMemberUIDs($ignorecache);
         $out = array();
-        $cache_arr = array();
         $owner_uid = $this->getOwner()->getUID();
         foreach ($members as $member) {
                 $user_obj = new UnityUser(
@@ -474,9 +473,7 @@ class UnityGroup
                     $this->WEBHOOK
                 );
                 array_push($out, $user_obj);
-                array_push($cache_arr, $user_obj->getUID());
         }
-
         return $out;
     }
 
@@ -495,8 +492,8 @@ class UnityGroup
             $updatecache = true;
         }
         if (!$ignorecache && $updatecache) {
-            sort($cache_arr);
-            $this->REDIS->setCache($this->getPIUID(), "members", $cache_arr);
+            sort($members);
+            $this->REDIS->setCache($this->getPIUID(), "members", $members);
         }
         return $members;
     }
