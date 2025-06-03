@@ -81,17 +81,18 @@ function http_post(string $phpfile, array $post_data): void
     $_SERVER["PHP_SELF"] = preg_replace("/.*webroot\//", "/", $phpfile);
     $_POST = $post_data;
     ob_start();
-    $post_did_redirect = false;
+    $post_did_redirect_or_die = false;
     try {
         include $phpfile;
     } catch (UnityWebPortal\lib\exceptions\PhpUnitNoDieException $e) {
-        $post_did_redirect = true;
+        $post_did_redirect_or_die = true;
     } finally {
         ob_get_clean(); // discard output
         unset($_POST);
         $_SERVER = $_PREVIOUS_SERVER;
     }
-    assert($post_did_redirect, "post did not redirect!");
+    // https://en.wikipedia.org/wiki/Post/Redirect/Get
+    assert($post_did_redirect_or_die, "post did not redirect or die!");
 }
 
 function http_get(string $phpfile, array $get_data = array()): void
