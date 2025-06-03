@@ -133,6 +133,12 @@ class UnityGroup
      */
     public function approveGroup($operator = null, $send_mail = true)
     {
+        if (!$this->SQL->requestExists($this->getOwner()->getUID())) {
+            throw new RuntimeException(
+                "attempt to approve nonexistent request for group='{$this->getPIUID()}' uid='$new_user'"
+            );
+        }
+
         // check for edge cases...
         if ($this->exists()) {
             return;
@@ -277,6 +283,12 @@ class UnityGroup
      */
     public function approveUser($new_user, $send_mail = true)
     {
+        if (!$this->requestExists($new_user)) {
+            throw new RuntimeException(
+                "attempt to approve nonexistent request for group='{$this->getPIUID()}' uid='$new_user'"
+            );
+        }
+
         // check if user exists
         if (!$new_user->exists()) {
             $new_user->init();
