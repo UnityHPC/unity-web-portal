@@ -64,11 +64,12 @@ class PiMemberApproveTest extends TestCase {
         $this->assertEmpty($piGroup->getRequests());
 
         try {
+            $this->expectException(Exception::class);
             $piGroup->approveUser($notRequestedUser);
-            $this->assertEquals([$pi->getUID()], $piGroup->getGroupMemberUIDs());
-            $this->assertFalse($piGroup->userExists($notRequestedUser));
         } finally {
-            $piGroup->removeUser($notRequestedUser);
+            if ($piGroup->userExists($notRequestedUser)) {
+                $piGroup->removeUser($notRequestedUser);
+            }
         }
     }
 }
