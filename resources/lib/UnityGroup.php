@@ -485,7 +485,7 @@ class UnityGroup
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->getPIUID(), "members");
             if (!is_null($cached_val)) {
-                return $cached_val;
+                $members = $cached_val;
             }
         }
         $updatecache = false;
