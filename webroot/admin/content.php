@@ -12,6 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($_POST["pageSel"])) {
         $SQL->editPage($_POST["pageSel"], $_POST["content"], $USER);
     }
+    UnitySite::redirect($_SERVER['PHP_SELF']);
 }
 
 include $LOC_HEADER;

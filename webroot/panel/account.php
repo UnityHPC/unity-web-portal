@@ -72,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
             break;
     }
+    UnitySite::redirect($_SERVER['PHP_SELF']);
 }
 ?>
 
