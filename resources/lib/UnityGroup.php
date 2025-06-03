@@ -47,6 +47,11 @@ class UnityGroup
         return $this->getPIUID() == $other_group->getPIUID();
     }
 
+    public function __toString()
+    {
+        return $this->getPIUID();
+    }
+
     /**
      * Returns this group's PI UID
      *

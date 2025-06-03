@@ -38,6 +38,11 @@ class UnityUser
         return $this->getUID() == $other_user->getUID();
     }
 
+    public function __toString()
+    {
+        return $this->uid;
+    }
+
     /**
      * This is the method that is run when a new account is created
      *
