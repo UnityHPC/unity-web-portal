@@ -40,7 +40,7 @@ class UnityGroup extends PosixGroup
     public function requestGroup(bool $send_mail_to_admins, bool $send_mail = true): void
     {
         if ($this->exists()) {
-            return;
+            throw new Exception("requested to create group '$this' that already exists!");
         }
         if ($this->SQL->accDeletionRequestExists($this->getOwner()->uid)) {
             return;
@@ -70,7 +70,10 @@ class UnityGroup extends PosixGroup
         $uid = $this->getOwner()->uid;
         $request = $this->SQL->getRequest($uid, UnitySQL::REQUEST_BECOME_PI);
         if ($this->exists()) {
-            return;
+            throw new Exception("group '$this' exists");
+        }
+        if ($this->SQL->accDeletionRequestExists($this->getOwner()->getUID())) {
+            throw new Exception("group owner '{$this->getOwner()->getUID()}' requested account deletion");
         }
         \ensure($this->getOwner()->exists());
         $this->init();
@@ -91,7 +94,7 @@ class UnityGroup extends PosixGroup
         $request = $this->SQL->getRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         $this->SQL->removeRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         if ($this->exists()) {
-            return;
+            throw new Exception("group '$this' creation request cannot be denied, it already exists!");
         }
         $this->SQL->addLog("denied_group", $this->getOwner()->uid);
         if ($send_mail) {
@@ -102,6 +105,7 @@ class UnityGroup extends PosixGroup
     public function cancelGroupRequest(bool $send_mail = true): void
     {
         if (!$this->SQL->requestExists($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI)) {
+            UnitySite::errorLog("warning", "attempt to cancel nonexistent group creation request ($this)");
             return;
         }
         $this->SQL->removeRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
@@ -115,6 +119,7 @@ class UnityGroup extends PosixGroup
     public function cancelGroupJoinRequest(UnityUser $user, bool $send_mail = true): void
     {
         if (!$this->requestExists($user)) {
+            UnitySite::errorLog("warning", "attempt to cancel nonexistent group join request ($this)");
             return;
         }
         $this->SQL->removeRequest($user->uid, $this->gid);
