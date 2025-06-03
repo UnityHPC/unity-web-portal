@@ -399,15 +399,18 @@ class UnityGroup
     public function newUserRequest($new_user, $send_mail = true)
     {
         if ($this->userExists($new_user)) {
+            UnitySite::errorLog("warning", "user '$new_user' already in group");
             return;
         }
 
         if ($this->requestExists($new_user)) {
+            UnitySite::errorLog("warning", "user '$new_user' already requested group membership");
             return;
         }
 
-        // check if account deletion request already exists
+        // FIXME remove this check or make an error instead
         if ($this->SQL->accDeletionRequestExists($new_user->getUID())) {
+            UnitySite::errorLog("warning", "user '$new_user' requested account deletion, nothing doing...");
             return;
         }
 
