@@ -185,6 +185,7 @@ class UnityLDAP extends ldapConn
                 return true;
             }
         }
+
         return false;
     }
 
