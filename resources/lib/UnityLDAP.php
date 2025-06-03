@@ -161,7 +161,7 @@ class UnityLDAP extends ldapConn
         return $new_gid;
     }
 
-    private function IDNumInUse(int $id)
+    private function IDNumInUse($id)
     {
         // id reserved for debian packages
         if (($id >= 100 && $id <= 999) || ($id >= 60000 && $id <= 64999)) {
