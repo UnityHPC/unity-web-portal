@@ -124,7 +124,7 @@ class UnityLDAP extends ldapConn
         $max_uid = $UnitySQL->getSiteVar('MAX_UID');
         $new_uid = $max_uid + 1;
 
-        while ($this->UIDNumInUse($new_uid)) {
+        while ($this->IDNumInUse($new_uid)) {
             $new_uid++;
         }
 
@@ -138,7 +138,7 @@ class UnityLDAP extends ldapConn
         $max_pigid = $UnitySQL->getSiteVar('MAX_PIGID');
         $new_pigid = $max_pigid + 1;
 
-        while ($this->PIGIDNumInUse($new_pigid)) {
+        while ($this->IDNumInUse($new_pigid)) {
             $new_pigid++;
         }
 
