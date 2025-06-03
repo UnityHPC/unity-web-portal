@@ -2,7 +2,7 @@
 
 use UnityWebPortal\lib\UnitySite;
 
-if (isset($_POST)) {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ((@$_SESSION["is_admin"] ?? false) == true
         && (@$_POST["form_name"] ?? null) == "clearView"
     ) {
@@ -14,8 +14,8 @@ if (isset($_POST)) {
     // They also must not redirect like standard PRG practice because this
     // header also needs to handle POST data. So this header does the PRG redirect
     // for all pages.
-    UnitySite::redirect($_SERVER['PHP_SELF']);
     unset($_POST); // unset ensures that header must not come before POST handling
+    UnitySite::redirect($_SERVER['PHP_SELF']);
 }
 
 if (isset($SSO)) {
