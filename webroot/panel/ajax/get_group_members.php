@@ -3,6 +3,7 @@
 require_once __DIR__ . "/../../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityGroup;
+use UnityWebPortal\lib\UnitySite;
 
 if (!isset($_GET["pi_uid"])) {
     UnitySite::badRequest("PI UID not set");
