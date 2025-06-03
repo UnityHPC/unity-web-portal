@@ -7,6 +7,10 @@
 // Load Composer Libs
 require_once __DIR__ . "/../vendor/autoload.php";
 
+// submodule
+require_once __DIR__ . "/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPEntry.php";
+require_once __DIR__ . "/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPConn.php";
+
 // load libs
 require_once __DIR__ . "/lib/UnityLDAP.php";
 require_once __DIR__ . "/lib/UnityUser.php";
@@ -19,6 +23,7 @@ require_once __DIR__ . "/lib/UnitySite.php";
 require_once __DIR__ . "/lib/UnityConfig.php";
 require_once __DIR__ . "/lib/UnityWebhook.php";
 require_once __DIR__ . "/lib/UnityRedis.php";
+require_once __DIR__ . "/lib/UnityGithub.php";
 
 // run init script
 require __DIR__ . "/init.php";

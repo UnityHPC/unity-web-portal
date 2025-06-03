@@ -1,6 +1,6 @@
 <?php
 
-require_once "../../../resources/autoload.php";  // Load required libs
+require_once __DIR__ . "/../../../resources/autoload.php";  // Load required libs
 ?>
 
 <form id="newPIform" method="POST" action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/groups.php">

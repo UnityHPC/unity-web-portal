@@ -3,15 +3,66 @@
 namespace UnityWebPortal\lib;
 
 use phpseclib3\Crypt\PublicKeyLoader;
+use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
 
 class UnitySite
 {
+    public static function die($x = null)
+    {
+        if (@$GLOBALS["PHPUNIT_NO_DIE_PLEASE"] == true) {
+            if (is_null($x)) {
+                throw new PhpUnitNoDieException();
+            } else {
+                throw new PhpUnitNoDieException($x);
+            }
+        } else {
+            if (is_null($x)) {
+                die();
+            } else {
+                die($x);
+            }
+        }
+    }
+
     public static function redirect($destination)
     {
-        if ($_SERVER["PHP_SELF"] != $destination) {
-            header("Location: $destination");
-            die("Redirect failed, click <a href='$destination'>here</a> to continue.");
-        }
+        header("Location: $destination");
+        self::die("Redirect failed, click <a href='$destination'>here</a> to continue.");
+    }
+
+    private static function headerResponseCode(int $code, string $reason)
+    {
+        $protocol = @$_SERVER["SERVER_PROTOCOL"] ?? "HTTP/1.1";
+        $msg = $protocol . " " . strval($code) . " " . $reason;
+        header($msg, true, $code);
+    }
+
+    public static function errorLog(string $title, string $message)
+    {
+        error_log(
+            "$title: " . json_encode(
+                [
+                    "message" => $message,
+                    "REMOTE_USER" => @$_SERVER["REMOTE_USER"],
+                    "REMOTE_ADDR" => @$_SERVER["REMOTE_ADDR"],
+                    "trace" => (new \Exception())->getTraceAsString()
+                ]
+            )
+        );
+    }
+
+    public static function badRequest($message)
+    {
+        self::headerResponseCode(400, "bad request");
+        self::errorLog("bad request", $message);
+        self::die();
+    }
+
+    public static function forbidden($message)
+    {
+        self::headerResponseCode(403, "forbidden");
+        self::errorLog("forbidden", $message);
+        self::die();
     }
 
     public static function removeTrailingWhitespace($arr)
@@ -25,34 +76,26 @@ class UnitySite
         return $out;
     }
 
-    public static function getGithubKeys($username)
-    {
-        $url = "https://api.github.com/users/$username/keys";
-        $headers = array(
-        "User-Agent: Unity Cluster User Portal"
-        );
-
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        $output = json_decode(curl_exec($curl), true);
-        curl_close($curl);
-
-        $out = array();
-        foreach ($output as $value) {
-            array_push($out, $value["key"]);
-        }
-
-        return $out;
-    }
-
     public static function testValidSSHKey($key_str)
     {
+        // key loader still throws, these just mute warnings for phpunit
+        // https://github.com/phpseclib/phpseclib/issues/2079
+        if ($key_str == "") {
+            return false;
+        }
+        // https://github.com/phpseclib/phpseclib/issues/2076
+        // https://github.com/phpseclib/phpseclib/issues/2077
+        // there are actually valid JSON keys (JWK), but I don't think anybody uses it
+        if (!is_null(@json_decode($key_str))) {
+            return false;
+        }
         try {
             PublicKeyLoader::load($key_str);
             return true;
-        } catch (\Exception $e) {
+        // phpseclib should throw only NoKeyLoadedException but that is not the case
+        // https://github.com/phpseclib/phpseclib/pull/2078
+        // } catch (\phpseclib3\Exception\NoKeyLoadedException $e) {
+        } catch (\Throwable $e) {
             return false;
         }
     }

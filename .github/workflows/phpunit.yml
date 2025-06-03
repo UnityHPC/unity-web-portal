@@ -1,0 +1,22 @@
+name: phpunit
+
+on: [push]
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: "8.3"
+        # php extensions also listed in tools/docker-dev/web/Dockerfile and README.md
+        extensions: curl,mysql,ldap,pdo,redis,intl
+        tools: composer:v2
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+    - name: Run PHPUnit tests
+      run: vendor/bin/phpunit --colors=always --testsuite unit

@@ -1,11 +1,11 @@
 <?php
 
-require_once "../../../resources/autoload.php";
+require_once __DIR__ . "/../../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityGroup;
 
 if (!isset($_GET["pi_uid"])) {
-    die("PI UID not set");
+    UnitySite::badRequest("PI UID not set");
 }
 
 $group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
@@ -20,8 +20,8 @@ foreach ($members as $member) {
     }
 }
 
-if (!$found) {
-    die();
+if ($found) {
+    UnitySite::forbidden("not a group member");
 }
 
 $count = count($members);

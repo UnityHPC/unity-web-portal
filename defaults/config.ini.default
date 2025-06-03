@@ -11,17 +11,20 @@ name = "Unity Cluster"  ; Name of the website
 url = "https://127.0.0.1:8000/"  ; URL of the website
 description = "The Unity Web Portal is a lightweight HPC cluster front-end"  ; Description of the website
 logo = "logo.png"  ; path to logo file, in the webroot/assets/branding folder
+terms_of_service_url = "https://github.com" ; this can be external or a portal page created with "content management"
+account_policy_url = "https://github.com" ; this can be external or a portal page created with "content management"
 
 [ldap]
 uri = "ldap://identity"  ; URI of remote LDAP server
 user = "cn=admin,dc=unityhpc,dc=test"  ; Admin bind DN LDAP user
 pass = "password"  ; Admin bind password
 basedn = "dc=unityhpc,dc=test"  ; Base search DN
-user_ou = "ou=users,dc=unityhpc,dc=test"  ; User organizational unit
+user_ou = "ou=users,dc=unityhpc,dc=test"  ; User organizational unit (may contain more than user group)
+user_group = "cn=unityusers,dc=unityhpc,dc=test" ; User group
 group_ou = "ou=groups,dc=unityhpc,dc=test"  ; Group organizational unit
 pigroup_ou = "ou=pi_groups,dc=unityhpc,dc=test"  ; PI Group organizational unit
 orggroup_ou = "ou=org_groups,dc=unityhpc,dc=test"  ; ORG group organizational unit
-admin_group = "cn=sudo,dc=unityhpc,dc=test"  ; admin dn (members of this group are admins on the web portal)
+admin_group = "cn=web_admins,dc=unityhpc,dc=test"  ; admin dn (members of this group are admins on the web portal)
 def_user_shell = "/bin/bash"  ; Default shell for new users
 
 [sql]
@@ -74,6 +77,7 @@ title[] = "Test Medium Footer"
 [loginshell]  ; Login shells that show up as options in the account settings page
 shell[] = "/bin/bash"
 shell[] = "/bin/zsh"
+shell[] = "/bin/tcsh"
 
 [menuitems]  ; menu items, add a label and link for each
 labels[] = "Global Menuitem 1"
@@ -100,4 +104,3 @@ url = "https://hooks.slack.com/services/T04BB3N3M26/B050A55CBNX/IGm1YA0VhjczAfs5
 [page]  ; which sql objects to use for the content on these pages
 home = "home"
 support = "support"
-policy = "policy"

@@ -1,0 +1,56 @@
+# intentionally malformed files
+# pre-commit automatically excludes submodules
+exclude: |
+  (?x)^(
+      test/.*|
+  )$
+
+repos:
+  # auto formatters (no work required) #############################################################
+  # - repo: https://github.com/pre-commit/pre-commit-hooks
+  #   rev: v5.0.0
+  #   hooks:
+  #     - id: trailing-whitespace
+  #     - id: end-of-file-fixer
+  - repo: local
+    hooks:
+      - id: phpcbf
+        name: PHP Code Beautifier and Fixer
+        entry: phpcbf
+        language: system
+        files: \.php$
+        args: [--standard=PSR2, --colors]
+
+  # linters (work required) ########################################################################
+  # - repo: https://github.com/pre-commit/pre-commit-hooks
+  #   rev: v5.0.0
+  #   hooks:
+  #     - id: check-yaml
+  #     - id: check-json
+  #     - id: check-xml
+  #     - id: check-added-large-files
+  #     - id: check-executables-have-shebangs
+  # - repo: https://github.com/gitleaks/gitleaks
+  #   rev: v8.23.1
+  #   hooks:
+  #     - id: gitleaks
+  - repo: local
+    hooks:
+      - id: phpcs
+        name: PHP CodeSniffer
+        entry: phpcs
+        language: system
+        files: \.php$
+        args: [--standard=PSR2, --colors]
+      - id: php-l
+        name: php -l
+        entry: php
+        language: system
+        files: \.php$
+        args: [-l]
+      - id: assert-no-die-exit
+        name: Assert no die()/exit()
+        entry: ./test/assert-no-die-exit.bash
+        language: system
+        files: \.php$
+        exclude: resources/lib/UnitySite\.php$

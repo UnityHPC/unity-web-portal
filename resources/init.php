@@ -4,16 +4,15 @@
  * init.php - Initialization script that is run on every page of Unity
  */
 
-use UnityWebPortal\lib\{
-    UnityConfig,
-    UnityLDAP,
-    UnityMailer,
-    UnitySQL,
-    UnitySSO,
-    UnityUser,
-    UnityRedis,
-    UnityWebhook
-};
+use UnityWebPortal\lib\UnityConfig;
+use UnityWebPortal\lib\UnityLDAP;
+use UnityWebPortal\lib\UnityMailer;
+use UnityWebPortal\lib\UnitySQL;
+use UnityWebPortal\lib\UnitySSO;
+use UnityWebPortal\lib\UnityUser;
+use UnityWebPortal\lib\UnityRedis;
+use UnityWebPortal\lib\UnityWebhook;
+use UnityWebPortal\lib\UnityGithub;
 
 //
 // Initialize Session
@@ -46,6 +45,7 @@ $LDAP = new UnityLDAP(
     $CONFIG["ldap"]["pigroup_ou"],
     $CONFIG["ldap"]["orggroup_ou"],
     $CONFIG["ldap"]["admin_group"],
+    $CONFIG["ldap"]["user_group"],
     $CONFIG["ldap"]["def_user_shell"]
 );
 
@@ -85,6 +85,8 @@ $WEBHOOK = new UnityWebhook(
     $CONFIG["webhook"]["url"],
     $CONFIG["site"]["url"] . $CONFIG["site"]["prefix"]
 );
+
+$GITHUB = new UnityGithub();
 
 //
 // SSO Init

@@ -2,7 +2,7 @@
 
 header('Content-type: text/plain');
 
-require_once "../../../resources/autoload.php";
+require_once __DIR__ . "/../../../resources/autoload.php";
 
 $notices = $SQL->getNotices();
 $jsonArray = [];
