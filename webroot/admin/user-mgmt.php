@@ -15,7 +15,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/account.php");
             break;
     }
-    UnitySite::redirect($_SERVER['PHP_SELF']);
 }
 
 include $LOC_HEADER;

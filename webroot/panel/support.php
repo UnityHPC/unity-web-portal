@@ -2,7 +2,7 @@
 
 require "../../resources/autoload.php";
 
-require_once $LOC_HEADER;
+include $LOC_HEADER;
 ?>
 
 <h1>Support</h1>
