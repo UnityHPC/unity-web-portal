@@ -72,7 +72,7 @@ require_once $LOC_HEADER;
         <?php
         $addr = $CONFIG['mail']['support'];
         $name = $CONFIG['mail']['support_name'];
-        echo 'Email <a href="mailto:$addr">$name</a> if you have not heard back in one business day.';
+        echo "Email <a href='mailto:$addr'>$name</a> if you have not heard back in one business day.";
         ?>
         </p>
         <br>
