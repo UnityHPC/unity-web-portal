@@ -115,35 +115,43 @@ class UnityLDAP extends ldapConn
   //
   // ID Number selection functions
   //
-    public function getNextUIDNumber(UnitySQL $UnitySQL): int
+    public function getNextUIDNumber($UnitySQL)
     {
-        $new_id = $UnitySQL->getSiteVar('MAX_UID') + 1;
-        while ($this->IDNumInUse($new_id)) {
-            $new_id++;
+        $max_uid = $UnitySQL->getSiteVar('MAX_UID');
+        $new_uid = $max_uid + 1;
+
+        while ($this->UIDNumInUse($new_uid)) {
+            $new_uid++;
         }
+
         $UnitySQL->updateSiteVar('MAX_UID', $new_id);
+
         return $new_id;
     }
 
-    public function getNextPiGIDNumber(UnitySQL $UnitySQL): int
+    public function getNextPiGIDNumber($UnitySQL)
     {
         $max_pigid = $UnitySQL->getSiteVar('MAX_PIGID');
         $new_pigid = $max_pigid + 1;
-        while ($this->IDNumInUse($new_pigid)) {
+
+        while ($this->PIGIDNumInUse($new_pigid)) {
             $new_pigid++;
         }
         $UnitySQL->updateSiteVar('MAX_PIGID', $new_pigid);
         return $new_pigid;
     }
 
-    public function getNextOrgGIDNumber(UnitySQL $UnitySQL): int
+    public function getNextOrgGIDNumber($UnitySQL)
     {
         $max_gid = $UnitySQL->getSiteVar('MAX_GID');
         $new_gid = $max_gid + 1;
+
         while ($this->IDNumInUse($new_gid)) {
             $new_gid++;
         }
+
         $UnitySQL->updateSiteVar('MAX_GID', $new_gid);
+
         return $new_gid;
     }
 
