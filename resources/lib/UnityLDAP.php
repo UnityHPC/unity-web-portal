@@ -128,9 +128,9 @@ class UnityLDAP extends ldapConn
             $new_uid++;
         }
 
-        $UnitySQL->updateSiteVar('MAX_UID', $new_id);
+        $UnitySQL->updateSiteVar('MAX_UID', $new_uid);
 
-        return $new_id;
+        return $new_uid;
     }
 
     public function getNextPiGIDNumber($UnitySQL)
@@ -141,7 +141,9 @@ class UnityLDAP extends ldapConn
         while ($this->PIGIDNumInUse($new_pigid)) {
             $new_pigid++;
         }
+
         $UnitySQL->updateSiteVar('MAX_PIGID', $new_pigid);
+
         return $new_pigid;
     }
 
@@ -159,7 +161,7 @@ class UnityLDAP extends ldapConn
         return $new_gid;
     }
 
-    private function IDNumInUse(int $id): bool
+    private function IDNumInUse(int $id)
     {
         // id reserved for debian packages
         if (($id >= 100 && $id <= 999) || ($id >= 60000 && $id <= 64999)) {
