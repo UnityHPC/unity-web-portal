@@ -370,7 +370,7 @@ class UnityGroup
     public function removeUser($new_user, $send_mail = true)
     {
         if (!$this->userExists($new_user)) {
-            UnitySite::errorLog("warning", "requested to delete absent user '$new_user' from group '$this'");
+            UnitySite::errorLog("warning", "attempted to delete absent user '$new_user' from group '$this'");
             return;
         }
 
