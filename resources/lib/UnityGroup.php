@@ -460,20 +460,7 @@ class UnityGroup
 
     public function getGroupMembers($ignorecache = false)
     {
-        if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->getPIUID(), "members");
-            if (!is_null($cached_val)) {
-                $members = $cached_val;
-            }
-        }
-
-        $updatecache = false;
-        if (!isset($members)) {
-            $pi_group = $this->getLDAPPiGroup();
-            $members = $pi_group->getAttribute("memberuid");
-            $updatecache = true;
-        }
-
+        $members = $this->getGroupMemberUIDs($ignorecache);
         $out = array();
         $cache_arr = array();
         $owner_uid = $this->getOwner()->getUID();
@@ -490,19 +477,27 @@ class UnityGroup
                 array_push($cache_arr, $user_obj->getUID());
         }
 
+        return $out;
+    }
+
+    public function getGroupMemberUIDs($ignorecache = false)
+    {
+        if (!$ignorecache) {
+            $cached_val = $this->REDIS->getCache($this->getPIUID(), "members");
+            if (!is_null($cached_val)) {
+                return $cached_val;
+            }
+        }
+        $updatecache = false;
+        if (!isset($members)) {
+            $pi_group = $this->getLDAPPiGroup();
+            $members = $pi_group->getAttribute("memberuid");
+            $updatecache = true;
+        }
         if (!$ignorecache && $updatecache) {
             sort($cache_arr);
             $this->REDIS->setCache($this->getPIUID(), "members", $cache_arr);
         }
-
-        return $out;
-    }
-
-    public function getGroupMemberUIDs()
-    {
-        $pi_group = $this->getLDAPPiGroup();
-        $members = $pi_group->getAttribute("memberuid");
-
         return $members;
     }
 
