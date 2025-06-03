@@ -45,6 +45,7 @@ $LDAP = new UnityLDAP(
     $CONFIG["ldap"]["pigroup_ou"],
     $CONFIG["ldap"]["orggroup_ou"],
     $CONFIG["ldap"]["admin_group"],
+    $CONFIG["ldap"]["user_group"],
     $CONFIG["ldap"]["def_user_shell"]
 );
 

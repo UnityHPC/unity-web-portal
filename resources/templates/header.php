@@ -11,7 +11,7 @@ if ((@$_SESSION["is_admin"] ?? false) == true
 }
 
 if (isset($SSO)) {
-    if (!$_SESSION["user_exists"]) {
+    if (!$_SESSION["user_exists"] && !str_ends_with($_SERVER['PHP_SELF'], "/panel/new_account.php")) {
         UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/new_account.php");
     }
 }

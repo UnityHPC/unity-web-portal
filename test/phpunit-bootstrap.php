@@ -76,7 +76,9 @@ function switchUser(
 function http_post(string $phpfile, array $post_data): void
 {
     global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
+    $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "POST";
+    $_SERVER["PHP_SELF"] = preg_replace("/.*webroot\//", "/", $phpfile);
     $_POST = $post_data;
     ob_start();
     try {
@@ -84,24 +86,33 @@ function http_post(string $phpfile, array $post_data): void
     } finally {
         ob_get_clean(); // discard output
         unset($_POST);
-        unset($_SERVER["REQUEST_METHOD"]);
+        $_SERVER = $_PREVIOUS_SERVER;
     }
 }
 
-function http_get(string $phpfile): void
+function http_get(string $phpfile, array $get_data = array()): void
 {
     global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
+    $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "GET";
+    $_SERVER["PHP_SELF"] = preg_replace("/.*webroot\//", "/", $phpfile);
+    $_GET = $get_data;
     ob_start();
     try {
         include $phpfile;
     } finally {
         ob_get_clean(); // discard output
-        unset($_SERVER["REQUEST_METHOD"]);
+        unset($_GET);
+        $_PREVIOUS_SERVER = $_SERVER;
     }
 }
 
 function getNormalUser()
+{
+    return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
+}
+
+function getNormalUser2()
 {
     return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
 }
@@ -136,12 +147,27 @@ function getUserWithOneKey()
     return ["user5@org2.test", "foo", "bar", "user5@org2.test"];
 }
 
+function getUserIsPIHasNoMembersNoMemberRequests()
+{
+    return ["user5@org2.test", "foo", "bar", "user5@org2.test"];
+}
+
+function getUserIsPIHasAtLeastOneMember()
+{
+    return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
+}
+
 function getNonExistentUser()
 {
-    return ["user1@nonexistent.test", "foo", "bar", "user1@nonexistent.test"];
+    return ["user2000@org2.test", "foo", "bar", "user2000@org2.test"];
 }
 
 function getAdminUser()
 {
     return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
+}
+
+function getExistingPI()
+{
+    return "pi_user1005_org3_test";
 }

@@ -198,6 +198,41 @@ class UnityGroup
         }
     }
 
+    public function cancelGroupRequest($send_mail = true)
+    {
+        if (!$this->SQL->requestExists($this->getOwner()->getUID())) {
+            return;
+        }
+
+        $this->SQL->removeRequest($this->getOwner()->getUID());
+
+        if ($send_mail) {
+            // send email to requestor
+            $this->MAILER->sendMail(
+                "admin",
+                "group_request_cancelled"
+            );
+        }
+    }
+
+    public function cancelGroupJoinRequest($user, $send_mail = true)
+    {
+        if (!$this->requestExists($user)) {
+            return;
+        }
+
+        $this->SQL->removeRequest($user->getUID(), $this->pi_uid);
+
+        if ($send_mail) {
+            // send email to requestor
+            $this->MAILER->sendMail(
+                $this->getOwner()->getMail(),
+                "group_join_request_cancelled",
+                ["group" => $this->pi_uid]
+            );
+        }
+    }
+
     // /**
     //  * This method will delete the group, either by admin action or PI action
     //  */
@@ -218,8 +253,7 @@ class UnityGroup
     //     // now we delete the ldap entry
     //     $ldapPiGroupEntry = $this->getLDAPPiGroup();
     //     if ($ldapPiGroupEntry->exists()) {
-    //         ldapPiGroupEntry->delete();
-
+    //         $ldapPiGroupEntry->delete();
     //         $this->REDIS->removeCacheArray("sorted_groups", "", $this->getPIUID());
     //         foreach ($users as $user) {
     //             $this->REDIS->removeCacheArray($user->getUID(), "groups", $this->getPIUID());
@@ -252,7 +286,7 @@ class UnityGroup
         $this->addUserToGroup($new_user);
 
         // remove request, this will fail silently if the request doesn't exist
-        $this->removeRequest($new_user->getUID());
+        $this->SQL->removeRequest($new_user->getUID(), $this->pi_uid);
 
         // send email to the requestor
         if ($send_mail) {
@@ -284,7 +318,7 @@ class UnityGroup
         }
 
         // remove request, this will fail silently if the request doesn't exist
-        $this->removeRequest($new_user->getUID());
+        $this->SQL->removeRequest($new_user->getUID(), $this->pi_uid);
 
         if ($send_mail) {
             // send email to the user
@@ -521,11 +555,6 @@ class UnityGroup
     private function addRequest($uid)
     {
         $this->SQL->addRequest($uid, $this->pi_uid);
-    }
-
-    private function removeRequest($uid)
-    {
-        $this->SQL->removeRequest($uid, $this->pi_uid);
     }
 
     //

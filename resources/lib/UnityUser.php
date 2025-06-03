@@ -71,6 +71,10 @@ class UnityUser
             $ldapUserEntry->setAttribute("uid", $this->uid);
             $ldapUserEntry->setAttribute("givenname", $this->getFirstname());
             $ldapUserEntry->setAttribute("sn", $this->getLastname());
+            $ldapUserEntry->setAttribute(
+                "gecos",
+                \transliterator_transliterate("Latin-ASCII", "{$this->getFirstname()} {$this->getLastname()}")
+            );
             $ldapUserEntry->setAttribute("mail", $this->getMail());
             $ldapUserEntry->setAttribute("o", $this->getOrg());
             $ldapUserEntry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
@@ -101,6 +105,10 @@ class UnityUser
         if (!$orgEntry->inOrg($this->uid)) {
             $orgEntry->addUser($this);
         }
+
+        // add to user group as well as user OU
+        $this->LDAP->getUserGroup()->appendAttribute("memberuid", $this->getUID());
+        $this->LDAP->getUserGroup()->write();
 
         // add user to cache
         $this->REDIS->appendCacheArray("sorted_users", "", $this->getUID());

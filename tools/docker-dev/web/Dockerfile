@@ -2,7 +2,7 @@ FROM ubuntu:24.04
 
 # Web Server Setup
 ARG DEBIAN_FRONTEND=noninteractive
-# php extensions also listed in .github/workflows/phpunit.yml
+# php extensions also listed in .github/workflows/phpunit.yml and README.md
 RUN apt-get update && apt-get install -y \
     apache2 \
     apache2-utils \
@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
     php-redis \
     php-cli \
     php-mbstring \
-    php-xml
+    php-xml \
+    php-intl
 COPY htpasswd /etc/apache2/.htpasswd
 RUN chown www-data /etc/apache2/.htpasswd
 COPY unity-apache.conf /etc/apache2/sites-available/unity.conf
