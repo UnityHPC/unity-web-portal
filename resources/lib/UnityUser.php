@@ -157,7 +157,7 @@ class UnityUser
      */
     public function getLDAPGroup()
     {
-        return $this->LDAP->getGroupEntry($this->uid);
+        return $this->LDAP->getUserGroupEntry($this->uid);
     }
 
     public function exists()

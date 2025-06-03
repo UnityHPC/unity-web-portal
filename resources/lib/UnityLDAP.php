@@ -27,14 +27,14 @@ class UnityLDAP extends ldapConn
 
   // string vars for OUs
     private $STR_USEROU;
-    private $STR_GROUPOU;
+    private $STR_USERGROUPOU;
     private $STR_PIGROUPOU;
     private $STR_ORGGROUPOU;
     private $STR_ADMINGROUP;
 
   // Instance vars for various ldapEntry objects
     private $userOU;
-    private $groupOU;
+    private $user_groupOU;
     private $pi_groupOU;
     private $org_groupOU;
     private $adminGroup;
@@ -60,14 +60,14 @@ class UnityLDAP extends ldapConn
         parent::__construct($host, $dn, $pass);
 
         $this->STR_USEROU = $user_ou;
-        $this->STR_GROUPOU = $group_ou;
+        $this->STR_USERGROUPOU = $group_ou;
         $this->STR_PIGROUPOU = $pigroup_ou;
         $this->STR_ORGGROUPOU = $orggroup_ou;
         $this->STR_ADMINGROUP = $admin_group;
 
       // Get Global Entries
         $this->userOU = $this->getEntry($user_ou);
-        $this->groupOU = $this->getEntry($group_ou);
+        $this->user_groupOU = $this->getEntry($group_ou);
         $this->pi_groupOU = $this->getEntry($pigroup_ou);
         $this->org_groupOU = $this->getEntry($orggroup_ou);
         $this->adminGroup = $this->getEntry($admin_group);
@@ -86,9 +86,9 @@ class UnityLDAP extends ldapConn
         return $this->userOU;
     }
 
-    public function getGroupOU()
+    public function getUserGroupOU()
     {
-        return $this->groupOU;
+        return $this->user_groupOU;
     }
 
     public function getPIGroupOU()
@@ -187,7 +187,7 @@ class UnityLDAP extends ldapConn
 
     private function GIDNumInUse($id)
     {
-        $groups = $this->groupOU->getChildrenArray(true);
+        $groups = $this->user_groupOU->getChildrenArray(true);
         foreach ($groups as $group) {
             if ($group["gidnumber"][0] == $id) {
                 return true;
@@ -323,10 +323,10 @@ class UnityLDAP extends ldapConn
         return $this->getEntry(unityLDAP::RDN . "=$uid," . $this->STR_USEROU);
     }
 
-    public function getGroupEntry($gid)
+    public function getUserGroupEntry($gid)
     {
         $gid = ldap_escape($gid, LDAP_ESCAPE_DN);
-        return $this->getEntry(unityLDAP::RDN . "=$gid," . $this->STR_GROUPOU);
+        return $this->getEntry(unityLDAP::RDN . "=$gid," . $this->STR_USERGROUPOU);
     }
 
     public function getPIGroupEntry($gid)
