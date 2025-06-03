@@ -408,9 +408,8 @@ class UnityGroup
             return;
         }
 
-        // FIXME remove this check or make an error instead
         if ($this->SQL->accDeletionRequestExists($new_user->getUID())) {
-            UnitySite::errorLog("warning", "user '$new_user' requested account deletion, nothing doing...");
+            throw new Exception("user '$new_user' requested account deletion");
             return;
         }
 
