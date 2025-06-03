@@ -134,7 +134,7 @@ class UnityGroup
     public function approveGroup($operator = null, $send_mail = true)
     {
         if (!$this->SQL->requestExists($this->getOwner()->getUID())) {
-            throw new RuntimeException(
+            throw new Exception(
                 "attempt to approve nonexistent request for group='{$this->getPIUID()}' uid='$new_user'"
             );
         }
@@ -284,7 +284,7 @@ class UnityGroup
     public function approveUser($new_user, $send_mail = true)
     {
         if (!$this->requestExists($new_user)) {
-            throw new RuntimeException(
+            throw new Exception(
                 "attempt to approve nonexistent request for group='{$this->getPIUID()}' uid='$new_user'"
             );
         }
