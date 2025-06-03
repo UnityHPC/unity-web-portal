@@ -81,13 +81,17 @@ function http_post(string $phpfile, array $post_data): void
     $_SERVER["PHP_SELF"] = preg_replace("/.*webroot\//", "/", $phpfile);
     $_POST = $post_data;
     ob_start();
+    $post_did_redirect = false;
     try {
         include $phpfile;
+    } catch (UnityWebPortal\lib\exceptions\PhpUnitNoDieException $e) {
+        $post_did_redirect = true;
     } finally {
         ob_get_clean(); // discard output
         unset($_POST);
         $_SERVER = $_PREVIOUS_SERVER;
     }
+    assert($post_did_redirect, "post did not redirect!");
 }
 
 function http_get(string $phpfile, array $get_data = array()): void

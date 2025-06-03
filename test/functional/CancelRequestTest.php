@@ -16,26 +16,18 @@ class CancelRequestTest extends TestCase
         global $USER, $SQL;
         switchUser(...getNonExistentUser());
         // First create a request
-        try {
-            http_post(
-                __DIR__ . "/../../webroot/panel/new_account.php",
-                ["new_user_sel" => "pi", "eula" => "agree", "confirm_pi" => "agree"]
-            );
-        } catch (PhpUnitNoDieException $e) {
-            // Ignore the exception from http_post
-        }
+        http_post(
+            __DIR__ . "/../../webroot/panel/new_account.php",
+            ["new_user_sel" => "pi", "eula" => "agree", "confirm_pi" => "agree"]
+        );
 
         $this->assertNumberGroupRequests(1);
 
         // Now try to cancel it
-        try {
-            http_post(
-                __DIR__ . "/../../webroot/panel/new_account.php",
-                ["cancel" => "true"] # value of cancel is arbitrary
-            );
-        } catch (PhpUnitNoDieException $e) {
-            // Ignore the exception from http_post
-        }
+        http_post(
+            __DIR__ . "/../../webroot/panel/new_account.php",
+            ["cancel" => "true"] # value of cancel is arbitrary
+        );
 
         $this->assertNumberGroupRequests(0);
     }
@@ -45,26 +37,18 @@ class CancelRequestTest extends TestCase
         global $USER, $SQL;
         switchUser(...getNonExistentUser());
 
-        try {
-            http_post(
-                __DIR__ . "/../../webroot/panel/new_account.php",
-                ["new_user_sel" => "not_pi", "eula" => "agree", "pi" => getExistingPI()]
-            );
-        } catch (PhpUnitNoDieException $e) {
-            // Ignore the exception from http_post
-        }
+        http_post(
+            __DIR__ . "/../../webroot/panel/new_account.php",
+            ["new_user_sel" => "not_pi", "eula" => "agree", "pi" => getExistingPI()]
+        );
 
         $this->assertNumberGroupRequests(1);
 
         // Now try to cancel it
-        try {
-            http_post(
-                __DIR__ . "/../../webroot/panel/new_account.php",
-                ["cancel" => "true"] # value of cancel is arbitrary
-            );
-        } catch (PhpUnitNoDieException $e) {
-            // Ignore the exception from http_post
-        }
+        http_post(
+            __DIR__ . "/../../webroot/panel/new_account.php",
+            ["cancel" => "true"] # value of cancel is arbitrary
+        );
 
         $this->assertNumberGroupRequests(0);
     }
