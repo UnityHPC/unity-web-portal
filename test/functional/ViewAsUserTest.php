@@ -18,7 +18,7 @@ class ViewAsUserTest extends TestCase
         http_post(
             __DIR__ . "/../../webroot/admin/user-mgmt.php",
             [
-                "form_name" => "viewAsUser",
+                "form_type" => "viewAsUser",
                 "uid" => $afterUid,
             ],
         );
@@ -32,7 +32,7 @@ class ViewAsUserTest extends TestCase
         // $this->assertTrue($_SESSION["user_exists"]);
         http_post(
             __DIR__ . "/../../resources/templates/header.php",
-            ["form_name" => "clearView"],
+            ["form_type" => "clearView"],
         );
         $this->assertArrayNotHasKey("viewUser", $_SESSION);
         // redirect means that php process dies and user's browser will initiate a new one
@@ -68,7 +68,7 @@ class ViewAsUserTest extends TestCase
         http_post(
             __DIR__ . "/../../webroot/admin/user-mgmt.php",
             [
-                "form_name" => "viewAsUser",
+                "form_type" => "viewAsUser",
                 "uid" => $adminUid,
             ],
         );

@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
     }
 
-    switch ($_POST["form_name"]) {
+    switch ($_POST["form_type"]) {
         case "userReq":
             if ($_POST["action"] == "Approve") {
                 $group->approveUser($form_user);
@@ -62,7 +62,7 @@ if (count($requests) > 0) {
         echo "<td>";
         echo
         "<form action='' method='POST'>
-        <input type='hidden' name='form_name' value='userReq'>
+        <input type='hidden' name='form_type' value='userReq'>
         <input type='hidden' name='uid' value='" . $request[0]->getUID() . "'>
         <input type='submit' name='action' value='Approve'
         onclick='return confirm(\"Are you sure you want to approve " . $request[0]->getUID() . "?\")'>
@@ -92,7 +92,7 @@ foreach ($assocs as $assoc) {
     echo "<td>";
     echo
     "<form action='' method='POST'>
-    <input type='hidden' name='form_name' value='remUser'>
+    <input type='hidden' name='form_type' value='remUser'>
     <input type='hidden' name='uid' value='" . $assoc->getUID() . "'>
     <input type='submit' value='Remove'
     onclick='return confirm(\"Are you sure you want to remove " . $assoc->getUID() . " from your PI group?\")'>

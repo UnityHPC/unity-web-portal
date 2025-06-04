@@ -9,7 +9,7 @@ class PiRemoveUserTest extends TestCase {
     {
         http_post(
             __DIR__ . "/../../webroot/panel/pi.php",
-            ["form_name" => "remUser", "uid" => $uid]
+            ["form_type" => "remUser", "uid" => $uid]
         );
     }
 
