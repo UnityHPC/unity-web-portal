@@ -2,12 +2,20 @@
 
 use UnityWebPortal\lib\UnitySite;
 
-if ((@$_SESSION["is_admin"] ?? false) == true
-    && $_SERVER["REQUEST_METHOD"] == "POST"
-    && (@$_POST["form_name"] ?? null) == "clearView"
-) {
-    unset($_SESSION["viewUser"]);
-    UnitySite::redirect($CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ((@$_SESSION["is_admin"] ?? false) == true
+        && (@$_POST["form_name"] ?? null) == "clearView"
+    ) {
+        unset($_SESSION["viewUser"]);
+        UnitySite::redirect($CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
+    }
+    // Webroot files need to handle their own POSTs before loading the header
+    // so that they can do UnitySite::badRequest before anything else has been printed.
+    // They also must not redirect like standard PRG practice because this
+    // header also needs to handle POST data. So this header does the PRG redirect
+    // for all pages.
+    unset($_POST); // unset ensures that header must not come before POST handling
+    UnitySite::redirect($_SERVER['PHP_SELF']);
 }
 
 if (isset($SSO)) {

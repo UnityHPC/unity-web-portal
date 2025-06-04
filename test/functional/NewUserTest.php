@@ -14,44 +14,26 @@ class NewUserTest extends TestCase
 
     private function requestGroupCreation()
     {
-        $redirectedOrDied = false;
-        try {
-            http_post(
-                __DIR__ . "/../../webroot/panel/new_account.php",
-                ["new_user_sel" => "pi", "eula" => "agree", "confirm_pi" => "agree"]
-            );
-        } catch (\UnityWebPortal\lib\exceptions\PhpUnitNoDieException) {
-            $redirectedOrDied = true;
-        }
-        $this->assertTrue($redirectedOrDied);
+        http_post(
+            __DIR__ . "/../../webroot/panel/new_account.php",
+            ["new_user_sel" => "pi", "eula" => "agree", "confirm_pi" => "agree"]
+        );
     }
 
     private function requestGroupMembership(string $gid)
     {
-        $redirectedOrDied = false;
-        try {
-            http_post(
-                __DIR__ . "/../../webroot/panel/new_account.php",
-                ["new_user_sel" => "not_pi", "eula" => "agree", "pi" => $gid]
-            );
-        } catch (\UnityWebPortal\lib\exceptions\PhpUnitNoDieException) {
-            $redirectedOrDied = true;
-        }
-        $this->assertTrue($redirectedOrDied);
+        http_post(
+            __DIR__ . "/../../webroot/panel/new_account.php",
+            ["new_user_sel" => "not_pi", "eula" => "agree", "pi" => $gid]
+        );
     }
 
     private function cancelAllRequests()
     {
-        $redirectedOrDied = false;
-        try {
-            http_post(
-                __DIR__ . "/../../webroot/panel/new_account.php",
-                ["cancel" => "true"] // value of cancel is arbitrary
-            );
-        } catch (\UnityWebPortal\lib\exceptions\PhpUnitNoDieException) {
-            $redirectedOrDied = true;
-        }
-        $this->assertTrue($redirectedOrDied);
+        http_post(
+            __DIR__ . "/../../webroot/panel/new_account.php",
+            ["cancel" => "true"] // value of cancel is arbitrary
+        );
     }
 
     // delete requests made by that user
@@ -63,14 +45,14 @@ class NewUserTest extends TestCase
     {
         global $USER, $SQL, $LDAP;
         $SQL->deleteRequestsByUser($USER->getUID());
-        if ($USER->exists()) {
-            $USER->getLDAPUser()->delete();
-            assert(!$USER->exists());
-        }
         $org = $USER->getOrgGroup();
         if ($org->inOrg($USER)) {
             $org->removeUser($USER);
             assert(!$org->inOrg($USER));
+        }
+        if ($USER->exists()) {
+            $USER->getLDAPUser()->delete();
+            assert(!$USER->exists());
         }
         $all_users_group = $LDAP->getUserGroup();
         $all_member_uids = $all_users_group->getAttribute("memberuid");

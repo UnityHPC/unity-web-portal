@@ -4,8 +4,6 @@ require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnitySite;
 
-require_once $LOC_HEADER;
-
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     switch (UnitySite::arrayGetOrBadRequest($_POST, "form_type")) {
         case "addKey":
@@ -73,6 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break;
     }
 }
+
+include $LOC_HEADER;
 ?>
 
 <h1>Account Settings</h1>
