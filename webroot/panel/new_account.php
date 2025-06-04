@@ -39,8 +39,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $pi_group->cancelGroupJoinRequest($user=$USER);
             }
         }
-    } else {
-        UnitySite::badRequest("neither 'new_user_sel' or 'cancel' are set!");
     }
 }
 include $LOC_HEADER;
