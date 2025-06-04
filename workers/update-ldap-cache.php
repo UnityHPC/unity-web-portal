@@ -2,17 +2,15 @@
 
 require_once __DIR__ . "/../resources/autoload.php";
 
-use UnityWebPortal\lib\{
-    UnityConfig,
-    UnityLDAP,
-    UnityMailer,
-    UnitySQL,
-    UnitySite,
-    UnitySSO,
-    UnityUser,
-    UnityRedis,
-    UnityWebhook
-};
+use UnityWebPortal\lib\UnityConfig;
+use UnityWebPortal\lib\UnityLDAP;
+use UnityWebPortal\lib\UnityMailer;
+use UnityWebPortal\lib\UnitySQL;
+use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\UnitySSO;
+use UnityWebPortal\lib\UnityUser;
+use UnityWebPortal\lib\UnityRedis;
+use UnityWebPortal\lib\UnityWebhook;
 use PHPOpenLDAPer\LDAPEntry;
 
 $options = getopt("fu");
@@ -22,7 +20,8 @@ if (array_key_exists("f", $options)) {
 }
 
 if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $options)))) {
-    echo "cache is already initialized, nothing doing. use -f argument to flush cache, or -u argument to update without flush.\n";
+    echo "cache is already initialized, nothing doing.";
+    echo " use -f argument to flush cache, or -u argument to update without flush.";
 } else {
     echo "updating cache...\n";
     $user_ou = new LDAPEntry($LDAP->getConn(), $CONFIG["ldap"]["user_ou"]);
