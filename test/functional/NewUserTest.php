@@ -63,14 +63,14 @@ class NewUserTest extends TestCase
     {
         global $USER, $SQL, $LDAP;
         $SQL->deleteRequestsByUser($USER->getUID());
-        if ($USER->exists()) {
-            $USER->getLDAPUser()->delete();
-            assert(!$USER->exists());
-        }
         $org = $USER->getOrgGroup();
         if ($org->inOrg($USER)) {
             $org->removeUser($USER);
             assert(!$org->inOrg($USER));
+        }
+        if ($USER->exists()) {
+            $USER->getLDAPUser()->delete();
+            assert(!$USER->exists());
         }
         $all_users_group = $LDAP->getUserGroup();
         $all_member_uids = $all_users_group->getAttribute("memberuid");
