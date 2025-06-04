@@ -165,15 +165,10 @@ function getUserIsPIHasAtLeastOneMember()
 
 function getNonExistentUser()
 {
-    return ["user2000@org2.test", "foo", "bar", "user2000@org2.test"];
+    return ["user2001@org998.test", "foo", "bar", "user2001@org998.test"];
 }
 
 function getAdminUser()
 {
     return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
-}
-
-function getExistingPI()
-{
-    return "pi_user1005_org3_test";
 }
