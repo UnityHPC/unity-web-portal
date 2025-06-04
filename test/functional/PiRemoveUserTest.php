@@ -7,7 +7,7 @@ use UnityWebPortal\lib\UnityUser;
 class PiRemoveUserTest extends TestCase {
     private function removeUser(string $uid)
     {
-        post(
+        http_post(
             __DIR__ . "/../../webroot/panel/pi.php",
             ["form_name" => "remUser", "uid" => $uid]
         );
@@ -30,6 +30,9 @@ class PiRemoveUserTest extends TestCase {
         foreach ($memberUIDs as $uid) {
             if ($uid != $piUid) {
                 $memberToDelete = new UnityUser($uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+                if ($memberToDelete->hasRequestedAccountDeletion()) {
+                    continue;
+                }
                 break;
             }
         }

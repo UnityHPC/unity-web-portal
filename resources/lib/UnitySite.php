@@ -7,7 +7,7 @@ use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
 
 class UnitySite
 {
-    public static function die($x = null)
+    public static function die($x = null, $show_user = false)
     {
         if (@$GLOBALS["PHPUNIT_NO_DIE_PLEASE"] == true) {
             if (is_null($x)) {
@@ -16,10 +16,10 @@ class UnitySite
                 throw new PhpUnitNoDieException($x);
             }
         } else {
-            if (is_null($x)) {
-                die();
-            } else {
+            if (!is_null($x) and $show_user) {
                 die($x);
+            } else {
+                die();
             }
         }
     }
@@ -27,7 +27,7 @@ class UnitySite
     public static function redirect($destination)
     {
         header("Location: $destination");
-        self::die("Redirect failed, click <a href='$destination'>here</a> to continue.");
+        self::die("Redirect failed, click <a href='$destination'>here</a> to continue.", true);
     }
 
     private static function headerResponseCode(int $code, string $reason)
@@ -55,25 +55,34 @@ class UnitySite
     {
         self::headerResponseCode(400, "bad request");
         self::errorLog("bad request", $message);
-        self::die();
+        self::die($message);
     }
 
     public static function forbidden($message)
     {
         self::headerResponseCode(403, "forbidden");
         self::errorLog("forbidden", $message);
-        self::die();
+        self::die($message);
     }
 
-    public static function removeTrailingWhitespace($arr)
+    public static function arrayGetOrBadRequest(array $array, ...$keys)
     {
-        $out = array();
-        foreach ($arr as $str) {
-            $new_string = rtrim($str);
-            array_push($out, $new_string);
+        $cursor = $array;
+        $keysTraversed = [];
+        foreach ($keys as $key) {
+            array_push($keysTraversed, $key);
+            if (!isset($cursor[$key])) {
+                self::badRequest("array key not found: " . json_encode($keysTraversed));
+            }
+            $cursor = $cursor[$key];
         }
+        return $cursor;
+    }
 
-        return $out;
+    public static function alert(string $message)
+    {
+        // json_encode escapes quotes
+        echo "<script type='text/javascript'>alert(" . json_encode($message) . ");</script>";
     }
 
     public static function testValidSSHKey($key_str)
