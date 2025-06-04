@@ -355,6 +355,7 @@ class UnityLDAP extends ldapConn
             "sn",
             "uid",
             "uidnumber",
+            "gecos",
         ];
         foreach ($required_string_attributes as $key) {
             $output[$key] = $userChildrenArray[$key][0];
