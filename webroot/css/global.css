@@ -28,6 +28,12 @@ code {
     line-height: 22pt;
 }
 
+.code {
+    background: var(--light_panel_background);
+    line-height: 22pt;
+    font-family: monospace
+}
+
 a {
     color: var(--accent);
     text-decoration: none;
@@ -98,14 +104,16 @@ p {
     transform: translateY(-50%);
 }
 
-button.plusBtn {
+button.plusBtn span{
     font-size: 24pt;
-    display: block;
+    font-family: monospace;
+}
+
+button.plusBtn{
     width: 100%;
     max-width: 200px;
     padding: 0;
     overflow: hidden;
-    margin-top: 10px;
 }
 
 /* Form Elements */
@@ -184,8 +192,7 @@ input[type=radio] {
 select {
     border: 1px solid var(--light_borders);
     background: white;
-    padding: 5px;
-    width: 100%;
+    padding: 5px 10px 5px 20px;
     max-width: 300px;
     border-radius: 5px;
 }

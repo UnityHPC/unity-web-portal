@@ -52,20 +52,6 @@ CREATE TABLE `audit_log` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `events`
---
-
-CREATE TABLE `events` (
-  `id` int(11) NOT NULL,
-  `operator` varchar(128) NOT NULL,
-  `action` varchar(300) NOT NULL,
-  `entity` varchar(300) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `groupJoinRequests`
 --
 
@@ -175,8 +161,7 @@ CREATE TABLE `pages` (
 --
 
 INSERT INTO `pages` (`id`, `page`, `content`) VALUES
-(1, 'support', '<h3>Docmentation and FAQ</h3>\r\n<p>You can find our documentation <a href=\"https://esdconfluence.it.umass.edu/confluence/display/UNITY/Unity+Cluster+Documentation+Home\" target=\"_blank\">here</a>. We also have an <a target=\"_blank\" href=\"https://esdconfluence.it.umass.edu/confluence/display/UNITY/Frequently+Asked+Questions\">FAQ</a> page which could help answer quick questions.\r\n\r\n<h3>Office Hours</h3>\r\n<p>We offer office hours every week on <strong>Tuesdays 2-4 PM</strong> in-person at <strong>W.E.B. DuBois Library 786</strong> or remote on <strong><a target=\"_blank\" href=\"https://umass-amherst.zoom.us/j/95663998309\">Zoom</a></strong>. Be sure to check the <a href=\"<?php echo $CONFIG[\"site\"][\"prefix\"]; ?>/index.php\">cluster notes</a> page for up-to-date information on any canceled/delayed office hours.</p>\r\n\r\n<h3>Support Email</h3>\r\n<p>You can create a support ticket by emailing <a target=\"_blank\" href=\"mailto:hpc@umass.edu\">hpc@umass.edu</a>. We will do our best to reply as fast as possible!</p>'),
-(2, 'policy', '<p>By using resources associated with Unity, you agree to comply with the following conditions of use.  This is an extension of the University of Massachussetts Amherst Information Technology Acceptable Use Policy, which can be found <a target=\"_blank\" href=\"https://www.umass.edu/it/security/acceptable-use-policy\">here</a>.</p>\r\n\r\n<ol>\r\n    <li>You will not use Unity resources for illicit financial gain, such as virtual currency mining, or any unlawful purpose, nor attempt to breach or circumvent any Unity administrative or security controls. You will comply with all applicable laws, working with your home institution and the specific Unity service providers utilized to determine what constraints may be placed on you by any relevant regulations such as export control law or HIPAA.</li>\r\n    <li>You will respect intellectual property rights and observe confidentiality agreements.</li>\r\n    <li>You will protect the access credentials (e.g., passwords, private keys, and/or tokens) issued to you or generated to access Unity resources; these are issued to you for your sole use.</li>\r\n    <li>You will immediately report any known or suspected security breach or loss or misuse of Unity access credentials to <a href=\"mailto:hpc@it.umass.edu\">hpc@it.umass.edu</a>.</li>\r\n    <li>You will have only one Unity User account and will keep your profile information up-to-date.</li>\r\n    <li>Use of resources and services through Unity is at your own risk. There are no guarantees that resources and services will be available, that they will suit every purpose, or that data will never be lost or corrupted. Users are responsible for backing up critical data.</li>\r\n    <li>Logged information, including information provided by you for registration purposes, is used for administrative, operational, accounting, monitoring and security purposes. This information may be disclosed, via secured mechanisms, only for the same purposes and only as far as necessary to other organizations cooperating with Unity .</li>\r\n</ol>\r\n\r\n<p>The Unity team reserves the right to restrict access to any individual/group found to be in breach of the above.</p>');
+(1, 'support', '<h3>Docmentation and FAQ</h3>\r\n<p>You can find our documentation <a href=\"https://esdconfluence.it.umass.edu/confluence/display/UNITY/Unity+Cluster+Documentation+Home\" target=\"_blank\">here</a>. We also have an <a target=\"_blank\" href=\"https://esdconfluence.it.umass.edu/confluence/display/UNITY/Frequently+Asked+Questions\">FAQ</a> page which could help answer quick questions.\r\n\r\n<h3>Office Hours</h3>\r\n<p>We offer office hours every week on <strong>Tuesdays 2-4 PM</strong> in-person at <strong>W.E.B. DuBois Library 786</strong> or remote on <strong><a target=\"_blank\" href=\"https://umass-amherst.zoom.us/j/95663998309\">Zoom</a></strong>. Be sure to check the <a href=\"<?php echo $CONFIG[\"site\"][\"prefix\"]; ?>/index.php\">cluster notes</a> page for up-to-date information on any canceled/delayed office hours.</p>\r\n\r\n<h3>Support Email</h3>\r\n<p>You can create a support ticket by emailing <a target=\"_blank\" href=\"mailto:hpc@umass.edu\">hpc@umass.edu</a>. We will do our best to reply as fast as possible!</p>');
 
 -- --------------------------------------------------------
 
@@ -203,21 +188,6 @@ CREATE TABLE `sitevars` (
   `value` varchar(768) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `sso_log`
---
-
-CREATE TABLE `sso_log` (
-  `id` int(10) NOT NULL,
-  `uid` varchar(300) NOT NULL,
-  `firstname` varchar(300) NOT NULL,
-  `lastname` varchar(300) NOT NULL,
-  `mail` varchar(300) NOT NULL,
-  `org` varchar(300) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 --
 -- Indexes for dumped tables
 --
@@ -232,12 +202,6 @@ ALTER TABLE `account_deletion_requests`
 -- Indexes for table `audit_log`
 --
 ALTER TABLE `audit_log`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `events`
---
-ALTER TABLE `events`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -295,12 +259,6 @@ ALTER TABLE `sitevars`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `sso_log`
---
-ALTER TABLE `sso_log`
-  ADD PRIMARY KEY (`id`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -314,12 +272,6 @@ ALTER TABLE `account_deletion_requests`
 -- AUTO_INCREMENT for table `audit_log`
 --
 ALTER TABLE `audit_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `events`
---
-ALTER TABLE `events`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -375,13 +327,6 @@ ALTER TABLE `requests`
 --
 ALTER TABLE `sitevars`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `sso_log`
---
-ALTER TABLE `sso_log`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

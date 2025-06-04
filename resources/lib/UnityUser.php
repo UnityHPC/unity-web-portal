@@ -38,6 +38,11 @@ class UnityUser
         return $this->getUID() == $other_user->getUID();
     }
 
+    public function __toString()
+    {
+        return $this->uid;
+    }
+
     /**
      * This is the method that is run when a new account is created
      *
@@ -58,10 +63,7 @@ class UnityUser
         if (!$ldapGroupEntry->exists()) {
             $ldapGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
             $ldapGroupEntry->setAttribute("gidnumber", strval($id));
-
-            if (!$ldapGroupEntry->write()) {
-                throw new Exception("Failed to create POSIX group for $this->uid");
-            }
+            $ldapGroupEntry->write();
         }
 
         //
@@ -74,17 +76,17 @@ class UnityUser
             $ldapUserEntry->setAttribute("uid", $this->uid);
             $ldapUserEntry->setAttribute("givenname", $this->getFirstname());
             $ldapUserEntry->setAttribute("sn", $this->getLastname());
+            $ldapUserEntry->setAttribute(
+                "gecos",
+                \transliterator_transliterate("Latin-ASCII", "{$this->getFirstname()} {$this->getLastname()}")
+            );
             $ldapUserEntry->setAttribute("mail", $this->getMail());
             $ldapUserEntry->setAttribute("o", $this->getOrg());
             $ldapUserEntry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
             $ldapUserEntry->setAttribute("loginshell", $this->LDAP->getDefUserShell());
             $ldapUserEntry->setAttribute("uidnumber", strval($id));
             $ldapUserEntry->setAttribute("gidnumber", strval($id));
-
-            if (!$ldapUserEntry->write()) {
-                $ldapGroupEntry->delete();  // Cleanup previous group
-                throw new Exception("Failed to create POSIX user for  $this->uid");
-            }
+            $ldapUserEntry->write();
         }
 
         // update cache
@@ -108,6 +110,10 @@ class UnityUser
         if (!$orgEntry->inOrg($this->uid)) {
             $orgEntry->addUser($this);
         }
+
+        // add to user group as well as user OU
+        $this->LDAP->getUserGroup()->appendAttribute("memberuid", $this->getUID());
+        $this->LDAP->getUserGroup()->write();
 
         // add user to cache
         $this->REDIS->appendCacheArray("sorted_users", "", $this->getUID());
@@ -177,11 +183,7 @@ class UnityUser
     {
         $ldap_user = $this->getLDAPUser();
         $ldap_user->setAttribute("o", $org);
-
-        if (!$ldap_user->write()) {
-            throw new Exception("Error updating LDAP entry $this->uid");
-        }
-
+        $ldap_user->write();
         $this->REDIS->setCache($this->uid, "org", $org);
     }
 
@@ -225,10 +227,7 @@ class UnityUser
             $this->getUID()
         );
 
-        if (!$ldap_user->write()) {
-            throw new Exception("Error updating LDAP entry $this->uid");
-        }
-
+        $ldap_user->write();
         $this->REDIS->setCache($this->uid, "firstname", $firstname);
     }
 
@@ -277,10 +276,7 @@ class UnityUser
             $this->getUID()
         );
 
-        if (!$this->getLDAPUser()->write()) {
-            throw new Exception("Error updating LDAP entry $this->uid");
-        }
-
+        $this->getLDAPUser()->write();
         $this->REDIS->setCache($this->uid, "lastname", $lastname);
     }
 
@@ -334,10 +330,7 @@ class UnityUser
             $this->getUID()
         );
 
-        if (!$this->getLDAPUser()->write()) {
-            throw new Exception("Error updating LDAP entry $this->uid");
-        }
-
+        $this->getLDAPUser()->write();
         $this->REDIS->setCache($this->uid, "mail", $email);
     }
 
@@ -380,9 +373,7 @@ class UnityUser
         $keys_filt = array_values(array_unique($keys));
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("sshpublickey", $keys_filt);
-            if (!$ldapUser->write()) {
-                throw new Exception("Failed to modify SSH keys for $this->uid");
-            }
+            $ldapUser->write();
         }
 
         $this->REDIS->setCache($this->uid, "sshkeys", $keys_filt);
@@ -446,12 +437,20 @@ class UnityUser
      */
     public function setLoginShell($shell, $operator = null, $send_mail = true)
     {
+        // ldap schema syntax is "IA5 String (1.3.6.1.4.1.1466.115.121.1.26)"
+        if (!mb_check_encoding($shell, 'ASCII')) {
+            throw new Exception("non ascii characters are not allowed in a login shell!");
+        }
+        if ($shell != trim($shell)) {
+            throw new Exception("leading/trailing whitespace is not allowed in a login shell!");
+        }
+        if (empty($shell)) {
+            throw new Exception("login shell must not be empty!");
+        }
         $ldapUser = $this->getLDAPUser();
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("loginshell", $shell);
-            if (!$ldapUser->write()) {
-                throw new Exception("Failed to modify login shell for $this->uid");
-            }
+            $ldapUser->write();
         }
 
         $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
@@ -508,10 +507,7 @@ class UnityUser
         $ldapUser = $this->getLDAPUser();
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("homedirectory", $home);
-            if (!$ldapUser->write()) {
-                throw new Exception("Failed to modify home directory for $this->uid");
-            }
-
+            $ldapUser->write();
             $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
 
             $this->SQL->addLog(
@@ -555,7 +551,7 @@ class UnityUser
     }
 
     /**
-     * Checks if the current account is an admin (in the sudo group)
+     * Checks if the current account is an admin
      *
      * @return boolean true if admin, false if not
      */

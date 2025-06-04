@@ -1,9 +1,11 @@
 <?php
 
-require_once "../../resources/autoload.php";
+require_once __DIR__ . "/../../resources/autoload.php";
+
+use UnityWebPortal\lib\UnitySite;
 
 if (!$USER->isAdmin()) {
-    die();
+    UnitySite::forbidden("not an admin");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

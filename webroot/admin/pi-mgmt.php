@@ -1,12 +1,13 @@
 <?php
 
-require_once "../../resources/autoload.php";
+require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityGroup;
+use UnityWebPortal\lib\UnitySite;
 
 if (!$USER->isAdmin()) {
-    die();
+    UnitySite::forbidden("not an admin");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -25,11 +26,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $group = $form_user->getPIGroup();
                 $group->denyGroup($OPERATOR);
             }
-
-            break;
-        case "remGroup":
-            $remGroup = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-            $remGroup->removeGroup();
 
             break;
         case "reqChild":
@@ -90,9 +86,9 @@ include $LOC_HEADER;
         "<form action='' method='POST'>
         <input type='hidden' name='form_name' value='req'>
         <input type='hidden' name='uid' value='" . $request_user->getUID() . "'>
-        <input type='submit' name='action' value='Approve' 
+        <input type='submit' name='action' value='Approve'
         onclick='return confirm(\"Are you sure you want to approve " . $request_user->getUID() . "?\");'>
-        <input type='submit' name='action' value='Deny' 
+        <input type='submit' name='action' value='Deny'
         onclick='return confirm(\"Are you sure you want to deny " . $request_user->getUID() . "?\");'>
         </form>";
         echo "</td>";
@@ -128,15 +124,6 @@ include $LOC_HEADER;
         " " . $pi_user->getLastname() . "</td>";
         echo "<td>" . $pi_group->getPIUID() . "</td>";
         echo "<td><a href='mailto:" . $pi_user->getMail() . "'>" . $pi_user->getMail() . "</a></td>";
-        echo "<td>";
-        echo
-        "<form action='' method='POST' 
-    onsubmit='return confirm(\"Are you sure you want to remove " . $pi_group->getPIUID() . "?\")'>
-        <input type='hidden' name='form_name' value='remGroup'>
-        <input type='hidden' name='pi' value='" . $pi_group->getPIUID() . "'>
-        <input type='submit' value='Remove'>
-    </form>";
-        echo "</td>";
         echo "</tr>";
     }
     ?>

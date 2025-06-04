@@ -8,6 +8,7 @@ class UnityWebhook
     private $override_template_dir;
     private $url;
     private $MSG_LINKREF;
+    private $Subject; // set by template
 
     public function __construct(
         $template_dir,

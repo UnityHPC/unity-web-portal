@@ -21,15 +21,19 @@ Unity Web Portal is a PHP application built in top of MariaDB and LDAP which act
     1. Some HTTP Authentication mechanism (such as Shibboleth SP)
     1. Composer (`apt install composer` on Ubuntu)
     1. PHP Extensions
+        1. `php-cli`
+        1. `php-curl`
+        1. `php-intl`
         1. `php-ldap`
-        2. `php-curl`
-        3. `php-redis`
-        4. `php-cli`
-        5. `php-mysql`
-        6. `php-pdo`
+        1. `php-mbstring`
+        1. `php-mysql`
+        1. `php-pdo`
+        1. `php-redis`
+        1. `php-xml`
 2. Composer packages
     1. `cd` to this repository
-    2. Install packages `composer update`
+    1. Setup git submodules `git submodule update --init --checkout`
+    1. Install packages `composer update`
 3. Setup config file `config/config.ini` according to your site deployment
 4. Setup branding file `config/branding/config.ini` according to your site deployment
 5. Point your web server's document root to `webroot` in this repo

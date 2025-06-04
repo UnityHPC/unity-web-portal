@@ -2,8 +2,16 @@
 
 use UnityWebPortal\lib\UnitySite;
 
+if ((@$_SESSION["is_admin"] ?? false) == true
+    && $_SERVER["REQUEST_METHOD"] == "POST"
+    && (@$_POST["form_name"] ?? null) == "clearView"
+) {
+    unset($_SESSION["viewUser"]);
+    UnitySite::redirect($CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
+}
+
 if (isset($SSO)) {
-    if (!$_SESSION["user_exists"]) {
+    if (!$_SESSION["user_exists"] && !str_ends_with($_SERVER['PHP_SELF'], "/panel/new_account.php")) {
         UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/new_account.php");
     }
 }
@@ -116,23 +124,20 @@ if (isset($SSO)) {
   <main>
 
   <?php
-    if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"]) {
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["form_name"]) && $_POST["form_name"] == "clearView") {
-            unset($_SESSION["viewUser"]);
-            UnitySite::redirect($CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
-        }
-
-        if (isset($_SESSION["viewUser"])) {
-            echo "<div id='viewAsBar'>";
-            echo "<span>You are accessing the web portal as the user <strong>" .
-            $_SESSION["viewUser"] . "</strong></span>";
-            echo
-            "<form method='POST' action=''>
-      <input type='hidden' name='form_name' value='clearView'>
-      <input type='hidden' name='uid' value='" . $_SESSION["viewUser"] . "'>
-      <input type='submit' value='Return to My User'>
-      </form>";
-            echo "</div>";
-        }
+    if (isset($_SESSION["is_admin"])
+        && $_SESSION["is_admin"]
+        && isset($_SESSION["viewUser"])
+    ) {
+        $viewUser = $_SESSION["viewUser"];
+        echo "
+          <div id='viewAsBar'>
+            <span>You are accessing the web portal as the user <strong>$viewUser</strong></span>
+            <form method='POST' action=''>
+              <input type='hidden' name='form_name' value='clearView'>
+              <input type='hidden' name='uid' value='$viewUser'>
+              <input type='submit' value='Return to My User'>
+            </form>
+          </div>
+        ";
     }
     ?>
