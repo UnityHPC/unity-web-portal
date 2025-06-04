@@ -124,7 +124,7 @@ class UnityLDAP extends ldapConn
         $max_uid = $UnitySQL->getSiteVar('MAX_UID');
         $new_uid = $max_uid + 1;
 
-        while ($this->UIDNumInUse($new_uid)) {
+        while ($this->IDNumInUse($new_uid)) {
             $new_uid++;
         }
 
@@ -138,7 +138,7 @@ class UnityLDAP extends ldapConn
         $max_pigid = $UnitySQL->getSiteVar('MAX_PIGID');
         $new_pigid = $max_pigid + 1;
 
-        while ($this->PIGIDNumInUse($new_pigid)) {
+        while ($this->IDNumInUse($new_pigid)) {
             $new_pigid++;
         }
 
@@ -152,7 +152,7 @@ class UnityLDAP extends ldapConn
         $max_gid = $UnitySQL->getSiteVar('MAX_GID');
         $new_gid = $max_gid + 1;
 
-        while ($this->GIDNumInUse($new_gid)) {
+        while ($this->IDNumInUse($new_gid)) {
             $new_gid++;
         }
 
@@ -161,32 +161,24 @@ class UnityLDAP extends ldapConn
         return $new_gid;
     }
 
-    private function UIDNumInUse($id)
+    private function IDNumInUse($id)
     {
+        // id reserved for debian packages
+        if (($id >= 100 && $id <= 999) || ($id >= 60000 && $id <= 64999)) {
+            return true;
+        }
         $users = $this->userOU->getChildrenArray(true);
         foreach ($users as $user) {
             if ($user["uidnumber"][0] == $id) {
                 return true;
             }
         }
-
-        return false;
-    }
-
-    private function PIGIDNumInUse($id)
-    {
         $pi_groups = $this->pi_groupOU->getChildrenArray(true);
         foreach ($pi_groups as $pi_group) {
             if ($pi_group["gidnumber"][0] == $id) {
                 return true;
             }
         }
-
-        return false;
-    }
-
-    private function GIDNumInUse($id)
-    {
         $groups = $this->groupOU->getChildrenArray(true);
         foreach ($groups as $group) {
             if ($group["gidnumber"][0] == $id) {
@@ -212,7 +204,7 @@ class UnityLDAP extends ldapConn
 
                     if ($uid == $netid_match || $netid == $netid_match) {
                         // found a match
-                        if (!$this->UIDNumInUse($uid_match) && !$this->GIDNumInUse($uid_match)) {
+                        if (!$this->IDNumInUse($uid_match)) {
                             return $uid_match;
                         }
                     }
@@ -339,5 +331,36 @@ class UnityLDAP extends ldapConn
     {
         $gid = ldap_escape($gid, LDAP_ESCAPE_DN);
         return $this->getEntry(unityLDAP::RDN . "=$gid," . $this->STR_ORGGROUPOU);
+    }
+
+    public static function parseUserChildrenArray(array $userChildrenArray): array
+    {
+        // input comes from LdapEntry::getChildrenArray on a UnityUser
+        $output = [];
+        $required_string_attributes = [
+            "gidnumber",
+            "givenname",
+            "homedirectory",
+            "loginshell",
+            "mail",
+            "o",
+            "sn",
+            "uid",
+            "uidnumber",
+            "gecos",
+        ];
+        foreach ($required_string_attributes as $key) {
+            $output[$key] = $userChildrenArray[$key][0];
+        }
+        $output["firstname"] = $output["givenname"];
+        $output["lastname"] = $output["sn"];
+        $output["org"] = $output["o"];
+        $output["objectclass"] = $userChildrenArray["objectclass"];
+        if (array_key_exists("sspublickey", $userChildrenArray)) {
+            $output["sshpublickey"] = $userChildrenArray["sshpublickey"];
+        } else {
+            $output["sshpublickey"] = [];
+        }
+        return $output;
     }
 }

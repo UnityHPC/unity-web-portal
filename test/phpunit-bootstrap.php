@@ -49,6 +49,12 @@ $HTTP_HEADER_TEST_INPUTS = [
     mb_convert_encoding("Hello, World!", "UTF-16")
 ];
 
+function arraysAreEqualUnOrdered(array $a, array $b): bool
+{
+    return (array_diff($a, $b) == [] && array_diff($b, $a) == []);
+}
+
+
 function switchUser(
     string $eppn,
     string $given_name,
@@ -164,15 +170,10 @@ function getUserIsPIHasAtLeastOneMember()
 
 function getNonExistentUser()
 {
-    return ["user2000@org2.test", "foo", "bar", "user2000@org2.test"];
+    return ["user2001@org998.test", "foo", "bar", "user2001@org998.test"];
 }
 
 function getAdminUser()
 {
     return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
-}
-
-function getExistingPI()
-{
-    return "pi_user1005_org3_test";
 }

@@ -7,7 +7,7 @@ use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
 
 class UnitySite
 {
-    public static function die($x = null)
+    public static function die($x = null, $show_user = false)
     {
         if (@$GLOBALS["PHPUNIT_NO_DIE_PLEASE"] == true) {
             if (is_null($x)) {
@@ -16,10 +16,10 @@ class UnitySite
                 throw new PhpUnitNoDieException($x);
             }
         } else {
-            if (is_null($x)) {
-                die();
-            } else {
+            if (!is_null($x) and $show_user) {
                 die($x);
+            } else {
+                die();
             }
         }
     }
@@ -27,7 +27,7 @@ class UnitySite
     public static function redirect($destination)
     {
         header("Location: $destination");
-        self::die("Redirect failed, click <a href='$destination'>here</a> to continue.");
+        self::die("Redirect failed, click <a href='$destination'>here</a> to continue.", true);
     }
 
     private static function headerResponseCode(int $code, string $reason)
@@ -55,14 +55,14 @@ class UnitySite
     {
         self::headerResponseCode(400, "bad request");
         self::errorLog("bad request", $message);
-        self::die();
+        self::die($message);
     }
 
     public static function forbidden($message)
     {
         self::headerResponseCode(403, "forbidden");
         self::errorLog("forbidden", $message);
-        self::die();
+        self::die($message);
     }
 
     public static function arrayGetOrBadRequest(array $array, ...$keys)
