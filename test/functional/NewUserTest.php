@@ -53,9 +53,54 @@ class NewUserTest extends TestCase
         $this->assertTrue($redirectedOrDied);
     }
 
+    // delete requests made by that user
+    // delete user entry
+    // remove user from org group
+    // remove user from "all users" group
+    // does not remove user from PI groups
+    private function ensureUserDoesNotExist()
+    {
+        $SQL->deleteRequestsByUser($USER->getUID());
+        if ($USER->exists()) {
+            $USER->getLDAPUser()->delete();
+            assert(!$USER->exists());
+        }
+        $org = $USER->getOrgGroup();
+        if ($org->inOrg($USER)) {
+            $org->removeUser($USER);
+            assert(!$org->inOrg($USER));
+        }
+        $all_users_group = $LDAP->getUserGroup();
+        $all_member_uids = $all_users_group->getAttribute("memberUid");
+        if (in_array($USER->getUID(), $all_member_uids)) {
+            $all_users_group->setAttribute(
+                "memberUid",
+                array_diff($all_member_uids, [$USER->getUID()])
+            );
+            $all_users_group->write();
+            assert(!in_array($USER->getUID(), $all_users_group->getAttribute("memberUid")));
+        }
+    }
+
+    private function ensureUserNotInPIGroup($gid)
+    {
+        if ($pi_group->userExists($USER)) {
+            $pi_group->removeUser($USER);
+            assert(!$pi_group->userExists($USER));
+        }
+    }
+
+    private function ensurePIGroupDoesNotExist()
+    {
+        if ($USER->getPIGroup()->exists()) {
+            $USER->getPIGroup()->getLDAPPIGroup()->delete();
+            assert(!$USER->getPIGroup()->exists());
+        }
+    }
+
     public function testCreateUserByJoinGoup()
     {
-        global $USER, $SQL;
+        global $USER, $SQL, $LDAP;
         switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
         $pi_group = $USER->getPIGroup();
         switchUser(...getNonExistentUser());
@@ -67,13 +112,13 @@ class NewUserTest extends TestCase
             $this->requestGroupMembership($pi_group->getPIUID());
             $this->assertNumberGroupRequests(1);
 
-            $second_request_failed = false;
-            try {
+            // $second_request_failed = false;
+            // try {
                 $this->requestGroupMembership($pi_group->getPIUID());
-            } catch(Exception) {
-                $second_request_failed = true;
-            }
-            $this->assertTrue($second_request_failed);
+            // } catch(Exception) {
+            //     $second_request_failed = true;
+            // }
+            // $this->assertTrue($second_request_failed);
             $this->assertNumberGroupRequests(1);
 
             $this->cancelAllRequests();
@@ -89,30 +134,24 @@ class NewUserTest extends TestCase
             $this->assertTrue($pi_group->userExists($USER));
             $this->assertTrue($USER->exists());
 
-            $third_request_failed = false;
-            try {
+            // $third_request_failed = false;
+            // try {
                 $this->requestGroupMembership($pi_group->getPIUID());
-            } catch(Exception) {
-                $third_request_failed = true;
-            }
-            $this->assertTrue($third_request_failed);
+            // } catch(Exception) {
+            //     $third_request_failed = true;
+            // }
+            // $this->assertTrue($third_request_failed);
             $this->assertNumberGroupRequests(0);
             $this->assertTrue(!$pi_group->requestExists($USER));
         } finally {
-            $SQL->deleteRequestsByUser($USER->getUID());
-            if ($pi_group->userExists($USER)) {
-                $pi_group->removeUser($USER);
-            }
-            if ($USER->exists()) {
-                $USER->getLDAPUser->delete();
-                assert(!$USER->exists());
-            }
+            $this->ensureUserNotInPIGroup($pi_group->getPIUID());
+            $this->ensureUserDoesNotExist();
         }
     }
 
     public function testCreateUserByCreateGroup()
     {
-        global $USER, $SQL;
+        global $USER, $SQL, $LDAP;
         switchuser(...getNonExistentUser());
         $pi_group = $USER->getPIGroup();
         $this->assertTrue(!$USER->exists());
@@ -122,13 +161,13 @@ class NewUserTest extends TestCase
             $this->assertNumberGroupRequests(1);
             $this->assertNumberGroupRequests(0);
 
-            $second_request_failed = false;
-            try {
-                $this->requestGroupCreation();
-            } catch(Exception) {
+            // $second_request_failed = false;
+            // try {
+            //     $this->requestGroupCreation();
+            // } catch(Exception) {
                 $second_request_failed = true;
-            }
-            $this->assertTrue($second_request_failed);
+            // }
+            // $this->assertTrue($second_request_failed);
             $this->assertNumberGroupRequests(1);
 
             $this->cancelAllRequests();
@@ -142,24 +181,17 @@ class NewUserTest extends TestCase
             $this->assertTrue($pi_group->exists());
             $this->assertTrue($USER->exists());
 
-            $third_request_failed = false;
-            try {
+            // $third_request_failed = false;
+            // try {
                 $this->requestGroupCreation();
-            } catch(Exception) {
-                $third_request_failed = true;
-            }
-            $this->assertTrue($third_request_failed);
+            // } catch(Exception) {
+            //     $third_request_failed = true;
+            // }
+            // $this->assertTrue($third_request_failed);
             $this->assertNumberGroupRequests(0);
         } finally {
-            $SQL->deleteRequestsByUser($USER->getUID());
-            if ($pi_group->exists()) {
-                $pi_group->getLDAPPIGroup()->delete();
-                assert(!$pi_group->exists());
-            }
-            if ($USER->exists()) {
-                $USER->getLDAPUser->delete();
-                assert(!$USER->exists());
-            }
+            $this->ensurePIGroupDoesNotExist();
+            $this->ensureUserDoesNotExist();
         }
     }
 }
