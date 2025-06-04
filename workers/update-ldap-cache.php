@@ -1,3 +1,4 @@
+#!/bin/php
 <?php
 
 require_once __DIR__ . "/../resources/autoload.php";
@@ -37,7 +38,7 @@ if (array_key_exists("h", $options) or array_key_exists("help", $options)) {
     echo "arguments:
     f: flush cache and then update
     u: update cache even if already initialized
-    h --help: display this message";
+    h --help: display this message\n";
     die();
 }
 if (array_key_exists("f", $options)) {
