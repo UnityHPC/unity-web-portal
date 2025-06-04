@@ -172,11 +172,3 @@ function getAdminUser()
 {
     return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
 }
-
-// box of shame
-//////////////////////////////////////////////////////////////////
-function getExistingPI()
-{
-    return "pi_user1005_org3_test";
-}
-//////////////////////////////////////////////////////////////////
