@@ -19516,7 +19516,6 @@ uidnumber: 1569
 
 dn: cn=user4_org1_test,ou=users,dc=unityhpc,dc=test
 cn: user4_org1_test
-gecos: Daniel Parker
 gidnumber: 1016
 givenname: Givenname
 homedirectory: /home/user4_org1_test
@@ -33786,7 +33785,6 @@ uidnumber: 1425
 
 dn: cn=user11_org1_test,ou=users,dc=unityhpc,dc=test
 cn: user11_org1_test
-gecos: Thomas Bernardin
 gidnumber: 1027
 givenname: Givenname
 homedirectory: /home/user11_org1_test
