@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
+use UnityWebPortal\lib\UnityGroup;
 
 class NewUserTest extends TestCase
 {
@@ -60,6 +61,7 @@ class NewUserTest extends TestCase
     // does not remove user from PI groups
     private function ensureUserDoesNotExist()
     {
+        global $USER, $SQL, $LDAP;
         $SQL->deleteRequestsByUser($USER->getUID());
         if ($USER->exists()) {
             $USER->getLDAPUser()->delete();
@@ -71,19 +73,21 @@ class NewUserTest extends TestCase
             assert(!$org->inOrg($USER));
         }
         $all_users_group = $LDAP->getUserGroup();
-        $all_member_uids = $all_users_group->getAttribute("memberUid");
+        $all_member_uids = $all_users_group->getAttribute("memberuid");
+        $new_uids = array_diff($all_member_uids, [$USER->getUID()]);
         if (in_array($USER->getUID(), $all_member_uids)) {
             $all_users_group->setAttribute(
-                "memberUid",
+                "memberuid",
                 array_diff($all_member_uids, [$USER->getUID()])
             );
             $all_users_group->write();
-            assert(!in_array($USER->getUID(), $all_users_group->getAttribute("memberUid")));
+            assert(!in_array($USER->getUID(), $all_users_group->getAttribute("memberuid")));
         }
     }
 
-    private function ensureUserNotInPIGroup($gid)
+    private function ensureUserNotInPIGroup(UnityGroup $pi_group)
     {
+        global $USER;
         if ($pi_group->userExists($USER)) {
             $pi_group->removeUser($USER);
             assert(!$pi_group->userExists($USER));
@@ -92,6 +96,7 @@ class NewUserTest extends TestCase
 
     private function ensurePIGroupDoesNotExist()
     {
+        global $USER;
         if ($USER->getPIGroup()->exists()) {
             $USER->getPIGroup()->getLDAPPIGroup()->delete();
             assert(!$USER->getPIGroup()->exists());
@@ -144,7 +149,7 @@ class NewUserTest extends TestCase
             $this->assertNumberGroupRequests(0);
             $this->assertTrue(!$pi_group->requestExists($USER));
         } finally {
-            $this->ensureUserNotInPIGroup($pi_group->getPIUID());
+            $this->ensureUserNotInPIGroup($pi_group);
             $this->ensureUserDoesNotExist();
         }
     }
@@ -159,13 +164,12 @@ class NewUserTest extends TestCase
         try {
             $this->requestGroupCreation();
             $this->assertNumberGroupRequests(1);
-            $this->assertNumberGroupRequests(0);
 
             // $second_request_failed = false;
             // try {
-            //     $this->requestGroupCreation();
+                $this->requestGroupCreation();
             // } catch(Exception) {
-                $second_request_failed = true;
+            //     $second_request_failed = true;
             // }
             // $this->assertTrue($second_request_failed);
             $this->assertNumberGroupRequests(1);
