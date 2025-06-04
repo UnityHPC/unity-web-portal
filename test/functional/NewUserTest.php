@@ -85,6 +85,16 @@ class NewUserTest extends TestCase
         }
     }
 
+    private function ensureOrgGroupDoesNotExist()
+    {
+        global $USER;
+        $org_group = $USER->getOrgGroup();
+        if ($org_group->exists()) {
+            $org_group->getLDAPOrgGroup()->delete();
+            assert(!$org_group->exists());
+        }
+    }
+
     private function ensureUserNotInPIGroup(UnityGroup $pi_group)
     {
         global $USER;
@@ -139,6 +149,7 @@ class NewUserTest extends TestCase
             $this->assertNumberGroupRequests(0);
             $this->assertTrue($pi_group->userExists($USER));
             $this->assertTrue($USER->exists());
+            $this->assertTrue($USER->getOrgGroup()->exists());
 
             // $third_request_failed = false;
             // try {
@@ -152,6 +163,7 @@ class NewUserTest extends TestCase
         } finally {
             $this->ensureUserNotInPIGroup($pi_group);
             $this->ensureUserDoesNotExist();
+            $this->ensureOrgGroupDoesNotExist();
         }
     }
 
@@ -162,6 +174,7 @@ class NewUserTest extends TestCase
         $pi_group = $USER->getPIGroup();
         $this->assertTrue(!$USER->exists());
         $this->assertTrue(!$pi_group->exists());
+        $this->assertTrue(!$USER->getOrgGroup()->exists());
         try {
             $this->requestGroupCreation();
             $this->assertNumberGroupRequests(1);
@@ -185,6 +198,7 @@ class NewUserTest extends TestCase
             $this->assertNumberGroupRequests(0);
             $this->assertTrue($pi_group->exists());
             $this->assertTrue($USER->exists());
+            $this->assertTrue($USER->getOrgGroup()->exists());
 
             // $third_request_failed = false;
             // try {
@@ -197,6 +211,7 @@ class NewUserTest extends TestCase
         } finally {
             $this->ensurePIGroupDoesNotExist();
             $this->ensureUserDoesNotExist();
+            $this->ensureOrgGroupDoesNotExist();
         }
     }
 }
