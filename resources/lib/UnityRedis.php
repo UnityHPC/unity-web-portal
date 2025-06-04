@@ -95,4 +95,9 @@ class UnityRedis
             $this->setCache($object, $key, $cached_val);
         }
     }
+
+    public function flushAll()
+    {
+        $this->client->flushAll();
+    }
 }
