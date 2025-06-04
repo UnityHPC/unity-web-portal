@@ -32,7 +32,14 @@ $pi_group_string_attributes = [
     "gidnumber",
 ];
 
-$options = getopt("fu");
+$options = getopt("fuh", ["help"]);
+if (array_key_exists("h", $options) or array_key_exists("help", $options)) {
+    echo "arguments:
+    f: flush cache and then update
+    u: update cache even if already initialized
+    h --help: display this message";
+    die();
+}
 if (array_key_exists("f", $options)) {
     echo "flushing cache...\n";
     $REDIS->flushAll();
