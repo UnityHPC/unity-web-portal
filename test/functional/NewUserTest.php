@@ -110,6 +110,7 @@ class NewUserTest extends TestCase
         $pi_group = $USER->getPIGroup();
         switchUser(...getNonExistentUser());
         $this->assertTrue(!$USER->exists());
+        $this->assertTrue(!$USER->getOrgGroup()->exists());
         $this->assertTrue($pi_group->exists());
         $this->assertTrue(!$pi_group->userExists($USER));
         $this->assertNumberGroupRequests(0);
