@@ -33,14 +33,13 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
 } else {
     echo "updating cache...\n";
 
-    $user_CNs = $LDAP->getUserGroup()->getAttribute("memberuid");
-    sort($user_CNs);
-    $REDIS->setCache("sorted_users", "", $user_CNs);
-
     // search entire tree, some users created for admin purposes might not be in the normal OU
     echo "waiting for LDAP search (users)...\n";
     $users = $LDAP->search("objectClass=posixAccount", $CONFIG["ldap"]["basedn"]);
     echo "response received.\n";
+    $user_CNs = $LDAP->getUserGroup()->getAttribute("memberuid");
+    sort($user_CNs);
+    $REDIS->setCache("sorted_users", "", $user_CNs);
     foreach ($users as $user) {
         $uid = $user->getAttribute("cn")[0];
         if (!in_array($uid, $user_CNs)) {
