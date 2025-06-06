@@ -88,6 +88,11 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
         $REDIS->setCache($gid, "members", (@$pi_group["memberuid"] ?? []));
     }
     foreach ($user_pi_group_member_of as $uid => $pi_groups) {
+        $gid = $pi_group["cn"][0];
+        $members = (@$pi_group["memberuid"] ?? []);
+        foreach ($members as $uid) {
+            array_push($user_pi_group_member_of[$uid], $gid);
+        }
         // FIXME should be pi_groups
         $REDIS->setCache($uid, "groups", $pi_groups);
     }
