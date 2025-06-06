@@ -14,51 +14,6 @@ use UnityWebPortal\lib\UnityRedis;
 use UnityWebPortal\lib\UnityWebhook;
 use PHPOpenLDAPer\LDAPEntry;
 
-function process_user_attribute_key($x)
-{
-    if ($x == "givenname") {
-        return "firstname";
-    }
-    if ($x == "sn") {
-        return "lastname";
-    }
-    if ($x == "o") {
-        return "org";
-    }
-    return $x;
-}
-
-function process_user_attribute_value($x)
-{
-    if (in_array(
-        $x,
-        [
-                "gidnumber",
-                "givenname",
-                "homedirectory",
-                "loginshell",
-                "mail",
-                "o",
-                "sn",
-                "uid",
-                "uidnumber",
-                "gecos",
-            ]
-    )
-    ) {
-        return $x[0];
-    }
-    return $x;
-}
-
-function process_group_attribute_value($x)
-{
-    if ($x == "gidnumber") {
-        return $x[0];
-    }
-    return $x;
-}
-
 $options = getopt("fuh", ["help"]);
 if (array_key_exists("h", $options) or array_key_exists("help", $options)) {
     echo "arguments:
@@ -86,10 +41,14 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     sort($user_CNs);
     $REDIS->setCache("sorted_users", "", $user_CNs);
     foreach ($users as $user) {
-        $cn = $user->getAttribute("cn")[0];
-        foreach ($user->getAttributes() as $key => $val) {
-            $REDIS->setCache($cn, process_user_attribute_key($key), process_user_attribute_value($val));
-        }
+        $uid = $user->getAttribute("cn")[0];
+        $REDIS->setCache($uid, "firstname", $user->getAttribute("givenname")[0]);
+        $REDIS->setCache($uid, "lastname", $user->getAttribute("sn")[0]);
+        $REDIS->setCache($uid, "org", $user->getAttribute("o")[0]);
+        $REDIS->setCache($uid, "mail", $user->getAttribute("mail")[0]);
+        $REDIS->setCache($uid, "sshkeys", $user->getAttribute("sshpublickey"));
+        $REDIS->setCache($uid, "loginshell", $user->getAttribute("loginshell")[0]);
+        $REDIS->setCache($uid, "homedir", $user->getAttribute("homedirectory")[0]);
     }
 
     $org_group_ou = new LDAPEntry($LDAP->getConn(), $CONFIG["ldap"]["orggroup_ou"]);
@@ -102,7 +61,8 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     sort($org_group_CNs);
     $REDIS->setCache("sorted_orgs", "", $org_group_CNs);
     foreach ($org_groups as $org_group) {
-        $REDIS->setCache($org_group->getAttribute("cn")[0], "members", $org_group->getAttribute("memberuid"));
+        $gid = $org_group->getAttribute("cn")[0];
+        $REDIS->setCache($gid, "members", $org_group->getAttribute("memberuid"));
     }
 
     $pi_group_ou = new LDAPEntry($LDAP->getConn(), $CONFIG["ldap"]["pigroup_ou"]);
@@ -120,7 +80,8 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
         $user_pi_group_member_of[$uid] = [];
     }
     foreach ($pi_groups as $pi_group) {
-        $REDIS->setCache($pi_group["cn"][0], $key, process_group_attribute_value($val));
+        $gid = $pi_group->getAttribute("cn")[0];
+        $REDIS->setCache($gid, "members", $pi_group->getAttribute("memberuid"));
     }
     foreach ($user_pi_group_member_of as $uid => $pi_groups) {
         // FIXME should be pi_groups
