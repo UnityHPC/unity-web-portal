@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
     }
 
-    switch ($_POST["form_name"]) {
+    switch ($_POST["form_type"]) {
         case "req":
             if ($_POST["action"] == "Approve") {
                 // approve group
@@ -84,7 +84,7 @@ include $LOC_HEADER;
         echo "<td>";
         echo
         "<form action='' method='POST'>
-        <input type='hidden' name='form_name' value='req'>
+        <input type='hidden' name='form_type' value='req'>
         <input type='hidden' name='uid' value='" . $request_user->getUID() . "'>
         <input type='submit' name='action' value='Approve'
         onclick='return confirm(\"Are you sure you want to approve " . $request_user->getUID() . "?\");'>

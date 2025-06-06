@@ -37,7 +37,7 @@ foreach ($members as $member) {
     echo
     "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " .
     $member->getUID() . " from this group?\");'>
-    <input type='hidden' name='form_name' value='remUserChild'>
+    <input type='hidden' name='form_type' value='remUserChild'>
     <input type='hidden' name='uid' value='" . $member->getUID() . "'>
     <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
     <input type='submit' value='Remove'>
@@ -63,7 +63,7 @@ foreach ($requests as $key => $request) {
     echo
     "<form action='' method='POST' 
     onsubmit='return confirm(\"Are you sure you want to approve " . $request->getUID() . "?\");'>
-    <input type='hidden' name='form_name' value='reqChild'>
+    <input type='hidden' name='form_type' value='reqChild'>
     <input type='hidden' name='uid' value='" . $request->getUID() . "'>
     <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
     <input type='submit' name='action' value='Approve'>

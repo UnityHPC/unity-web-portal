@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $modalErrors = array();
     $errors = array();
 
-    if (isset($_POST["form_name"])) {
+    if (isset($_POST["form_type"])) {
         if (isset($_POST["pi"])) {
             $pi_account = new UnityGroup(trim($_POST["pi"]), $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             if (!$pi_account->exists()) {
@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-        switch ($_POST["form_name"]) {
+        switch ($_POST["form_type"]) {
             case "addPIform":
                 // The new PI modal was submitted
                 // existing PI request
@@ -116,7 +116,7 @@ foreach ($groups as $group) {
     "<td>
     <form action='' method='POST'
     onsubmit='return confirm(\"Are you sure you want to leave the PI group " . $group->getPIUID() . "?\")'>
-    <input type='hidden' name='form_name' value='removePIForm'>
+    <input type='hidden' name='form_type' value='removePIForm'>
     <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
     <input type='submit' value='Leave Group'>
     </form>

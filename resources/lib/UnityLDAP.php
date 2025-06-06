@@ -332,35 +332,4 @@ class UnityLDAP extends ldapConn
         $gid = ldap_escape($gid, LDAP_ESCAPE_DN);
         return $this->getEntry(unityLDAP::RDN . "=$gid," . $this->STR_ORGGROUPOU);
     }
-
-    public static function parseUserChildrenArray(array $userChildrenArray): array
-    {
-        // input comes from LdapEntry::getChildrenArray on a UnityUser
-        $output = [];
-        $required_string_attributes = [
-            "gidnumber",
-            "givenname",
-            "homedirectory",
-            "loginshell",
-            "mail",
-            "o",
-            "sn",
-            "uid",
-            "uidnumber",
-            "gecos",
-        ];
-        foreach ($required_string_attributes as $key) {
-            $output[$key] = $userChildrenArray[$key][0];
-        }
-        $output["firstname"] = $output["givenname"];
-        $output["lastname"] = $output["sn"];
-        $output["org"] = $output["o"];
-        $output["objectclass"] = $userChildrenArray["objectclass"];
-        if (array_key_exists("sspublickey", $userChildrenArray)) {
-            $output["sshpublickey"] = $userChildrenArray["sshpublickey"];
-        } else {
-            $output["sshpublickey"] = [];
-        }
-        return $output;
-    }
 }

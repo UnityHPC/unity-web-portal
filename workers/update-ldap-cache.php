@@ -1,3 +1,4 @@
+#!/bin/php
 <?php
 
 require_once __DIR__ . "/../resources/autoload.php";
@@ -13,7 +14,33 @@ use UnityWebPortal\lib\UnityRedis;
 use UnityWebPortal\lib\UnityWebhook;
 use PHPOpenLDAPer\LDAPEntry;
 
-$options = getopt("fu");
+// in PHP LDAP all attributes are arrays, we need these as strings instead
+// it's possible but probably difficult to find this out using LDAP schema information
+$user_string_attributes = [
+    "gidnumber",
+    "givenname",
+    "homedirectory",
+    "loginshell",
+    "mail",
+    "o",
+    "sn",
+    "uid",
+    "uidnumber",
+    "gecos",
+];
+
+$pi_group_string_attributes = [
+    "gidnumber",
+];
+
+$options = getopt("fuh", ["help"]);
+if (array_key_exists("h", $options) or array_key_exists("help", $options)) {
+    echo "arguments:
+    f: flush cache and then update
+    u: update cache even if already initialized
+    h --help: display this message\n";
+    UnitySite::die();
+}
 if (array_key_exists("f", $options)) {
     echo "flushing cache...\n";
     $REDIS->flushAll();
@@ -21,36 +48,39 @@ if (array_key_exists("f", $options)) {
 
 if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $options)))) {
     echo "cache is already initialized, nothing doing.";
-    echo " use -f argument to flush cache, or -u argument to update without flush.";
+    echo " use -f argument to flush cache, or -u argument to update without flush.\n";
 } else {
     echo "updating cache...\n";
-    $user_ou = new LDAPEntry($LDAP->getConn(), $CONFIG["ldap"]["user_ou"]);
     echo "waiting for LDAP response (users)...\n";
-    $users = $user_ou->getChildrenArray(true);
+    $users = $LDAP->search("objectClass=posixAccount", $CONFIG["ldap"]["basedn"]);
     echo "response received.\n";
     // phpcs:disable
-    $user_CNs = array_map(function ($x){return $x["cn"][0];}, $users);
+    $user_CNs = array_map(function ($x){return $x->getAttribute("cn")[0];}, $users);
     // phpcs:enable
     sort($user_CNs);
     $REDIS->setCache("sorted_users", "", $user_CNs);
     foreach ($users as $user) {
-        $attribute_array = UnityLDAP::parseUserChildrenArray($user);
-        foreach ($attribute_array as $key => $val) {
-            $REDIS->setCache($user["cn"][0], $key, $val);
+        $cn = $user->getAttribute("cn")[0];
+        foreach ($user->getAttributes() as $key => $val) {
+            if (in_array($key, $user_string_attributes)) {
+                $REDIS->setCache($cn, $key, $val[0]);
+            } else {
+                $REDIS->setCache($cn, $key, $val);
+            }
         }
     }
 
     $org_group_ou = new LDAPEntry($LDAP->getConn(), $CONFIG["ldap"]["orggroup_ou"]);
     echo "waiting for LDAP response (org_groups)...\n";
-    $org_groups = $org_group_ou->getChildrenArray(true);
+    $org_groups = $LDAP->search("objectClass=posixGroup", $CONFIG["ldap"]["basedn"]);
     echo "response received.\n";
     // phpcs:disable
-    $org_group_CNs = array_map(function($x){return $x["cn"][0];}, $org_groups);
+    $org_group_CNs = array_map(function($x){return $x->getAttribute("cn")[0];}, $org_groups);
     // phpcs:enable
     sort($org_group_CNs);
     $REDIS->setCache("sorted_orgs", "", $org_group_CNs);
     foreach ($org_groups as $org_group) {
-        $REDIS->setCache($org_group["cn"][0], "members", $org_group["memberuid"]);
+        $REDIS->setCache($org_group->getAttribute("cn")[0], "members", $org_group->getAttribute("memberuid"));
     }
 
     $pi_group_ou = new LDAPEntry($LDAP->getConn(), $CONFIG["ldap"]["pigroup_ou"]);

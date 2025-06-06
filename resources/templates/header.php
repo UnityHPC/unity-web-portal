@@ -4,7 +4,7 @@ use UnityWebPortal\lib\UnitySite;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ((@$_SESSION["is_admin"] ?? false) == true
-        && (@$_POST["form_name"] ?? null) == "clearView"
+        && (@$_POST["form_type"] ?? null) == "clearView"
     ) {
         unset($_SESSION["viewUser"]);
         UnitySite::redirect($CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
@@ -141,7 +141,7 @@ if (isset($SSO)) {
           <div id='viewAsBar'>
             <span>You are accessing the web portal as the user <strong>$viewUser</strong></span>
             <form method='POST' action=''>
-              <input type='hidden' name='form_name' value='clearView'>
+              <input type='hidden' name='form_type' value='clearView'>
               <input type='hidden' name='uid' value='$viewUser'>
               <input type='submit' value='Return to My User'>
             </form>
