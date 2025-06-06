@@ -14,24 +14,50 @@ use UnityWebPortal\lib\UnityRedis;
 use UnityWebPortal\lib\UnityWebhook;
 use PHPOpenLDAPer\LDAPEntry;
 
-// in PHP LDAP all attributes are arrays, we need these as strings instead
-// it's possible but probably difficult to find this out using LDAP schema information
-$user_string_attributes = [
-    "gidnumber",
-    "givenname",
-    "homedirectory",
-    "loginshell",
-    "mail",
-    "o",
-    "sn",
-    "uid",
-    "uidnumber",
-    "gecos",
-];
+function process_user_attribute_key($x)
+{
+    if ($x == "givenname") {
+        return "firstname";
+    }
+    if ($x == "sn") {
+        return "lastname";
+    }
+    if ($x == "o") {
+        return "org";
+    }
+    return $x;
+}
 
-$pi_group_string_attributes = [
-    "gidnumber",
-];
+function process_user_attribute_value($x)
+{
+    if (in_array(
+        $x,
+        [
+                "gidnumber",
+                "givenname",
+                "homedirectory",
+                "loginshell",
+                "mail",
+                "o",
+                "sn",
+                "uid",
+                "uidnumber",
+                "gecos",
+            ]
+    )
+    ) {
+        return $x[0];
+    }
+    return $x;
+}
+
+function process_group_attribute_value($x)
+{
+    if ($x == "gidnumber") {
+        return $x[0];
+    }
+    return $x;
+}
 
 $options = getopt("fuh", ["help"]);
 if (array_key_exists("h", $options) or array_key_exists("help", $options)) {
@@ -62,11 +88,7 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     foreach ($users as $user) {
         $cn = $user->getAttribute("cn")[0];
         foreach ($user->getAttributes() as $key => $val) {
-            if (in_array($key, $user_string_attributes)) {
-                $REDIS->setCache($cn, $key, $val[0]);
-            } else {
-                $REDIS->setCache($cn, $key, $val);
-            }
+            $REDIS->setCache($cn, process_user_attribute_key($key), process_user_attribute_value($val));
         }
     }
 
@@ -98,14 +120,7 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
         $user_pi_group_member_of[$uid] = [];
     }
     foreach ($pi_groups as $pi_group) {
-        if (array_key_exists("memberuid", $pi_group)) {
-            $REDIS->setCache($pi_group["cn"][0], "members", $pi_group["memberuid"]);
-            foreach ($pi_group["memberuid"] as $member_uid) {
-                array_push($user_pi_group_member_of[$member_uid], $pi_group["cn"][0]);
-            }
-        } else {
-            $REDIS->setCache($pi_group["cn"][0], "members", []);
-        }
+        $REDIS->setCache($pi_group["cn"][0], $key, process_group_attribute_value($val));
     }
     foreach ($user_pi_group_member_of as $uid => $pi_groups) {
         // FIXME should be pi_groups
