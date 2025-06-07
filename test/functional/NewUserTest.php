@@ -57,7 +57,7 @@ class NewUserTest extends TestCase
     // does not remove user from PI groups
     private function ensureUserDoesNotExist()
     {
-        global $USER, $SQL, $LDAP;
+        global $USER, $SQL, $LDAP, $REDIS;
         $SQL->deleteRequestsByUser($USER->getUID());
         if ($USER->exists()) {
             $org = $USER->getOrgGroup();
@@ -79,6 +79,7 @@ class NewUserTest extends TestCase
             $all_users_group->write();
             assert(!in_array($USER->getUID(), $all_users_group->getAttribute("memberuid")));
         }
+        $REDIS->removeCacheArray("sorted_users", "", $USER->getUID());
     }
 
     private function ensureOrgGroupDoesNotExist()
@@ -89,7 +90,7 @@ class NewUserTest extends TestCase
             $org_group->getLDAPOrgGroup()->delete();
             assert(!$org_group->exists());
         }
-        $REDIS->removeCacheArray("sorted_org", "", $user->getOrg()->getOrgID());
+        $REDIS->removeCacheArray("sorted_orgs", "", $USER->getOrgGroup()->getOrgID());
     }
 
     private function ensureUserNotInPIGroup(UnityGroup $pi_group)
@@ -103,7 +104,7 @@ class NewUserTest extends TestCase
 
     private function ensurePIGroupDoesNotExist()
     {
-        global $USER;
+        global $USER, $REDIS;
         if ($USER->getPIGroup()->exists()) {
             $USER->getPIGroup()->getLDAPPIGroup()->delete();
             assert(!$USER->getPIGroup()->exists());
