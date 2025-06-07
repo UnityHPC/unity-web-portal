@@ -23,7 +23,7 @@ class PiMemberApproveTest extends TestCase {
     {
         http_post(
             __DIR__ . "/../../webroot/panel/pi.php",
-            ["form_type" => "userReq", "action" => "approve", "uid" => $uid]
+            ["form_type" => "userReq", "action" => "Approve", "uid" => $uid]
         );
     }
 
@@ -67,6 +67,7 @@ class PiMemberApproveTest extends TestCase {
 
             switchUser(...$piSwitchArgs);
             $this->approveUser($uid);
+            $this->assertTrue(!$piGroup->requestExists($user));
             $this->assertEmpty($piGroup->getRequests());
             $this->assertGroupMembers($piGroup, [$piUID, $uid]);
             $this->assertTrue($piGroup->userExists($user));
