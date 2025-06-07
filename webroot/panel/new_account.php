@@ -17,18 +17,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!isset($_POST["eula"]) || $_POST["eula"] != "agree") {
             UnitySite::badRequest("user did not agree to EULA");
         }
+        if ($USER->getUID() != $SSO["user"]) {
+            $sso_user = $SSO["user"];
+            UnitySite::badRequest(
+                "cannot request due to uid mismatch: USER='{$USER->getUID()}' SSO[user]='$sso_user'"
+            );
+        }
         if ($_POST["new_user_sel"] == "not_pi") {
             $form_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             if (!$form_group->exists()) {
                 UnitySite::badRequest("The selected PI does not exist");
             }
-            $form_group->newUserRequest($USER);
+            $form_group->newUserRequest(
+                $USER,
+                $SSO["firstname"],
+                $SSO["lastname"],
+                $SSO["mail"],
+                $SSO["org"]
+            );
         }
         if ($_POST["new_user_sel"] == "pi") {
             if (!isset($_POST["confirm_pi"]) || $_POST["confirm_pi"] != "agree") {
                 UnitySite::badRequest("user did not agree to account policy");
             }
-            $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
+            $USER->getPIGroup()->requestGroup(
+                $SSO["firstname"],
+                $SSO["lastname"],
+                $SSO["mail"],
+                $SSO["org"],
+                $SEND_PIMESG_TO_ADMINS
+            );
         }
     } elseif (isset($_POST["cancel"])) {
         foreach ($pending_requests as $request) {

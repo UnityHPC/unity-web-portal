@@ -37,7 +37,13 @@ class PiMemberDenyTest extends TestCase {
         $this->assertEmpty($piGroup->getRequests());
         $requestedUser = new UnityUser(self::$requestUid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
         try {
-            $piGroup->newUserRequest($requestedUser);
+            $piGroup->newUserRequest(
+                $requestedUser,
+                $requestedUser->getFirstname(),
+                $requestedUser->getLastname(),
+                $requestedUser->getMail(),
+                $requestedUser->getOrg(),
+            );
             $this->assertFalse($piGroup->userExists($requestedUser));
 
             $piGroup->denyUser($requestedUser);
