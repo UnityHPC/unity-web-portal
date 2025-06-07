@@ -176,7 +176,6 @@ class UnityUser
      */
     public function getUID()
     {
-        assert($this->exists());
         return $this->uid;
     }
 
