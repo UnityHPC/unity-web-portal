@@ -3,6 +3,8 @@
 namespace UnityWebPortal\lib;
 
 use PDO;
+use Exception;
+use UnityWebPortal\lib\exceptions\UnitySQLNoSuchRequestException;
 
 class UnitySQL
 {
@@ -94,7 +96,7 @@ class UnitySQL
         $stmt->execute();
         $result = $stmt->fetchAll();
         if (count($result) == 0) {
-            throw new Exception("no such request: uid='$user' request_for='$dest'");
+            throw new UnitySQLNoSuchRequestException("no such request: uid='$user' request_for='$dest'");
         }
         if (count($result) > 1) {
             throw new Exception("too many requests for uid='$user' request_for='$dest'");
@@ -104,7 +106,12 @@ class UnitySQL
 
     public function requestExists($requestor, $dest = self::REQUEST_BECOME_PI)
     {
-        return (!is_null(self::getRequest($requestor, $dest)));
+        try {
+            self::getRequest($requestor, $dest);
+            return true;
+        } catch (UnitySQLNoSuchRequestException) {
+            return false;
+        }
     }
 
     public function getRequests($dest = self::REQUEST_BECOME_PI)
