@@ -89,6 +89,7 @@ class NewUserTest extends TestCase
             $org_group->getLDAPOrgGroup()->delete();
             assert(!$org_group->exists());
         }
+        $REDIS->removeCacheArray("sorted_org", "", $user->getOrg()->getOrgID());
     }
 
     private function ensureUserNotInPIGroup(UnityGroup $pi_group)
@@ -107,6 +108,7 @@ class NewUserTest extends TestCase
             $USER->getPIGroup()->getLDAPPIGroup()->delete();
             assert(!$USER->getPIGroup()->exists());
         }
+        $REDIS->removeCacheArray("sorted_groups", "", $USER->getPIGroup()->getPIUID());
     }
 
     public function testCreateUserByJoinGoup()
