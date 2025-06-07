@@ -33,15 +33,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 if ($USER->getUID() != $SSO["user"]) {
                     $sso_user = $SSO["user"];
-                    UnitySite::errorLog(
-                        "warning",
+                    UnitySite::badRequest(
                         "cannot request due to uid mismatch: " .
                             "USER='{$USER->getUID()}' SSO[user]='$sso_user'"
-                    );
-                    array_push(
-                        $modalErrors,
-                        "The requesting user must be the one signed in with SSO. " .
-                            "Are you an admin viewing as another user?"
                     );
                 }
 
