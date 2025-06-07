@@ -78,14 +78,16 @@ class UnityGroup
 
     public function requestGroup($send_mail_to_admins, $send_mail = true)
     {
-        // check for edge cases...
-        if ($this->exists()) {
-            return;
+        if ($this->SQL->requestExists($this->getOwner()->getUID())) {
+            throw new Exception("group '$this' creation request already exists!");
         }
 
-        // check if account deletion request already exists
+        if ($this->exists()) {
+            throw new Exception("requested to create group '$this' that already exists!");
+        }
+
         if ($this->SQL->accDeletionRequestExists($this->getOwner()->getUID())) {
-            return;
+            throw new Exception("group owner '$this' requested account deletion");
         }
 
         $this->SQL->addRequest($this->getOwner()->getUID());
@@ -140,13 +142,16 @@ class UnityGroup
     {
         if (!$this->SQL->requestExists($this->getOwner()->getUID())) {
             throw new Exception(
-                "attempt to approve nonexistent request for group='{$this->getPIUID()}' uid='$new_user'"
+                "attempt to approve nonexistent request for group='$this' uid='$new_user'"
             );
         }
 
-        // check for edge cases...
         if ($this->exists()) {
-            return;
+            throw new Exception("group '$this' exists");
+        }
+
+        if ($this->SQL->accDeletionRequestExists($this->getOwner()->getUID())) {
+            throw new Exception("group owner '{$this->getOwner()->getUID()}' requested account deletion");
         }
 
         // check if owner exists
@@ -188,7 +193,7 @@ class UnityGroup
         $this->SQL->removeRequest($this->getOwner()->getUID());
 
         if ($this->exists()) {
-            return;
+            throw new Exception("group '$this' creation request cannot be denied, it already exists!");
         }
 
         $operator = is_null($operator) ? $this->getOwner()->getUID() : $operator->getUID();
@@ -212,6 +217,7 @@ class UnityGroup
     public function cancelGroupRequest($send_mail = true)
     {
         if (!$this->SQL->requestExists($this->getOwner()->getUID())) {
+            UnitySite::errorLog("warning", "attempt to cancel nonexistent group creation request ($this)");
             return;
         }
 
@@ -229,6 +235,7 @@ class UnityGroup
     public function cancelGroupJoinRequest($user, $send_mail = true)
     {
         if (!$this->requestExists($user)) {
+            UnitySite::errorLog("warning", "attempt to cancel nonexistent group join request ($this)");
             return;
         }
 
@@ -290,7 +297,7 @@ class UnityGroup
     {
         if (!$this->requestExists($new_user)) {
             throw new Exception(
-                "attempt to approve nonexistent request for group='{$this->getPIUID()}' uid='$new_user'"
+                "attempt to approve nonexistent request for group='$this' uid='$new_user'"
             );
         }
 
@@ -331,7 +338,7 @@ class UnityGroup
     public function denyUser($new_user, $send_mail = true)
     {
         if (!$this->requestExists($new_user)) {
-            return;
+            throw new Exception("request from user '$new_user' does not exist");
         }
 
         // remove request, this will fail silently if the request doesn't exist
@@ -363,11 +370,12 @@ class UnityGroup
     public function removeUser($new_user, $send_mail = true)
     {
         if (!$this->userExists($new_user)) {
+            UnitySite::errorLog("warning", "attempted to delete absent user '$new_user' from group '$this'");
             return;
         }
 
         if ($new_user->getUID() == $this->getOwner()->getUID()) {
-            throw new Exception("Cannot delete group owner from group. Disband group instead");
+            throw new Exception("Cannot delete group owner '{$this->getOwner()}' from group. Disband group instead");
         }
 
         // remove request, this will fail silently if the request doesn't exist
@@ -399,18 +407,15 @@ class UnityGroup
     public function newUserRequest($new_user, $send_mail = true)
     {
         if ($this->userExists($new_user)) {
-            UnitySite::errorLog("warning", "user '$new_user' already in group");
-            return;
+            throw new Exception("user '$new_user' already in group");
         }
 
         if ($this->requestExists($new_user)) {
-            UnitySite::errorLog("warning", "user '$new_user' already requested group membership");
-            return;
+            throw new Exception("user '$new_user' already requested group membership");
         }
 
         if ($this->SQL->accDeletionRequestExists($new_user->getUID())) {
             throw new Exception("user '$new_user' requested account deletion");
-            return;
         }
 
         $this->addRequest($new_user->getUID());
@@ -599,7 +604,7 @@ class UnityGroup
         if (substr($pi_uid, 0, strlen(self::PI_PREFIX)) == self::PI_PREFIX) {
             return substr($pi_uid, strlen(self::PI_PREFIX));
         } else {
-            throw new Exception("PI netid doesn't have the correct prefix.");
+            throw new Exception("PI netid '$pi_uid' doesn't have the correct prefix.");
         }
     }
 }
