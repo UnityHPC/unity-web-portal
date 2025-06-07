@@ -89,7 +89,6 @@ class UnitySQL
 
     private function update($table, $filters, $data)
     {
-        // "UPDATE " . self::TABLE_NOTICES . " SET date=:date, title=:title  WHERE id=:id"
         $stmt = $this->conn->prepare(
             "UPDATE $table SET " .
                 implode(", ", array_map(fn($x) => "$x=:$x", array_keys($filters))) . " " .
@@ -106,9 +105,6 @@ class UnitySQL
         $stmt->execute();
     }
 
-    //
-    // requests table methods
-    //
     public function addRequest($requestor, $dest = self::REQUEST_BECOME_PI)
     {
         if ($this->requestExists($requestor, $dest)) {
@@ -157,15 +153,8 @@ class UnitySQL
             self::TABLE_NOTICES,
             ["date" => $date, "title" => $title, "message" => $content]
         );
-
         $operator = $operator->getUID();
-
-        $this->addLog(
-            $operator,
-            $_SERVER['REMOTE_ADDR'],
-            "added_cluster_notice",
-            $operator
-        );
+        $this->addLog($operator, $_SERVER['REMOTE_ADDR'], "added_cluster_notice", $operator);
     }
 
     public function editNotice($id, $title, $date, $content)
@@ -205,18 +194,10 @@ class UnitySQL
     public function editPage($id, $content, $operator)
     {
         $this->update(self::TABLE_PAGES, ["page" => $id], ["content" => $content]);
-
         $operator = $operator->getUID();
-
-        $this->addLog(
-            $operator,
-            $_SERVER['REMOTE_ADDR'],
-            "edited_page",
-            $operator
-        );
+        $this->addLog($operator, $_SERVER['REMOTE_ADDR'], "edited_page", $operator);
     }
 
-    // audit log table methods
     public function addLog($operator, $operator_ip, $action_type, $recipient)
     {
         $this->insert(
