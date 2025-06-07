@@ -315,7 +315,6 @@ class UnityGroup
         // add user to the LDAP object
         $this->addUserToGroup($new_user);
 
-        // remove request, this will fail silently if the request doesn't exist
         $this->SQL->removeRequest($new_user->getUID(), $this->pi_uid);
 
         // send email to the requestor
