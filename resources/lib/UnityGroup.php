@@ -138,10 +138,10 @@ class UnityGroup
      */
     public function approveGroup($operator = null, $send_mail = true)
     {
-        if (!$this->SQL->requestExists($this->getOwner()->getUID())) {
-            throw new Exception(
-                "attempt to approve nonexistent request for group='{$this->getPIUID()}'"
-            );
+        $uid = $this->getOwner()->getUID();
+        $request = $this->SQL->getRequest($uid, UnitySQL::REQUEST_BECOME_PI);
+        if (is_null($request)) {
+            throw new Exception("uid '$uid' does not have a group request!");
         }
 
         // check for edge cases...
@@ -294,10 +294,12 @@ class UnityGroup
      */
     public function approveUser($new_user, $send_mail = true)
     {
-        if (!$this->requestExists($new_user)) {
-            throw new Exception(
-                "attempt to approve nonexistent request for group='{$this->getPIUID()}' uid='$new_user'"
-            );
+
+        $uid = $new_user->getUID();
+        $gid = $this->getPIUID();
+        $request = $this->SQL->getRequest($uid, $gid);
+        if (is_null($request)) {
+            throw new Exception("uid '$uid' does not have a request for group '$gid'!");
         }
 
         // check if user exists
@@ -340,10 +342,11 @@ class UnityGroup
 
     public function denyUser($new_user, $send_mail = true)
     {
-        if (!$this->requestExists($new_user)) {
-            throw new Exception(
-                "attempt to deny nonexistent request for group='{$this->getPIUID()}' uid='$new_user'"
-            );
+        $uid = $new_user->getUID();
+        $gid = $this->getPIUID();
+        $request = $this->SQL->getRequest($uid, $gid);
+        if (is_null($request)) {
+            throw new Exception("uid '$uid' does not have a request for group '$gid'!");
         }
 
         // remove request, this will fail silently if the request doesn't exist
