@@ -97,7 +97,7 @@ class UnitySQL
             throw new Exception("no such request: uid='$user' request_for='$dest'");
         }
         if (count($result) > 1) {
-            throw new Exception("too many requests for uid='$user' request_for='$dest'");
+            throw new Exception("multiple requests for uid='$user' request_for='$dest'");
         }
         return $result[0];
     }
