@@ -153,15 +153,11 @@ class UnitySQL
 
     public function editNotice($id, $title, $date, $content)
     {
-        $stmt = $this->conn->prepare(
-            "UPDATE " . self::TABLE_NOTICES . " SET date=:date, title=:title, message=:message WHERE id=:id"
+        $this->update(
+            self::TABLE_PAGES,
+            ["id" => $id],
+            ["date" => $date, "title" => $title, "message" => $message]
         );
-        $stmt->bindParam(":date", $date);
-        $stmt->bindParam(":title", $title);
-        $stmt->bindParam(":message", $content);
-        $stmt->bindParam(":id", $id);
-
-        $stmt->execute();
     }
 
     public function deleteNotice($id)
@@ -191,13 +187,7 @@ class UnitySQL
 
     public function editPage($id, $content, $operator)
     {
-        $stmt = $this->conn->prepare(
-            "UPDATE " . self::TABLE_PAGES . " SET content=:content WHERE page=:id"
-        );
-        $stmt->bindParam(":id", $id);
-        $stmt->bindParam(":content", $content);
-
-        $stmt->execute();
+        $this->update(self::TABLE_PAGES, ["page" => $id], ["content" => $content]);
 
         $operator = $operator->getUID();
 
