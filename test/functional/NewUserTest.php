@@ -162,9 +162,9 @@ class NewUserTest extends TestCase
             $this->assertRequestedMembership(false, $gid);
             $this->assertTrue(!$pi_group->requestExists($USER));
         } finally {
+            $this->ensureOrgGroupDoesNotExist();
             $this->ensureUserNotInPIGroup($pi_group);
             $this->ensureUserDoesNotExist();
-            $this->ensureOrgGroupDoesNotExist();
         }
     }
 
@@ -211,9 +211,9 @@ class NewUserTest extends TestCase
             // $this->assertTrue($third_request_failed);
             $this->assertRequestedPIGroup(false);
         } finally {
+            $this->ensureOrgGroupDoesNotExist();
             $this->ensurePIGroupDoesNotExist();
             $this->ensureUserDoesNotExist();
-            $this->ensureOrgGroupDoesNotExist();
         }
     }
 }
