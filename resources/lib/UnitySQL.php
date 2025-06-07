@@ -50,12 +50,16 @@ class UnitySQL
 
     private function search($table, $filters)
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM $table WHERE " .
-                implode(" and ", array_map(fn($x) => "$x=:$x", array_keys($filters)))
-        );
-        foreach ($filters as $key => $val) {
-            $stmt->bindValue(":$key", $val);
+        if (count($filters) > 0) {
+            $stmt = $this->conn->prepare(
+                "SELECT * FROM $table WHERE " .
+                    implode(" and ", array_map(fn($x) => "$x=:$x", array_keys($filters)))
+            );
+            foreach ($filters as $key => $val) {
+                $stmt->bindValue(":$key", $val);
+            }
+        } else {
+            $stmt = $this->conn->prepare("SELECT * FROM $table");
         }
         $this->execute($stmt);
         return $stmt->fetchAll();
