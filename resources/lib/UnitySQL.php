@@ -76,7 +76,7 @@ class UnitySQL
 
     private function update($table, $filters, $data)
     {
-        // "UPDATE " . self::TABLE_NOTICES . " SET date=:date, title=:title, message=:message WHERE id=:id"
+        // "UPDATE " . self::TABLE_NOTICES . " SET date=:date, title=:title  WHERE id=:id"
         $stmt = $this->conn->prepare(
             "UPDATE $table SET" .
                 implode(", ", array_map(fn($x) => "$x=:$x", array_keys($filters))) .
@@ -139,7 +139,10 @@ class UnitySQL
 
     public function addNotice($title, $date, $content, $operator)
     {
-        $this->insert(self::TABLE_NOTICES, ["date" => $date, "title" => $title, "message" => $content]);
+        $this->insert(
+            self::TABLE_NOTICES,
+            ["date" => $date, "title" => $title, "message" => $content]
+        );
 
         $operator = $operator->getUID();
 
