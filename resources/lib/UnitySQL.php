@@ -3,6 +3,7 @@
 namespace UnityWebPortal\lib;
 
 use PDO;
+use PDOException;
 
 class UnitySQL
 {
@@ -35,6 +36,18 @@ class UnitySQL
         return $this->conn;
     }
 
+    private function execute($statement)
+    {
+        try {
+            $statement->execute();
+        } catch (PDOException $e) {
+            ob_start();
+            $statement->debugDumpParams();
+            $sql_debug_dump = ob_get_clean();
+            throw new PDOException($sql_debug_dump, 0, $e);
+        }
+    }
+
     private function search($table, $filters)
     {
         $stmt = $this->conn->prepare(
@@ -42,9 +55,9 @@ class UnitySQL
                 implode(" and ", array_map(fn($x) => "$x=:$x", array_keys($filters)))
         );
         foreach ($filters as $key => $val) {
-            $stmt->bindParam(":$key", $val);
+            $stmt->bindValue(":$key", $val);
         }
-        $stmt->execute();
+        $this->execute($stmt);
         return $stmt->fetchAll();
     }
 
@@ -55,9 +68,9 @@ class UnitySQL
                 implode(" and ", array_map(fn($x) => "$x=:$x", array_keys($filters)))
         );
         foreach ($filters as $key => $val) {
-            $stmt->bindParam(":$key", $val);
+            $stmt->bindValue(":$key", $val);
         }
-        $stmt->execute();
+        $this->execute($stmt);
     }
 
     private function insert($table, $data)
@@ -69,9 +82,9 @@ class UnitySQL
                 "(" . implode(", ", array_map(fn($x) => ":$x", array_keys($data))) . ")"
         );
         foreach ($data as $key => $val) {
-            $stmt->bindParam(":$key", $val);
+            $stmt->bindValue(":$key", $val);
         }
-        $stmt->execute();
+        $this->execute($stmt);
     }
 
     private function update($table, $filters, $data)
@@ -84,11 +97,12 @@ class UnitySQL
                 implode(" and ", array_map(fn($x) => "$x=:$x", array_keys($filters)))
         );
         foreach ($filters as $key => $val) {
-            $stmt->bindParam(":$key", $val);
+            $stmt->bindValue(":$key", $val);
         }
         foreach ($data as $key => $val) {
-            $stmt->bindParam(":$key", $val);
+            $stmt->bindValue(":$key", $val);
         }
+        $this->execute($stmt);
         $stmt->execute();
     }
 
@@ -108,7 +122,7 @@ class UnitySQL
         if (!$this->requestExists($requestor, $dest)) {
             return;
         }
-        $this->delete(self::TABLE_REQS, ["uid" => $uid, "request_for" => $dest]);
+        $this->delete(self::TABLE_REQS, ["uid" => $requestor, "request_for" => $dest]);
     }
 
     public function removeRequests($dest = self::REQUEST_BECOME_PI)
@@ -250,8 +264,8 @@ class UnitySQL
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_GROUP_ROLE_ASSIGNMENTS . " WHERE user=:uid AND `group`=:group"
         );
-        $stmt->bindParam(":uid", $uid);
-        $stmt->bindParam(":group", $group);
+        $stmt->bindValue(":uid", $uid);
+        $stmt->bindValue(":group", $group);
 
         $stmt->execute();
 
@@ -263,7 +277,7 @@ class UnitySQL
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_GROUP_ROLES . " WHERE slug=:role"
         );
-        $stmt->bindParam(":role", $role);
+        $stmt->bindValue(":role", $role);
 
         $stmt->execute();
 
@@ -277,7 +291,7 @@ class UnitySQL
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_GROUP_ROLES . " WHERE slug=:role"
         );
-        $stmt->bindParam(":role", $role);
+        $stmt->bindValue(":role", $role);
 
         $stmt->execute();
 
@@ -290,8 +304,8 @@ class UnitySQL
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_GROUP_ROLE_ASSIGNMENTS . " WHERE user=:uid AND `group`=:group"
         );
-        $stmt->bindParam(":uid", $uid);
-        $stmt->bindParam(":group", $group);
+        $stmt->bindValue(":uid", $uid);
+        $stmt->bindValue(":group", $group);
 
         $stmt->execute();
         $row = $stmt->fetchAll()[0];
@@ -302,7 +316,7 @@ class UnitySQL
             "SELECT * FROM " . self::TABLE_GROUP_TYPES . " WHERE slug=:slug"
         );
 
-        $stmt->bindParam(":slug", $group_slug);
+        $stmt->bindValue(":slug", $group_slug);
         $stmt->execute();
 
         $row = $stmt->fetchAll()[0];
