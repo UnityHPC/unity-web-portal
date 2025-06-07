@@ -148,7 +148,7 @@ class UnitySQL
 
     public function deleteRequestsByUser($user)
     {
-        $this->delete(self::TABLE_REQS, ["uid" => $uid]);
+        $this->delete(self::TABLE_REQS, ["uid" => $user]);
     }
 
     public function addNotice($title, $date, $content, $operator)
