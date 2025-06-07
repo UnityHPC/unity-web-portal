@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use UnityWebPortal\lib\UnitySQL;
 
 class PiBecomeRequestTest extends TestCase
 {
@@ -49,7 +50,9 @@ class PiBecomeRequestTest extends TestCase
             );
             $this->assertNumberPiBecomeRequests(1);
         } finally {
-            $SQL->removeRequest($USER->getUID());
+            if ($SQL->requestExists($USER, UnitySQL::REQUEST_BECOME_PI)) {
+                $SQL->removeRequest($USER->getUID(), UnitySQL::REQUEST_BECOME_PI);
+            }
         }
     }
 
@@ -67,7 +70,9 @@ class PiBecomeRequestTest extends TestCase
             );
             $this->assertNumberPiBecomeRequests(0);
         } finally {
-            $SQL->removeRequest($USER->getUID());
+            if ($SQL->requestExists($USER, UnitySQL::REQUEST_BECOME_PI)) {
+                $SQL->removeRequest($USER->getUID(), UnitySQL::REQUEST_BECOME_PI);
+            }
         }
     }
 }
