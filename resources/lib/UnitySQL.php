@@ -106,12 +106,28 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function addRequest($requestor, $firstname, $lastname, $email, $org, $dest = self::REQUEST_BECOME_PI)
-    {
+    public function addRequest(
+        $requestor,
+        $firstname,
+        $lastname,
+        $email,
+        $org,
+        $dest = self::REQUEST_BECOME_PI
+    ) {
         if ($this->requestExists($requestor, $dest)) {
             return;
         }
-        $this->insert(self::TABLE_REQS, ["uid" => $requestor, "request_for" => $dest]);
+        $this->insert(
+            self::TABLE_REQS,
+            [
+                "uid" => $requestor,
+                "firstname" => $firstname,
+                "lastname" => $lastname,
+                "email" => $email,
+                "org" => $org,
+                "request_for" => $dest
+            ]
+        );
     }
 
     public function removeRequest($requestor, $dest = self::REQUEST_BECOME_PI)
