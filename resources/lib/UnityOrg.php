@@ -64,34 +64,42 @@ class UnityOrg
 
     public function getOrgMembers($ignorecache = false)
     {
+        $members = $this->getGroupMemberUIDs($ignorecache);
+        $out = array();
+        $owner_uid = $this->getOwner()->getUID();
+        foreach ($members as $member) {
+                $user_obj = new UnityUser(
+                    $member,
+                    $this->LDAP,
+                    $this->SQL,
+                    $this->MAILER,
+                    $this->REDIS,
+                    $this->WEBHOOK
+                );
+                array_push($out, $user_obj);
+        }
+        return $out;
+    }
+
+    public function getOrgMemberUIDs($ignorecache = false)
+    {
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->getOrgID(), "members");
             if (!is_null($cached_val)) {
                 $members = $cached_val;
             }
         }
-
         $updatecache = false;
         if (!isset($members)) {
             $org_group = $this->getLDAPOrgGroup();
             $members = $org_group->getAttribute("memberuid");
             $updatecache = true;
         }
-
-        $out = array();
-        $cache_arr = array();
-        foreach ($members as $member) {
-            $user_obj = new UnityUser($member, $this->LDAP, $this->SQL, $this->MAILER, $this->REDIS, $this->WEBHOOK);
-            array_push($out, $user_obj);
-            array_push($cache_arr, $user_obj->getUID());
-        }
-
         if (!$ignorecache && $updatecache) {
-            sort($cache_arr);
-            $this->REDIS->setCache($this->getOrgID(), "members", $cache_arr);
+            sort($members);
+            $this->REDIS->setCache($this->getOrgID(), "members", $members);
         }
-
-        return $out;
+        return $members;
     }
 
     public function addUser($user)
