@@ -434,7 +434,7 @@ class UnityGroup
         if ($send_mail) {
             // send email to user
             $this->MAILER->sendMail(
-                $new_user->getMail(),
+                $email,
                 "group_user_request",
                 array("group" => $this->pi_uid)
             );
