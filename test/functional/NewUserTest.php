@@ -46,7 +46,7 @@ class NewUserTest extends TestCase
         global $USER, $SQL, $LDAP;
         $SQL->deleteRequestsByUser($USER->getUID());
         $org = $USER->getOrgGroup();
-        if ($org->inOrg($USER)) {
+        if ($org->exists() and $org->inOrg($USER)) {
             $org->removeUser($USER);
             assert(!$org->inOrg($USER));
         }
