@@ -233,6 +233,9 @@ class UnitySQL
     public function getSiteVar($name): string
     {
         $results = $this->search(self::TABLE_SITEVARS, ["name" => $name]);
+        if (count($results) == 0) {
+            throw new UnitySQLRecordNotFound($name);
+        }
         assert(count($results) == 1);
         return $results[0]["value"];
     }
