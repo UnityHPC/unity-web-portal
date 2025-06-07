@@ -55,11 +55,9 @@ class UnityOrg
         return $this->orgid;
     }
 
-    public function inOrg($user)
+    public function inOrg($user, $ignorecache = false)
     {
-        $org_group = $this->getLDAPOrgGroup();
-        $members = $org_group->getAttribute("memberuid");
-        return in_array($user, $members);
+        return in_array($user->getUID(), $this->getOrgMemberUIDs($ignorecache));
     }
 
     public function getOrgMembers($ignorecache = false)
