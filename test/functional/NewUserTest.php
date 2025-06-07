@@ -17,6 +17,15 @@ class NewUserTest extends TestCase
         );
     }
 
+    private function assertRequestedMembership(bool $expected, string $gid)
+    {
+        global $USER, $SQL;
+        $this->assertEquals(
+            $expected,
+            $SQL->requestExists($USER->getUID(), $gid)
+        );
+    }
+
     private function requestGroupCreation()
     {
         http_post(
@@ -105,16 +114,17 @@ class NewUserTest extends TestCase
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
         switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
         $pi_group = $USER->getPIGroup();
+        $gid = $pi_group->getPIUID();
         switchUser(...getNonExistentUser());
         $this->assertTrue(!$USER->exists());
         $newOrg = new UnityOrg($SSO["org"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
         $this->assertTrue(!$newOrg->exists());
         $this->assertTrue($pi_group->exists());
         $this->assertTrue(!$pi_group->userExists($USER));
-        $this->assertRequestedPIGroup(false);
+        $this->assertRequestedMembership(false, $gid);
         try {
             $this->requestGroupMembership($pi_group->getPIUID());
-            $this->assertRequestedPIGroup(true);
+            $this->assertRequestedMembership(true, $gid);
 
             // $second_request_failed = false;
             // try {
@@ -123,18 +133,18 @@ class NewUserTest extends TestCase
             //     $second_request_failed = true;
             // }
             // $this->assertTrue($second_request_failed);
-            $this->assertRequestedPIGroup(true);
+            $this->assertRequestedMembership(true, $gid);
 
             $this->cancelAllRequests();
-            $this->assertRequestedPIGroup(false);
+            $this->assertRequestedMembership(false, $gid);
 
             $this->requestGroupMembership($pi_group->getPIUID());
             $this->assertTrue($pi_group->requestExists($USER));
-            $this->assertRequestedPIGroup(true);
+            $this->assertRequestedMembership(true, $gid);
 
             $pi_group->approveUser($USER);
             $this->assertTrue(!$pi_group->requestExists($USER));
-            $this->assertRequestedPIGroup(false);
+            $this->assertRequestedMembership(false, $gid);
             $this->assertTrue($pi_group->userExists($USER));
             $this->assertTrue($USER->exists());
             $this->assertTrue($newOrg->exists());
@@ -146,7 +156,7 @@ class NewUserTest extends TestCase
             //     $third_request_failed = true;
             // }
             // $this->assertTrue($third_request_failed);
-            $this->assertRequestedPIGroup(false);
+            $this->assertRequestedMembership(false, $gid);
             $this->assertTrue(!$pi_group->requestExists($USER));
         } finally {
             $this->ensureUserNotInPIGroup($pi_group);
