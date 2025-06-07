@@ -258,7 +258,7 @@ class UnitySQL
 
     public function updateSiteVar($name, $value)
     {
-        $this->update(self::TABLE_SITEVARS, ["value" => $value, "name" => $name]);
+        $this->update(self::TABLE_SITEVARS, ["name" => $name], ["value" => $value]);
     }
 
     public function getRole($uid, $group)
