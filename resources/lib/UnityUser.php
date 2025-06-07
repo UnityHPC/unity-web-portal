@@ -107,7 +107,7 @@ class UnityUser
             $orgEntry->init();
         }
 
-        if (!$orgEntry->inOrg($this->uid)) {
+        if (!$orgEntry->inOrg($this)) {
             $orgEntry->addUser($this);
         }
 
