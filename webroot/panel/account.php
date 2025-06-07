@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $USER->getPIGroup()->requestGroup(
                 $SSO["firstname"],
                 $SSO["lastname"],
-                $SSO["email"],
+                $SSO["mail"],
                 $SSO["org"],
                 $SEND_PIMESG_TO_ADMINS
             );
