@@ -213,7 +213,7 @@ class UnitySQL
     public function addLog($operator, $operator_ip, $action_type, $recipient)
     {
         $this->insert(
-            self::TABLE_REQS,
+            self::TABLE_AUDIT_LOG,
             [
                 "operator" => $operator,
                 "operator_ip" => $operator_ip,
