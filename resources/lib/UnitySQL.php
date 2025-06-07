@@ -249,9 +249,11 @@ class UnitySQL
         $this->delete(self::TABLE_ACCOUNT_DELETION_REQUESTS, ["uid" => $uid]);
     }
 
-    public function getSiteVar($name)
+    public function getSiteVar($name): string
     {
-        return $this->search(self::TABLE_SITEVARS, ["name" => $name]);
+        $results = $this->search(self::TABLE_SITEVARS, ["name" => $name]);
+        assert(count($results) == 1);
+        return $results[0]["value"];
     }
 
     public function updateSiteVar($name, $value)
