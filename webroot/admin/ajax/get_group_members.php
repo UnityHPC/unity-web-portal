@@ -17,17 +17,17 @@ $group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
 $members = $group->getGroupMembers();
 $requests = $group->getRequests();
 
-$key = 0;
+$i = 0;
 $count = count($members) + count($requests);
 foreach ($members as $member) {
     if ($member->getUID() == $group->getOwner()->getUID()) {
         continue;
     }
 
-    if ($key >= $count - 1) {
-        echo "<tr class='expanded $key last'>";
+    if ($i >= $count - 1) {
+        echo "<tr class='expanded $i last'>";
     } else {
-        echo "<tr class='expanded $key'>";
+        echo "<tr class='expanded $i'>";
     }
 
     echo "<td>" . $member->getFullname() . "</td>";
@@ -45,14 +45,14 @@ foreach ($members as $member) {
     echo "</td>";
     echo "</tr>";
 
-    $key++;
+    $i++;
 }
 
-foreach ($requests as $key => $request) {
-    if ($key >= $count - 1) {
-        echo "<tr class='expanded $key last'>";
+foreach ($requests as $i => $request) {
+    if ($i >= $count - 1) {
+        echo "<tr class='expanded $i last'>";
     } else {
-        echo "<tr class='expanded $key'>";
+        echo "<tr class='expanded $i'>";
     }
 
     [$request, $timestamp] = $request;
@@ -71,5 +71,5 @@ foreach ($requests as $key => $request) {
     echo "</td>";
     echo "</tr>";
 
-    $key++;
+    $i++;
 }
