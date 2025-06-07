@@ -93,7 +93,7 @@ class UnityGroup
         if ($send_mail) {
             // send email to requestor
             $this->MAILER->sendMail(
-                $this->getOwner()->getMail(),
+                $email,
                 "group_request"
             );
 
@@ -180,7 +180,7 @@ class UnityGroup
         // send email to the newly approved PI
         if ($send_mail) {
             $this->MAILER->sendMail(
-                $this->getOwner()->getMail(),
+                $request["email"],
                 "group_created"
             );
         }
