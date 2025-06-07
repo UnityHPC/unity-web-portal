@@ -139,8 +139,7 @@ class UnityGroup
     public function approveGroup($operator = null, $send_mail = true)
     {
         $uid = $this->getOwner()->getUID();
-        $gid = $this->getPIUID();
-        $request = $this->SQL->getRequest($uid, $gid);
+        $request = $this->SQL->getRequest($uid, UnitySQL::REQUEST_BECOME_PI);
         if (is_null($request)) {
             throw new Exception("uid '$uid' does not have a group request!");
         }
