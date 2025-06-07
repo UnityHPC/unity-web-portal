@@ -4,7 +4,7 @@ namespace UnityWebPortal\lib;
 
 use PDO;
 use PDOException;
-use UnityWebPortal\lib\exceptions\UnitySQLNoSuchRequestException;
+use UnityWebPortal\lib\exceptions\UnitySQLRecordNotFound;
 
 class UnitySQL
 {
@@ -147,7 +147,7 @@ class UnitySQL
     {
         $results = $this->search(self::TABLE_REQS, ["request_for" => $dest]);
         if (count($results) == 0) {
-            throw new UnitySQLNoSuchRequestException("no such request: uid='$user' request_for='$dest'");
+            throw new UnitySQLRecordNotFound("no such request: uid='$user' request_for='$dest'");
         }
         if (count($results) > 1) {
             throw new Exception("too many requests for uid='$user' request_for='$dest'");
@@ -160,7 +160,7 @@ class UnitySQL
         try {
             self::getRequest($requestor, $dest);
             return true;
-        } catch (UnitySQLNoSuchRequestException) {
+        } catch (UnitySQLRecordNotFound) {
             return false;
         }
     }
@@ -266,6 +266,9 @@ class UnitySQL
     public function getSiteVar($name): string
     {
         $results = $this->search(self::TABLE_SITEVARS, ["name" => $name]);
+        if (count($results) == 0) {
+            throw new UnitySQLRecordNotFound($name);
+        }
         assert(count($results) == 1);
         return $results[0]["value"];
     }

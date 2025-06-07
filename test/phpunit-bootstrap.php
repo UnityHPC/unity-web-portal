@@ -19,6 +19,7 @@ require_once __DIR__ . "/../resources/lib/UnityWebhook.php";
 require_once __DIR__ . "/../resources/lib/UnityRedis.php";
 require_once __DIR__ . "/../resources/lib/UnityGithub.php";
 require_once __DIR__ . "/../resources/lib/exceptions/PhpUnitNoDieException.php";
+require_once __DIR__ . "/../resources/lib/exceptions/UnitySQLRecordNotFound.php";
 
 $GLOBALS["PHPUNIT_NO_DIE_PLEASE"] = true;
 
