@@ -3,6 +3,7 @@
 namespace UnityWebPortal\lib;
 
 use PDO;
+use PDOException;
 
 class UnitySQL
 {
@@ -35,22 +36,81 @@ class UnitySQL
         return $this->conn;
     }
 
-    //
-    // requests table methods
-    //
+    private function execute($statement)
+    {
+        try {
+            $statement->execute();
+        } catch (PDOException $e) {
+            ob_start();
+            $statement->debugDumpParams();
+            $sql_debug_dump = ob_get_clean();
+            throw new PDOException($sql_debug_dump, 0, $e);
+        }
+    }
+
+    private function search($table, $filters)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM $table WHERE " .
+                implode(" and ", array_map(fn($x) => "$x=:$x", array_keys($filters)))
+        );
+        foreach ($filters as $key => $val) {
+            $stmt->bindValue(":$key", $val);
+        }
+        $this->execute($stmt);
+        return $stmt->fetchAll();
+    }
+
+    private function delete($table, $filters)
+    {
+        $stmt = $this->conn->prepare(
+            "DELETE FROM $table WHERE " .
+                implode(" and ", array_map(fn($x) => "$x=:$x", array_keys($filters)))
+        );
+        foreach ($filters as $key => $val) {
+            $stmt->bindValue(":$key", $val);
+        }
+        $this->execute($stmt);
+    }
+
+    private function insert($table, $data)
+    {
+        $stmt = $this->conn->prepare(
+            "INSERT INTO $table " .
+                "(" . implode(", ", array_keys($data)) . ") " .
+                "VALUES " .
+                "(" . implode(", ", array_map(fn($x) => ":$x", array_keys($data))) . ")"
+        );
+        foreach ($data as $key => $val) {
+            $stmt->bindValue(":$key", $val);
+        }
+        $this->execute($stmt);
+    }
+
+    private function update($table, $filters, $data)
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE $table SET " .
+                implode(", ", array_map(fn($x) => "$x=:$x", array_keys($filters))) . " " .
+                "WHERE " .
+                implode(" and ", array_map(fn($x) => "$x=:$x", array_keys($filters)))
+        );
+        foreach ($filters as $key => $val) {
+            $stmt->bindValue(":$key", $val);
+        }
+        foreach ($data as $key => $val) {
+            $stmt->bindValue(":$key", $val);
+        }
+        $this->execute($stmt);
+        $stmt->execute();
+    }
+
     public function addRequest($requestor, $dest = self::REQUEST_BECOME_PI)
     {
         if ($this->requestExists($requestor, $dest)) {
             return;
         }
-
-        $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_REQS . " (uid, request_for) VALUES (:uid, :request_for)"
-        );
-        $stmt->bindParam(":uid", $requestor);
-        $stmt->bindParam(":request_for", $dest);
-
-        $stmt->execute();
+        $this->insert(self::TABLE_REQS, ["uid" => $requestor, "request_for" => $dest]);
     }
 
     public function removeRequest($requestor, $dest = self::REQUEST_BECOME_PI)
@@ -58,216 +118,108 @@ class UnitySQL
         if (!$this->requestExists($requestor, $dest)) {
             return;
         }
-
-        $stmt = $this->conn->prepare(
-            "DELETE FROM " . self::TABLE_REQS . " WHERE uid=:uid and request_for=:request_for"
-        );
-        $stmt->bindParam(":uid", $requestor);
-        $stmt->bindParam(":request_for", $dest);
-
-        $stmt->execute();
+        $this->delete(self::TABLE_REQS, ["uid" => $requestor, "request_for" => $dest]);
     }
 
     public function removeRequests($dest = self::REQUEST_BECOME_PI)
     {
-        $stmt = $this->conn->prepare(
-            "DELETE FROM " . self::TABLE_REQS . " WHERE request_for=:request_for"
-        );
-        $stmt->bindParam(":request_for", $dest);
-
-        $stmt->execute();
+        $this->delete(self::TABLE_REQS, ["request_for" => $dest]);
     }
 
     public function requestExists($requestor, $dest = self::REQUEST_BECOME_PI)
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid and request_for=:request_for"
-        );
-        $stmt->bindParam(":uid", $requestor);
-        $stmt->bindParam(":request_for", $dest);
-
-        $stmt->execute();
-
-        return count($stmt->fetchAll()) > 0;
+        $results = $this->search(self::TABLE_REQS, ["request_for" => $dest]);
+        return count($results) > 0;
     }
 
     public function getRequests($dest = self::REQUEST_BECOME_PI)
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_REQS . " WHERE request_for=:request_for"
-        );
-        $stmt->bindParam(":request_for", $dest);
-
-        $stmt->execute();
-
-        return $stmt->fetchAll();
+        return $this->search(self::TABLE_REQS, ["request_for" => $dest]);
     }
 
-    public function getRequestsByUser($user)
+    public function getRequestsByUser($uid)
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid"
-        );
-        $stmt->bindParam(":uid", $user);
-
-        $stmt->execute();
-
-        return $stmt->fetchAll();
+        return $this->search(self::TABLE_REQS, ["uid" => $uid]);
     }
 
     public function deleteRequestsByUser($user)
     {
-        $stmt = $this->conn->prepare(
-            "DELETE FROM " . self::TABLE_REQS . " WHERE uid=:uid"
-        );
-        $stmt->bindParam(":uid", $user);
-
-        $stmt->execute();
+        $this->delete(self::TABLE_REQS, ["uid" => $user]);
     }
 
     public function addNotice($title, $date, $content, $operator)
     {
-        $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_NOTICES . " (date, title, message) VALUES (:date, :title, :message)"
+        $this->insert(
+            self::TABLE_NOTICES,
+            ["date" => $date, "title" => $title, "message" => $content]
         );
-        $stmt->bindParam(":date", $date);
-        $stmt->bindParam(":title", $title);
-        $stmt->bindParam(":message", $content);
-
-        $stmt->execute();
-
         $operator = $operator->getUID();
-
-        $this->addLog(
-            $operator,
-            $_SERVER['REMOTE_ADDR'],
-            "added_cluster_notice",
-            $operator
-        );
+        $this->addLog($operator, $_SERVER['REMOTE_ADDR'], "added_cluster_notice", $operator);
     }
 
     public function editNotice($id, $title, $date, $content)
     {
-        $stmt = $this->conn->prepare(
-            "UPDATE " . self::TABLE_NOTICES . " SET date=:date, title=:title, message=:message WHERE id=:id"
+        $this->update(
+            self::TABLE_PAGES,
+            ["id" => $id],
+            ["date" => $date, "title" => $title, "message" => $message]
         );
-        $stmt->bindParam(":date", $date);
-        $stmt->bindParam(":title", $title);
-        $stmt->bindParam(":message", $content);
-        $stmt->bindParam(":id", $id);
-
-        $stmt->execute();
     }
 
     public function deleteNotice($id)
     {
-        $stmt = $this->conn->prepare(
-            "DELETE FROM " . self::TABLE_NOTICES . " WHERE id=:id"
-        );
-        $stmt->bindParam(":id", $id);
-
-        $stmt->execute();
+        $this->delete(self::TABLE_NOTICES, ["id" => $id]);
     }
 
     public function getNotice($id)
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_NOTICES . " WHERE id=:id"
-        );
-        $stmt->bindParam(":id", $id);
-
-        $stmt->execute();
-
-        return $stmt->fetchAll()[0];
+        return $this->search(self::TABLE_NOTICES, ["id" => $id]);
     }
 
     public function getNotices()
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_NOTICES . " ORDER BY date DESC"
-        );
-        $stmt->execute();
-
-        return $stmt->fetchAll();
+        return $this->search(self::TABLE_NOTICES, []);
     }
 
     public function getPages()
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_PAGES
-        );
-        $stmt->execute();
-
-        return $stmt->fetchAll();
+        return $this->search(self::TABLE_PAGES, []);
     }
 
     public function getPage($id)
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_PAGES . " WHERE page=:id"
-        );
-        $stmt->bindParam(":id", $id);
-
-        $stmt->execute();
-
-        return $stmt->fetchAll()[0];
+        return $this->search(self::TABLE_PAGES, ["page" => $id]);
     }
 
     public function editPage($id, $content, $operator)
     {
-        $stmt = $this->conn->prepare(
-            "UPDATE " . self::TABLE_PAGES . " SET content=:content WHERE page=:id"
-        );
-        $stmt->bindParam(":id", $id);
-        $stmt->bindParam(":content", $content);
-
-        $stmt->execute();
-
+        $this->update(self::TABLE_PAGES, ["page" => $id], ["content" => $content]);
         $operator = $operator->getUID();
-
-        $this->addLog(
-            $operator,
-            $_SERVER['REMOTE_ADDR'],
-            "edited_page",
-            $operator
-        );
+        $this->addLog($operator, $_SERVER['REMOTE_ADDR'], "edited_page", $operator);
     }
 
-    // audit log table methods
     public function addLog($operator, $operator_ip, $action_type, $recipient)
     {
-        $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_AUDIT_LOG . " (operator, operator_ip, action_type, recipient) 
-            VALUE (:operator, :operator_ip, :action_type, :recipient)"
+        $this->insert(
+            self::TABLE_AUDIT_LOG,
+            [
+                "operator" => $operator,
+                "operator_ip" => $operator_ip,
+                "action_type" => $action_type,
+                "recipient" => $recipient
+            ]
         );
-        $stmt->bindParam(":operator", $operator);
-        $stmt->bindParam(":operator_ip", $operator_ip);
-        $stmt->bindParam(":action_type", $action_type);
-        $stmt->bindParam(":recipient", $recipient);
-
-        $stmt->execute();
     }
 
     public function addAccountDeletionRequest($uid)
     {
-        $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " (uid) VALUE (:uid)"
-        );
-        $stmt->bindParam(":uid", $uid);
-
-        $stmt->execute();
+        $this->insert(self::TABLE_ACCOUNT_DELETION_REQUESTS, ["uid" => $uid]);
     }
 
     public function accDeletionRequestExists($uid)
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " WHERE uid=:uid"
-        );
-        $stmt->bindParam(":uid", $uid);
-
-        $stmt->execute();
-
-        return count($stmt->fetchAll()) > 0;
+        $results = $this->search(self::TABLE_ACCOUNT_DELETION_REQUESTS, ["uid" => $uid]);
+        return count($results) > 0;
     }
 
     public function deleteAccountDeletionRequest($uid)
@@ -275,34 +227,19 @@ class UnitySQL
         if (!$this->accDeletionRequestExists($uid)) {
             return;
         }
-        $stmt = $this->conn->prepare(
-            "DELETE FROM " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " WHERE uid=:uid"
-        );
-        $stmt->bindParam(":uid", $uid);
-        $stmt->execute();
+        $this->delete(self::TABLE_ACCOUNT_DELETION_REQUESTS, ["uid" => $uid]);
     }
 
-    public function getSiteVar($name)
+    public function getSiteVar($name): string
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_SITEVARS . " WHERE name=:name"
-        );
-        $stmt->bindParam(":name", $name);
-
-        $stmt->execute();
-
-        return $stmt->fetchAll()[0]['value'];
+        $results = $this->search(self::TABLE_SITEVARS, ["name" => $name]);
+        assert(count($results) == 1);
+        return $results[0]["value"];
     }
 
     public function updateSiteVar($name, $value)
     {
-        $stmt = $this->conn->prepare(
-            "UPDATE " . self::TABLE_SITEVARS . " SET value=:value WHERE name=:name"
-        );
-        $stmt->bindParam(":name", $name);
-        $stmt->bindParam(":value", $value);
-
-        $stmt->execute();
+        $this->update(self::TABLE_SITEVARS, ["name" => $name], ["value" => $value]);
     }
 
     public function getRole($uid, $group)
@@ -310,8 +247,8 @@ class UnitySQL
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_GROUP_ROLE_ASSIGNMENTS . " WHERE user=:uid AND `group`=:group"
         );
-        $stmt->bindParam(":uid", $uid);
-        $stmt->bindParam(":group", $group);
+        $stmt->bindValue(":uid", $uid);
+        $stmt->bindValue(":group", $group);
 
         $stmt->execute();
 
@@ -323,7 +260,7 @@ class UnitySQL
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_GROUP_ROLES . " WHERE slug=:role"
         );
-        $stmt->bindParam(":role", $role);
+        $stmt->bindValue(":role", $role);
 
         $stmt->execute();
 
@@ -337,7 +274,7 @@ class UnitySQL
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_GROUP_ROLES . " WHERE slug=:role"
         );
-        $stmt->bindParam(":role", $role);
+        $stmt->bindValue(":role", $role);
 
         $stmt->execute();
 
@@ -350,8 +287,8 @@ class UnitySQL
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_GROUP_ROLE_ASSIGNMENTS . " WHERE user=:uid AND `group`=:group"
         );
-        $stmt->bindParam(":uid", $uid);
-        $stmt->bindParam(":group", $group);
+        $stmt->bindValue(":uid", $uid);
+        $stmt->bindValue(":group", $group);
 
         $stmt->execute();
         $row = $stmt->fetchAll()[0];
@@ -362,7 +299,7 @@ class UnitySQL
             "SELECT * FROM " . self::TABLE_GROUP_TYPES . " WHERE slug=:slug"
         );
 
-        $stmt->bindParam(":slug", $group_slug);
+        $stmt->bindValue(":slug", $group_slug);
         $stmt->execute();
 
         $row = $stmt->fetchAll()[0];
