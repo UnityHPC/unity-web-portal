@@ -48,23 +48,22 @@ foreach ($members as $member) {
     $key++;
 }
 
-foreach ($requests as $key => $request) {
+foreach ($requests as $key => [$user, $timestamp, $firstname, $lastname, $email, $org]) {
     if ($key >= $count - 1) {
         echo "<tr class='expanded $key last'>";
     } else {
         echo "<tr class='expanded $key'>";
     }
-
-    [$request, $timestamp] = $request;
-    echo "<td>" . $request->getFirstname() . " " . $request->getLastname() . "</td>";
-    echo "<td>" . $request->getUID() . "</td>";
-    echo "<td><a href='mailto:" . $request->getMail() . "'>" . $request->getMail() . "</a></td>";
+    $uid = $user->getUID();
+    echo "<td>" . $firstname . " " . $lastname . "</td>";
+    echo "<td>" . $uid . "</td>";
+    echo "<td><a href='mailto:" . $email . "'>" . $email . "</a></td>";
     echo "<td>";
     echo
     "<form action='' method='POST' 
-    onsubmit='return confirm(\"Are you sure you want to approve " . $request->getUID() . "?\");'>
+    onsubmit='return confirm(\"Are you sure you want to approve " . $uid . "?\");'>
     <input type='hidden' name='form_type' value='reqChild'>
-    <input type='hidden' name='uid' value='" . $request->getUID() . "'>
+    <input type='hidden' name='uid' value='" . $uid . "'>
     <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
     <input type='submit' name='action' value='Approve'>
     <input type='submit' name='action' value='Deny'></form>";

@@ -31,9 +31,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     array_push($modalErrors, "You\'re already in this PI group");
                 }
 
+                if ($USER->getUID() != $SSO["user"]) {
+                    $sso_user = $SSO["user"];
+                    UnitySite::errorLog(
+                        "warning",
+                        "cannot request due to uid mismatch: " .
+                            "USER='{$USER->getUID()}' SSO[user]='$sso_user'"
+                    );
+                    array_push(
+                        $modalErrors,
+                        "The requesting user must be the one signed in with SSO. " .
+                            "Are you an admin viewing as another user?"
+                    );
+                }
+
                 // Add row to sql
                 if (empty($modalErrors)) {
-                    $pi_account->newUserRequest($USER);
+                    $pi_account->newUserRequest($USER, $SSO["firstname"], $SSO["lastname"], $SSO["mail"], $SSO["org "]);
                 }
                 break;
             case "removePIForm":
@@ -160,6 +174,7 @@ if ($SQL->accDeletionRequestExists($USER->getUID())) {
     }
     ?>
 
+    // tables.js uses ajax_url to populate expandable tables
     var ajax_url = "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/ajax/get_group_members.php?pi_uid=";
 </script>
 
