@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Add row to sql
                 if (empty($modalErrors)) {
-                    $pi_account->newUserRequest($USER, $SSO["firstname"], $SSO["lastname"], $SSO["mail"], $SSO["org "]);
+                    $pi_account->newUserRequest($USER, $SSO["firstname"], $SSO["lastname"], $SSO["mail"], $SSO["org"]);
                 }
                 break;
             case "removePIForm":
