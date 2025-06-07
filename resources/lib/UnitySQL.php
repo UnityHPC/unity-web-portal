@@ -91,8 +91,8 @@ class UnitySQL
     {
         // "UPDATE " . self::TABLE_NOTICES . " SET date=:date, title=:title  WHERE id=:id"
         $stmt = $this->conn->prepare(
-            "UPDATE $table SET" .
-                implode(", ", array_map(fn($x) => "$x=:$x", array_keys($filters))) .
+            "UPDATE $table SET " .
+                implode(", ", array_map(fn($x) => "$x=:$x", array_keys($filters))) . " " .
                 "WHERE " .
                 implode(" and ", array_map(fn($x) => "$x=:$x", array_keys($filters)))
         );
