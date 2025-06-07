@@ -79,7 +79,7 @@ class UnityUser
             $ldapUserEntry->setAttribute("sn", $lastname);
             $ldapUserEntry->setAttribute(
                 "gecos",
-                \transliterator_transliterate("Latin-ASCII", "{$this->getFirstname()} {$this->getLastname()}")
+                \transliterator_transliterate("Latin-ASCII", "$firstname $lastname")
             );
             $ldapUserEntry->setAttribute("mail", $email);
             $ldapUserEntry->setAttribute("o", $org);
