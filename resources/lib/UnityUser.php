@@ -102,14 +102,14 @@ class UnityUser
         //
         // add to org group
         //
-        $orgEntry = $this->getOrgGroup();
+        $org = $this->getOrgGroup();
         // create organization if it doesn't exist
-        if (!$orgEntry->exists()) {
-            $orgEntry->init();
+        if (!$org->exists()) {
+            $org->init();
         }
 
-        if (!$orgEntry->inOrg($this)) {
-            $orgEntry->addUser($this);
+        if (!$org->inOrg($this)) {
+            $org->addUser($this);
         }
 
         // add to user group as well as user OU
