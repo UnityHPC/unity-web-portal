@@ -107,7 +107,6 @@ class UnitySQL
             $stmt->bindValue(":$key", $val);
         }
         $this->execute($stmt);
-        $stmt->execute();
     }
 
     public function addRequest(
