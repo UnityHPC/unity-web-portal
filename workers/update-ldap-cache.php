@@ -35,7 +35,7 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
 
     // search entire tree, some users created for admin purposes might not be in the normal OU
     echo "waiting for LDAP search (users)...\n";
-    $users = $LDAP->search("objectClass=posixAccount", $CONFIG["ldap"]["basedn"]);
+    $users = $LDAP->search("objectClass=posixAccount", $CONFIG["ldap"]["basedn"], []);
     echo "response received.\n";
     $user_CNs = $LDAP->getUserGroup()->getAttribute("memberuid");
     sort($user_CNs);
