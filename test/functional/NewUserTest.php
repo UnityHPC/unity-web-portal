@@ -142,6 +142,8 @@ class NewUserTest extends TestCase
             $this->assertTrue($pi_group->requestExists($USER));
             $this->assertRequestedMembership(true, $gid);
 
+            $REDIS->flushAll(); // regression test: flush used to break requests
+
             $pi_group->approveUser($USER);
             $this->assertTrue(!$pi_group->requestExists($USER));
             $this->assertRequestedMembership(false, $gid);
@@ -192,6 +194,8 @@ class NewUserTest extends TestCase
 
             $this->requestGroupCreation();
             $this->assertRequestedPIGroup(true);
+
+            $REDIS->flushAll(); // regression test: flush used to break requests
 
             $pi_group->approveGroup();
             $this->assertRequestedPIGroup(false);
