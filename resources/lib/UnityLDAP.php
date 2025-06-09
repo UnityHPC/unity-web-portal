@@ -167,9 +167,9 @@ class UnityLDAP extends ldapConn
         if (($id >= 100 && $id <= 999) || ($id >= 60000 && $id <= 64999)) {
             return true;
         }
-        $users = $this->userOU->getChildrenArray(true);
+        $users = $this->getAllUsers();
         foreach ($users as $user) {
-            if ($user["uidnumber"][0] == $id) {
+            if ($user->getAttribute("uidnumber")[0] == $id) {
                 return true;
             }
         }
