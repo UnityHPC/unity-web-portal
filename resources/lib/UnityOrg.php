@@ -36,8 +36,6 @@ class UnityOrg
             $org_group->setAttribute("gidnumber", strval($nextGID));
             $org_group->write();
         }
-
-        $this->REDIS->appendCacheArray("sorted_orgs", "", $this->getOrgID());
     }
 
     public function exists()

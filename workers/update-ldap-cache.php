@@ -38,8 +38,6 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     $users = $LDAP->search("objectClass=posixAccount", $CONFIG["ldap"]["basedn"]);
     echo "response received.\n";
     $user_CNs = $LDAP->getUserGroup()->getAttribute("memberuid");
-    sort($user_CNs);
-    $REDIS->setCache("sorted_users", "", $user_CNs);
     foreach ($users as $user) {
         $uid = $user->getAttribute("cn")[0];
         if (!in_array($uid, $user_CNs)) {
@@ -61,8 +59,6 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     // phpcs:disable
     $org_group_CNs = array_map(function($x){return $x["cn"][0];}, $org_groups);
     // phpcs:enable
-    sort($org_group_CNs);
-    $REDIS->setCache("sorted_orgs", "", $org_group_CNs);
     foreach ($org_groups as $org_group) {
         $gid = $org_group["cn"][0];
         $REDIS->setCache($gid, "members", (@$org_group["memberuid"] ?? []));
@@ -75,9 +71,6 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     // phpcs:disable
     $pi_group_CNs = array_map(function($x){return $x["cn"][0];}, $pi_groups);
     // phpcs:enable
-    sort($pi_group_CNs);
-    // FIXME should be sorted_pi_groups
-    $REDIS->setCache("sorted_groups", "", $pi_group_CNs);
 
     $user_pi_group_member_of = [];
     foreach ($user_CNs as $uid) {
