@@ -77,19 +77,19 @@ include $LOC_HEADER;
         $request_user = new UnityUser($request["uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
 
         echo "<tr>";
-        echo "<td>" . $request_user->getFirstname() . " " . $request_user->getLastname() . "</td>";
-        echo "<td>" . $request_user->getUID() . "</td>";
-        echo "<td><a href='mailto:" . $request_user->getMail() . "'>" . $request_user->getMail() . "</a></td>";
+        echo "<td>" . $request["firstname"] . " " . $request["lastname"] . "</td>";
+        echo "<td>" . $request["uid"] . "</td>";
+        echo "<td><a href='mailto:" . $request["mail"] . "'>" . $request["mail"] . "</a></td>";
         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
         echo "<td>";
         echo
         "<form action='' method='POST'>
         <input type='hidden' name='form_type' value='req'>
-        <input type='hidden' name='uid' value='" . $request_user->getUID() . "'>
+        <input type='hidden' name='uid' value='" . $request["uid"] . "'>
         <input type='submit' name='action' value='Approve'
-        onclick='return confirm(\"Are you sure you want to approve " . $request_user->getUID() . "?\");'>
+        onclick='return confirm(\"Are you sure you want to approve " . $request["uid"] . "?\");'>
         <input type='submit' name='action' value='Deny'
-        onclick='return confirm(\"Are you sure you want to deny " . $request_user->getUID() . "?\");'>
+        onclick='return confirm(\"Are you sure you want to deny " . $request["uid"] . "?\");'>
         </form>";
         echo "</td>";
         echo "</tr>";

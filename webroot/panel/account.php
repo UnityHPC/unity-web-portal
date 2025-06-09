@@ -54,11 +54,25 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $USER->setLoginShell($_POST["shellSelect"], $OPERATOR);
             break;
         case "pi_request":
-            if (!$USER->isPI()) {
-                if (!$SQL->requestExists($USER->getUID())) {
-                    $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
-                }
+            if ($USER->isPI()) {
+                UnitySite::badRequest("already a PI");
             }
+            if ($SQL->requestExists($USER->getUID())) {
+                UnitySite::badRequest("already requested to be PI");
+            }
+            if ($USER->getUID() != $SSO["user"]) {
+                UnitySite::badRequest(
+                    "cannot request due to uid mismatch: " .
+                        "USER='{$USER->getUID()}' SSO[user]='$sso_user'"
+                );
+            }
+            $USER->getPIGroup()->requestGroup(
+                $SSO["firstname"],
+                $SSO["lastname"],
+                $SSO["mail"],
+                $SSO["org"],
+                $SEND_PIMESG_TO_ADMINS
+            );
             break;
         case "account_deletion_request":
             $hasGroups = count($USER->getGroups()) > 0;

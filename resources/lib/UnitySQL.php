@@ -4,6 +4,7 @@ namespace UnityWebPortal\lib;
 
 use PDO;
 use PDOException;
+use UnityWebPortal\lib\exceptions\UnitySQLRecordNotFound;
 
 class UnitySQL
 {
@@ -108,12 +109,28 @@ class UnitySQL
         $this->execute($stmt);
     }
 
-    public function addRequest($requestor, $dest = self::REQUEST_BECOME_PI)
-    {
+    public function addRequest(
+        $requestor,
+        $firstname,
+        $lastname,
+        $email,
+        $org,
+        $dest = self::REQUEST_BECOME_PI
+    ) {
         if ($this->requestExists($requestor, $dest)) {
             return;
         }
-        $this->insert(self::TABLE_REQS, ["uid" => $requestor, "request_for" => $dest]);
+        $this->insert(
+            self::TABLE_REQS,
+            [
+                "uid" => $requestor,
+                "firstname" => $firstname,
+                "lastname" => $lastname,
+                "email" => $email,
+                "org" => $org,
+                "request_for" => $dest
+            ]
+        );
     }
 
     public function removeRequest($requestor, $dest = self::REQUEST_BECOME_PI)
@@ -129,10 +146,26 @@ class UnitySQL
         $this->delete(self::TABLE_REQS, ["request_for" => $dest]);
     }
 
-    public function requestExists($requestor, $dest = self::REQUEST_BECOME_PI)
+    public function getRequest($user, $dest)
     {
         $results = $this->search(self::TABLE_REQS, ["request_for" => $dest]);
-        return count($results) > 0;
+        if (count($results) == 0) {
+            throw new UnitySQLRecordNotFound("no such request: uid='$user' request_for='$dest'");
+        }
+        if (count($results) > 1) {
+            throw new Exception("multiple requests for uid='$user' request_for='$dest'");
+        }
+        return $results[0];
+    }
+
+    public function requestExists($requestor, $dest = self::REQUEST_BECOME_PI)
+    {
+        try {
+            self::getRequest($requestor, $dest);
+            return true;
+        } catch (UnitySQLRecordNotFound) {
+            return false;
+        }
     }
 
     public function getRequests($dest = self::REQUEST_BECOME_PI)
