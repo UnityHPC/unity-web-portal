@@ -173,13 +173,13 @@ class UnityLDAP extends ldapConn
                 return true;
             }
         }
-        $pi_groups = $this->pi_groupOU->getChildrenArray(true);
+        $pi_groups = $this->pi_groupOU->getChildrenArray(["gidnumber"], true);
         foreach ($pi_groups as $pi_group) {
             if ($pi_group["gidnumber"][0] == $id) {
                 return true;
             }
         }
-        $groups = $this->groupOU->getChildrenArray(true);
+        $groups = $this->groupOU->getChildrenArray(["gidnumber"], true);
         foreach ($groups as $group) {
             if ($group["gidnumber"][0] == $id) {
                 return true;
