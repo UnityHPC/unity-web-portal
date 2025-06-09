@@ -265,10 +265,6 @@ class UnityGroup
     //     $ldapPiGroupEntry = $this->getLDAPPiGroup();
     //     if ($ldapPiGroupEntry->exists()) {
     //         $ldapPiGroupEntry->delete();
-    //         $this->REDIS->removeCacheArray("sorted_groups", "", $this->getPIUID());
-    //         foreach ($users as $user) {
-    //             $this->REDIS->removeCacheArray($user->getUID(), "groups", $this->getPIUID());
-    //         }
     //     }
 
     //     // send email to every user of the now deleted PI group
@@ -532,9 +528,6 @@ class UnityGroup
             $ldapPiGroupEntry->setAttribute("memberuid", array($owner->getUID()));
             $ldapPiGroupEntry->write();
         }
-
-        $this->REDIS->appendCacheArray("sorted_groups", "", $this->getPIUID());
-
         // TODO if we ever make this project based, we need to update the cache here with the memberuid
     }
 
