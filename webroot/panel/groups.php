@@ -40,6 +40,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Remove PI form
                 $pi_account->removeUser($USER);
                 break;
+            case "cancelPIForm":
+                // cancel Group Join
+                $pi_account->cancelGroupJoinRequest($USER);
+                UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/groups.php");
+                break;
         }
     }
 }
@@ -74,7 +79,13 @@ if (count($req_filtered) > 0) {
         echo "<td>" . $requested_account->getPIUID() . "</td>";
         echo "<td><a href='mailto:" . $requested_owner->getMail() . "'>" . $requested_owner->getMail() . "</a></td>";
         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
-        echo "<td></td>";
+        echo "<td>";
+        echo "<form action='' method='POST' id='cancelPI'>
+            <input type='hidden' name='pi' value='{$requested_account->getPIUID()}'>
+            <input type='hidden' name='form_type' value='cancelPIForm'>
+            <input name='cancel' style='margin-top: 10px;' type='submit' value='Cancel Request'/>
+            </form>";
+        echo "</td>";
         echo "</tr>";
     }
     echo "</table>";
