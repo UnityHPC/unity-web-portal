@@ -106,7 +106,6 @@ class UnitySQL
             $stmt->bindValue(":$key", $val);
         }
         $this->execute($stmt);
-        $stmt->execute();
     }
 
     public function addRequest($requestor, $dest = self::REQUEST_BECOME_PI)
