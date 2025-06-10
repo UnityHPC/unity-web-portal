@@ -140,7 +140,8 @@ if (!$isPI) {
         ";
     } else {
         if ($SQL->requestExists($USER->getUID())) {
-            echo "<input type='submit' value='Cancel PI AccountRequest' onclick='return confirm(\"Are you sure you want to cancel this request?\")'/>";
+            $prompt = "onclick='return confirm(\"Are you sure you want to cancel this request?\")";
+            echo "<input type='submit' value='Cancel PI AccountRequest' $prompt'/>";
             echo "
                 <label style='margin-left: 10px'>
                     Your request has been submitted and is currently pending
@@ -149,7 +150,8 @@ if (!$isPI) {
             ";
         } else {
             echo "<input type='hidden' name='form_type' value='pi_request'/>";
-            echo "<input type='submit' value='Request PI Account' onclick='return confirm(\"Are you sure you want to request a PI account?\")'/>";
+            $prompt = "onclick='return confirm(\"Are you sure you want to request a PI account?\")";
+            echo "<input type='submit' value='Request PI Account' $prompt'/>";
         }
     }
     echo "</form>";
