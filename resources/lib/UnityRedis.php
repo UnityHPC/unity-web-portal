@@ -33,7 +33,9 @@ class UnityRedis
         } else {
             $keyStr = $object;
         }
-
+        if (is_null($data)) {
+            UnitySite::errorLog("warning", "setting '$keyStr' to null");
+        }
         $this->client->set($keyStr, serialize($data));
     }
 
