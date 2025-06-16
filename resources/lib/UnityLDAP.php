@@ -202,7 +202,7 @@ class UnityLDAP extends ldapConn
                     $netid_match = $data[0];
                     $uid_match = $data[1];
 
-                    if ($uid == $netid_match || $netid == $netid_match) {
+                    if ($uid == $uid_match || $netid == $netid_match) {
                         // found a match
                         if (!$this->IDNumInUse($uid_match)) {
                             return $uid_match;
