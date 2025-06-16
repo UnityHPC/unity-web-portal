@@ -7,7 +7,7 @@ use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnitySQL;
 
 if ($USER->exists()) {
-    UnitySite::redirect($CONFIG["site"]["prefix"] . "/account.php");
+    UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/account.php");
 }
 
 $pending_requests = $SQL->getRequestsByUser($USER->getUID());
