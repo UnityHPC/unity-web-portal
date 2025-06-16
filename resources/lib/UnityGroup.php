@@ -140,7 +140,7 @@ class UnityGroup
     {
         if (!$this->SQL->requestExists($this->getOwner()->getUID())) {
             throw new Exception(
-                "attempt to approve nonexistent request for group='{$this->getPIUID()}' uid='$new_user'"
+                "attempt to approve nonexistent request for group='{$this->getPIUID()}'"
             );
         }
 
