@@ -143,6 +143,11 @@ class UnityGroup
         if (is_null($request)) {
             throw new Exception("uid '$uid' does not have a group request!");
         }
+        if (!$this->SQL->requestExists($this->getOwner()->getUID())) {
+            throw new Exception(
+                "attempt to approve nonexistent request for group='{$this->getPIUID()}'"
+            );
+        }
 
         // check for edge cases...
         if ($this->exists()) {

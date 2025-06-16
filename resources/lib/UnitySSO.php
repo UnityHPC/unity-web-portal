@@ -17,7 +17,7 @@ class UnitySSO
     {
         $parts = explode("@", $eppn);
         if (count($parts) != 2) {
-            throw new Exception("Malformed remote user detected");
+            throw new Exception("Malformed remote user detected: '$eppn'");
         }
 
         $org = $parts[1];
