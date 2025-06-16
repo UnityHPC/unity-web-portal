@@ -104,7 +104,13 @@ class UnitySQL
 
     public function requestExists($requestor, $dest = self::REQUEST_BECOME_PI)
     {
-        return (!is_null(self::getRequest($requestor, $dest)));
+        try {
+            $this->getRequest($requestor, $dest);
+            return true;
+        // FIXME use a specific exception
+        } catch (\Exception) {
+            return false;
+        }
     }
 
     public function getRequests($dest = self::REQUEST_BECOME_PI)
