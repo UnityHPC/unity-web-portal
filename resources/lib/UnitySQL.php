@@ -38,17 +38,23 @@ class UnitySQL
     //
     // requests table methods
     //
-    public function addRequest($requestor, $dest = self::REQUEST_BECOME_PI)
+    public function addRequest($requestor, $firstname, $lastname, $email, $org, $dest = self::REQUEST_BECOME_PI)
     {
         if ($this->requestExists($requestor, $dest)) {
             return;
         }
 
         $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_REQS . " (uid, request_for) VALUES (:uid, :request_for)"
+            "INSERT INTO " . self::TABLE_REQS . " " .
+            "(uid, firstname, lastname, email, org, request_for) VALUES " .
+            "(:uid, :firstname, :lastname, :email, :org, :request_for)"
         );
         $stmt->bindParam(":uid", $requestor);
         $stmt->bindParam(":request_for", $dest);
+        $stmt->bindParam(":firstname", $firstname);
+        $stmt->bindParam(":lastname", $lastname);
+        $stmt->bindParam(":email", $email);
+        $stmt->bindParam(":org", $org);
 
         $stmt->execute();
     }
@@ -78,17 +84,33 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function requestExists($requestor, $dest = self::REQUEST_BECOME_PI)
+    public function getRequest($user, $dest)
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid and request_for=:request_for"
         );
-        $stmt->bindParam(":uid", $requestor);
+        $stmt->bindParam(":uid", $user);
         $stmt->bindParam(":request_for", $dest);
-
         $stmt->execute();
+        $result = $stmt->fetchAll();
+        if (count($result) == 0) {
+            throw new \Exception("no such request: uid='$user' request_for='$dest'");
+        }
+        if (count($result) > 1) {
+            throw new \Exception("multiple requests for uid='$user' request_for='$dest'");
+        }
+        return $result[0];
+    }
 
-        return count($stmt->fetchAll()) > 0;
+    public function requestExists($requestor, $dest = self::REQUEST_BECOME_PI)
+    {
+        try {
+            $this->getRequest($requestor, $dest);
+            return true;
+        // FIXME use a specific exception
+        } catch (\Exception) {
+            return false;
+        }
     }
 
     public function getRequests($dest = self::REQUEST_BECOME_PI)

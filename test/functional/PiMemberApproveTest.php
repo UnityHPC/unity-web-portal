@@ -3,87 +3,105 @@
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\UnityUser;
+use UnityWebPortal\lib\UnityGroup;
+use UnityWebPortal\lib\UnitySSO;
 
 class PiMemberApproveTest extends TestCase {
-    static $requestUid;
-    static $noRequestUid;
-
-    public static function setUpBeforeClass(): void{
-        global $USER;
-        switchUser(...getNormalUser());
-        self::$requestUid = $USER->getUID();
-        switchUser(...getNormalUser2());
-        self::$noRequestUid = $USER->getUID();
-    }
+        static $userWithRequestSwitchArgs;
+        static $userWithoutRequestSwitchArgs;
+        static $piSwitchArgs;
+        static $pi;
+        static $userWithRequestUID;
+        static $userWithoutRequestUID;
+        static $piUID;
+        static $userWithRequest;
+        static $userWithoutRequest;
+        static $piGroup;
+        static $piGroupGID;
 
     private function approveUser(string $uid)
     {
-        post(
+        http_post(
             __DIR__ . "/../../webroot/panel/pi.php",
-            ["form_type" => "userReq", "action" => "approve", "uid" => $uid]
+            ["form_type" => "userReq", "action" => "Approve", "uid" => $uid]
+        );
+    }
+
+    private function requestJoinPI(string $gid)
+    {
+        http_post(
+            __DIR__ . "/../../webroot/panel/groups.php",
+            ["form_type" => "addPIform", "pi" => $gid]
+        );
+    }
+
+    private function assertGroupMembers(UnityGroup $group, array $members)
+    {
+        $this->assertTrue(
+            arraysAreEqualUnOrdered(
+                $members,
+                $group->getGroupMemberUIDs()
+            )
         );
     }
 
     public function testApproveRequest()
     {
-        global $USER, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
-        switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
-        $pi = $USER;
+        global $USER;
+        $userSwitchArgs = getNormalUser();
+        $piSwitchArgs = getUserIsPIHasNoMembersNoMemberRequests();
+        switchUser(...$userSwitchArgs);
+        $user = $USER;
+        $uid = $USER->getUID();
+        switchUser(...$piSwitchArgs);
+        $piUID = $USER->getUID();
         $piGroup = $USER->getPIGroup();
+
         $this->assertTrue($piGroup->exists());
-        $this->assertTrue(
-            arraysAreEqualUnOrdered(
-                [$pi->getUID()],
-                $piGroup->getGroupMemberUIDs()
-            )
-        );
+        $this->assertGroupMembers($piGroup, [$piUID]);
         $this->assertEmpty($piGroup->getRequests());
-        $requestedUser = new UnityUser(self::$requestUid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
         try {
-            $piGroup->newUserRequest($requestedUser);
-            $this->assertFalse($piGroup->userExists($requestedUser));
+            switchUser(...$userSwitchArgs);
+            $this->requestJoinPI($piGroup->getPIUID());
+            $this->assertFalse($piGroup->userExists($user));
 
-            $piGroup->approveUser($requestedUser);
+            switchUser(...$piSwitchArgs);
+            $this->approveUser($uid);
+            $this->assertTrue(!$piGroup->requestExists($user));
             $this->assertEmpty($piGroup->getRequests());
-
-            $this->assertTrue(
-                arraysAreEqualUnOrdered(
-                    [$pi->getUID(), self::$requestUid],
-                    $piGroup->getGroupMemberUIDs()
-                )
-            );
-            $this->assertTrue($piGroup->userExists($requestedUser));
+            $this->assertGroupMembers($piGroup, [$piUID, $uid]);
+            $this->assertTrue($piGroup->userExists($user));
         } finally {
-            $piGroup->removeUser($requestedUser);
-            $SQL->removeRequest(self::$requestUid, $piGroup->getPIUID());
+            if ($piGroup->userExists($user)) {
+                $piGroup->removeUser($user);
+            }
+            if ($piGroup->requestExists($user)) {
+                $piGroup->cancelGroupJoinRequest($user);
+            }
         }
     }
 
     public function testApproveNonexistentRequest()
     {
-        global $USER, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+        global $USER;
+        switchUser(...getNormalUser2());
+        $user = $USER;
+        $uid = $USER->getUID();
         switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
-        $pi = $USER;
+        $piUID = $USER->getUID();
         $piGroup = $USER->getPIGroup();
+
         $this->assertTrue($piGroup->exists());
-        $this->assertTrue(
-            arraysAreEqualUnOrdered(
-                [$pi->getUID()],
-                $piGroup->getGroupMemberUIDs()
-            )
-        );
+        $this->assertGroupMembers($piGroup, [$piUID]);
         $this->assertEmpty($piGroup->getRequests());
-
-        $notRequestedUser = new UnityUser(self::$noRequestUid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-        $this->assertFalse($piGroup->userExists($notRequestedUser));
+        $this->assertFalse($piGroup->userExists($user));
         $this->assertEmpty($piGroup->getRequests());
-
         try {
             $this->expectException(Exception::class);
-            $piGroup->approveUser($notRequestedUser);
+            $piGroup->approveUser($user);
         } finally {
-            if ($piGroup->userExists($notRequestedUser)) {
-                $piGroup->removeUser($notRequestedUser);
+            if ($piGroup->userExists($user)) {
+                $piGroup->removeUser($user);
             }
         }
     }
