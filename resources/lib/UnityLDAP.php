@@ -124,11 +124,16 @@ class UnityLDAP extends ldapConn
   //
   // ID Number selection functions
   //
-    public function getNextUIDNumber($UnitySQL)
+    public function getNextUIDNumber($uid, $UnitySQL)
     {
+        $id_nums_in_use = $this->getIDNumsInUse();
+        $custom_id_mappings = $this->getCustomIDMappings();
+        $custom_mapped_id = $this->getCustomMappedID($uid, $id_nums_in_use, $custom_id_mappings);
+        if (!is_null($custom_mapped_id)) {
+            return $custom_mapped_id;
+        }
         $max_uid = $UnitySQL->getSiteVar('MAX_UID');
         $new_uid = $max_uid + 1;
-        $id_nums_in_use = $this->getIDNumsInUse();
         while ($this->IDNumInUse($new_uid, $id_nums_in_use)) {
             $new_uid++;
         }
@@ -181,37 +186,51 @@ class UnityLDAP extends ldapConn
                 fn($x) => intval($x["gidnumber"][0]),
                 $this->baseOU->getChildrenArray(["gidnumber"], true, "objectClass=posixGroup")
             ),
+            array_map(
+                fn($x) => $x[1],
+                $this->getCustomIDMappings(),
+            ),
         );
     }
 
-    public function getUnassignedID($uid, $UnitySQL)
+    private function getCustomIDMappings()
     {
-        $id_nums_in_use = $this->getIDNumsInUse();
-        $netid = strtok($uid, "_");  // extract netid
-      // scrape all files in custom folder
+        $output = [];
         $dir = new \DirectoryIterator($this->custom_mappings_path);
         foreach ($dir as $fileinfo) {
-            if ($fileinfo->getExtension() == "csv") {
-                // found csv file
-                $handle = fopen($fileinfo->getPathname(), "r");
-                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-                    $netid_match = $data[0];
-                    $uid_match = $data[1];
-
-                    if ($uid == $netid_match || $netid == $netid_match) {
-                        // found a match
-                        if (!$this->IDNumInUse($uid_match, $id_nums_in_use)) {
-                            return $uid_match;
-                        }
-                    }
-                }
+            if (!$fileinfo->getExtension() == "csv") {
+                UnitySite::errorLog(
+                    "warning",
+                    "file in custom mappings directory does not have the .csv extension so it is ignored."
+                );
+                continue;
+            }
+            $handle = fopen($fileinfo->getPathname(), "r");
+            while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                array_merge($output, $data);
             }
         }
+        return $output;
+    }
 
-      // didn't find anything from existing mappings, use next available
-        $next_uid = $this->getNextUIDNumber($UnitySQL);
-
-        return $next_uid;
+    private function getCustomMappedID($uid, $id_nums_in_use, $custom_id_mappings)
+    {
+        $netid = strtok($uid, "_");
+        foreach ($custom_id_mappings as [$match, $uidnumber]) {
+            if (($uid != $match) || ($netid != $match)) {
+                continue;
+            }
+            if ($this->IDNumInUse($uidnumber, $id_nums_in_use)) {
+                UnitySite::errorLog(
+                    "warning",
+                    "user '$uid' has a custom mapping for ID $uidnumber but it's already in use!"
+                );
+                return null;
+            } else {
+                return $uidnumber;
+            }
+        }
+        return null;
     }
 
   //

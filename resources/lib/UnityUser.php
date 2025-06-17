@@ -58,7 +58,7 @@ class UnityUser
         // Create LDAP group
         //
         $ldapGroupEntry = $this->getLDAPGroup();
-        $id = $this->LDAP->getUnassignedID($this->getUID(), $this->SQL);
+        $id = $this->LDAP->getNextUIDNumber($this->getUID(), $this->SQL);
 
         if (!$ldapGroupEntry->exists()) {
             $ldapGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
