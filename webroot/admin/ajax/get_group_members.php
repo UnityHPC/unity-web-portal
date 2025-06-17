@@ -23,8 +23,8 @@ foreach ($members as $member) {
     if ($member->getUID() == $group->getOwner()->getUID()) {
         continue;
     }
-    $class = "expanded $key" . ($key == $count - 1 ? " last" : "");
-    $key++;
+    $class = "expanded $i" . ($i == $count - 1 ? " last" : "");
+    $i++;
     $uid = $member->getUID();
     $gid = $group->getPIUID();
     $fullname = $user->getFullName();
@@ -47,9 +47,9 @@ foreach ($members as $member) {
     </tr>";
 }
 
-foreach ($requests as $key => list($user, $timestamp, $firstname, $lastname, $email, $org)) {
-    $class = "expanded $key" + ($key == $count - 1 ? " last" : "");
-    $key++;
+foreach ($requests as $i => list($user, $timestamp, $firstname, $lastname, $email, $org)) {
+    $class = "expanded $i" + ($i == $count - 1 ? " last" : "");
+    $i++;
     $uid = $user->getUID();
     $gid = $group->getPIUID();
     $email = $user->getMail();
