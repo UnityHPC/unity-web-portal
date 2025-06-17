@@ -23,53 +23,52 @@ foreach ($members as $member) {
     if ($member->getUID() == $group->getOwner()->getUID()) {
         continue;
     }
-
-    if ($i >= $count - 1) {
-        echo "<tr class='expanded $i last'>";
-    } else {
-        echo "<tr class='expanded $i'>";
-    }
-
-    echo "<td>" . $member->getFullname() . "</td>";
-    echo "<td>" . $member->getUID() . "</td>";
-    echo "<td><a href='mailto:" . $member->getMail() . "'>" . $member->getMail() . "</a></td>";
-    echo "<td>";
-    echo
-    "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " .
-    $member->getUID() . " from this group?\");'>
-    <input type='hidden' name='form_type' value='remUserChild'>
-    <input type='hidden' name='uid' value='" . $member->getUID() . "'>
-    <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
-    <input type='submit' value='Remove'>
-    </form>";
-    echo "</td>";
-    echo "</tr>";
-
-    $i++;
+    $class = "expanded $key" . ($key == $count - 1 ? " last" : "");
+    $key++;
+    $uid = $member->getUID();
+    $gid = $group->getPIUID();
+    $fullname = $user->getFullName();
+    echo "<tr class='$class'>
+      <td>$fullname</td>
+      <td>$uid</td>
+      <td><a href='mailto:$email'>$email</a></td>
+      <td>
+        <form
+          action=''
+          method='POST'
+          onsubmit='return confirm(\"Are you sure you want to remove \'$uid\' from this group?\");'
+        >
+          <input type='hidden' name='form_type' value='remUserChild'>
+          <input type='hidden' name='uid' value='$uid'>
+          <input type='hidden' name='pi' value='$group'>
+          <input type='submit' value='Remove'>
+        </form>
+      </td>
+    </tr>";
 }
 
-foreach ($requests as $i => $request) {
-    if ($i >= $count - 1) {
-        echo "<tr class='expanded $i last'>";
-    } else {
-        echo "<tr class='expanded $i'>";
-    }
-
-    [$request, $timestamp] = $request;
-    echo "<td>" . $request->getFirstname() . " " . $request->getLastname() . "</td>";
-    echo "<td>" . $request->getUID() . "</td>";
-    echo "<td><a href='mailto:" . $request->getMail() . "'>" . $request->getMail() . "</a></td>";
-    echo "<td>";
-    echo
-    "<form action='' method='POST' 
-    onsubmit='return confirm(\"Are you sure you want to approve " . $request->getUID() . "?\");'>
-    <input type='hidden' name='form_type' value='reqChild'>
-    <input type='hidden' name='uid' value='" . $request->getUID() . "'>
-    <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
-    <input type='submit' name='action' value='Approve'>
-    <input type='submit' name='action' value='Deny'></form>";
-    echo "</td>";
-    echo "</tr>";
-
-    $i++;
+foreach ($requests as $key => list($user, $timestamp, $firstname, $lastname, $email, $org)) {
+    $class = "expanded $key" + ($key == $count - 1 ? " last" : "");
+    $key++;
+    $uid = $user->getUID();
+    $gid = $group->getPIUID();
+    $email = $user->getMail();
+    $fullname = $user->getFullName();
+    echo "<tr class='$class'>
+      <td>$fullname</td>
+      <td>$uid</td>
+      <td><a href='mailto:$email'>$email</a></td>
+      <td>
+        <form
+          action='' method='POST'
+          onsubmit='return confirm(\"Are you sure you want to approve \'$uid\'?\");'
+        >
+          <input type='hidden' name='form_type' value='reqChild'>
+          <input type='hidden' name='uid' value='$uid'>
+          <input type='hidden' name='pi' value='$gid'>
+          <input type='submit' name='action' value='Approve'>
+          <input type='submit' name='action' value='Deny'>
+        </form>
+      </td>
+    </tr>";
 }

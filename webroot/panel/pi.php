@@ -52,25 +52,35 @@ if (count($requests) + count($assocs) == 1) {
 if (count($requests) > 0) {
     echo "<h5>Pending Requests</h5>";
     echo "<table>";
-
-    foreach ($requests as $request) {
-        echo "<tr>";
-        echo "<td>" . $request[0]->getFirstname() . " " . $request[0]->getLastname() . "</td>";
-        echo "<td>" . $request[0]->getUID() . "</td>";
-        echo "<td><a href='mailto:" . $request[0]->getMail() . "'>" . $request[0]->getMail() . "</a></td>";
-        echo "<td>" . date("jS F, Y", strtotime($request[1])) . "</td>";
-        echo "<td>";
-        echo
-        "<form action='' method='POST'>
-        <input type='hidden' name='form_type' value='userReq'>
-        <input type='hidden' name='uid' value='" . $request[0]->getUID() . "'>
-        <input type='submit' name='action' value='Approve'
-        onclick='return confirm(\"Are you sure you want to approve " . $request[0]->getUID() . "?\")'>
-        <input type='submit' name='action' value='Deny'
-        onclick='return confirm(\"Are you sure you want to deny " . $request[0]->getUID() . "?\")'>
-        </form>";
-        echo "</td>";
-        echo "</tr>";
+    foreach ($requests as $key => [$user, $timestamp, $firstname, $lastname, $email, $org]) {
+        $date = date("jS F, Y", strtotime($timestamp));
+        $email = $user->getMail();
+        $uid = $user->getUID();
+        $fullname = $user->getFullName();
+        echo "<tr>
+          <td>$fullname</td>
+          <td>$uid</td>
+          <td><a href='mailto:$email'>$email</a></td>
+          <td>$date</td>
+          <td>
+            <form action='' method='POST'>
+              <input type='hidden' name='form_type' value='userReq'>
+              <input type='hidden' name='uid' value='$uid'>
+              <input
+                type='submit'
+                name='action'
+                value='Approve'
+                onclick='return confirm(\"Are you sure you want to approve \'$uid\'?\")'
+              >
+              <input
+                type='submit'
+                name='action'
+                value='Deny'
+                onclick='return confirm(\"Are you sure you want to deny \'$uid\'?\")'
+              >
+            </form>
+          </td>
+        </tr>";
     }
     echo "</table>";
 

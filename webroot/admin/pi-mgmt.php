@@ -75,24 +75,34 @@ include $LOC_HEADER;
 
     foreach ($requests as $request) {
         $request_user = new UnityUser($request["uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-
-        echo "<tr>";
-        echo "<td>" . $request_user->getFirstname() . " " . $request_user->getLastname() . "</td>";
-        echo "<td>" . $request_user->getUID() . "</td>";
-        echo "<td><a href='mailto:" . $request_user->getMail() . "'>" . $request_user->getMail() . "</a></td>";
-        echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
-        echo "<td>";
-        echo
-        "<form action='' method='POST'>
-        <input type='hidden' name='form_type' value='req'>
-        <input type='hidden' name='uid' value='" . $request_user->getUID() . "'>
-        <input type='submit' name='action' value='Approve'
-        onclick='return confirm(\"Are you sure you want to approve " . $request_user->getUID() . "?\");'>
-        <input type='submit' name='action' value='Deny'
-        onclick='return confirm(\"Are you sure you want to deny " . $request_user->getUID() . "?\");'>
-        </form>";
-        echo "</td>";
-        echo "</tr>";
+        $date = date("jS F, Y", strtotime($request['timestamp']));
+        $uid = $request_user->getUID();
+        $email = $request_user->getMail();
+        $fullname = $request_user->getFullName();
+        echo "<tr>
+          <td>$fullname</td>
+          <td>$uid</td>
+          <td><a href='mailto:$email'>$email</a></td>
+          <td>$date</td>
+          <td>
+            <form action='' method='POST'>
+              <input type='hidden' name='form_type' value='req'>
+              <input type='hidden' name='uid' value='$uid'>
+              <input
+                type='submit'
+                name='action'
+                value='Approve'
+                onclick='return confirm(\"Are you sure you want to approve \'$uid\'?\");'
+              >
+              <input
+                type='submit'
+                name='action'
+                value='Deny'
+                onclick='return confirm(\"Are you sure you want to deny \'$uid\'?\");'
+              >
+            </form>
+          </td>
+        </tr>";
     }
     ?>
 
