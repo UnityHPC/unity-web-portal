@@ -1,5 +1,7 @@
 <?php
-
+if (sizeof($argv) == 1 or in_array($argv[1], array("-h", "--help"))) {
+    die("Usage: $argv[0] group_name filename_of_users_to_remove\n");
+}
 require_once __DIR__ . "/../resources/autoload.php";
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityGroup;
