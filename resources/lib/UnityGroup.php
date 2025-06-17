@@ -140,14 +140,6 @@ class UnityGroup
     {
         $uid = $this->getOwner()->getUID();
         $request = $this->SQL->getRequest($uid, UnitySQL::REQUEST_BECOME_PI);
-        if (is_null($request)) {
-            throw new Exception("uid '$uid' does not have a group request!");
-        }
-        if (!$this->SQL->requestExists($this->getOwner()->getUID())) {
-            throw new Exception(
-                "attempt to approve nonexistent request for group='{$this->getPIUID()}'"
-            );
-        }
 
         // check for edge cases...
         if ($this->exists()) {
@@ -299,14 +291,9 @@ class UnityGroup
      */
     public function approveUser($new_user, $send_mail = true)
     {
-
         $uid = $new_user->getUID();
         $gid = $this->getPIUID();
         $request = $this->SQL->getRequest($uid, $gid);
-        if (is_null($request)) {
-            throw new Exception("uid '$uid' does not have a request for group '$gid'!");
-        }
-
         // check if user exists
         if (!$new_user->exists()) {
             $new_user->init(
@@ -350,9 +337,6 @@ class UnityGroup
         $uid = $new_user->getUID();
         $gid = $this->getPIUID();
         $request = $this->SQL->getRequest($uid, $gid);
-        if (is_null($request)) {
-            throw new Exception("uid '$uid' does not have a request for group '$gid'!");
-        }
 
         // remove request, this will fail silently if the request doesn't exist
         $this->SQL->removeRequest($new_user->getUID(), $this->pi_uid);
