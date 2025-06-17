@@ -43,7 +43,13 @@ class PiRemoveUserTest extends TestCase {
             $this->assertFalse($piGroup->userExists($memberToDelete));
         } finally {
             if (!$piGroup->userExists($memberToDelete)) {
-                $piGroup->newUserRequest($memberToDelete);
+                $piGroup->newUserRequest(
+                    $memberToDelete,
+                    $memberToDelete->getFirstname(),
+                    $memberToDelete->getLastname(),
+                    $memberToDelete->getMail(),
+                    $memberToDelete->getOrg(),
+                );
                 $piGroup->approveUser($memberToDelete);
             }
         }
@@ -63,7 +69,13 @@ class PiRemoveUserTest extends TestCase {
             $this->assertTrue($piGroup->userExists($pi));
         } finally {
             if (!$piGroup->userExists($pi)) {
-                $piGroup->newUserRequest($pi);
+                $piGroup->newUserRequest(
+                    $pi,
+                    $pi->getFirstname(),
+                    $pi->getLastname(),
+                    $pi->getMail(),
+                    $pi->getOrg(),
+                );
                 $piGroup->approveUser($pi);
             }
        }

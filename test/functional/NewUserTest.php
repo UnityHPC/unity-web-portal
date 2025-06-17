@@ -3,13 +3,27 @@
 use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
 use UnityWebPortal\lib\UnityGroup;
+use UnityWebPortal\lib\UnityOrg;
+use UnityWebPortal\lib\UnitySQL;
 
 class NewUserTest extends TestCase
 {
-    private function assertNumberGroupRequests(int $x)
+    private function assertRequestedPIGroup(bool $expected)
     {
         global $USER, $SQL;
-        $this->assertEquals($x, count($SQL->getRequestsByUser($USER->getUID())));
+        $this->assertEquals(
+            $expected,
+            $SQL->requestExists($USER->getUID(), UnitySQL::REQUEST_BECOME_PI)
+        );
+    }
+
+    private function assertRequestedMembership(bool $expected, string $gid)
+    {
+        global $USER, $SQL;
+        $this->assertEquals(
+            $expected,
+            $SQL->requestExists($USER->getUID(), $gid)
+        );
     }
 
     private function requestGroupCreation()
@@ -45,12 +59,12 @@ class NewUserTest extends TestCase
     {
         global $USER, $SQL, $LDAP;
         $SQL->deleteRequestsByUser($USER->getUID());
-        $org = $USER->getOrgGroup();
-        if ($org->inOrg($USER)) {
-            $org->removeUser($USER);
-            assert(!$org->inOrg($USER));
-        }
         if ($USER->exists()) {
+            $org = $USER->getOrgGroup();
+            if ($org->exists() and $org->inOrg($USER)) {
+                $org->removeUser($USER);
+                assert(!$org->inOrg($USER));
+            }
             $USER->getLDAPUser()->delete();
             assert(!$USER->exists());
         }
@@ -69,8 +83,8 @@ class NewUserTest extends TestCase
 
     private function ensureOrgGroupDoesNotExist()
     {
-        global $USER;
-        $org_group = $USER->getOrgGroup();
+        global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+        $org_group = new UnityOrg($SSO["org"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
         if ($org_group->exists()) {
             $org_group->getLDAPOrgGroup()->delete();
             assert(!$org_group->exists());
@@ -97,18 +111,20 @@ class NewUserTest extends TestCase
 
     public function testCreateUserByJoinGoup()
     {
-        global $USER, $SQL, $LDAP;
+        global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
         switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
         $pi_group = $USER->getPIGroup();
+        $gid = $pi_group->getPIUID();
         switchUser(...getNonExistentUser());
         $this->assertTrue(!$USER->exists());
-        $this->assertTrue(!$USER->getOrgGroup()->exists());
+        $newOrg = new UnityOrg($SSO["org"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $this->assertTrue(!$newOrg->exists());
         $this->assertTrue($pi_group->exists());
         $this->assertTrue(!$pi_group->userExists($USER));
-        $this->assertNumberGroupRequests(0);
+        $this->assertRequestedMembership(false, $gid);
         try {
             $this->requestGroupMembership($pi_group->getPIUID());
-            $this->assertNumberGroupRequests(1);
+            $this->assertRequestedMembership(true, $gid);
 
             // $second_request_failed = false;
             // try {
@@ -117,21 +133,23 @@ class NewUserTest extends TestCase
             //     $second_request_failed = true;
             // }
             // $this->assertTrue($second_request_failed);
-            $this->assertNumberGroupRequests(1);
+            $this->assertRequestedMembership(true, $gid);
 
             $this->cancelAllRequests();
-            $this->assertNumberGroupRequests(0);
+            $this->assertRequestedMembership(false, $gid);
 
             $this->requestGroupMembership($pi_group->getPIUID());
             $this->assertTrue($pi_group->requestExists($USER));
-            $this->assertNumberGroupRequests(1);
+            $this->assertRequestedMembership(true, $gid);
+
+            $REDIS->flushAll(); // regression test: flush used to break requests
 
             $pi_group->approveUser($USER);
             $this->assertTrue(!$pi_group->requestExists($USER));
-            $this->assertNumberGroupRequests(0);
+            $this->assertRequestedMembership(false, $gid);
             $this->assertTrue($pi_group->userExists($USER));
             $this->assertTrue($USER->exists());
-            $this->assertTrue($USER->getOrgGroup()->exists());
+            $this->assertTrue($newOrg->exists());
 
             // $third_request_failed = false;
             // try {
@@ -140,26 +158,27 @@ class NewUserTest extends TestCase
             //     $third_request_failed = true;
             // }
             // $this->assertTrue($third_request_failed);
-            $this->assertNumberGroupRequests(0);
+            $this->assertRequestedMembership(false, $gid);
             $this->assertTrue(!$pi_group->requestExists($USER));
         } finally {
+            $this->ensureOrgGroupDoesNotExist();
             $this->ensureUserNotInPIGroup($pi_group);
             $this->ensureUserDoesNotExist();
-            $this->ensureOrgGroupDoesNotExist();
         }
     }
 
     public function testCreateUserByCreateGroup()
     {
-        global $USER, $SQL, $LDAP;
+        global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
         switchuser(...getNonExistentUser());
         $pi_group = $USER->getPIGroup();
         $this->assertTrue(!$USER->exists());
         $this->assertTrue(!$pi_group->exists());
-        $this->assertTrue(!$USER->getOrgGroup()->exists());
+        $newOrg = new UnityOrg($SSO["org"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $this->assertTrue(!$newOrg->exists());
         try {
             $this->requestGroupCreation();
-            $this->assertNumberGroupRequests(1);
+            $this->assertRequestedPIGroup(true);
 
             // $second_request_failed = false;
             // try {
@@ -168,19 +187,21 @@ class NewUserTest extends TestCase
             //     $second_request_failed = true;
             // }
             // $this->assertTrue($second_request_failed);
-            $this->assertNumberGroupRequests(1);
+            $this->assertRequestedPIGroup(true);
 
             $this->cancelAllRequests();
-            $this->assertNumberGroupRequests(0);
+            $this->assertRequestedPIGroup(false);
 
             $this->requestGroupCreation();
-            $this->assertNumberGroupRequests(1);
+            $this->assertRequestedPIGroup(true);
+
+            $REDIS->flushAll(); // regression test: flush used to break requests
 
             $pi_group->approveGroup();
-            $this->assertNumberGroupRequests(0);
+            $this->assertRequestedPIGroup(false);
             $this->assertTrue($pi_group->exists());
             $this->assertTrue($USER->exists());
-            $this->assertTrue($USER->getOrgGroup()->exists());
+            $this->assertTrue($newOrg->exists());
 
             // $third_request_failed = false;
             // try {
@@ -189,11 +210,11 @@ class NewUserTest extends TestCase
             //     $third_request_failed = true;
             // }
             // $this->assertTrue($third_request_failed);
-            $this->assertNumberGroupRequests(0);
+            $this->assertRequestedPIGroup(false);
         } finally {
+            $this->ensureOrgGroupDoesNotExist();
             $this->ensurePIGroupDoesNotExist();
             $this->ensureUserDoesNotExist();
-            $this->ensureOrgGroupDoesNotExist();
         }
     }
 }

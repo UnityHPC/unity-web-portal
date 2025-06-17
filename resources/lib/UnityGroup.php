@@ -76,7 +76,7 @@ class UnityGroup
     // Portal-facing methods, these are the methods called by scripts in webroot
     //
 
-    public function requestGroup($send_mail_to_admins, $send_mail = true)
+    public function requestGroup($firstname, $lastname, $email, $org, $send_mail_to_admins, $send_mail = true)
     {
         // check for edge cases...
         if ($this->exists()) {
@@ -88,12 +88,12 @@ class UnityGroup
             return;
         }
 
-        $this->SQL->addRequest($this->getOwner()->getUID());
+        $this->SQL->addRequest($this->getOwner()->getUID(), $firstname, $lastname, $email, $org);
 
         if ($send_mail) {
             // send email to requestor
             $this->MAILER->sendMail(
-                $this->getOwner()->getMail(),
+                $email,
                 "group_request"
             );
 
@@ -101,9 +101,9 @@ class UnityGroup
                 "group_request_admin",
                 array(
                     "user" => $this->getOwner()->getUID(),
-                    "org" => $this->getOwner()->getOrg(),
-                    "name" => $this->getOwner()->getFullname(),
-                    "email" => $this->getOwner()->getMail()
+                    "org" => $org,
+                    "name" => "$firstname $lastname",
+                    "email" => $email
                 )
             );
 
@@ -113,9 +113,9 @@ class UnityGroup
                     "group_request_admin",
                     array(
                         "user" => $this->getOwner()->getUID(),
-                        "org" => $this->getOwner()->getOrg(),
-                        "name" => $this->getOwner()->getFullname(),
-                        "email" => $this->getOwner()->getMail()
+                        "org" => $org,
+                        "name" => "$firstname $lastname",
+                        "email" => $email
                     )
                 );
             }
@@ -125,9 +125,9 @@ class UnityGroup
                 "group_request_admin",
                 array(
                     "user" => $this->getOwner()->getUID(),
-                    "org" => $this->getOwner()->getOrg(),
-                    "name" => $this->getOwner()->getFullname(),
-                    "email" => $this->getOwner()->getMail()
+                    "org" => $org,
+                    "name" => "$firstname $lastname",
+                    "email" => $email
                 )
             );
         }
@@ -138,11 +138,8 @@ class UnityGroup
      */
     public function approveGroup($operator = null, $send_mail = true)
     {
-        if (!$this->SQL->requestExists($this->getOwner()->getUID())) {
-            throw new Exception(
-                "attempt to approve nonexistent request for group='{$this->getPIUID()}'"
-            );
-        }
+        $uid = $this->getOwner()->getUID();
+        $request = $this->SQL->getRequest($uid, UnitySQL::REQUEST_BECOME_PI);
 
         // check for edge cases...
         if ($this->exists()) {
@@ -151,7 +148,13 @@ class UnityGroup
 
         // check if owner exists
         if (!$this->getOwner()->exists()) {
-            $this->getOwner()->init();
+            $this->getOwner()->init(
+                $request["firstname"],
+                $request["lastname"],
+                $request["email"],
+                $request["org"],
+                $send_mail
+            );
         }
 
         // initialize ldap objects, if this fails the script will crash, but nothing will persistently break
@@ -173,7 +176,7 @@ class UnityGroup
         // send email to the newly approved PI
         if ($send_mail) {
             $this->MAILER->sendMail(
-                $this->getOwner()->getMail(),
+                $request["email"],
                 "group_created"
             );
         }
@@ -184,9 +187,8 @@ class UnityGroup
      */
     public function denyGroup($operator = null, $send_mail = true)
     {
-        // remove request - this will fail silently if the request doesn't exist
+        $request = $this->SQL->getRequest($this->getOwner()->getUID(), UnitySQL::REQUEST_BECOME_PI);
         $this->SQL->removeRequest($this->getOwner()->getUID());
-
         if ($this->exists()) {
             return;
         }
@@ -203,7 +205,7 @@ class UnityGroup
         // send email to the requestor
         if ($send_mail) {
             $this->MAILER->sendMail(
-                $this->getOwner()->getMail(),
+                $request["email"],
                 "group_denied"
             );
         }
@@ -288,21 +290,22 @@ class UnityGroup
      */
     public function approveUser($new_user, $send_mail = true)
     {
-        if (!$this->requestExists($new_user)) {
-            throw new Exception(
-                "attempt to approve nonexistent request for group='{$this->getPIUID()}' uid='$new_user'"
-            );
-        }
-
+        $uid = $new_user->getUID();
+        $gid = $this->getPIUID();
+        $request = $this->SQL->getRequest($uid, $gid);
         // check if user exists
         if (!$new_user->exists()) {
-            $new_user->init();
+            $new_user->init(
+                $request["firstname"],
+                $request["lastname"],
+                $request["email"],
+                $request["org"],
+            );
         }
 
         // add user to the LDAP object
         $this->addUserToGroup($new_user);
 
-        // remove request, this will fail silently if the request doesn't exist
         $this->SQL->removeRequest($new_user->getUID(), $this->pi_uid);
 
         // send email to the requestor
@@ -320,9 +323,9 @@ class UnityGroup
                 array(
                     "group" => $this->pi_uid,
                     "user" => $new_user->getUID(),
-                    "name" => $new_user->getFullName(),
-                    "email" => $new_user->getMail(),
-                    "org" => $new_user->getOrg()
+                    "name" => $request["firstname"] . " " . $request["lastname"],
+                    "email" => $request["email"],
+                    "org" => $request["org"],
                     )
             );
         }
@@ -330,9 +333,9 @@ class UnityGroup
 
     public function denyUser($new_user, $send_mail = true)
     {
-        if (!$this->requestExists($new_user)) {
-            return;
-        }
+        $uid = $new_user->getUID();
+        $gid = $this->getPIUID();
+        $request = $this->SQL->getRequest($uid, $gid);
 
         // remove request, this will fail silently if the request doesn't exist
         $this->SQL->removeRequest($new_user->getUID(), $this->pi_uid);
@@ -340,7 +343,7 @@ class UnityGroup
         if ($send_mail) {
             // send email to the user
             $this->MAILER->sendMail(
-                $new_user->getMail(),
+                $request["email"],
                 "group_user_denied",
                 array("group" => $this->pi_uid)
             );
@@ -396,7 +399,7 @@ class UnityGroup
         }
     }
 
-    public function newUserRequest($new_user, $send_mail = true)
+    public function newUserRequest($new_user, $firstname, $lastname, $email, $org, $send_mail = true)
     {
         if ($this->userExists($new_user)) {
             UnitySite::errorLog("warning", "user '$new_user' already in group");
@@ -413,12 +416,12 @@ class UnityGroup
             return;
         }
 
-        $this->addRequest($new_user->getUID());
+        $this->addRequest($new_user->getUID(), $firstname, $lastname, $email, $org);
 
         if ($send_mail) {
             // send email to user
             $this->MAILER->sendMail(
-                $new_user->getMail(),
+                $email,
                 "group_user_request",
                 array("group" => $this->pi_uid)
             );
@@ -430,9 +433,9 @@ class UnityGroup
                 array(
                     "group" => $this->pi_uid,
                     "user" => $new_user->getUID(),
-                    "name" => $new_user->getFullName(),
-                    "email" => $new_user->getMail(),
-                    "org" => $new_user->getOrg()
+                    "name" => "$firstname $lastname",
+                    "email" => $email,
+                    "org" => $org,
                     )
             );
         }
@@ -452,7 +455,17 @@ class UnityGroup
                 $this->REDIS,
                 $this->WEBHOOK
             );
-            array_push($out, [$user, $request["timestamp"]]);
+            array_push(
+                $out,
+                [
+                    $user,
+                    $request["timestamp"],
+                    $request["firstname"],
+                    $request["lastname"],
+                    $request["email"],
+                    $request["org"],
+                ]
+            );
         }
 
         return $out;
@@ -563,9 +576,9 @@ class UnityGroup
         return in_array($user->getUID(), $this->getGroupMemberUIDs());
     }
 
-    private function addRequest($uid)
+    private function addRequest($uid, $firstname, $lastname, $email, $org)
     {
-        $this->SQL->addRequest($uid, $this->pi_uid);
+        $this->SQL->addRequest($uid, $firstname, $lastname, $email, $org, $this->pi_uid);
     }
 
     //

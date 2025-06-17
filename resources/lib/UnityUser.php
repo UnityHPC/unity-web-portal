@@ -49,10 +49,11 @@ class UnityUser
      * @param string $firstname First name of new account
      * @param string $lastname Last name of new account
      * @param string $email email of new account
+     * @param string $org organization name of new account
      * @param bool $isPI boolean value for if the user checked the "I am a PI box"
      * @return void
      */
-    public function init($send_mail = true)
+    public function init($firstname, $lastname, $email, $org, $send_mail = true)
     {
         //
         // Create LDAP group
@@ -74,14 +75,14 @@ class UnityUser
         if (!$ldapUserEntry->exists()) {
             $ldapUserEntry->setAttribute("objectclass", UnityLDAP::POSIX_ACCOUNT_CLASS);
             $ldapUserEntry->setAttribute("uid", $this->uid);
-            $ldapUserEntry->setAttribute("givenname", $this->getFirstname());
-            $ldapUserEntry->setAttribute("sn", $this->getLastname());
+            $ldapUserEntry->setAttribute("givenname", $firstname);
+            $ldapUserEntry->setAttribute("sn", $lastname);
             $ldapUserEntry->setAttribute(
                 "gecos",
-                \transliterator_transliterate("Latin-ASCII", "{$this->getFirstname()} {$this->getLastname()}")
+                \transliterator_transliterate("Latin-ASCII", "$firstname $lastname")
             );
-            $ldapUserEntry->setAttribute("mail", $this->getMail());
-            $ldapUserEntry->setAttribute("o", $this->getOrg());
+            $ldapUserEntry->setAttribute("mail", $email);
+            $ldapUserEntry->setAttribute("o", $org);
             $ldapUserEntry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
             $ldapUserEntry->setAttribute("loginshell", $this->LDAP->getDefUserShell());
             $ldapUserEntry->setAttribute("uidnumber", strval($id));
@@ -90,10 +91,10 @@ class UnityUser
         }
 
         // update cache
-        //$this->REDIS->setCache($this->uid, "firstname", $this->getFirstname());
-        //$this->REDIS->setCache($this->uid, "lastname", $this->getLastname());
-        //$this->REDIS->setCache($this->uid, "mail", $this->getMail());
-        //$this->REDIS->setCache($this->uid, "org", $this->getOrg());
+        $this->REDIS->setCache($this->uid, "firstname", $firstname);
+        $this->REDIS->setCache($this->uid, "lastname", $lastname);
+        $this->REDIS->setCache($this->uid, "mail", $email);
+        $this->REDIS->setCache($this->uid, "org", $org);
         $this->REDIS->setCache($this->uid, "homedir", self::HOME_DIR . $this->uid);
         $this->REDIS->setCache($this->uid, "loginshell", $this->LDAP->getDefUserShell());
         $this->REDIS->setCache($this->uid, "sshkeys", array());
@@ -189,6 +190,7 @@ class UnityUser
 
     public function getOrg($ignorecache = false)
     {
+        assert($this->exists());
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->getUID(), "org");
             if (!is_null($cached_val)) {
@@ -238,6 +240,7 @@ class UnityUser
      */
     public function getFirstname($ignorecache = false)
     {
+        assert($this->exists());
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->getUID(), "firstname");
             if (!is_null($cached_val)) {
@@ -287,6 +290,7 @@ class UnityUser
      */
     public function getLastname($ignorecache = false)
     {
+        assert($this->exists());
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->getUID(), "lastname");
             if (!is_null($cached_val)) {
@@ -309,6 +313,7 @@ class UnityUser
 
     public function getFullname()
     {
+        assert($this->exists());
         return $this->getFirstname() . " " . $this->getLastname();
     }
 
@@ -341,6 +346,7 @@ class UnityUser
      */
     public function getMail($ignorecache = false)
     {
+        assert($this->exists());
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->getUID(), "mail");
             if (!is_null($cached_val)) {
@@ -404,6 +410,7 @@ class UnityUser
      */
     public function getSSHKeys($ignorecache = false)
     {
+        assert($this->exists());
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->getUID(), "sshkeys");
             if (!is_null($cached_val)) {
@@ -480,6 +487,7 @@ class UnityUser
      */
     public function getLoginShell($ignorecache = false)
     {
+        assert($this->exists());
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->getUID(), "loginshell");
             if (!is_null($cached_val)) {
@@ -528,6 +536,7 @@ class UnityUser
      */
     public function getHomeDir($ignorecache = false)
     {
+        assert($this->exists());
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->getUID(), "homedir");
             if (!is_null($cached_val)) {
