@@ -167,19 +167,19 @@ class UnityLDAP extends ldapConn
         if (($id >= 100 && $id <= 999) || ($id >= 60000 && $id <= 64999)) {
             return true;
         }
-        $users = $this->userOU->getChildrenArray(true);
+        $users = $this->userOU->getChildrenArray([], true);
         foreach ($users as $user) {
             if ($user["uidnumber"][0] == $id) {
                 return true;
             }
         }
-        $pi_groups = $this->pi_groupOU->getChildrenArray(true);
+        $pi_groups = $this->pi_groupOU->getChildrenArray(["gidnumber"], true);
         foreach ($pi_groups as $pi_group) {
             if ($pi_group["gidnumber"][0] == $id) {
                 return true;
             }
         }
-        $groups = $this->groupOU->getChildrenArray(true);
+        $groups = $this->groupOU->getChildrenArray(["gidnumber"], true);
         foreach ($groups as $group) {
             if ($group["gidnumber"][0] == $id) {
                 return true;
