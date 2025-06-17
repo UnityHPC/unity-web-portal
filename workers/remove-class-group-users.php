@@ -10,7 +10,7 @@ $parent_group = new UnityGroup($group, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
 if (!$parent_group->exists()) {
     die("No such group");
 }
-$handle = fopen($filename, "r");
+$handle = fopen($filename, "r") or die("Can't open $filename");
 while (($line = fgets($handle)) !== false) {
     $username = trim($line);
     $user = new UnityUser($username, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
