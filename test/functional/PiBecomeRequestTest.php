@@ -45,6 +45,16 @@ class PiBecomeRequestTest extends TestCase
             $this->assertNumberPiBecomeRequests(1);
             http_post(
                 __DIR__ . "/../../webroot/panel/account.php",
+                ["form_type" => "cancel_pi_request"]
+            );
+            $this->assertNumberPiBecomeRequests(0);
+            http_post(
+                __DIR__ . "/../../webroot/panel/account.php",
+                ["form_type" => "pi_request"]
+            );
+            $this->assertNumberPiBecomeRequests(1);
+            http_post(
+                __DIR__ . "/../../webroot/panel/account.php",
                 ["form_type" => "pi_request"]
             );
             $this->assertNumberPiBecomeRequests(1);
