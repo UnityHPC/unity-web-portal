@@ -43,7 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             case "cancelPIForm":
                 // cancel Group Join
                 $pi_account->cancelGroupJoinRequest($USER);
-                UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/groups.php");
                 break;
         }
     }
