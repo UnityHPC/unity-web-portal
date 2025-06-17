@@ -141,7 +141,7 @@ if (!$isPI) {
     } else {
         if ($SQL->requestExists($USER->getUID())) {
             $prompt = "onclick='return confirm(\"Are you sure you want to cancel this request?\")";
-            echo "<input type='submit' value='Cancel PI AccountRequest' $prompt'/>";
+            echo "<input type='submit' value='Cancel PI Account Request' $prompt'/>";
             echo "
                 <label style='margin-left: 10px'>
                     Your request has been submitted and is currently pending
