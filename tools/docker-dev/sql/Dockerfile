@@ -28,6 +28,9 @@ COPY phpmyadmin-apache.conf /etc/apache2/sites-available/phpmyadmin.conf
 RUN a2dissite 000-default
 RUN a2ensite phpmyadmin
 RUN echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
+RUN echo "general_log_file = /var/log/mysql/mysql.log" >> /etc/mysql/mariadb.conf.d/50-server.cnf
+RUN echo "general_log = 1" >> /etc/mysql/mariadb.conf.d/50-server.cnf
+RUN mkdir -p /var/log/mysql/
 
 EXPOSE 80
 EXPOSE 3306
