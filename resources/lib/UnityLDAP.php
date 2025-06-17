@@ -26,6 +26,7 @@ class UnityLDAP extends ldapConn
     );
 
   // string vars for OUs
+    private $STR_BASEOU;
     private $STR_USEROU;
     private $STR_GROUPOU;
     private $STR_PIGROUPOU;
@@ -33,6 +34,7 @@ class UnityLDAP extends ldapConn
     private $STR_ADMINGROUP;
 
   // Instance vars for various ldapEntry objects
+    private $baseOU;
     private $userOU;
     private $groupOU;
     private $pi_groupOU;
@@ -49,6 +51,7 @@ class UnityLDAP extends ldapConn
         $dn,
         $pass,
         $custom_user_mappings,
+        $base_dn,
         $user_ou,
         $group_ou,
         $pigroup_ou,
@@ -59,6 +62,7 @@ class UnityLDAP extends ldapConn
     ) {
         parent::__construct($host, $dn, $pass);
 
+        $this->STR_BASEOU = $base_dn;
         $this->STR_USEROU = $user_ou;
         $this->STR_GROUPOU = $group_ou;
         $this->STR_PIGROUPOU = $pigroup_ou;
@@ -66,6 +70,7 @@ class UnityLDAP extends ldapConn
         $this->STR_ADMINGROUP = $admin_group;
 
       // Get Global Entries
+        $this->baseOU = $this->getEntry($base_dn);
         $this->userOU = $this->getEntry($user_ou);
         $this->groupOU = $this->getEntry($group_ou);
         $this->pi_groupOU = $this->getEntry($pigroup_ou);
@@ -123,13 +128,11 @@ class UnityLDAP extends ldapConn
     {
         $max_uid = $UnitySQL->getSiteVar('MAX_UID');
         $new_uid = $max_uid + 1;
-
-        while ($this->IDNumInUse($new_uid)) {
+        $id_nums_in_use = $this->getIDNumsInUse();
+        while ($this->IDNumInUse($new_uid, $id_nums_in_use)) {
             $new_uid++;
         }
-
         $UnitySQL->updateSiteVar('MAX_UID', $new_uid);
-
         return $new_uid;
     }
 
@@ -137,13 +140,11 @@ class UnityLDAP extends ldapConn
     {
         $max_pigid = $UnitySQL->getSiteVar('MAX_PIGID');
         $new_pigid = $max_pigid + 1;
-
-        while ($this->IDNumInUse($new_pigid)) {
+        $id_nums_in_use = $this->getIDNumsInUse();
+        while ($this->IDNumInUse($new_pigid, $id_nums_in_use)) {
             $new_pigid++;
         }
-
         $UnitySQL->updateSiteVar('MAX_PIGID', $new_pigid);
-
         return $new_pigid;
     }
 
@@ -151,46 +152,41 @@ class UnityLDAP extends ldapConn
     {
         $max_gid = $UnitySQL->getSiteVar('MAX_GID');
         $new_gid = $max_gid + 1;
-
-        while ($this->IDNumInUse($new_gid)) {
+        $id_nums_in_use = $this->getIDNumsInUse();
+        while ($this->IDNumInUse($new_gid, $id_nums_in_use)) {
             $new_gid++;
         }
-
         $UnitySQL->updateSiteVar('MAX_GID', $new_gid);
-
         return $new_gid;
     }
 
-    private function IDNumInUse($id)
+    private function IDNumInUse($id_num, $id_nums_in_use)
     {
-        // id reserved for debian packages
-        if (($id >= 100 && $id <= 999) || ($id >= 60000 && $id <= 64999)) {
+        // reserved for debian packages
+        if (($id_num >= 100 && $id_num <= 999) || ($id_num >= 60000 && $id_num <= 64999)) {
             return true;
         }
-        $users = $this->userOU->getChildrenArray([], true);
-        foreach ($users as $user) {
-            if ($user["uidnumber"][0] == $id) {
-                return true;
-            }
-        }
-        $pi_groups = $this->pi_groupOU->getChildrenArray(["gidnumber"], true);
-        foreach ($pi_groups as $pi_group) {
-            if ($pi_group["gidnumber"][0] == $id) {
-                return true;
-            }
-        }
-        $groups = $this->groupOU->getChildrenArray(["gidnumber"], true);
-        foreach ($groups as $group) {
-            if ($group["gidnumber"][0] == $id) {
-                return true;
-            }
-        }
+        return in_array($id_num, $id_nums_in_use);
+    }
 
-        return false;
+    private function getIDNumsInUse()
+    {
+        return array_merge(
+            // search entire LDAP tree, not just for entries created by portal
+            array_map(
+                fn($x) => intval($x["uidnumber"][0]),
+                $this->baseOU->getChildrenArray(["uidnumber"], true, "objectClass=posixAccount")
+            ),
+            array_map(
+                fn($x) => intval($x["gidnumber"][0]),
+                $this->baseOU->getChildrenArray(["gidnumber"], true, "objectClass=posixGroup")
+            ),
+        );
     }
 
     public function getUnassignedID($uid, $UnitySQL)
     {
+        $id_nums_in_use = $this->getIDNumsInUse();
         $netid = strtok($uid, "_");  // extract netid
       // scrape all files in custom folder
         $dir = new \DirectoryIterator($this->custom_mappings_path);
@@ -204,7 +200,7 @@ class UnityLDAP extends ldapConn
 
                     if ($uid == $netid_match || $netid == $netid_match) {
                         // found a match
-                        if (!$this->IDNumInUse($uid_match)) {
+                        if (!$this->IDNumInUse($uid_match, $id_nums_in_use)) {
                             return $uid_match;
                         }
                     }
