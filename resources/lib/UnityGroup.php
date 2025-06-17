@@ -218,10 +218,10 @@ class UnityGroup
         $this->SQL->removeRequest($this->getOwner()->getUID());
 
         if ($send_mail) {
-            // send email to requestor
             $this->MAILER->sendMail(
                 "admin",
-                "group_request_cancelled"
+                "group_request_cancelled",
+                ["uid" => $this->getOwner()->getUID()],
             );
         }
     }
@@ -239,7 +239,7 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_join_request_cancelled",
-                ["group" => $this->pi_uid]
+                ["uid" => $user->getUID()]
             );
         }
     }
