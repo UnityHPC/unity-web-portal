@@ -1,3 +1,72 @@
+# 1.2.1 (upcoming)
+
+* [Feature] Added cancellation of PI become / PI member requests for existing users
+
+# 1.2.0
+* [Feature] Added slack webhooks by @sheldor1510 in #65
+* [Feature] Added audit log by @sheldor1510 in #69 #72 #106
+* [Feature] Added account deletion requests by @sheldor1510 in #82
+* [Feature] Added reminder emails for PI membership requests @bryank-cs in #101
+* [Feature] Added sorting and filtering to user / PI mgmt pages by @sheldor1510 in #87
+
+* [Frontend] Improved visuals on account page by @simonLeary42 in #201 #204 #205 #206
+* [Frontend] Improved visuals on user / PI mgmt pages by @simonLeary42 in #205
+* [Frontend] Removed custom shell by @simonLeary42 in #203
+* [Frontend] Removed disband PI by @simonLeary42 in #207
+* [Frontend] Addded ToS confirmation by @bryank-cs in #223
+* [Frontend] Addded cancellation of PI requests / PI member requests for users awaiting request approval @bryank-cs in #223
+* [Frontend] Improved SSH key email contents by @sheldor1510 in #66
+* [Frontend] Added note to account page by @sheldor1510 in #91
+
+* [Dev] Updated SQL bootstrap by @sheldor1510 in #91
+* [Dev] Added automated testing by @simonLeary42 in #179 #186 #188 #190 #191 #192 #193 #194 #198 #212 #232 #238
+* [Dev] Removed policy page / `priv.php`, allow external link instead by @simonLeary42 in #182
+* [Dev] Changed admin group from `sudo` to `web_admins`, same as production by @simonLeary42 in #173
+* [Dev] Sorted `htpasswd` by @simonLeary42 in #220
+
+* [Bug] Fixed garbage SSH keys from empty github username by @Shaswat975 in #102
+* [Bug] Fixed bug when removing old requests by @bryank-cs in #104
+* [Bug] Fixed generate SSH key button by @sheldor1510 in #91
+* [Bug] Fixed trailing whitespace in PI request by @simonLeary42 in #122
+* [Bug] Fixed missing argument by @simonLeary42 in #123
+* [Bug] Fixed github SSH key API handling by @simonLeary42 in #162
+* [Bug] Fixed `uidnumber`/`gidnumber` collisions by @simonLeary42 in #154
+
+* [API] Switched to JSON Schema for cluster notices @Shaswat975 in #103
+
+* [Internal] Added `UnityPerms` Class by @sheldor1510 in #92
+* [Internal] Made REDIS Server Optional by @Shaswat975 in #105
+* [Internal] Reduced size of data types in sql by @simonLeary42 in #148
+* [Internal] Removed old tables from SQL by @simonLeary42 in #159
+* [Internal] Added `gecos` field by @simonLeary42 in #216 #221 #222
+* [Internal] Added user group as well as user OU by @simonLeary42 in #218
+* [Internal] Added failure if request does not exist by @simonLeary42 in #230
+* [Internal] Rewrote `update-ldap-cache.php` by @simonLeary42 in #157 #239 #241
+* [Internal] Added caching of max `uidnumber`/`gidnumber` @sheldor1510 in #84
+* [Internal] Made emailing admins for PI requests optional by @sheldor1510 in #73
+* [Internal] Style by @simonLeary42 in #166 #189 #202 #227
+* [Internal] Fixed absolute require by @simonLeary42 in #189
+* [Internal] Fixed confusing constant by @simonLeary42 in #158
+* [Internal] Removed unused variables by @simonLeary42 in #155
+* [Internal] Added LDAP sanitization by @simonLeary42 in #167
+* [Internal] Fixed dubious redirect by @bryank-cs in #223
+* [Internal] Fixed function name by @simonLeary42 in #228
+* [Internal] Refactored `getGroupMemberUIDs`/`getGroupMembers` by @simonLeary42 in #236
+* [Internal] Added redirect after HTTP POST by @simonLeary42 in #233
+* [Internal] Added more SSH key validation by @simonLeary42 in #187
+* [Internal] Refactored `get_group_members.php` @simonLeary42 in #235
+* [Internal] Refactored HTTP POST handling in account page by @simonLeary42 in #214
+* [Internal] Fix missing import by @simonLeary42 in #231 #237
+* [Internal] Switched all uses of `form_name` to `form_type` by @simonLeary42 in #239
+* [Internal] Simplified usage of LDAP wrapper functions by @simonLeary42 in #213
+* [Internal] Muted warnings by @simonLeary42 in https://github.com/hakasapl/phpopenldaper/pull/3
+* [Internal] Fixed deprecation warning by @simonLeary42 in https://github.com/hakasapl/phpopenldaper/pull/5
+* [Internal] Ensured that all attributes are returned as arrays by @simonLeary42 in https://github.com/hakasapl/phpopenldaper/pull/14 https://github.com/hakasapl/phpopenldaper/pull/6
+* [Internal] Fixed duplicate out-of-sync `LDAPEntry` objects by @simonLeary42 in https://github.com/hakasapl/phpopenldaper/pull/7
+* [Internal] Refactored `LDAPEntry` by @simonLeary42 in https://github.com/hakasapl/phpopenldaper/pull/8
+* [Internal] Added better error messages by @simonLeary42 in https://github.com/hakasapl/phpopenldaper/pull/11
+* [Internal] Added assertions to `LDAPEntry` by @simonLeary42 in https://github.com/hakasapl/phpopenldaper/pull/12
+
 # 1.1.2
 
 2023-3-28
