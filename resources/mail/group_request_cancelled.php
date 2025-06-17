@@ -1,10 +1,5 @@
 <?php
-
-// This template is sent to the user cancelling the request
-$this->Subject = "Unity PI Account Request Cancelled";
+$this->Subject = "PI Request Cancelled: '" . $data["uid"] . "'";
 ?>
-
 <p>Hello,</p>
-
-<p>Your request for a PI account on the Unity Cluster has been cancelled per your request.</p>
-
+<p>The user '<?php echo $data["uid"] ?>' has cancelled their request to become a PI.</p>
