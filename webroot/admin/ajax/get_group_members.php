@@ -17,14 +17,12 @@ $group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
 $members = $group->getGroupMembers();
 $requests = $group->getRequests();
 
-$i = 0;
 $count = count($members) + count($requests);
-foreach ($members as $member) {
+foreach ($members as $i => $member) {
     if ($member->getUID() == $group->getOwner()->getUID()) {
         continue;
     }
     $class = "expanded $i" . ($i == $count - 1 ? " last" : "");
-    $i++;
     $uid = $member->getUID();
     $gid = $group->getPIUID();
     $fullname = $user->getFullName();
