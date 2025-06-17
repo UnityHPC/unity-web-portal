@@ -8,7 +8,6 @@
 * [Feature] Added account deletion requests by @sheldor1510 in #82
 * [Feature] Added reminder emails for PI membership requests @bryank-cs in #101
 * [Feature] Added sorting and filtering to user / PI mgmt pages by @sheldor1510 in #87
-
 * [Frontend] Improved visuals on account page by @simonLeary42 in #201 #204 #205 #206
 * [Frontend] Improved visuals on user / PI mgmt pages by @simonLeary42 in #205
 * [Frontend] Removed custom shell by @simonLeary42 in #203
@@ -17,13 +16,11 @@
 * [Frontend] Addded cancellation of PI requests / PI member requests for users awaiting request approval @bryank-cs in #223
 * [Frontend] Improved SSH key email contents by @sheldor1510 in #66
 * [Frontend] Added note to account page by @sheldor1510 in #91
-
 * [Dev] Updated SQL bootstrap by @sheldor1510 in #91
 * [Dev] Added automated testing by @simonLeary42 in #179 #186 #188 #190 #191 #192 #193 #194 #198 #212 #232 #238
 * [Dev] Removed policy page / `priv.php`, allow external link instead by @simonLeary42 in #182
 * [Dev] Changed admin group from `sudo` to `web_admins`, same as production by @simonLeary42 in #173
 * [Dev] Sorted `htpasswd` by @simonLeary42 in #220
-
 * [Bug] Fixed garbage SSH keys from empty github username by @Shaswat975 in #102
 * [Bug] Fixed bug when removing old requests by @bryank-cs in #104
 * [Bug] Fixed generate SSH key button by @sheldor1510 in #91
@@ -31,9 +28,7 @@
 * [Bug] Fixed missing argument by @simonLeary42 in #123
 * [Bug] Fixed github SSH key API handling by @simonLeary42 in #162
 * [Bug] Fixed `uidnumber`/`gidnumber` collisions by @simonLeary42 in #154
-
 * [API] Switched to JSON Schema for cluster notices @Shaswat975 in #103
-
 * [Internal] Added `UnityPerms` Class by @sheldor1510 in #92
 * [Internal] Made REDIS Server Optional by @Shaswat975 in #105
 * [Internal] Reduced size of data types in sql by @simonLeary42 in #148
