@@ -28,19 +28,13 @@ class UnitySSO
 
     public static function getSSO()
     {
-        if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
-            $SSO = array(
-                "user" => self::eppnToUID($_SERVER["REMOTE_USER"]),
-                "org" => self::eppnToOrg($_SERVER["REMOTE_USER"]),
-                "firstname" => $_SERVER["givenName"],
-                "lastname" => $_SERVER["sn"],
-                "name" => $_SERVER["givenName"] . " " . $_SERVER["sn"],
-                "mail" => isset($_SERVER["mail"]) ? $_SERVER["mail"] : $_SERVER["eppn"]
-            );
-
-            return $SSO;
-        }
-
-        return null;
+        return array(
+            "user" => self::eppnToUID($_SERVER["REMOTE_USER"]),
+            "org" => self::eppnToOrg($_SERVER["REMOTE_USER"]),
+            "firstname" => $_SERVER["givenName"],
+            "lastname" => $_SERVER["sn"],
+            "name" => $_SERVER["givenName"] . " " . $_SERVER["sn"],
+            "mail" => isset($_SERVER["mail"]) ? $_SERVER["mail"] : $_SERVER["eppn"]
+        );
     }
 }
