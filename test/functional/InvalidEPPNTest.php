@@ -22,6 +22,10 @@ class InvalidEPPNTest extends TestCase
         global $SSO;
         $original_server = $_SERVER;
         $original_sso = $SSO;
+        if (session_status() == PHP_SESSION_ACTIVE) {
+            session_write_close();
+            session_id(uniqid());
+        }
         if (!$is_valid) {
             $this->expectException(PhpUnitNoDieException::class);
             $this->expectExceptionMessageMatches("/.*Invalid eppn.*/");
@@ -36,7 +40,6 @@ class InvalidEPPNTest extends TestCase
             // won't use phpunit --process-isolation because when I try that argument all tests fail with a blank error message
             include __DIR__ . "/../../resources/init.php";
         } finally {
-            session_destroy(); // autoload does session_start()
             $_SERVER = $original_server;
             $SSO = $original_sso;
         }
