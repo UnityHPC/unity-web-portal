@@ -3,6 +3,7 @@
 namespace UnityWebPortal\lib;
 
 use Exception;
+use UnityWebPortal\lib\exceptions\SSOException;
 
 class UnitySSO
 {
@@ -17,7 +18,7 @@ class UnitySSO
     {
         $parts = explode("@", $eppn);
         if (count($parts) != 2) {
-            throw new Exception("Malformed remote user detected: '$eppn'");
+            throw new SSOException("Malformed remote user detected: '$eppn'");
         }
 
         $org = $parts[1];
