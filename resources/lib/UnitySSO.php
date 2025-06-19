@@ -3,6 +3,7 @@
 namespace UnityWebPortal\lib;
 
 use Exception;
+use UnityWebPortal\lib\exceptions\SSOException;
 
 class UnitySSO
 {
@@ -17,7 +18,7 @@ class UnitySSO
     {
         $parts = explode("@", $eppn);
         if (count($parts) != 2) {
-            throw new Exception("Malformed remote user detected: '$eppn'");
+            throw new SSOException("Malformed remote user detected: '$eppn'");
         }
 
         $org = $parts[1];
@@ -27,19 +28,13 @@ class UnitySSO
 
     public static function getSSO()
     {
-        if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
-            $SSO = array(
-                "user" => self::eppnToUID($_SERVER["REMOTE_USER"]),
-                "org" => self::eppnToOrg($_SERVER["REMOTE_USER"]),
-                "firstname" => $_SERVER["givenName"],
-                "lastname" => $_SERVER["sn"],
-                "name" => $_SERVER["givenName"] . " " . $_SERVER["sn"],
-                "mail" => isset($_SERVER["mail"]) ? $_SERVER["mail"] : $_SERVER["eppn"]
-            );
-
-            return $SSO;
-        }
-
-        return null;
+        return array(
+            "user" => self::eppnToUID($_SERVER["REMOTE_USER"]),
+            "org" => self::eppnToOrg($_SERVER["REMOTE_USER"]),
+            "firstname" => $_SERVER["givenName"],
+            "lastname" => $_SERVER["sn"],
+            "name" => $_SERVER["givenName"] . " " . $_SERVER["sn"],
+            "mail" => isset($_SERVER["mail"]) ? $_SERVER["mail"] : $_SERVER["eppn"]
+        );
     }
 }

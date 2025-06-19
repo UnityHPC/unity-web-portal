@@ -13,6 +13,8 @@ use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityRedis;
 use UnityWebPortal\lib\UnityWebhook;
 use UnityWebPortal\lib\UnityGithub;
+use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\exceptions\SSOException;
 
 //
 // Initialize Session
@@ -92,9 +94,15 @@ $GITHUB = new UnityGithub();
 // SSO Init
 //
 
-$SSO = UnitySSO::getSSO();
-if (!is_null($SSO)) {
-    // SSO is available
+if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
+    try {
+        $SSO = UnitySSO::getSSO();
+    } catch (SSOException $e) {
+        $errorid = uniqid("sso-");
+        $eppn = $_SERVER["REMOTE_USER"];
+        UnitySite::errorLog("SSO Failure", "{$e} ($errorid)");
+        UnitySite::die("Invalid eppn: '$eppn'. Please contact {$CONFIG["mail"]["support"]} (id: $errorid)", true);
+    }
     $_SESSION["SSO"] = $SSO;
 
     $OPERATOR = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
