@@ -79,7 +79,7 @@ include $LOC_HEADER;
         echo "<tr>";
         echo "<td>" . $request["firstname"] . " " . $request["lastname"] . "</td>";
         echo "<td>" . $request["uid"] . "</td>";
-        echo "<td><a href='mailto:" . $request["mail"] . "'>" . $request["mail"] . "</a></td>";
+        echo "<td><a href='mailto:" . $request["email"] . "'>" . $request["email"] . "</a></td>";
         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
         echo "<td>";
         echo
