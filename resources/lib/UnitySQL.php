@@ -113,6 +113,13 @@ class UnitySQL
         }
     }
 
+    public function getAllRequests()
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_REQS);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public function getRequests($dest = self::REQUEST_BECOME_PI)
     {
         $stmt = $this->conn->prepare(
