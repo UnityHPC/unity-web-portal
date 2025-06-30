@@ -1,11 +1,12 @@
 # 1.2.2 (upcoming)
-* [Bug] Fix `uidnumber`/`gidnumber` conflicts by @simonLeary42 in #248
+* [Bug] Fixed `uidnumber`/`gidnumber` conflicts by @simonLeary42 in #248
 * [Internal] Refactored `UnitySQL` by @simonLeary42 in #252
 * [Internal] Refactored custom user mappings by @simonLeary42 in #253
 * [Internal] Style by @simonLeary42 in #254
 
 # 1.2.1
 * [Feature] Added cancellation of PI become / PI member requests for existing users by @bryank-cs and @simonLeary42 in #250
+* [Frontend] Added error message to frontend on invalid EPPN by @bryank-cs in #263
 * [Internal] Improved error messages by @simonLeary42 in [98fb3](https://github.com/UnityHPC/unity-web-portal/commit/98fb39559aa6668d86ac4aa04b9e9d2c6b8f7f02)
 * [Internal] Fixed bad variable name by @simonLeary42 in #242 [2e03c](https://github.com/UnityHPC/unity-web-portal/commit/2e03c1187c39ac91c3a8f74cf62ac57d29146d97)
 * [Internal] Fixed undefined variable by @simonLeary42 in [5c2ce](https://github.com/UnityHPC/unity-web-portal/commit/5c2cee50097017fea763ebef56b5ef6c096161bc)
@@ -14,7 +15,7 @@
 * [Internal] Added `getAllRequests` by @simonLeary42 in [3ac98](https://github.com/UnityHPC/unity-web-portal/commit/3ac98f83aee497a894f5d59760ec805bc8ca5872)
 * [Internal] Added warning on `null` input to redis `setCache` by @simonLeary42 in [969c0](https://github.com/UnityHPC/unity-web-portal/commit/969c0ad50df6609b66123c275f3ba5695f600af0)
 * [Internal] Required attributes to be specified in LDAP search by @simonLeary42 in [37f69](https://github.com/UnityHPC/unity-web-portal/commit/37f691b1e1048be4650fab0b2c7a30e0627b36ca) [hakasapl/phpopenldaper#16](https://github.com/hakasapl/phpopenldaper/pull/16)
-* [Bug] Fix missing emails after redis flush by @simonLeary42 in #244
+* [Bug] Fixed missing emails after redis flush by @simonLeary42 in #244
 
 # 1.2.0
 * [Feature] Added slack webhooks by @sheldor1510 in #65
