@@ -74,6 +74,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 $SEND_PIMESG_TO_ADMINS
             );
             break;
+        case "cancel_pi_request":
+            $USER->getPIGroup()->cancelGroupRequest();
+            break;
         case "account_deletion_request":
             $hasGroups = count($USER->getGroups()) > 0;
             if ($hasGroups) {
@@ -140,9 +143,7 @@ if (!$isPI) {
             action=''
             method='POST'
             id='piReq'
-            onsubmit='return confirm(\"Are you sure you want to request a PI account?\")'
         >
-        <input type='hidden' name='form_type' value='pi_request'/>
     ";
     if ($SQL->accDeletionRequestExists($USER->getUID())) {
         echo "<input type='submit' value='Request PI Account' disabled />";
@@ -151,15 +152,21 @@ if (!$isPI) {
                 You cannot request PI Account while you have requested account deletion.
             </label>
         ";
-    } elseif ($SQL->requestExists($USER->getUID())) {
-        echo "<input type='submit' value='Request PI Account' disabled />";
-        echo "
-            <label style='margin-left: 10px'>
-                Your request has been submitted and is currently pending
-            </label>
-        ";
     } else {
-        echo "<input type='submit' value='Request PI Account'/>";
+        if ($SQL->requestExists($USER->getUID())) {
+            $prompt = "onclick='return confirm(\"Are you sure you want to cancel this request?\")";
+            echo "<input type='submit' value='Cancel PI Account Request' $prompt'/>";
+            echo "
+                <label style='margin-left: 10px'>
+                    Your request has been submitted and is currently pending
+                </label>
+               <input type='hidden' name='form_type' value='cancel_pi_request'/>
+            ";
+        } else {
+            echo "<input type='hidden' name='form_type' value='pi_request'/>";
+            $prompt = "onclick='return confirm(\"Are you sure you want to request a PI account?\")";
+            echo "<input type='submit' value='Request PI Account' $prompt'/>";
+        }
     }
     echo "</form>";
 }
