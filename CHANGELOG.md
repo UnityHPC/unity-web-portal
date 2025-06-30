@@ -13,7 +13,7 @@
 * [Internal] Added `getOrgMemberUIDs` by @simonLeary42 in [46490](https://github.com/UnityHPC/unity-web-portal/commit/46490b5743bfbd5df72f8a105db1f8f405e812ce)
 * [Internal] Added `getAllRequests` by @simonLeary42 in [3ac98](https://github.com/UnityHPC/unity-web-portal/commit/3ac98f83aee497a894f5d59760ec805bc8ca5872)
 * [Internal] Added warning on `null` input to redis `setCache` by @simonLeary42 in [969c0](https://github.com/UnityHPC/unity-web-portal/commit/969c0ad50df6609b66123c275f3ba5695f600af0)
-* [Internal] Required attributes to be specified in LDAP search by @simonLeary42 in [37f69](https://github.com/UnityHPC/unity-web-portal/commit/37f691b1e1048be4650fab0b2c7a30e0627b36ca) [phpopenldaper #16](https://github.com/hakasapl/phpopenldaper/pull/16)
+* [Internal] Required attributes to be specified in LDAP search by @simonLeary42 in [37f69](https://github.com/UnityHPC/unity-web-portal/commit/37f691b1e1048be4650fab0b2c7a30e0627b36ca) [hakasapl/phpopenldaper#16](https://github.com/hakasapl/phpopenldaper/pull/16)
 * [Bug] Fix missing emails after redis flush by @simonLeary42 in #244
 
 # 1.2.0
