@@ -3,19 +3,26 @@
 # Unity Web Portal
 Unity Web Portal is a PHP application built in top of MariaDB and LDAP which acts as a central user portal for high-performance-computing clusters. 
 
-Features include:
-* Automatic updating of LDAP to reflect current state of users, groups, organizations, PI groups
-* SSH public key management
-    * Github import, upload file, paste, generate and download private key
-* Cluster notices
-    * Added to front page, mailed, and exposed via REST API
-* WYSIWYG HTML editor for webpage contents, cluster notices
-* Branding customization for multiple domains simultaneously
-* Custom UIDNumber / GIDNumber mappings for specific users
-* PI group member management
-* Login as another user
-* Mailing
-* Many more features, and more to come!
+Basic Features:
+   * User Signup
+       * PIs require admin approval, users require PI approval
+   * User SSH public key management
+       * no passwords
+       * Github import, upload file, paste, generate and download private key
+   * User changes login shell
+   * User requests their own PI group
+   * PI approves/denies requests to join their PI group
+   * PI removes members from their group
+
+Admin features:
+   * Automatic updating of LDAP to reflect current state of users, groups, organizations, PI groups
+   * Cluster notices
+       * Added to front page, mailed, and exposed via REST API
+   * WYSIWYG HTML editor for webpage contents, cluster notices
+   * Branding customization for multiple domains simultaneously
+   * Custom UIDNumber / GIDNumber mappings for specific users
+   * Login as another user
+   * Mailing
 
 ## Installation/Deployment
 
@@ -102,6 +109,7 @@ rm "$prod" && ln -s "$old" "$prod"
 ### 1.1 -> 1.2
 * Create the `audit_log` table (see `bootstrap.sql` for details)
 * Create the `account_deletion_requests` table (see `bootstrap.sql` for details)
+* Create the `user_last_logins` table (see `bootstrap.sql` for details)
 * Drop the `sso_log` table
 * Drop the `events` table
 * Reduce the size of all `varchar(1000)` columns to `varchar(768)`
