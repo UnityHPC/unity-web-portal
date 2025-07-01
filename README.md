@@ -7,14 +7,14 @@ Features include:
 * Automatic updating of LDAP to reflect current state of users, groups, organizations, PI groups
 * SSH public key management
     * Github import, upload file, paste, generate and download private key
-* PI group member management
-* Login as another user
-* Mailing
 * Cluster notices
     * Added to front page, mailed, and exposed via REST API
 * WYSIWYG HTML editor for webpage contents, cluster notices
 * Branding customization for multiple domains simultaneously
 * Custom UIDNumber / GIDNumber mappings for specific users
+* PI group member management
+* Login as another user
+* Mailing
 * Many more features, and more to come!
 
 ## Installation/Deployment
