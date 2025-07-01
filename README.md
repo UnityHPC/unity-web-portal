@@ -65,7 +65,7 @@ We recommend a deployment where each version of the portal is its own clone, the
 
 Example folder structure, where `->` indicates a symlink:
 ```
-unity-web-portal
+/var/www/
     unity-web-portal -> unity-web-portal-1.1.0
     unity-web-portal-1.1.0
     unity-web-portal-1.2.0
