@@ -60,13 +60,6 @@ CREATE TABLE user_last_logins (
    last_login TIMESTAMP
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-INSERT INTO user_last_logins (operator, last_login)
-SELECT operator, MAX(timestamp)
-FROM audit_log
-WHERE action_type = 'user_login'
-GROUP BY operator
-ON DUPLICATE KEY UPDATE last_login = VALUES(last_login);
-
 DELIMITER //
 CREATE TRIGGER update_last_login
 AFTER INSERT ON audit_log
