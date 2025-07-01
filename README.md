@@ -26,7 +26,7 @@ See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for prod
     * Also see `tools/docker-dev/identity/{config,ssh}.ldif`
 1. MySQL / MariaDB server
     * Structure should be similar to `tools/docker-dev/sql/bootstrap.sql` <!-- TODO separate structure from data -->
-1. SMTP Server
+1. SMTP server
 1. Web server
     * `DocumentRoot` set to `webroot/`
     * Authentication
