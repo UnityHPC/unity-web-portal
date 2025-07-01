@@ -1,58 +1,59 @@
-![alt text](https://user-images.githubusercontent.com/40907639/137608695-2d914da2-1ecc-480b-a47e-a9e33b2b1b45.png)
+![UNITY](https://user-images.githubusercontent.com/40907639/137608695-2d914da2-1ecc-480b-a47e-a9e33b2b1b45.png)
 
 # Unity Web Portal
-Unity Web Portal is a PHP application built in top of MariaDB and LDAP which acts as a central user portal for high-performance-computing clusters. Features include:
-* Automation of LDAP object/user creation with SSH public key configurations
-* Custom user group creation in LDAP
+Unity Web Portal is a PHP application built in top of MariaDB and LDAP which acts as a central user portal for high-performance-computing clusters. 
+
+Features include:
+* Automatic updating of LDAP to reflect current state of users, groups, organizations, PI groups
+* SSH public key management
+    * Github import, upload file, paste, generate and download private key
+* PI group member management
+* Login as another user
+* Mailing
 * Cluster notices
-* Content Management
-* Modularity for external websites
-* Automatic emails to admins/emails
-* Robust branding customization
-* Custom user options
-* Featured admin panel
+    * Added to front page, mailed, and exposed via REST API
+* WYSIWYG HTML editor for webpage contents, cluster notices
+* Branding customization for multiple domains simultaneously
+* Custom UIDNumber / GIDNumber mappings for specific users
 * Many more features, and more to come!
 
 ## Installation/Deployment
-1. Web server prerequisites
-    1. Accessible OpenLDAP server
-    1. Accessible MySQL / MariaDB server
-    1. Accessible SMTP Server
-    1. Some HTTP Authentication mechanism (such as Shibboleth SP)
-    1. Composer (`apt install composer` on Ubuntu)
-    1. PHP Extensions
-        1. `php-cli`
-        1. `php-curl`
-        1. `php-intl`
-        1. `php-ldap`
-        1. `php-mbstring`
-        1. `php-mysql`
-        1. `php-pdo`
-        1. `php-redis`
-        1. `php-xml`
-2. Composer packages
-    1. `cd` to this repository
-    1. Setup git submodules `git submodule update --init --checkout`
-    1. Install packages `composer update`
-3. Setup config file `config/config.ini` according to your site deployment
-4. Setup branding file `config/branding/config.ini` according to your site deployment
-5. Point your web server's document root to `webroot` in this repo
 
-The scope of this project ends at being responsible for the LDAP user database. We recommend production deployments to set up scripts which detect changes in LDAP and then perform further actions. For example, a script can be used to create Slurm scheduler accounting roles based on the LDAP information created by this website.
+See the Docker Compose environment (`tools/docker-dev/`) for an example.
 
-## Web Server Setup
-External to this codebase, you must configure authentication using your web server. You must retrict the following:
-* `/panel` - users who are signed in
-* `/admin` - admins who are signed in
+1. OpenLDAP server
+    * Structure should be similar to `tools/docker-dev/identity/bootstrap.ldif` <!-- TODO separate OUs from entries -->
+    * Also see `tools/docker-dev/identity/{config,ssh}.ldif`
+1. MySQL / MariaDB server
+    * Structure should be similar to `tools/docker-dev/sql/bootstrap.sql` <!-- TODO separate structure from data -->
+1. SMTP Server
+1. Web server
+    * `DocumentRoot` set to `webroot/`
+    * Authentication
+        * Any authentication will do as long as it defines `REMOTE_USER`, `givenName`, `sn`, and `mail`
+            * `REMOTE_USER` must also be unique, non-reassignable, and persistent
+        * Unity uses Shibboleth SP and the Apache Shibboleth module (`apt install shibboleth-sp-utils libapache2-mod-shib` on Ubuntu)
+    * Authorization
+        * Global access to `webroot/panel/`
+        * Restricted access to `webroot/admin/`
+        * No access anywhere else
+    * Composer (`apt install composer` on Ubuntu)
+    * Dependencies:
+        * PHP extensions
+            * cli, curl, intl, ldap, mbstring, mysql, pdo, redis, xml (`apt install php-<extension>` on Ubuntu)
+        * Libraries
+            * `composer update`
+
+## Configuration
+1. Create `deployment/config/config.ini` using `/deployment/defaults/config.ini` as a reference
+1. If using mulitple domains, create `deployment/overrides/<domain>/config/config.ini`
+1. If using custom UIDNumber/GIDNumber mappings, create `deployment/custom_user_mappings/*.csv`
+1. Add logos to `webroot/assets/footer_logos/`
+
+## Integration
+The scope of this project ends at being responsible for the LDAP user database. We recommend production deployments to set up scripts which detect changes in LDAP and then perform further actions. For example, Unity uses such scripts to create home directories and add records to the Slurm account database.
 
 ## Updating
-The update process is similar to the installation process:
-
-1. Clone the release and follow installation instructions 1 and 2 from above.
-2. Copy the following folders from the old installation to the new one:
-    1. `config`
-    2. `webroot/assets/footer_logos`
-
 We recommend a deployment where each version of the portal is its own clone, then just change a symlink to point to the new version. This way a rollback is much easier.
 
 Example folder structure, where `->` indicates a symlink:
@@ -62,6 +63,26 @@ unity-web-portal
     unity-web-portal-1.0.0-RC1
     unity-web-portal-1.0.0-RC2
     unity-web-portal-1.1.0
+```
+
+Update instructions assuming the above structure:
+
+```shell
+git clone "$url"
+cd unity-web-portal
+git submodule update --init --checkout
+composer update
+cp "$prod/deployment/config/config.ini" ./deployment/config/config.ini
+rsync -a "$prod/deployment/custom_user_mappings/" ./deployment/custom_user_mappings/
+rsync -a "$prod/deployment/overrides/" ./deployment/overrides/
+rsync -a "$prod/webroot/assets/footer_logos/" ./footer_logos/
+rm "$prod" && ln -s "$PWD" "$prod"
+```
+
+Rollback:
+
+```shell
+rm "$prod" && ln -s "$old" "$prod"
 ```
 
 Below you will find specific instructions for moving between version:
