@@ -60,16 +60,20 @@ Example folder structure, where `->` indicates a symlink:
 ```
 unity-web-portal
     unity-web-portal -> unity-web-portal-1.1.0
-    unity-web-portal-1.0.0-RC1
-    unity-web-portal-1.0.0-RC2
     unity-web-portal-1.1.0
+    unity-web-portal-1.2.0
 ```
 
 Update instructions assuming the above structure:
 
 ```shell
-git clone "$url"
-cd unity-web-portal
+url="https://..."
+prod="/var/www/unity-web-portal"
+old="/var/www/unity-web-portal-1.1.0"
+new="/var/www/unity-web-portal-1.2.0"
+
+mkdir "$new" && cd "$new"
+git clone "$url" .
 git submodule update --init --checkout
 composer update
 cp "$prod/deployment/config/config.ini" ./deployment/config/config.ini
@@ -85,7 +89,7 @@ Rollback:
 rm "$prod" && ln -s "$old" "$prod"
 ```
 
-Below you will find specific instructions for moving between version:
+### Database Migration
 
 ### 1.0.0-RC2 > 1.1.0
 
