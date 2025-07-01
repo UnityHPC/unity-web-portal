@@ -52,6 +52,37 @@ CREATE TABLE `audit_log` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `user_last_logins`
+--
+
+CREATE TABLE user_last_logins (
+   operator VARCHAR(768) PRIMARY KEY,
+   last_login TIMESTAMP
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+INSERT INTO user_last_logins (operator, last_login)
+SELECT operator, MAX(timestamp)
+FROM audit_log
+WHERE action_type = 'user_login'
+GROUP BY operator
+ON DUPLICATE KEY UPDATE last_login = VALUES(last_login);
+
+DELIMITER //
+CREATE TRIGGER update_last_login
+AFTER INSERT ON audit_log
+FOR EACH ROW
+BEGIN
+   IF NEW.action_type = 'user_login' THEN
+       INSERT INTO user_last_logins (operator, last_login)
+       VALUES (NEW.operator, NEW.timestamp)
+       ON DUPLICATE KEY UPDATE last_login = NEW.timestamp;
+   END IF;
+END;//
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `groupJoinRequests`
 --
 
