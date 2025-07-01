@@ -93,11 +93,11 @@ rm "$prod" && ln -s "$old" "$prod"
 
 ### 1.0 -> 1.1
 
-1. `config/branding/config.ini.default` has some new fields that will need to be overriden by the site config if needed:
-   1. `pi_approve*` in the `mail` section
-   2. `home` in the `page` section
-   3. The entire `loginshell` section
-1. In SQL db be sure to add the `home` content management row
+* `config/branding/config.ini.default` has some new fields that will need to be overriden by the site config if needed:
+   * `pi_approve*` in the `mail` section
+   * `home` in the `page` section
+   * The entire `loginshell` section
+* In SQL db be sure to add the `home` content management row
 
 ### 1.1 -> 1.2
 * Create the `audit_log` table (see `bootstrap.sql` for details)
