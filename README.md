@@ -19,7 +19,7 @@ Features include:
 
 ## Installation/Deployment
 
-See the Docker Compose environment (`tools/docker-dev/`) for an example.
+See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for production) example.
 
 1. OpenLDAP server
     * Structure should be similar to `tools/docker-dev/identity/bootstrap.ldif` <!-- TODO separate OUs from entries -->
