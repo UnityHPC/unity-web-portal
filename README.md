@@ -35,24 +35,29 @@ See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for prod
     * Structure should be similar to `tools/docker-dev/sql/bootstrap.sql` <!-- TODO separate structure from data -->
 1. SMTP server
 1. Web server
-    * `DocumentRoot` set to `webroot/`
-    * Authentication
-        * Any authentication will do as long as it defines `REMOTE_USER`, `givenName`, `sn`, and `mail`
-            * `REMOTE_USER` must also be unique, non-reassignable, and persistent
-        * Unity uses Shibboleth SP and the Apache Shibboleth module (`apt install shibboleth-sp-utils libapache2-mod-shib` on Ubuntu)
-    * Authorization
-        * Global access to `webroot/panel/`
-        * Restricted access to `webroot/admin/`
-        * No access anywhere else
+    * `unity-web` user and group should exist
+    * This repository cloned, with files owned by `unity-web:unity-web`
+    * Submodules checked out (`git submodule update --checkout --init`)
     * Composer (`apt install composer` on Ubuntu)
     * Dependencies:
         * PHP extensions
             * cli, curl, intl, ldap, mbstring, mysql, pdo, redis, xml (`apt install php-<extension>` on Ubuntu)
         * Libraries
             * `composer update`
+    * `httpd` should run as the `unity-web` user/group
+    * `httpd` `DocumentRoot` set to `webroot/`
+    * `httpd` Authentication
+        * Any authentication will do as long as it defines `REMOTE_USER`, `givenName`, `sn`, and `mail`
+            * `REMOTE_USER` must also be unique, non-reassignable, and persistent
+        * Unity uses Shibboleth SP and the Apache Shibboleth module (`apt install shibboleth-sp-utils libapache2-mod-shib` on Ubuntu)
+    * `httpd` Authorization
+        * Global access to `webroot/panel/`
+        * Restricted access to `webroot/admin/`
+        * No access anywhere else
 
 ## Configuration
 1. Create `deployment/config/config.ini` using `/deployment/defaults/config.ini` as a reference
+    * Make sure this file is not world readable!
 1. If using mulitple domains, create `deployment/overrides/<domain>/config/config.ini`
 1. If using custom UIDNumber/GIDNumber mappings, create `deployment/custom_user_mappings/*.csv`
 1. Add logos to `webroot/assets/footer_logos/`
