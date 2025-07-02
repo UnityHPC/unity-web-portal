@@ -115,6 +115,7 @@ rm "$prod" && ln -s "$old" "$prod"
 * Create the `audit_log` table (see `bootstrap.sql` for details)
 * Create the `account_deletion_requests` table (see `bootstrap.sql` for details)
 * Create the `user_last_logins` table (see `bootstrap.sql` for details)
+* Create the `unityusers` group in LDAP (see `bootstrap.ldif` for details)
 * Drop the `sso_log` table
 * Drop the `events` table
 * Reduce the size of all `varchar(1000)` columns to `varchar(768)`
