@@ -104,12 +104,12 @@ rm "$prod" && ln -s "$old" "$prod"
 ### Version-specific update instructions:
 
 ### 1.0 -> 1.1
-
+* SQL:
+  * Add the `home` content management row
 * `config/branding/config.ini.default` has some new fields that will need to be overriden by the site config if needed:
-   * `pi_approve*` in the `mail` section
-   * `home` in the `page` section
+   * `mail.pi_approve*`
+   * `page.home`
    * The entire `loginshell` section
-* In SQL db be sure to add the `home` content management row
 
 ### 1.1 -> 1.2
 * SQL:
@@ -119,19 +119,21 @@ rm "$prod" && ln -s "$old" "$prod"
     * Drop the `sso_log` table
     * Drop the `events` table
     * Reduce the size of all `varchar(1000)` columns to `varchar(768)`
-* LDAP:
-    * Create the `unityusers` group (see `bootstrap.ldif` for details)
+    * Delete the `priv` content management row
 * `defaults/config.ini.default` has some new fields that will need to be overriden by the site config if needed:
-    * `user_group` in the `ldap` section
-    * `terms_of_service_url` in the `site` section
-    * `account_policy_url` in the `site` section
+    * `ldap.user_group`
+    * `site.terms_of_service_url`
+    * `site.account_policy_url`
+* LDAP:
+    * Create a new group defined by `ldap.user_group` in the config
 
 ### 1.2.0 -> 1.2.1
-* Add new columns to the `requests` table:
-   ```sql
-   ALTER TABLE `requests`
-   ADD `firstname` VARCHAR(768) NOT NULL AFTER `timestamp`,
-   ADD `lastname` VARCHAR(768) NOT NULL AFTER `firstname`,
-   ADD `email` VARCHAR(768) NOT NULL AFTER `lastname`,
-   ADD `org` VARCHAR(768) NOT NULL AFTER `email`; 
-   ```
+* SQL:
+    * Add new columns to the `requests` table:
+       ```sql
+       ALTER TABLE `requests`
+       ADD `firstname` VARCHAR(768) NOT NULL AFTER `timestamp`,
+       ADD `lastname` VARCHAR(768) NOT NULL AFTER `firstname`,
+       ADD `email` VARCHAR(768) NOT NULL AFTER `lastname`,
+       ADD `org` VARCHAR(768) NOT NULL AFTER `email`; 
+       ```
