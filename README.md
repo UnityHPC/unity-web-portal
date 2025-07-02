@@ -112,13 +112,19 @@ rm "$prod" && ln -s "$old" "$prod"
 * In SQL db be sure to add the `home` content management row
 
 ### 1.1 -> 1.2
-* Create the `audit_log` table (see `bootstrap.sql` for details)
-* Create the `account_deletion_requests` table (see `bootstrap.sql` for details)
-* Create the `user_last_logins` table (see `bootstrap.sql` for details)
-* Create the `unityusers` group in LDAP (see `bootstrap.ldif` for details)
-* Drop the `sso_log` table
-* Drop the `events` table
-* Reduce the size of all `varchar(1000)` columns to `varchar(768)`
+* SQL:
+    * Create the `audit_log` table (see `bootstrap.sql` for details)
+    * Create the `account_deletion_requests` table (see `bootstrap.sql` for details)
+    * Create the `user_last_logins` table (see `bootstrap.sql` for details)
+    * Drop the `sso_log` table
+    * Drop the `events` table
+    * Reduce the size of all `varchar(1000)` columns to `varchar(768)`
+* LDAP:
+    * Create the `unityusers` group (see `bootstrap.ldif` for details)
+* `defaults/config.ini.default` has some new fields that will need to be overriden by the site config if needed:
+    * `user_group` in the `ldap` section
+    * `terms_of_service_url` in the `site` section
+    * `account_policy_url` in the `site` section
 
 ### 1.2.0 -> 1.2.1
 * Add new columns to the `requests` table:
