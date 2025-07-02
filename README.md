@@ -120,8 +120,8 @@ rm "$prod" && ln -s "$old" "$prod"
     * Drop the `sso_log` table
     * Drop the `events` table
     * Reduce the size of all `varchar(1000)` columns to `varchar(768)`
-    * Delete the `priv` row in the `pages` table (if moving terms of service to external site)
-    * Add the `account_policy` row in the `pages` table (if NOT moving terms of service to external site)
+    * Delete the `priv` row in the `pages` table (if moving site policy to external site)
+    * Add the `account_policy` row in the `pages` table (if NOT moving site policy to external site)
 * `defaults/config.ini.default` has some new fields that may need to be overriden:
     * `ldap.user_group`
     * `site.terms_of_service_url`
