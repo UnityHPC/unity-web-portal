@@ -86,7 +86,7 @@ function http_post(string $phpfile, array $post_data): void
     $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "POST";
     $_SERVER["PHP_SELF"] = preg_replace("/.*webroot\//", "/", $phpfile);
-    $_SERVER["REMOTE_URI"] = preg_replace("/.*webroot\//", "/", $phpfile);  // Slightly imprecise because it doesn't include get parameters
+    $_SERVER["REQUEST_URI"] = preg_replace("/.*webroot\//", "/", $phpfile);  // Slightly imprecise because it doesn't include get parameters
     $_POST = $post_data;
     ob_start();
     $post_did_redirect_or_die = false;
@@ -109,7 +109,7 @@ function http_get(string $phpfile, array $get_data = array()): void
     $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "GET";
     $_SERVER["PHP_SELF"] = preg_replace("/.*webroot\//", "/", $phpfile);
-    $_SERVER["REMOTE_URI"] = preg_replace("/.*webroot\//", "/", $phpfile);  // Slightly imprecise because it doesn't include get parameters
+    $_SERVER["REQUEST_URI"] = preg_replace("/.*webroot\//", "/", $phpfile);  // Slightly imprecise because it doesn't include get parameters
     $_GET = $get_data;
     ob_start();
     try {
