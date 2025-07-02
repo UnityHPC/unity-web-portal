@@ -23,6 +23,7 @@
 * [Feature] Added account deletion requests by @sheldor1510 in #82
 * [Feature] Added reminder emails for PI membership requests @bryank-cs in #101
 * [Feature] Added sorting and filtering to user / PI mgmt pages by @sheldor1510 in #87
+* [Feature] Required confirmation of new account policy when making a PI become request by @bryank-cs in #223
 * [Frontend] Improved visuals on account page by @simonLeary42 in #201 #204 #205 #206
 * [Frontend] Improved visuals on user / PI mgmt pages by @simonLeary42 in #205
 * [Frontend] Removed custom shell by @simonLeary42 in #203
@@ -33,7 +34,7 @@
 * [Frontend] Added note to account page by @sheldor1510 in #91
 * [Dev] Updated SQL bootstrap by @sheldor1510 in #91
 * [Dev] Added automated testing by @simonLeary42 in #179 #186 #188 #190 #191 #192 #193 #194 #198 #212 #232 #238
-* [Dev] Removed policy page / `priv.php`, allow external link instead by @simonLeary42 in #182
+* [Dev] Moved site policy to external URL by @simonLeary42 in #182
 * [Dev] Changed admin group from `sudo` to `web_admins`, same as production by @simonLeary42 in #173
 * [Dev] Sorted `htpasswd` by @simonLeary42 in #220
 * [Bug] Fixed garbage SSH keys from empty github username by @Shaswat975 in #102
