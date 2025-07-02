@@ -113,6 +113,7 @@ rm "$prod" && ln -s "$old" "$prod"
 
 ### 1.1 -> 1.2
 * SQL:
+    * Create the `sitevars` table (see `bootstrap.sql` for details)
     * Create the `audit_log` table (see `bootstrap.sql` for details)
     * Create the `account_deletion_requests` table (see `bootstrap.sql` for details)
     * Create the `user_last_logins` table (see `bootstrap.sql` for details)
