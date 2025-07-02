@@ -106,7 +106,7 @@ rm "$prod" && ln -s "$old" "$prod"
 ### 1.0 -> 1.1
 * SQL:
   * Add the `home` content management row
-* `config/branding/config.ini.default` has some new fields that will need to be overriden by the site config if needed:
+* `config/branding/config.ini.default` has some new fields that may need to be overriden:
    * `mail.pi_approve*`
    * `page.home`
    * The entire `loginshell` section
@@ -120,11 +120,14 @@ rm "$prod" && ln -s "$old" "$prod"
     * Drop the `sso_log` table
     * Drop the `events` table
     * Reduce the size of all `varchar(1000)` columns to `varchar(768)`
-    * Delete the `priv` content management row
-* `defaults/config.ini.default` has some new fields that will need to be overriden by the site config if needed:
+    * Delete the `priv` row in the `pages` table (if moving terms of service to external site)
+    * Add the `account_policy` row in the `pages` table (if NOT moving terms of service to external site)
+* `defaults/config.ini.default` has some new fields that may need to be overriden:
     * `ldap.user_group`
     * `site.terms_of_service_url`
+        * example, created account policy page: `https://unity.rc.umass.edu/panel/account_policy.php`
     * `site.account_policy_url`
+        * example, using old site policy page: `https://unity.rc.umass.edu/panel/priv.php`
 * LDAP:
     * Create a new group defined by `ldap.user_group` in the config
 
