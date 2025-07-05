@@ -37,36 +37,33 @@ include $LOC_HEADER;
     </tr>
 
     <?php
-    $users = $LDAP->getAllUsers($SQL, $MAILER, $REDIS, $WEBHOOK);
-
-    usort($users, function ($a, $b) {
-        return strcmp($a->uid, $b->uid);
+    $UID2PIGIDs = $LDAP->getAllUID2PIGIDs();
+    $user_entries = $LDAP->getAllUsersEntries();
+    usort($user_entries, function ($a, $b) {
+        return strcmp($a["uid"], $b["uid"]);
     });
-
-    foreach ($users as $user) {
-        if ($user->hasRequestedAccountDeletion()) {
+    foreach ($user_entries as $entry) {
+        $uid = $entry["uid"];
+        if ($SQL->accDeletionRequestExists($uid)) {
             echo "<tr style='color:grey; font-style: italic'>";
         } else {
             echo "<tr>";
         }
-        echo "<td>" . $user->getFirstname() . " " . $user->getLastname() . "</td>";
-        echo "<td>" . $user->uid . "</td>";
-        echo "<td>" . $user->getOrg() . "</td>";
-        echo "<td><a href='mailto:" . $user->getMail() . "'>" . $user->getMail() . "</a></td>";
+        echo "<td>" . $entry["gecos"] . "</td>";
+        echo "<td>" . $uid . "</td>";
+        echo "<td>" . $user["o"] . "</td>";
+        echo "<td><a href='mailto:" . $user["mail"] . "'>" . $user["mail"] . "</a></td>";
         echo "<td>";
-        $cur_user_groups = $user->getGroups();
-        foreach ($cur_user_groups as $cur_group) {
-            echo "<a href='mailto:" . $cur_group->getOwner()->getMail() . "'>" . $cur_group->gid . "</a>";
-            if ($cur_group !== array_key_last($cur_user_groups)) {
-                echo '<br>';
-            }
+        foreach ($UID2PIGIDS[$uid] as $GID) {
+            echo "<p>$GID</p>";
         }
+        echo "<br>";
         echo "</td>";
         echo "<td>";
         echo "<form class='viewAsUserForm' action='' method='POST'
-        onsubmit='return confirm(\"Are you sure you want to switch to the user " . $user->uid . "?\");'>
+        onsubmit='return confirm(\"Are you sure you want to switch to the user '$uid'?\");'>
         <input type='hidden' name='form_type' value='viewAsUser'>
-        <input type='hidden' name='uid' value='" . $user->uid . "'>
+        <input type='hidden' name='uid' value='$uid'>
         <input type='submit' name='action' value='Access'>
         </form>";
         echo "</td>";
