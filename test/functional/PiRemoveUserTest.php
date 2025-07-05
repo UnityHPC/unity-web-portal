@@ -4,7 +4,8 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\UnityUser;
 
-class PiRemoveUserTest extends TestCase {
+class PiRemoveUserTest extends TestCase
+{
     private function removeUser(string $uid)
     {
         http_post(
@@ -18,7 +19,7 @@ class PiRemoveUserTest extends TestCase {
         global $USER, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
         switchUser(...getUserIsPIHasAtLeastOneMember());
         $pi = $USER;
-        $piUid = $USER->getUID();
+        $piUid = $USER->uid;
         $piGroup = $USER->getPIGroup();
         $this->assertTrue($piGroup->exists());
         $memberUIDs = $piGroup->getGroupMemberUIDs();
@@ -36,10 +37,10 @@ class PiRemoveUserTest extends TestCase {
                 break;
             }
         }
-        $this->assertNotEquals($pi->getUID(), $memberToDelete->getUID());
+        $this->assertNotEquals($pi->uid, $memberToDelete->uid);
         $this->assertTrue($piGroup->userExists($memberToDelete));
         try {
-            $this->removeUser($memberToDelete->getUID());
+            $this->removeUser($memberToDelete->uid);
             $this->assertFalse($piGroup->userExists($memberToDelete));
         } finally {
             if (!$piGroup->userExists($memberToDelete)) {
@@ -65,7 +66,7 @@ class PiRemoveUserTest extends TestCase {
         $this->assertTrue($piGroup->userExists($pi));
         $this->expectException(Exception::class);
         try {
-            $this->removeUser($pi->getUID());
+            $this->removeUser($pi->uid);
             $this->assertTrue($piGroup->userExists($pi));
         } finally {
             if (!$piGroup->userExists($pi)) {
@@ -78,6 +79,6 @@ class PiRemoveUserTest extends TestCase {
                 );
                 $piGroup->approveUser($pi);
             }
-       }
+        }
     }
 }

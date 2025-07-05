@@ -165,7 +165,7 @@ class UnitySQL
 
         $stmt->execute();
 
-        $operator = $operator->getUID();
+        $operator = $operator->uid;
 
         $this->addLog(
             $operator,
@@ -252,7 +252,7 @@ class UnitySQL
 
         $stmt->execute();
 
-        $operator = $operator->getUID();
+        $operator = $operator->uid;
 
         $this->addLog(
             $operator,

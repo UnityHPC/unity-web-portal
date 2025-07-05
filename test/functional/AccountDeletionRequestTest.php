@@ -9,10 +9,10 @@ class AccountDeletionRequestTest extends TestCase
         global $USER, $SQL;
         if ($x == 0) {
             $this->assertFalse($USER->hasRequestedAccountDeletion());
-            $this->assertFalse($SQL->accDeletionRequestExists($USER->getUID()));
+            $this->assertFalse($SQL->accDeletionRequestExists($USER->uid));
         } elseif ($x > 0) {
             $this->assertTrue($USER->hasRequestedAccountDeletion());
-            $this->assertTrue($SQL->accDeletionRequestExists($USER->getUID()));
+            $this->assertTrue($SQL->accDeletionRequestExists($USER->uid));
         } else {
             throw new RuntimeError("x must not be negative");
         }
@@ -25,7 +25,7 @@ class AccountDeletionRequestTest extends TestCase
         $stmt = $SQL->getConn()->prepare(
             "SELECT * FROM account_deletion_requests WHERE uid=:uid"
         );
-        $uid = $USER->getUID();
+        $uid = $USER->uid;
         $stmt->bindParam(":uid", $uid);
         $stmt->execute();
         return count($stmt->fetchAll());
@@ -49,7 +49,7 @@ class AccountDeletionRequestTest extends TestCase
             );
             $this->assertNumberAccountDeletionRequests(1);
         } finally {
-            $SQL->deleteAccountDeletionRequest($USER->getUID());
+            $SQL->deleteAccountDeletionRequest($USER->uid);
             $this->assertNumberAccountDeletionRequests(0);
         }
     }
@@ -68,7 +68,7 @@ class AccountDeletionRequestTest extends TestCase
             );
             $this->assertNumberAccountDeletionRequests(0);
         } finally {
-            $SQL->deleteAccountDeletionRequest($USER->getUID());
+            $SQL->deleteAccountDeletionRequest($USER->uid);
             $this->assertNumberAccountDeletionRequests(0);
         }
     }

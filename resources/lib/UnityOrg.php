@@ -57,14 +57,14 @@ class UnityOrg
 
     public function inOrg($user, $ignorecache = false)
     {
-        return in_array($user->getUID(), $this->getOrgMemberUIDs($ignorecache));
+        return in_array($user->uid, $this->getOrgMemberUIDs($ignorecache));
     }
 
     public function getOrgMembers($ignorecache = false)
     {
         $members = $this->getGroupMemberUIDs($ignorecache);
         $out = array();
-        $owner_uid = $this->getOwner()->getUID();
+        $owner_uid = $this->getOwner()->uid;
         foreach ($members as $member) {
                 $user_obj = new UnityUser(
                     $member,
@@ -103,16 +103,16 @@ class UnityOrg
     public function addUser($user)
     {
         $org_group = $this->getLDAPOrgGroup();
-        $org_group->appendAttribute("memberuid", $user->getUID());
+        $org_group->appendAttribute("memberuid", $user->uid);
         $org_group->write();
-        $this->REDIS->appendCacheArray($this->getOrgID(), "members", $user->getUID());
+        $this->REDIS->appendCacheArray($this->getOrgID(), "members", $user->uid);
     }
 
     public function removeUser($user)
     {
         $org_group = $this->getLDAPOrgGroup();
-        $org_group->removeAttributeEntryByValue("memberuid", $user->getUID());
+        $org_group->removeAttributeEntryByValue("memberuid", $user->uid);
         $org_group->write();
-        $this->REDIS->removeCacheArray($this->getOrgID(), "members", $user->getUID());
+        $this->REDIS->removeCacheArray($this->getOrgID(), "members", $user->uid);
     }
 }
