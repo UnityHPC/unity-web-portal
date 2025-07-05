@@ -10,6 +10,7 @@ class UnityUser
     private const HOME_DIR = "/home/";
 
     public $uid;
+    private $entry;
 
     // service stack
     private $LDAP;
@@ -21,6 +22,7 @@ class UnityUser
     public function __construct($uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
     {
         $this->uid = $uid;
+        $this->entry = $LDAP->getUserEntry($uid);
 
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
@@ -70,7 +72,7 @@ class UnityUser
         //
         // Create LDAP user
         //
-        $ldapUserEntry = $this->getLDAPUser();
+        $ldapUserEntry = $this->entry;
 
         if (!$ldapUserEntry->exists()) {
             $ldapUserEntry->setAttribute("objectclass", UnityLDAP::POSIX_ACCOUNT_CLASS);
@@ -142,16 +144,6 @@ class UnityUser
     }
 
     /**
-     * Returns the ldap account entry corresponding to the user
-     *
-     * @return ldapEntry posix account
-     */
-    public function getLDAPUser()
-    {
-        return $this->LDAP->getUserEntry($this->uid);
-    }
-
-    /**
      * Returns the ldap group entry corresponding to the user
      *
      * @return ldapEntry posix group
@@ -163,7 +155,7 @@ class UnityUser
 
     public function exists()
     {
-        return $this->getLDAPUser()->exists() && $this->getLDAPGroup()->exists();
+        return $this->entry->exists() && $this->getLDAPGroup()->exists();
     }
 
     //
@@ -172,7 +164,7 @@ class UnityUser
 
     public function setOrg($org)
     {
-        $ldap_user = $this->getLDAPUser();
+        $ldap_user = $this->entry;
         $ldap_user->setAttribute("o", $org);
         $ldap_user->write();
         $this->REDIS->setCache($this->uid, "org", $org);
@@ -189,13 +181,13 @@ class UnityUser
         }
 
         if ($this->exists()) {
-            $org = $this->getLDAPUser()->getAttribute("o")[0];
+            $org = $this->entry->getAttribute("o")[0];
 
             if (!$ignorecache) {
                 $this->REDIS->setCache($this->uid, "org", $org);
             }
 
-            return $this->getLDAPUser()->getAttribute("o")[0];
+            return $this->entry->getAttribute("o")[0];
         }
 
         return null;
@@ -208,7 +200,7 @@ class UnityUser
      */
     public function setFirstname($firstname, $operator = null)
     {
-        $ldap_user = $this->getLDAPUser();
+        $ldap_user = $this->entry;
         $ldap_user->setAttribute("givenname", $firstname);
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
@@ -239,7 +231,7 @@ class UnityUser
         }
 
         if ($this->exists()) {
-            $firstname = $this->getLDAPUser()->getAttribute("givenname")[0];
+            $firstname = $this->entry->getAttribute("givenname")[0];
 
             if (!$ignorecache) {
                 $this->REDIS->setCache($this->uid, "firstname", $firstname);
@@ -258,7 +250,7 @@ class UnityUser
      */
     public function setLastname($lastname, $operator = null)
     {
-        $ldap_user = $this->getLDAPUser();
+        $ldap_user = $this->entry;
         $ldap_user->setAttribute("sn", $lastname);
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
@@ -269,7 +261,7 @@ class UnityUser
             $this->uid
         );
 
-        $this->getLDAPUser()->write();
+        $this->entry->write();
         $this->REDIS->setCache($this->uid, "lastname", $lastname);
     }
 
@@ -289,7 +281,7 @@ class UnityUser
         }
 
         if ($this->exists()) {
-            $lastname = $this->getLDAPUser()->getAttribute("sn")[0];
+            $lastname = $this->entry->getAttribute("sn")[0];
 
             if (!$ignorecache) {
                 $this->REDIS->setCache($this->uid, "lastname", $lastname);
@@ -314,7 +306,7 @@ class UnityUser
      */
     public function setMail($email, $operator = null)
     {
-        $ldap_user = $this->getLDAPUser();
+        $ldap_user = $this->entry;
         $ldap_user->setAttribute("mail", $email);
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
@@ -325,7 +317,7 @@ class UnityUser
             $this->uid
         );
 
-        $this->getLDAPUser()->write();
+        $this->entry->write();
         $this->REDIS->setCache($this->uid, "mail", $email);
     }
 
@@ -345,7 +337,7 @@ class UnityUser
         }
 
         if ($this->exists()) {
-            $mail = $this->getLDAPUser()->getAttribute("mail")[0];
+            $mail = $this->entry->getAttribute("mail")[0];
 
             if (!$ignorecache) {
                 $this->REDIS->setCache($this->uid, "mail", $mail);
@@ -364,8 +356,8 @@ class UnityUser
      */
     public function setSSHKeys($keys, $operator = null, $send_mail = true)
     {
-        $ldapUser = $this->getLDAPUser();
-        $operator = is_null($operator) ? $this->uid : $operator->uid;
+        $ldapUser = $this->entry;
+        $operator = is_null($operator) ? $this->getUID() : $operator->uid;
         $keys_filt = array_values(array_unique($keys));
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("sshpublickey", $keys_filt);
@@ -409,7 +401,7 @@ class UnityUser
         }
 
         if ($this->exists()) {
-            $ldapUser = $this->getLDAPUser();
+            $ldapUser = $this->entry;
             $result = $ldapUser->getAttribute("sshpublickey");
             if (is_null($result)) {
                 $keys = array();
@@ -444,7 +436,7 @@ class UnityUser
         if (empty($shell)) {
             throw new Exception("login shell must not be empty!");
         }
-        $ldapUser = $this->getLDAPUser();
+        $ldapUser = $this->entry;
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("loginshell", $shell);
             $ldapUser->write();
@@ -486,7 +478,7 @@ class UnityUser
         }
 
         if ($this->exists()) {
-            $ldapUser = $this->getLDAPUser();
+            $ldapUser = $this->entry;
 
             $loginshell = $ldapUser->getAttribute("loginshell")[0];
 
@@ -502,7 +494,7 @@ class UnityUser
 
     public function setHomeDir($home, $operator = null)
     {
-        $ldapUser = $this->getLDAPUser();
+        $ldapUser = $this->entry;
         if ($ldapUser->exists()) {
             $ldapUser->setAttribute("homedirectory", $home);
             $ldapUser->write();
@@ -535,7 +527,7 @@ class UnityUser
         }
 
         if ($this->exists()) {
-            $ldapUser = $this->getLDAPUser();
+            $ldapUser = $this->entry;
 
             $homedir = $ldapUser->getAttribute("homedirectory");
 
