@@ -86,11 +86,11 @@ class UnityGroup
         }
 
         // check if account deletion request already exists
-        if ($this->SQL->accDeletionRequestExists($this->getOwner()->getUID())) {
+        if ($this->SQL->accDeletionRequestExists($this->getOwner()->uid)) {
             return;
         }
 
-        $this->SQL->addRequest($this->getOwner()->getUID(), $firstname, $lastname, $email, $org);
+        $this->SQL->addRequest($this->getOwner()->uid, $firstname, $lastname, $email, $org);
 
         if ($send_mail) {
             // send email to requestor
@@ -102,7 +102,7 @@ class UnityGroup
             $this->WEBHOOK->sendWebhook(
                 "group_request_admin",
                 array(
-                    "user" => $this->getOwner()->getUID(),
+                    "user" => $this->getOwner()->uid,
                     "org" => $org,
                     "name" => "$firstname $lastname",
                     "email" => $email
@@ -114,7 +114,7 @@ class UnityGroup
                     "admin",
                     "group_request_admin",
                     array(
-                        "user" => $this->getOwner()->getUID(),
+                        "user" => $this->getOwner()->uid,
                         "org" => $org,
                         "name" => "$firstname $lastname",
                         "email" => $email
@@ -126,7 +126,7 @@ class UnityGroup
                 "pi_approve",
                 "group_request_admin",
                 array(
-                    "user" => $this->getOwner()->getUID(),
+                    "user" => $this->getOwner()->uid,
                     "org" => $org,
                     "name" => "$firstname $lastname",
                     "email" => $email
@@ -140,7 +140,7 @@ class UnityGroup
      */
     public function approveGroup($operator = null, $send_mail = true)
     {
-        $uid = $this->getOwner()->getUID();
+        $uid = $this->getOwner()->uid;
         $request = $this->SQL->getRequest($uid, UnitySQL::REQUEST_BECOME_PI);
 
         // check for edge cases...
@@ -164,15 +164,15 @@ class UnityGroup
 
         // remove the request from the sql table
         // this will silently fail if the request doesn't exist
-        $this->SQL->removeRequest($this->getOwner()->getUID());
+        $this->SQL->removeRequest($this->getOwner()->uid);
 
-        $operator = is_null($operator) ? $this->getOwner()->getUID() : $operator->getUID();
+        $operator = is_null($operator) ? $this->getOwner()->uid : $operator->uid;
 
         $this->SQL->addLog(
             $operator,
             $_SERVER['REMOTE_ADDR'],
             "approved_group",
-            $this->getOwner()->getUID()
+            $this->getOwner()->uid
         );
 
         // send email to the newly approved PI
@@ -190,19 +190,19 @@ class UnityGroup
     public function denyGroup($operator = null, $send_mail = true)
     {
         // remove request - this will fail silently if the request doesn't exist
-        $this->SQL->removeRequest($this->getOwner()->getUID());
+        $this->SQL->removeRequest($this->getOwner()->uid);
 
         if ($this->exists()) {
             return;
         }
 
-        $operator = is_null($operator) ? $this->getOwner()->getUID() : $operator->getUID();
+        $operator = is_null($operator) ? $this->getOwner()->uid : $operator->uid;
 
         $this->SQL->addLog(
             $operator,
             $_SERVER['REMOTE_ADDR'],
             "denied_group",
-            $this->getOwner()->getUID()
+            $this->getOwner()->uid
         );
 
         // send email to the requestor
@@ -216,17 +216,17 @@ class UnityGroup
 
     public function cancelGroupRequest($send_mail = true)
     {
-        if (!$this->SQL->requestExists($this->getOwner()->getUID())) {
+        if (!$this->SQL->requestExists($this->getOwner()->uid)) {
             return;
         }
 
-        $this->SQL->removeRequest($this->getOwner()->getUID());
+        $this->SQL->removeRequest($this->getOwner()->uid);
 
         if ($send_mail) {
             $this->MAILER->sendMail(
                 "admin",
                 "group_request_cancelled",
-                ["uid" => $this->getOwner()->getUID()],
+                ["uid" => $this->getOwner()->uid],
             );
         }
     }
@@ -237,14 +237,14 @@ class UnityGroup
             return;
         }
 
-        $this->SQL->removeRequest($user->getUID(), $this->pi_uid);
+        $this->SQL->removeRequest($user->uid, $this->pi_uid);
 
         if ($send_mail) {
             // send email to requestor
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_join_request_cancelled",
-                ["uid" => $user->getUID()]
+                ["uid" => $user->uid]
             );
         }
     }
@@ -271,7 +271,7 @@ class UnityGroup
     //         $this->entry->delete();
     //         $this->REDIS->removeCacheArray("sorted_groups", "", $this->getPIUID());
     //         foreach ($users as $user) {
-    //             $this->REDIS->removeCacheArray($user->getUID(), "groups", $this->getPIUID());
+    //             $this->REDIS->removeCacheArray($user->uid, "groups", $this->getPIUID());
     //         }
     //     }
 
@@ -292,7 +292,7 @@ class UnityGroup
      */
     public function approveUser($new_user, $send_mail = true)
     {
-        $uid = $new_user->getUID();
+        $uid = $new_user->uid;
         $gid = $this->getPIUID();
         $request = $this->SQL->getRequest($uid, $gid);
         // check if user exists
@@ -308,7 +308,7 @@ class UnityGroup
         // add user to the LDAP object
         $this->addUserToGroup($new_user);
 
-        $this->SQL->removeRequest($new_user->getUID(), $this->pi_uid);
+        $this->SQL->removeRequest($new_user->uid, $this->pi_uid);
 
         // send email to the requestor
         if ($send_mail) {
@@ -324,7 +324,7 @@ class UnityGroup
                 "group_user_added_owner",
                 array(
                     "group" => $this->pi_uid,
-                    "user" => $new_user->getUID(),
+                    "user" => $new_user->uid,
                     "name" => $request["firstname"] . " " . $request["lastname"],
                     "email" => $request["email"],
                     "org" => $request["org"],
@@ -335,12 +335,12 @@ class UnityGroup
 
     public function denyUser($new_user, $send_mail = true)
     {
-        $uid = $new_user->getUID();
+        $uid = $new_user->uid;
         $gid = $this->getPIUID();
         $request = $this->SQL->getRequest($uid, $gid);
 
         // remove request, this will fail silently if the request doesn't exist
-        $this->SQL->removeRequest($new_user->getUID(), $this->pi_uid);
+        $this->SQL->removeRequest($new_user->uid, $this->pi_uid);
 
         if ($send_mail) {
             // send email to the user
@@ -356,7 +356,7 @@ class UnityGroup
                 "group_user_denied_owner",
                 array(
                     "group" => $this->pi_uid,
-                    "user" => $new_user->getUID(),
+                    "user" => $new_user->uid,
                     "name" => $new_user->getFullName(),
                     "email" => $new_user->getMail(),
                     "org" => $new_user->getOrg()
@@ -371,7 +371,7 @@ class UnityGroup
             return;
         }
 
-        if ($new_user->getUID() == $this->getOwner()->getUID()) {
+        if ($new_user->uid == $this->getOwner()->uid) {
             throw new Exception("Cannot delete group owner from group. Disband group instead");
         }
 
@@ -392,7 +392,7 @@ class UnityGroup
                 "group_user_removed_owner",
                 array(
                     "group" => $this->pi_uid,
-                    "user" => $new_user->getUID(),
+                    "user" => $new_user->uid,
                     "name" => $new_user->getFullName(),
                     "email" => $new_user->getMail(),
                     "org" => $new_user->getOrg()
@@ -413,12 +413,12 @@ class UnityGroup
             return;
         }
 
-        if ($this->SQL->accDeletionRequestExists($new_user->getUID())) {
+        if ($this->SQL->accDeletionRequestExists($new_user->uid)) {
             throw new Exception("user '$new_user' requested account deletion");
             return;
         }
 
-        $this->addRequest($new_user->getUID(), $firstname, $lastname, $email, $org);
+        $this->addRequest($new_user->uid, $firstname, $lastname, $email, $org);
 
         if ($send_mail) {
             // send email to user
@@ -434,7 +434,7 @@ class UnityGroup
                 "group_user_request_owner",
                 array(
                     "group" => $this->pi_uid,
-                    "user" => $new_user->getUID(),
+                    "user" => $new_user->uid,
                     "name" => "$firstname $lastname",
                     "email" => $email,
                     "org" => $org,
@@ -477,7 +477,7 @@ class UnityGroup
     {
         $members = $this->getGroupMemberUIDs($ignorecache);
         $out = array();
-        $owner_uid = $this->getOwner()->getUID();
+        $owner_uid = $this->getOwner()->uid;
         foreach ($members as $member) {
                 $user_obj = new UnityUser(
                     $member,
@@ -517,7 +517,7 @@ class UnityGroup
         $requesters = $this->getRequests();
         if (count($requesters) > 0) {
             foreach ($requesters as $requester) {
-                if ($requester[0]->getUID() == $user->getUID()) {
+                if ($requester[0]->uid == $user->uid) {
                     return true;
                 }
             }
@@ -540,7 +540,7 @@ class UnityGroup
 
             $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
             $this->entry->setAttribute("gidnumber", strval($nextGID));
-            $this->entry->setAttribute("memberuid", array($owner->getUID()));
+            $this->entry->setAttribute("memberuid", array($owner->uid));
             $this->entry->write();
         }
 
@@ -552,24 +552,24 @@ class UnityGroup
     private function addUserToGroup($new_user)
     {
         // Add to LDAP Group
-        $this->entry->appendAttribute("memberuid", $new_user->getUID());
+        $this->entry->appendAttribute("memberuid", $new_user->uid);
         $this->entry->write();
-        $this->REDIS->appendCacheArray($this->getPIUID(), "members", $new_user->getUID());
-        $this->REDIS->appendCacheArray($new_user->getUID(), "groups", $this->getPIUID());
+        $this->REDIS->appendCacheArray($this->getPIUID(), "members", $new_user->uid);
+        $this->REDIS->appendCacheArray($new_user->uid, "groups", $this->getPIUID());
     }
 
     private function removeUserFromGroup($old_user)
     {
         // Remove from LDAP Group
-        $this->entry->removeAttributeEntryByValue("memberuid", $old_user->getUID());
+        $this->entry->removeAttributeEntryByValue("memberuid", $old_user->uid);
         $this->entry->write();
-        $this->REDIS->removeCacheArray($this->getPIUID(), "members", $old_user->getUID());
-        $this->REDIS->removeCacheArray($old_user->getUID(), "groups", $this->getPIUID());
+        $this->REDIS->removeCacheArray($this->getPIUID(), "members", $old_user->uid);
+        $this->REDIS->removeCacheArray($old_user->uid, "groups", $this->getPIUID());
     }
 
     public function userExists($user)
     {
-        return in_array($user->getUID(), $this->getGroupMemberUIDs());
+        return in_array($user->uid, $this->getGroupMemberUIDs());
     }
 
     private function addRequest($uid, $firstname, $lastname, $email, $org)

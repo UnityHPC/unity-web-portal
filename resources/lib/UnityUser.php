@@ -9,7 +9,7 @@ class UnityUser
 {
     private const HOME_DIR = "/home/";
 
-    private $uid;
+    public $uid;
     private $entry;
 
     // service stack
@@ -37,7 +37,7 @@ class UnityUser
             throw new Exception("Unable to check equality because the parameter is not a " . self::class . " object");
         }
 
-        return $this->getUID() == $other_user->getUID();
+        return $this->uid == $other_user->uid;
     }
 
     public function __toString()
@@ -61,7 +61,7 @@ class UnityUser
         // Create LDAP group
         //
         $ldapGroupEntry = $this->getLDAPGroup();
-        $id = $this->LDAP->getUnassignedID($this->getUID(), $this->SQL);
+        $id = $this->LDAP->getUnassignedID($this->uid, $this->SQL);
 
         if (!$ldapGroupEntry->exists()) {
             $ldapGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
@@ -113,20 +113,20 @@ class UnityUser
         }
 
         // add to user group as well as user OU
-        $this->LDAP->getUserGroup()->appendAttribute("memberuid", $this->getUID());
+        $this->LDAP->getUserGroup()->appendAttribute("memberuid", $this->uid);
         $this->LDAP->getUserGroup()->write();
 
         // add user to cache
-        $this->REDIS->appendCacheArray("sorted_users", "", $this->getUID());
+        $this->REDIS->appendCacheArray("sorted_users", "", $this->uid);
 
         //
         // add to audit log
         //
         $this->SQL->addLog(
-            $this->getUID(),
+            $this->uid,
             $_SERVER['REMOTE_ADDR'],
             "user_added",
-            $this->getUID()
+            $this->uid
         );
 
         //
@@ -160,16 +160,6 @@ class UnityUser
     // User Attribute Functions
     //
 
-    /**
-     * Get method for NetID
-     *
-     * @return string Net ID of user
-     */
-    public function getUID()
-    {
-        return $this->uid;
-    }
-
     public function setOrg($org)
     {
         $this->entry->setAttribute("o", $org);
@@ -181,7 +171,7 @@ class UnityUser
     {
         assert($this->exists());
         if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->getUID(), "org");
+            $cached_val = $this->REDIS->getCache($this->uid, "org");
             if (!is_null($cached_val)) {
                 return $cached_val;
             }
@@ -191,7 +181,7 @@ class UnityUser
             $org = $this->entry->getAttribute("o")[0];
 
             if (!$ignorecache) {
-                $this->REDIS->setCache($this->getUID(), "org", $org);
+                $this->REDIS->setCache($this->uid, "org", $org);
             }
 
             return $this->entry->getAttribute("o")[0];
@@ -208,13 +198,13 @@ class UnityUser
     public function setFirstname($firstname, $operator = null)
     {
         $this->entry->setAttribute("givenname", $firstname);
-        $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
+        $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog(
             $operator,
             $_SERVER['REMOTE_ADDR'],
             "firstname_changed",
-            $this->getUID()
+            $this->uid
         );
 
         $this->entry->write();
@@ -230,7 +220,7 @@ class UnityUser
     {
         assert($this->exists());
         if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->getUID(), "firstname");
+            $cached_val = $this->REDIS->getCache($this->uid, "firstname");
             if (!is_null($cached_val)) {
                 return $cached_val;
             }
@@ -240,7 +230,7 @@ class UnityUser
             $firstname = $this->entry->getAttribute("givenname")[0];
 
             if (!$ignorecache) {
-                $this->REDIS->setCache($this->getUID(), "firstname", $firstname);
+                $this->REDIS->setCache($this->uid, "firstname", $firstname);
             }
 
             return $firstname;
@@ -257,13 +247,13 @@ class UnityUser
     public function setLastname($lastname, $operator = null)
     {
         $this->entry->setAttribute("sn", $lastname);
-        $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
+        $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog(
             $operator,
             $_SERVER['REMOTE_ADDR'],
             "lastname_changed",
-            $this->getUID()
+            $this->uid
         );
 
         $this->entry->write();
@@ -279,7 +269,7 @@ class UnityUser
     {
         assert($this->exists());
         if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->getUID(), "lastname");
+            $cached_val = $this->REDIS->getCache($this->uid, "lastname");
             if (!is_null($cached_val)) {
                 return $cached_val;
             }
@@ -289,7 +279,7 @@ class UnityUser
             $lastname = $this->entry->getAttribute("sn")[0];
 
             if (!$ignorecache) {
-                $this->REDIS->setCache($this->getUID(), "lastname", $lastname);
+                $this->REDIS->setCache($this->uid, "lastname", $lastname);
             }
 
             return $lastname;
@@ -312,13 +302,13 @@ class UnityUser
     public function setMail($email, $operator = null)
     {
         $this->entry->setAttribute("mail", $email);
-        $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
+        $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog(
             $operator,
             $_SERVER['REMOTE_ADDR'],
             "email_changed",
-            $this->getUID()
+            $this->uid
         );
 
         $this->entry->write();
@@ -334,7 +324,7 @@ class UnityUser
     {
         assert($this->exists());
         if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->getUID(), "mail");
+            $cached_val = $this->REDIS->getCache($this->uid, "mail");
             if (!is_null($cached_val)) {
                 return $cached_val;
             }
@@ -344,7 +334,7 @@ class UnityUser
             $mail = $this->entry->getAttribute("mail")[0];
 
             if (!$ignorecache) {
-                $this->REDIS->setCache($this->getUID(), "mail", $mail);
+                $this->REDIS->setCache($this->uid, "mail", $mail);
             }
 
             return $mail;
@@ -360,7 +350,7 @@ class UnityUser
      */
     public function setSSHKeys($keys, $operator = null, $send_mail = true)
     {
-        $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
+        $operator = is_null($operator) ? $this->uid : $operator->uid;
         $keys_filt = array_values(array_unique($keys));
         if ($this->entry->exists()) {
             $this->entry->setAttribute("sshpublickey", $keys_filt);
@@ -376,7 +366,7 @@ class UnityUser
             $operator,
             $_SERVER['REMOTE_ADDR'],
             "sshkey_modify",
-            $this->getUID()
+            $this->uid
         );
 
         if ($send_mail) {
@@ -397,7 +387,7 @@ class UnityUser
     {
         assert($this->exists());
         if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->getUID(), "sshkeys");
+            $cached_val = $this->REDIS->getCache($this->uid, "sshkeys");
             if (!is_null($cached_val)) {
                 return $cached_val;
             }
@@ -412,7 +402,7 @@ class UnityUser
             }
 
             if (!$ignorecache) {
-                $this->REDIS->setCache($this->getUID(), "sshkeys", $keys);
+                $this->REDIS->setCache($this->uid, "sshkeys", $keys);
             }
 
             return $keys;
@@ -443,13 +433,13 @@ class UnityUser
             $this->entry->write();
         }
 
-        $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
+        $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog(
             $operator,
             $_SERVER['REMOTE_ADDR'],
             "loginshell_changed",
-            $this->getUID()
+            $this->uid
         );
 
         $this->REDIS->setCache($this->uid, "loginshell", $shell);
@@ -472,7 +462,7 @@ class UnityUser
     {
         assert($this->exists());
         if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->getUID(), "loginshell");
+            $cached_val = $this->REDIS->getCache($this->uid, "loginshell");
             if (!is_null($cached_val)) {
                 return $cached_val;
             }
@@ -482,7 +472,7 @@ class UnityUser
             $loginshell = $this->entry->getAttribute("loginshell")[0];
 
             if (!$ignorecache) {
-                $this->REDIS->setCache($this->getUID(), "loginshell", $loginshell);
+                $this->REDIS->setCache($this->uid, "loginshell", $loginshell);
             }
 
             return $loginshell;
@@ -496,13 +486,13 @@ class UnityUser
         if ($this->entry->exists()) {
             $this->entry->setAttribute("homedirectory", $home);
             $this->entry->write();
-            $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
+            $operator = is_null($operator) ? $this->uid : $operator->uid;
 
             $this->SQL->addLog(
                 $operator,
                 $_SERVER['REMOTE_ADDR'],
                 "homedir_changed",
-                $this->getUID()
+                $this->uid
             );
 
             $this->REDIS->setCache($this->uid, "homedir", $home);
@@ -518,7 +508,7 @@ class UnityUser
     {
         assert($this->exists());
         if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->getUID(), "homedir");
+            $cached_val = $this->REDIS->getCache($this->uid, "homedir");
             if (!is_null($cached_val)) {
                 return $cached_val;
             }
@@ -528,7 +518,7 @@ class UnityUser
             $homedir = $this->entry->getAttribute("homedirectory");
 
             if (!$ignorecache) {
-                $this->REDIS->setCache($this->getUID(), "homedir", $homedir);
+                $this->REDIS->setCache($this->uid, "homedir", $homedir);
             }
 
             return $homedir;
@@ -591,7 +581,7 @@ class UnityUser
         $out = array();
 
         if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->getUID(), "groups");
+            $cached_val = $this->REDIS->getCache($this->uid, "groups");
             if (!is_null($cached_val)) {
                 $groups = $cached_val;
                 foreach ($groups as $group) {
@@ -615,14 +605,14 @@ class UnityUser
         $cache_arr = array();
 
         foreach ($all_pi_groups as $pi_group) {
-            if (in_array($this->getUID(), $pi_group->getGroupMemberUIDs())) {
+            if (in_array($this->uid, $pi_group->getGroupMemberUIDs())) {
                 array_push($out, $pi_group);
                 array_push($cache_arr, $pi_group->getPIUID());
             }
         }
 
         if (!$ignorecache) {
-            $this->REDIS->setCache($this->getUID(), "groups", $cache_arr);
+            $this->REDIS->setCache($this->uid, "groups", $cache_arr);
         }
 
         return $out;
@@ -633,12 +623,12 @@ class UnityUser
      */
     public function requestAccountDeletion()
     {
-        $this->SQL->addAccountDeletionRequest($this->getUID());
+        $this->SQL->addAccountDeletionRequest($this->uid);
         $this->MAILER->sendMail(
             "admin",
             "account_deletion_request_admin",
             array(
-                "user" => $this->getUID(),
+                "user" => $this->uid,
                 "name" => $this->getFullname(),
                 "email" => $this->getMail()
             )
@@ -652,7 +642,7 @@ class UnityUser
      */
     public function hasRequestedAccountDeletion()
     {
-        return $this->SQL->accDeletionRequestExists($this->getUID());
+        return $this->SQL->accDeletionRequestExists($this->uid);
     }
 
     /**
