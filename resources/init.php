@@ -119,10 +119,10 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
     $SEND_PIMESG_TO_ADMINS = $CONFIG["mail"]["send_pimesg_to_admins"];
 
     $SQL->addLog(
-        $OPERATOR->getUID(),
+        $OPERATOR->uid,
         $_SERVER['REMOTE_ADDR'],
         "user_login",
-        $OPERATOR->getUID()
+        $OPERATOR->uid
     );
 
     if (!$_SESSION["user_exists"]) {

@@ -57,13 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($USER->isPI()) {
                 UnitySite::badRequest("already a PI");
             }
-            if ($SQL->requestExists($USER->getUID())) {
+            if ($SQL->requestExists($USER->uid)) {
                 UnitySite::badRequest("already requested to be PI");
             }
-            if ($USER->getUID() != $SSO["user"]) {
+            if ($USER->uid != $SSO["user"]) {
                 UnitySite::badRequest(
                     "cannot request due to uid mismatch: " .
-                        "USER='{$USER->getUID()}' SSO[user]='$sso_user'"
+                    "USER='{$USER->uid}' SSO[user]='$sso_user'"
                 );
             }
             $USER->getPIGroup()->requestGroup(
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($hasGroups) {
                 break;
             }
-            if (!$SQL->accDeletionRequestExists($USER->getUID())) {
+            if (!$SQL->accDeletionRequestExists($USER->uid)) {
                 $USER->requestAccountDeletion();
             }
             break;
@@ -99,7 +99,7 @@ include $LOC_HEADER;
 <table>
     <tr>
         <th>Username</th>
-        <td><code><?php echo $USER->getUID(); ?></code></td>
+        <td><code><?php echo $USER->uid; ?></code></td>
     </tr>
     <tr>
         <th>Organization</th>
@@ -145,7 +145,7 @@ if (!$isPI) {
             id='piReq'
         >
     ";
-    if ($SQL->accDeletionRequestExists($USER->getUID())) {
+    if ($SQL->accDeletionRequestExists($USER->uid)) {
         echo "<input type='submit' value='Request PI Account' disabled />";
         echo "
             <label style='margin-left: 10px'>
@@ -153,7 +153,7 @@ if (!$isPI) {
             </label>
         ";
     } else {
-        if ($SQL->requestExists($USER->getUID())) {
+        if ($SQL->requestExists($USER->uid)) {
             $prompt = "onclick='return confirm(\"Are you sure you want to cancel this request?\")";
             echo "<input type='submit' value='Cancel PI Account Request' $prompt'/>";
             echo "
@@ -184,7 +184,7 @@ if (count($sshPubKeys) == 0) {
 
 for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop through keys
     echo
-    "<div class='key-box'>
+        "<div class='key-box'>
         <textarea spellcheck='false' readonly>" . $sshPubKeys[$i] . "</textarea>
         <form
             action='' id='del-" . $i . "'
@@ -206,16 +206,16 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 <h5>Login Shell</h5>
 
 <form action="" method="POST">
-<input type="hidden" name="form_type" value="loginshell" />
-<select id="loginSelector" class="code" name="shellSelect">
-<?php
-foreach ($CONFIG["loginshell"]["shell"] as $shell) {
-    echo "<option>$shell</option>";
-}
-?>
-</select>
-<br>
-<input id='submitLoginShell' type='submit' value='Set Login Shell' />
+    <input type="hidden" name="form_type" value="loginshell" />
+    <select id="loginSelector" class="code" name="shellSelect">
+        <?php
+        foreach ($CONFIG["loginshell"]["shell"] as $shell) {
+            echo "<option>$shell</option>";
+        }
+        ?>
+    </select>
+    <br>
+    <input id='submitLoginShell' type='submit' value='Set Login Shell' />
 </form>
 
 <hr>
@@ -236,7 +236,7 @@ if ($hasGroups) {
         >
         <input type='hidden' name='form_type' value='account_deletion_request' />
     ";
-    if ($SQL->accDeletionRequestExists($USER->getUID())) {
+    if ($SQL->accDeletionRequestExists($USER->uid)) {
         echo "<input type='submit' value='Request Account Deletion' disabled />";
         echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
     } else {
@@ -251,11 +251,11 @@ if ($hasGroups) {
     const sitePrefix = '<?php echo $CONFIG["site"]["prefix"]; ?>';
     const ldapLoginShell = '<?php echo $USER->getLoginShell(); ?>';
 
-    $("button.btnAddKey").click(function() {
+    $("button.btnAddKey").click(function () {
         openModal("Add New Key", `${sitePrefix}/panel/modal/new_key.php`);
     });
 
-    $("#loginSelector option").each(function(i, e) {
+    $("#loginSelector option").each(function (i, e) {
         if ($(this).val() == ldapLoginShell) {
             $(this).prop("selected", true);
         }

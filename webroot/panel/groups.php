@@ -31,11 +31,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     array_push($modalErrors, "You\'re already in this PI group");
                 }
 
-                if ($USER->getUID() != $SSO["user"]) {
+                if ($USER->uid != $SSO["user"]) {
                     $sso_user = $SSO["user"];
                     UnitySite::badRequest(
                         "cannot request due to uid mismatch: " .
-                            "USER='{$USER->getUID()}' SSO[user]='$sso_user'"
+                        "USER='{$USER->uid}' SSO[user]='$sso_user'"
                     );
                 }
 
@@ -65,7 +65,7 @@ include $LOC_HEADER;
 <?php
 $groups = $USER->getGroups();
 
-$requests = $SQL->getRequestsByUser($USER->getUID());
+$requests = $SQL->getRequestsByUser($USER->uid);
 
 $req_filtered = array();
 foreach ($requests as $request) {
@@ -112,7 +112,7 @@ if ($USER->isPI() && count($groups) == 1) {
 if (count($groups) == 0) {
     echo "You are not a member of any groups. Request to join a PI using the button below,
     or request your own PI account on the <a href='" . $CONFIG["site"]["prefix"] .
-    "/panel/account.php'>account settings</a> page";
+        "/panel/account.php'>account settings</a> page";
 }
 
 echo "<table>";
@@ -120,18 +120,18 @@ echo "<table>";
 foreach ($groups as $group) {
     $owner = $group->getOwner();
 
-    if ($USER->getUID() == $owner->getUID()) {
+    if ($USER->uid == $owner->uid) {
         continue;
     }
 
     echo "<tr class='expandable'>";
     echo
-    "<td>
+        "<td>
     <button class='btnExpand'>&#9654;</button>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
     echo "<td>" . $group->getPIUID() . "</td>";
     echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
     echo
-    "<td>
+        "<td>
     <form action='' method='POST'
     onsubmit='return confirm(\"Are you sure you want to leave the PI group " . $group->getPIUID() . "?\")'>
     <input type='hidden' name='form_type' value='removePIForm'>
@@ -146,7 +146,7 @@ echo "</table>";
 ?>
 
 <?php
-if ($SQL->accDeletionRequestExists($USER->getUID())) {
+if ($SQL->accDeletionRequestExists($USER->uid)) {
     echo "<button type='button' class='plusBtn btnAddPI' disabled><span>&#43;</span></button>";
     echo "<label>You cannot join a PI while you have requested account deletion.</label>";
 } else {
@@ -161,7 +161,7 @@ if ($SQL->accDeletionRequestExists($USER->getUID())) {
 </style>
 
 <script>
-    $("button.btnAddPI").click(function() {
+    $("button.btnAddPI").click(function () {
         openModal("Add New PI", "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/new_pi.php");
     });
 
@@ -174,7 +174,7 @@ if ($SQL->accDeletionRequestExists($USER->getUID())) {
         }
 
         echo "openModal('Add New PI', '" .
-        $CONFIG["site"]["prefix"] . "/panel/modal/new_pi.php', '" . $errorHTML . "');";
+            $CONFIG["site"]["prefix"] . "/panel/modal/new_pi.php', '" . $errorHTML . "');";
     }
     ?>
 

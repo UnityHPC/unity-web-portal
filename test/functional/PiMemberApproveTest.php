@@ -6,18 +6,19 @@ use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnitySSO;
 
-class PiMemberApproveTest extends TestCase {
-        static $userWithRequestSwitchArgs;
-        static $userWithoutRequestSwitchArgs;
-        static $piSwitchArgs;
-        static $pi;
-        static $userWithRequestUID;
-        static $userWithoutRequestUID;
-        static $piUID;
-        static $userWithRequest;
-        static $userWithoutRequest;
-        static $piGroup;
-        static $piGroupGID;
+class PiMemberApproveTest extends TestCase
+{
+    static $userWithRequestSwitchArgs;
+    static $userWithoutRequestSwitchArgs;
+    static $piSwitchArgs;
+    static $pi;
+    static $userWithRequestUID;
+    static $userWithoutRequestUID;
+    static $piUID;
+    static $userWithRequest;
+    static $userWithoutRequest;
+    static $piGroup;
+    static $piGroupGID;
 
     private function approveUser(string $uid)
     {
@@ -52,9 +53,9 @@ class PiMemberApproveTest extends TestCase {
         $piSwitchArgs = getUserIsPIHasNoMembersNoMemberRequests();
         switchUser(...$userSwitchArgs);
         $user = $USER;
-        $uid = $USER->getUID();
+        $uid = $USER->uid;
         switchUser(...$piSwitchArgs);
-        $piUID = $USER->getUID();
+        $piUID = $USER->uid;
         $piGroup = $USER->getPIGroup();
 
         $this->assertTrue($piGroup->exists());
@@ -86,9 +87,9 @@ class PiMemberApproveTest extends TestCase {
         global $USER;
         switchUser(...getNormalUser2());
         $user = $USER;
-        $uid = $USER->getUID();
+        $uid = $USER->uid;
         switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
-        $piUID = $USER->getUID();
+        $piUID = $USER->uid;
         $piGroup = $USER->getPIGroup();
 
         $this->assertTrue($piGroup->exists());
