@@ -72,24 +72,22 @@ class UnityUser
         //
         // Create LDAP user
         //
-        $ldapUserEntry = $this->entry;
-
-        if (!$ldapUserEntry->exists()) {
-            $ldapUserEntry->setAttribute("objectclass", UnityLDAP::POSIX_ACCOUNT_CLASS);
-            $ldapUserEntry->setAttribute("uid", $this->uid);
-            $ldapUserEntry->setAttribute("givenname", $firstname);
-            $ldapUserEntry->setAttribute("sn", $lastname);
-            $ldapUserEntry->setAttribute(
+        if (!$this->entry->exists()) {
+            $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_ACCOUNT_CLASS);
+            $this->entry->setAttribute("uid", $this->uid);
+            $this->entry->setAttribute("givenname", $firstname);
+            $this->entry->setAttribute("sn", $lastname);
+            $this->entry->setAttribute(
                 "gecos",
                 \transliterator_transliterate("Latin-ASCII", "$firstname $lastname")
             );
-            $ldapUserEntry->setAttribute("mail", $email);
-            $ldapUserEntry->setAttribute("o", $org);
-            $ldapUserEntry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
-            $ldapUserEntry->setAttribute("loginshell", $this->LDAP->getDefUserShell());
-            $ldapUserEntry->setAttribute("uidnumber", strval($id));
-            $ldapUserEntry->setAttribute("gidnumber", strval($id));
-            $ldapUserEntry->write();
+            $this->entry->setAttribute("mail", $email);
+            $this->entry->setAttribute("o", $org);
+            $this->entry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
+            $this->entry->setAttribute("loginshell", $this->LDAP->getDefUserShell());
+            $this->entry->setAttribute("uidnumber", strval($id));
+            $this->entry->setAttribute("gidnumber", strval($id));
+            $this->entry->write();
         }
 
         // update cache
@@ -174,9 +172,8 @@ class UnityUser
 
     public function setOrg($org)
     {
-        $ldap_user = $this->entry;
-        $ldap_user->setAttribute("o", $org);
-        $ldap_user->write();
+        $this->entry->setAttribute("o", $org);
+        $this->entry->write();
         $this->REDIS->setCache($this->uid, "org", $org);
     }
 
@@ -210,8 +207,7 @@ class UnityUser
      */
     public function setFirstname($firstname, $operator = null)
     {
-        $ldap_user = $this->entry;
-        $ldap_user->setAttribute("givenname", $firstname);
+        $this->entry->setAttribute("givenname", $firstname);
         $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
 
         $this->SQL->addLog(
@@ -221,7 +217,7 @@ class UnityUser
             $this->getUID()
         );
 
-        $ldap_user->write();
+        $this->entry->write();
         $this->REDIS->setCache($this->uid, "firstname", $firstname);
     }
 
@@ -260,8 +256,7 @@ class UnityUser
      */
     public function setLastname($lastname, $operator = null)
     {
-        $ldap_user = $this->entry;
-        $ldap_user->setAttribute("sn", $lastname);
+        $this->entry->setAttribute("sn", $lastname);
         $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
 
         $this->SQL->addLog(
@@ -316,8 +311,7 @@ class UnityUser
      */
     public function setMail($email, $operator = null)
     {
-        $ldap_user = $this->entry;
-        $ldap_user->setAttribute("mail", $email);
+        $this->entry->setAttribute("mail", $email);
         $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
 
         $this->SQL->addLog(
@@ -366,12 +360,11 @@ class UnityUser
      */
     public function setSSHKeys($keys, $operator = null, $send_mail = true)
     {
-        $ldapUser = $this->entry;
         $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
         $keys_filt = array_values(array_unique($keys));
-        if ($ldapUser->exists()) {
-            $ldapUser->setAttribute("sshpublickey", $keys_filt);
-            $ldapUser->write();
+        if ($this->entry->exists()) {
+            $this->entry->setAttribute("sshpublickey", $keys_filt);
+            $this->entry->write();
         }
 
         $this->REDIS->setCache($this->uid, "sshkeys", $keys_filt);
@@ -411,8 +404,7 @@ class UnityUser
         }
 
         if ($this->exists()) {
-            $ldapUser = $this->entry;
-            $result = $ldapUser->getAttribute("sshpublickey");
+            $result = $this->entry->getAttribute("sshpublickey");
             if (is_null($result)) {
                 $keys = array();
             } else {
@@ -446,10 +438,9 @@ class UnityUser
         if (empty($shell)) {
             throw new Exception("login shell must not be empty!");
         }
-        $ldapUser = $this->entry;
-        if ($ldapUser->exists()) {
-            $ldapUser->setAttribute("loginshell", $shell);
-            $ldapUser->write();
+        if ($this->entry->exists()) {
+            $this->entry->setAttribute("loginshell", $shell);
+            $this->entry->write();
         }
 
         $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
@@ -488,9 +479,7 @@ class UnityUser
         }
 
         if ($this->exists()) {
-            $ldapUser = $this->entry;
-
-            $loginshell = $ldapUser->getAttribute("loginshell")[0];
+            $loginshell = $this->entry->getAttribute("loginshell")[0];
 
             if (!$ignorecache) {
                 $this->REDIS->setCache($this->getUID(), "loginshell", $loginshell);
@@ -504,10 +493,9 @@ class UnityUser
 
     public function setHomeDir($home, $operator = null)
     {
-        $ldapUser = $this->entry;
-        if ($ldapUser->exists()) {
-            $ldapUser->setAttribute("homedirectory", $home);
-            $ldapUser->write();
+        if ($this->entry->exists()) {
+            $this->entry->setAttribute("homedirectory", $home);
+            $this->entry->write();
             $operator = is_null($operator) ? $this->getUID() : $operator->getUID();
 
             $this->SQL->addLog(
@@ -537,9 +525,7 @@ class UnityUser
         }
 
         if ($this->exists()) {
-            $ldapUser = $this->entry;
-
-            $homedir = $ldapUser->getAttribute("homedirectory");
+            $homedir = $this->entry->getAttribute("homedirectory");
 
             if (!$ignorecache) {
                 $this->REDIS->setCache($this->getUID(), "homedir", $homedir);
