@@ -65,7 +65,7 @@ class NewUserTest extends TestCase
                 $org->removeUser($USER);
                 assert(!$org->inOrg($USER));
             }
-            $USER->getLDAPUser()->delete();
+            $LDAP->getUserEntry($USER->getUID())->delete();
             assert(!$USER->exists());
         }
         $all_users_group = $LDAP->getUserGroup();
@@ -102,9 +102,9 @@ class NewUserTest extends TestCase
 
     private function ensurePIGroupDoesNotExist()
     {
-        global $USER;
+        global $USER, $LDAP;
         if ($USER->getPIGroup()->exists()) {
-            $USER->getPIGroup()->getLDAPPIGroup()->delete();
+            $LDAP->getPIGroupEntry($USER->getPIGroup()->getPIUID())->delete();
             assert(!$USER->getPIGroup()->exists());
         }
     }
