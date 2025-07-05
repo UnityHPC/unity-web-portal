@@ -12,6 +12,9 @@ require_once __DIR__ . "/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPEntry.php";
 require_once __DIR__ . "/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPConn.php";
 
 // load libs
+require_once __DIR__ . "/lib/ObjectClass.php";
+require_once __DIR__ . "/lib/ObjectClassUser.php";
+require_once __DIR__ . "/lib/ObjectClassGroup.php";
 require_once __DIR__ . "/lib/UnityLDAP.php";
 require_once __DIR__ . "/lib/UnityUser.php";
 require_once __DIR__ . "/lib/UnityGroup.php";
