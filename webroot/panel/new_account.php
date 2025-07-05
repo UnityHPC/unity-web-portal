@@ -65,9 +65,9 @@ include $LOC_HEADER;
 <h1>Request Account</h1>
 <hr>
 
-<?php if (count($pending_requests) > 0): ?>
+<?php if (count($pending_requests) > 0) : ?>
     <p>You have pending account activation requests:</p>
-    <?php foreach ($pending_requests as $request): ?>
+    <?php foreach ($pending_requests as $request) : ?>
         <ul>
             <li>
                 <?php
@@ -101,7 +101,7 @@ include $LOC_HEADER;
             <input name="cancel" style='margin-top: 10px;' type='submit' value='Cancel Request' />
         </form>
     <?php endforeach; ?>
-<?php else: ?>
+<?php else : ?>
     <form id="newAccountForm" action="" method="POST">
         <p>Please verify that the information below is correct before continuing</p>
         <div>
