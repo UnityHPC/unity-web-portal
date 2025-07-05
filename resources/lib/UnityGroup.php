@@ -7,7 +7,7 @@ use Exception;
 /**
  * Class that represents a single PI group in the Unity Cluster.
  */
-class UnityGroup
+class UnityGroup extends ObjectClassGroup
 {
     public const PI_PREFIX = "pi_";
 

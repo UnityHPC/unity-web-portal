@@ -2,7 +2,7 @@
 
 namespace UnityWebPortal\lib;
 
-class GroupEntry extends \PHPOpenLDAPer\ObjectClass
+class ObjectClassGroup extends ObjectClass
 {
     protected static array $attributes_array = ["objectClass", "memberUid"];
     protected static array $attributes_non_array = ["cn", "dn", "gidNumber"];
@@ -24,3 +24,5 @@ class GroupEntry extends \PHPOpenLDAPer\ObjectClass
 //         get => $this->getAttribute("objectClass")
 //     }
 // }
+// $LDAP->getUserGroupEntry,getOrgGroupEntry,getPIGroupEntry will also have to be
+// updated to use LDAPConn::getEntryOfObjectClass

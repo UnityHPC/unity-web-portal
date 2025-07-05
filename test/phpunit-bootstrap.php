@@ -6,6 +6,9 @@ require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPEntry.php";
 require_once __DIR__ . "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPConn.php";
 
+require_once __DIR__ . "/../resources/lib/ObjectClass.php";
+require_once __DIR__ . "/../resources/lib/ObjectClassUser.php";
+require_once __DIR__ . "/../resources/lib/ObjectClassGroup.php";
 require_once __DIR__ . "/../resources/lib/UnityLDAP.php";
 require_once __DIR__ . "/../resources/lib/UnityUser.php";
 require_once __DIR__ . "/../resources/lib/UnityGroup.php";

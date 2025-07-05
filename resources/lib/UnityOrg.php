@@ -4,7 +4,7 @@ namespace UnityWebPortal\lib;
 
 use Exception;
 
-class UnityOrg
+class UnityOrg extends ObjectClassGroup
 {
     private $orgid;
 

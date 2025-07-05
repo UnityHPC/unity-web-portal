@@ -2,7 +2,7 @@
 
 namespace UnityWebPortal\lib;
 
-class UserEntry extends \PHPOpenLDAPer\ObjectClass
+class ObjectClassUser extends ObjectClass
 {
     protected static array $attributes_array = ["objectClass", "sshPublicKey"];
     protected static array $attributes_non_array = [
@@ -64,3 +64,4 @@ class UserEntry extends \PHPOpenLDAPer\ObjectClass
 //         get => $this->getAttribute("uidNumber")[0]
 //     }
 // }
+// $LDAP->getUserEntry will also have to be updated to use LDAPConn::getEntryOfObjectClass

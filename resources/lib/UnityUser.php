@@ -5,7 +5,7 @@ namespace UnityWebPortal\lib;
 use PHPOpenLDAPer\LDAPEntry;
 use Exception;
 
-class UnityUser
+class UnityUser extends ObjectClassUser
 {
     private const HOME_DIR = "/home/";
 
