@@ -74,8 +74,6 @@ include $LOC_HEADER;
     $requests = $SQL->getRequests();
 
     foreach ($requests as $request) {
-        $request_user = new UnityUser($request["uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-
         echo "<tr>";
         echo "<td>" . $request["firstname"] . " " . $request["lastname"] . "</td>";
         echo "<td>" . $request["uid"] . "</td>";
