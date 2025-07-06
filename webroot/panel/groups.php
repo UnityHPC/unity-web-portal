@@ -63,7 +63,7 @@ include $LOC_HEADER;
 <hr>
 
 <?php
-$groups = $USER->getGroups();
+$PIGroupGIDs = $USER->getPIGroupGIDs();
 
 $requests = $SQL->getRequestsByUser($USER->uid);
 
@@ -97,19 +97,19 @@ if (count($req_filtered) > 0) {
     }
     echo "</table>";
 
-    if (count($groups) > 0) {
+    if (count($PIGroupGIDs) > 0) {
         echo "<hr>";
     }
 }
 
 echo "<h5>Current Groups</h5>";
 
-if ($USER->isPI() && count($groups) == 1) {
+if ($USER->isPI() && count($PIGroupGIDs) == 1) {
     echo "You are only a member of your own PI group.
     Navigate to the <a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>my users</a> page to see your group.";
 }
 
-if (count($groups) == 0) {
+if (count($PIGroupGIDs) == 0) {
     echo "You are not a member of any groups. Request to join a PI using the button below,
     or request your own PI account on the <a href='" . $CONFIG["site"]["prefix"] .
         "/panel/account.php'>account settings</a> page";
@@ -117,7 +117,8 @@ if (count($groups) == 0) {
 
 echo "<table>";
 
-foreach ($groups as $group) {
+foreach ($PIGroupGIDs as $gid) {
+    $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
     $owner = $group->getOwner();
 
     if ($USER->uid == $owner->uid) {

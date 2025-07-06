@@ -310,6 +310,18 @@ class UnityLDAP extends ldapConn
         return $this->pi_groupOU->getChildrenArray(true);
     }
 
+    public function getPIGroupGIDsWithMemberUID($uid)
+    {
+        return array_map(
+            fn($x) => $x["cn"][0],
+            $this->pi_groupOU->getChildrenArray(
+                ["cn"],
+                true,
+                "(memberUid=" . ldap_escape($uid) . ")",
+            )
+        );
+    }
+
     /** Returns an assosiative array where keys are UIDs and values are lists of PI GIDs */
     public function getAllUID2PIGIDs()
     {
