@@ -341,7 +341,7 @@ class UnityLDAP extends ldapConn
         return $owner_entries;
     }
 
-    /** Returns an assosiative array where keys are UIDs and values are lists of PI GIDs */
+    /** Returns an assosiative array where keys are UIDs and values are arrays of PI GIDs */
     public function getAllUID2PIGIDs()
     {
         // initialize output so each UID is a key with an empty array as its value
