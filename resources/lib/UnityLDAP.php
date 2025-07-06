@@ -388,7 +388,7 @@ class UnityLDAP extends ldapConn
 
     public function getAllOrgGroupsEntries()
     {
-        return $this->org_groupOU->getChildrenArray(true);
+        return $this->org_groupOU->getChildrenArray([], true);
     }
 
     public function getUserEntry($uid)
