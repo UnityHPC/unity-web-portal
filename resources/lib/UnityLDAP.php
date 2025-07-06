@@ -26,6 +26,7 @@ class UnityLDAP extends ldapConn
     );
 
   // string vars for OUs
+    private $STR_BASEOU;
     private $STR_USEROU;
     private $STR_GROUPOU;
     private $STR_PIGROUPOU;
@@ -33,6 +34,7 @@ class UnityLDAP extends ldapConn
     private $STR_ADMINGROUP;
 
   // Instance vars for various ldapEntry objects
+    private $baseOU;
     private $userOU;
     private $groupOU;
     private $pi_groupOU;
@@ -49,6 +51,7 @@ class UnityLDAP extends ldapConn
         $dn,
         $pass,
         $custom_user_mappings,
+        $base_ou,
         $user_ou,
         $group_ou,
         $pigroup_ou,
@@ -59,6 +62,7 @@ class UnityLDAP extends ldapConn
     ) {
         parent::__construct($host, $dn, $pass);
 
+        $this->STR_BASEOU = $base_ou;
         $this->STR_USEROU = $user_ou;
         $this->STR_GROUPOU = $group_ou;
         $this->STR_PIGROUPOU = $pigroup_ou;
@@ -66,6 +70,7 @@ class UnityLDAP extends ldapConn
         $this->STR_ADMINGROUP = $admin_group;
 
       // Get Global Entries
+        $this->baseOU = $this->getEntry($base_ou);
         $this->userOU = $this->getEntry($user_ou);
         $this->groupOU = $this->getEntry($group_ou);
         $this->pi_groupOU = $this->getEntry($pigroup_ou);
