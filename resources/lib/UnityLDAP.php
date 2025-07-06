@@ -226,7 +226,7 @@ class UnityLDAP extends ldapConn
 
     public function getAllUsersUIDs()
     {
-        // should not use $user_ou->getChildren or $this->search(objectClass=posixAccount, $base_dn)
+        // should not use $user_ou->getChildren or $base_ou->getChildren(objectClass=posixAccount)
         // Unity users might be outside user ou, and not all users in LDAP tree are unity users
         return $this->userGroup->getAttribute("memberuid");
     }
@@ -260,13 +260,13 @@ class UnityLDAP extends ldapConn
     public function getAllUsersEntries()
     {
         $include_uids = $this->getAllUsersUIDs();
-        $user_entries = $this->baseOU->getChildren(
+        $user_entries = $this->baseOU->getChildrenArray(
             [], // all attributes
             true, // recursive
             "objectClass=posixAccount"
         );
         foreach ($user_entries as $i => $entry) {
-            if (!in_array($entry["uid"], $include_uids)) {
+            if (!in_array($entry["uid"][0], $include_uids)) {
                 unset($user_entries[$i]);
             }
         }
@@ -307,7 +307,7 @@ class UnityLDAP extends ldapConn
 
     public function getAllPIGroupsEntries()
     {
-        return $this->pi_groupOU->getChildrenArray(true);
+        return $this->pi_groupOU->getChildrenArray([], true);
     }
 
     public function getPIGroupGIDsWithMemberUID($uid)
@@ -317,7 +317,7 @@ class UnityLDAP extends ldapConn
             $this->pi_groupOU->getChildrenArray(
                 ["cn"],
                 true,
-                "(memberUid=" . ldap_escape($uid) . ")",
+                "(memberuid=" . ldap_escape($uid) . ")",
             )
         );
     }
@@ -335,8 +335,8 @@ class UnityLDAP extends ldapConn
         );
         // for each PI group, append that GID to the member list for each of its member UIDs
         foreach ($this->getAllPIGroupsEntries() as $entry) {
-            $gid = $entry["cn"];
-            foreach ($entry["memberUid"] as $uid) {
+            $gid = $entry["cn"][0];
+            foreach ($entry["memberuid"] as $uid) {
                 array_push($UID2PIGIDs[$uid], $gid);
             }
         }
