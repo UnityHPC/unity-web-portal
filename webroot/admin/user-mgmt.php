@@ -43,19 +43,19 @@ include $LOC_HEADER;
         return strcmp($a["uid"], $b["uid"]);
     });
     foreach ($user_entries as $entry) {
-        $uid = $entry["uid"];
+        $uid = $entry["uid"][0];
         if ($SQL->accDeletionRequestExists($uid)) {
             echo "<tr style='color:grey; font-style: italic'>";
         } else {
             echo "<tr>";
         }
-        echo "<td>" . $entry["gecos"] . "</td>";
+        echo "<td>" . $entry["gecos"][0] . "</td>";
         echo "<td>" . $uid . "</td>";
-        echo "<td>" . $user["o"] . "</td>";
-        echo "<td><a href='mailto:" . $user["mail"] . "'>" . $user["mail"] . "</a></td>";
+        echo "<td>" . $entry["o"][0] . "</td>";
+        echo "<td><a href='mailto:" . $entry["mail"][0] . "'>" . $entry["mail"][0] . "</a></td>";
         echo "<td>";
-        foreach ($UID2PIGIDS[$uid] as $GID) {
-            echo "<p>$GID</p>";
+        foreach ($UID2PIGIDs[$uid] as $gid) {
+            echo "<p>$gid</p>";
         }
         echo "<br>";
         echo "</td>";
