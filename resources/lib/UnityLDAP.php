@@ -346,15 +346,15 @@ class UnityLDAP extends ldapConn
     {
         // initialize output so each UID is a key with an empty array as its value
         $uids = $this->getAllUsersUIDs();
-        $UID2PIGIDs = array_combine($uids, array_fill(0, count($uids), []));
+        $uid2pigids = array_combine($uids, array_fill(0, count($uids), []));
         // for each PI group, append that GID to the member list for each of its member UIDs
         foreach ($this->getAllPIGroupsEntries() as $entry) {
             $gid = $entry["cn"][0];
             foreach ($entry["memberuid"] as $uid) {
-                array_push($UID2PIGIDs[$uid], $gid);
+                array_push($uid2pigids[$uid], $gid);
             }
         }
-        return $UID2PIGIDs;
+        return $uid2pigids;
     }
 
     public function getAllOrgGroups($UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook, $ignorecache = false)
