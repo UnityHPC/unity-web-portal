@@ -103,8 +103,8 @@ include $LOC_HEADER;
     </tr>
 
     <?php
-    $owner_entries = $LDAP->getAllPIGroupOwnerEntries();
-    usort($owner_entries, fn($a, $b) => strcmp($a["cn"][0], $b["cn"][0]));
+    $owner_entries = $LDAP->getAllPIGroupOwnerEntries(["uid", "gecos", "mail"]);
+    usort($owner_entries, fn($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
     foreach ($owner_entries as $entry) {
         echo "<tr class='expandable'>";
         echo "<td><button class='btnExpand'>&#9654;</button>" . $entry["gecos"][0] . "</td>";
