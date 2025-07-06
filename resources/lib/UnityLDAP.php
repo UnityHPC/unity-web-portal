@@ -324,8 +324,13 @@ class UnityLDAP extends ldapConn
 
     public function getAllPIGroupOwnerEntries()
     {
-        $gids = array_map(fn($x) => $x["cn"][0], $this->pi_groupOU->getChildrenArray(["cn"]));
-        $owner_uids = array_map(fn($x) => UnityGroup::getUIDFromPIUID($x), $gids);
+        $owner_uids = array_map(
+            fn($x) => UnityGroup::getUIDFromPIUID($x),
+            array_map(
+                fn($x) => $x["cn"][0],
+                $this->pi_groupOU->getChildrenArray(["cn"]),
+            ),
+        );
         $owner_entries = $this->getAllUsersEntries();
         foreach ($owner_entries as $i => $entry) {
             if (!in_array($entry["uid"][0], $owner_uids)) {
