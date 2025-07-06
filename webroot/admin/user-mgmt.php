@@ -39,9 +39,7 @@ include $LOC_HEADER;
     <?php
     $UID2PIGIDs = $LDAP->getAllUID2PIGIDs();
     $user_entries = $LDAP->getAllUsersEntries(["uid", "gecos", "o", "mail"]);
-    usort($user_entries, function ($a, $b) {
-        return strcmp($a["uid"][0], $b["uid"][0]);
-    });
+    usort($user_entries, fn ($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
     foreach ($user_entries as $entry) {
         $uid = $entry["uid"][0];
         if ($SQL->accDeletionRequestExists($uid)) {
