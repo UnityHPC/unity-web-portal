@@ -255,7 +255,11 @@ class UnityLDAP extends ldapConn
     public function getAllUsersEntries()
     {
         $include_uids = $this->getAllUsersUIDs();
-        $user_entries = $this->search("objectClass=posixAccount", $CONFIG["ldap"]["basedn"], []);
+        $user_entries = $this->baseOU->getChildren(
+            [], // all attributes
+            true, // recursive
+            "objectClass=posixAccount"
+        );
         foreach ($user_entries as $i => $entry) {
             if (!in_array($entry["uid"], $include_uids)) {
                 unset($user_entries[$i]);
