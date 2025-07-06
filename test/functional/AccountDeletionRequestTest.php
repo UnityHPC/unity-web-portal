@@ -35,7 +35,7 @@ class AccountDeletionRequestTest extends TestCase
     {
         global $USER, $SQL;
         switchUser(...getUserHasNotRequestedAccountDeletionHasNoGroups());
-        $this->assertEmpty($USER->getGroups());
+        $this->assertEmpty($USER->getPIGroupGIDs());
         $this->assertNumberAccountDeletionRequests(0);
         try {
             http_post(
@@ -59,7 +59,7 @@ class AccountDeletionRequestTest extends TestCase
         // FIXME this should be an error
         global $USER, $SQL;
         switchUser(...getUserHasNotRequestedAccountDeletionHasGroup());
-        $this->assertNotEmpty($USER->getGroups());
+        $this->assertNotEmpty($USER->getPIGroupGIDs());
         $this->assertNumberAccountDeletionRequests(0);
         try {
             http_post(
