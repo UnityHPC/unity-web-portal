@@ -103,13 +103,13 @@ include $LOC_HEADER;
     </tr>
 
     <?php
-    $owner_arrays = $LDAP->getAllPIGroupOwnerArrays(["uid", "gecos", "mail"]);
-    usort($owner_arrays, fn($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
-    foreach ($owner_arrays as $array) {
+    $owner_attributes = $LDAP->getAllPIGroupOwnerAttributes(["uid", "gecos", "mail"]);
+    usort($owner_attributes, fn($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
+    foreach ($owner_attributes as $attributes) {
         echo "<tr class='expandable'>";
-        echo "<td><button class='btnExpand'>&#9654;</button>" . $array["gecos"][0] . "</td>";
-        echo "<td>" . UnityGroup::getPIUIDfromUID($array["uid"][0]) . "</td>";
-        echo "<td><a href='mailto:" . $array["mail"][0] . "'>" . $array["mail"][0] . "</a></td>";
+        echo "<td><button class='btnExpand'>&#9654;</button>" . $attributes["gecos"][0] . "</td>";
+        echo "<td>" . UnityGroup::getPIUIDfromUID($attributes["uid"][0]) . "</td>";
+        echo "<td><a href='mailto:" . $attributes["mail"][0] . "'>" . $attributes["mail"][0] . "</a></td>";
         echo "</tr>";
     }
     ?>
