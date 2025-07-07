@@ -4,8 +4,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\UnityUser;
 
-class PiRemoveUserTest extends TestCase
-{
+class PiRemoveUserTest extends TestCase {
     private function removeUser(string $uid)
     {
         http_post(
@@ -79,6 +78,6 @@ class PiRemoveUserTest extends TestCase
                 );
                 $piGroup->approveUser($pi);
             }
-        }
+       }
     }
 }

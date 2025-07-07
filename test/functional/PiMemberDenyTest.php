@@ -4,12 +4,10 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\UnityUser;
 
-class PiMemberDenyTest extends TestCase
-{
+class PiMemberDenyTest extends TestCase {
     static $requestUid;
 
-    public static function setUpBeforeClass(): void
-    {
+    public static function setUpBeforeClass(): void{
         global $USER;
         switchUser(...getNormalUser());
         self::$requestUid = $USER->uid;
