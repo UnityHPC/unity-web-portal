@@ -107,7 +107,7 @@ class UnitySQL
         try {
             $this->getRequest($requestor, $dest);
             return true;
-        // FIXME use a specific exception
+            // FIXME use a specific exception
         } catch (\Exception) {
             return false;
         }
@@ -165,7 +165,7 @@ class UnitySQL
 
         $stmt->execute();
 
-        $operator = $operator->getUID();
+        $operator = $operator->uid;
 
         $this->addLog(
             $operator,
@@ -252,7 +252,7 @@ class UnitySQL
 
         $stmt->execute();
 
-        $operator = $operator->getUID();
+        $operator = $operator->uid;
 
         $this->addLog(
             $operator,
@@ -266,7 +266,7 @@ class UnitySQL
     public function addLog($operator, $operator_ip, $action_type, $recipient)
     {
         $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_AUDIT_LOG . " (operator, operator_ip, action_type, recipient) 
+            "INSERT INTO " . self::TABLE_AUDIT_LOG . " (operator, operator_ip, action_type, recipient)
             VALUE (:operator, :operator_ip, :action_type, :recipient)"
         );
         $stmt->bindParam(":operator", $operator);

@@ -31,11 +31,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     array_push($modalErrors, "You\'re already in this PI group");
                 }
 
-                if ($USER->getUID() != $SSO["user"]) {
+                if ($USER->uid != $SSO["user"]) {
                     $sso_user = $SSO["user"];
                     UnitySite::badRequest(
                         "cannot request due to uid mismatch: " .
-                        "USER='{$USER->getUID()}' SSO[user]='$sso_user'"
+                        "USER='{$USER->uid}' SSO[user]='$sso_user'"
                     );
                 }
 
@@ -65,7 +65,7 @@ include $LOC_HEADER;
 <?php
 $groups = $USER->getGroups();
 
-$requests = $SQL->getRequestsByUser($USER->getUID());
+$requests = $SQL->getRequestsByUser($USER->uid);
 
 $req_filtered = array();
 foreach ($requests as $request) {
@@ -120,7 +120,7 @@ echo "<table>";
 foreach ($groups as $group) {
     $owner = $group->getOwner();
 
-    if ($USER->getUID() == $owner->getUID()) {
+    if ($USER->uid == $owner->uid) {
         continue;
     }
 
@@ -146,7 +146,7 @@ echo "</table>";
 ?>
 
 <?php
-if ($SQL->accDeletionRequestExists($USER->getUID())) {
+if ($SQL->accDeletionRequestExists($USER->uid)) {
     echo "<button type='button' class='plusBtn btnAddPI' disabled><span>&#43;</span></button>";
     echo "<label>You cannot join a PI while you have requested account deletion.</label>";
 } else {

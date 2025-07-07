@@ -53,9 +53,9 @@ class PiMemberApproveTest extends TestCase
         $piSwitchArgs = getUserIsPIHasNoMembersNoMemberRequests();
         switchUser(...$userSwitchArgs);
         $user = $USER;
-        $uid = $USER->getUID();
+        $uid = $USER->uid;
         switchUser(...$piSwitchArgs);
-        $piUID = $USER->getUID();
+        $piUID = $USER->uid;
         $piGroup = $USER->getPIGroup();
 
         $this->assertTrue($piGroup->exists());
@@ -87,9 +87,9 @@ class PiMemberApproveTest extends TestCase
         global $USER;
         switchUser(...getNormalUser2());
         $user = $USER;
-        $uid = $USER->getUID();
+        $uid = $USER->uid;
         switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
-        $piUID = $USER->getUID();
+        $piUID = $USER->uid;
         $piGroup = $USER->getPIGroup();
 
         $this->assertTrue($piGroup->exists());

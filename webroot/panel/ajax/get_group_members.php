@@ -16,7 +16,7 @@ if (!$group->userExists($USER)) {
 $members = $group->getGroupMembers();
 $count = count($members);
 foreach ($members as $key => $member) {
-    if ($member->getUID() == $group->getOwner()->getUID()) {
+    if ($member->uid == $group->getOwner()->uid) {
         continue;
     }
 
@@ -27,8 +27,8 @@ foreach ($members as $key => $member) {
     }
 
     echo "<td>" . $member->getFullname() . "</td>";
-    echo "<td>" . $member->getUID() . "</td>";
+    echo "<td>" . $member->uid . "</td>";
     echo "<td><a href='mailto:" . $member->getMail() . "'>" . $member->getMail() . "</a></td>";
-    echo "<td><input type='hidden' name='uid' value='" . $member->getUID() . "'></td>";
+    echo "<td><input type='hidden' name='uid' value='" . $member->uid . "'></td>";
     echo "</tr>";
 }

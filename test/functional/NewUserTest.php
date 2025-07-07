@@ -13,7 +13,7 @@ class NewUserTest extends TestCase
         global $USER, $SQL;
         $this->assertEquals(
             $expected,
-            $SQL->requestExists($USER->getUID(), UnitySQL::REQUEST_BECOME_PI)
+            $SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI)
         );
     }
 
@@ -22,7 +22,7 @@ class NewUserTest extends TestCase
         global $USER, $SQL;
         $this->assertEquals(
             $expected,
-            $SQL->requestExists($USER->getUID(), $gid)
+            $SQL->requestExists($USER->uid, $gid)
         );
     }
 
@@ -58,7 +58,7 @@ class NewUserTest extends TestCase
     private function ensureUserDoesNotExist()
     {
         global $USER, $SQL, $LDAP;
-        $SQL->deleteRequestsByUser($USER->getUID());
+        $SQL->deleteRequestsByUser($USER->uid);
         if ($USER->exists()) {
             $org = $USER->getOrgGroup();
             if ($org->exists() and $org->inOrg($USER)) {
@@ -70,14 +70,14 @@ class NewUserTest extends TestCase
         }
         $all_users_group = $LDAP->getUserGroup();
         $all_member_uids = $all_users_group->getAttribute("memberuid");
-        $new_uids = array_diff($all_member_uids, [$USER->getUID()]);
-        if (in_array($USER->getUID(), $all_member_uids)) {
+        $new_uids = array_diff($all_member_uids, [$USER->uid]);
+        if (in_array($USER->uid, $all_member_uids)) {
             $all_users_group->setAttribute(
                 "memberuid",
-                array_diff($all_member_uids, [$USER->getUID()])
+                array_diff($all_member_uids, [$USER->uid])
             );
             $all_users_group->write();
-            assert(!in_array($USER->getUID(), $all_users_group->getAttribute("memberuid")));
+            assert(!in_array($USER->uid, $all_users_group->getAttribute("memberuid")));
         }
     }
 

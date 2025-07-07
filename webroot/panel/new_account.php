@@ -10,17 +10,17 @@ if ($USER->exists()) {
     UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/account.php");
 }
 
-$pending_requests = $SQL->getRequestsByUser($USER->getUID());
+$pending_requests = $SQL->getRequestsByUser($USER->uid);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["new_user_sel"])) {
         if (!isset($_POST["eula"]) || $_POST["eula"] != "agree") {
             UnitySite::badRequest("user did not agree to EULA");
         }
-        if ($USER->getUID() != $SSO["user"]) {
+        if ($USER->uid != $SSO["user"]) {
             $sso_user = $SSO["user"];
             UnitySite::badRequest(
-                "cannot request due to uid mismatch: USER='{$USER->getUID()}' SSO[user]='$sso_user'"
+                "cannot request due to uid mismatch: USER='{$USER->uid}' SSO[user]='$sso_user'"
             );
         }
         if ($_POST["new_user_sel"] == "not_pi") {
