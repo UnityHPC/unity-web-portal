@@ -244,7 +244,6 @@ class UnityLDAP extends ldapConn
                 foreach ($users as $user) {
                     array_push($out, new UnityUser($user, $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook));
                 }
-
                 return $out;
             }
         }
@@ -255,6 +254,7 @@ class UnityLDAP extends ldapConn
             $params = array($user, $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook);
             array_push($out, new UnityUser(...$params));
         }
+        return $out;
     }
 
     public function getAllUsersArrays($attributes = [])
