@@ -184,7 +184,7 @@ if (count($sshPubKeys) == 0) {
 
 for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop through keys
     echo
-        "<div class='key-box'>
+    "<div class='key-box'>
         <textarea spellcheck='false' readonly>" . $sshPubKeys[$i] . "</textarea>
         <form
             action='' id='del-" . $i . "'
@@ -206,16 +206,16 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
 <h5>Login Shell</h5>
 
 <form action="" method="POST">
-    <input type="hidden" name="form_type" value="loginshell" />
-    <select id="loginSelector" class="code" name="shellSelect">
-        <?php
-        foreach ($CONFIG["loginshell"]["shell"] as $shell) {
-            echo "<option>$shell</option>";
-        }
-        ?>
-    </select>
-    <br>
-    <input id='submitLoginShell' type='submit' value='Set Login Shell' />
+<input type="hidden" name="form_type" value="loginshell" />
+<select id="loginSelector" class="code" name="shellSelect">
+<?php
+foreach ($CONFIG["loginshell"]["shell"] as $shell) {
+    echo "<option>$shell</option>";
+}
+?>
+</select>
+<br>
+<input id='submitLoginShell' type='submit' value='Set Login Shell' />
 </form>
 
 <hr>
@@ -251,11 +251,11 @@ if ($hasGroups) {
     const sitePrefix = '<?php echo $CONFIG["site"]["prefix"]; ?>';
     const ldapLoginShell = '<?php echo $USER->getLoginShell(); ?>';
 
-    $("button.btnAddKey").click(function () {
+    $("button.btnAddKey").click(function() {
         openModal("Add New Key", `${sitePrefix}/panel/modal/new_key.php`);
     });
 
-    $("#loginSelector option").each(function (i, e) {
+    $("#loginSelector option").each(function(i, e) {
         if ($(this).val() == ldapLoginShell) {
             $(this).prop("selected", true);
         }

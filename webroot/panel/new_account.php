@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $USER->getPIGroup()->cancelGroupRequest();
             } else {
                 $pi_group = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-                $pi_group->cancelGroupJoinRequest($user = $USER);
+                $pi_group->cancelGroupJoinRequest($user=$USER);
             }
         }
     }
@@ -68,29 +68,27 @@ include $LOC_HEADER;
 <?php if (count($pending_requests) > 0) : ?>
     <p>You have pending account activation requests:</p>
     <?php foreach ($pending_requests as $request) : ?>
-        <ul>
-            <li>
-                <?php
-                $gid = $request["request_for"];
-                if ($gid == UnitySQL::REQUEST_BECOME_PI) {
-                    $group_uid = $USER->getPIGroup()->gid;
-                    echo "<p>Ownership of PI Account/Group: <code>$group_uid</code> </p>";
-                } else {
-                    $owner_uid = UnityGroup::GID2OwnerUID($gid);
-                    echo "<p>Membership in PI Group owned by: <code>$owner_uid</code></p>";
-                }
-                ?>
-            </li>
-        </ul>
+        <ul><li>
+        <?php
+        $pi_uid = $request["request_for"];
+        if ($pi_uid == UnitySQL::REQUEST_BECOME_PI) {
+            $group_uid = $USER->getPIGroup()->getPIUID();
+            echo "<p>Ownership of PI Account/Group: <code>$group_uid</code> </p>";
+        } else {
+            $owner_uid = UnityGroup::getUIDfromPIUID($pi_uid);
+            echo "<p>Membership in PI Group owned by: <code>$owner_uid</code></p>";
+        }
+        ?>
+        </li></ul>
         <hr>
         <p><strong>Requesting Ownership of PI Account/Group</strong></p>
         <p>You will receive an email when your account has been approved.</p>
         <p>
-            <?php
-            $addr = $CONFIG['mail']['support'];
-            $name = $CONFIG['mail']['support_name'];
-            echo "Email <a href='mailto:$addr'>$name</a> if you have not heard back in one business day.";
-            ?>
+        <?php
+        $addr = $CONFIG['mail']['support'];
+        $name = $CONFIG['mail']['support_name'];
+        echo "Email <a href='mailto:$addr'>$name</a> if you have not heard back in one business day.";
+        ?>
         </p>
         <br>
         <p><strong>Requesting Membership in a PI Group</strong></p>
@@ -98,7 +96,7 @@ include $LOC_HEADER;
         <p>You may need to remind them.</p>
         <hr>
         <form action="" method="POST">
-            <input name="cancel" style='margin-top: 10px;' type='submit' value='Cancel Request' />
+            <input name="cancel" style='margin-top: 10px;' type='submit' value='Cancel Request'/>
         </form>
     <?php endforeach; ?>
 <?php else : ?>
@@ -126,9 +124,9 @@ include $LOC_HEADER;
         <hr>
 
         <div style='position: relative;display: none;' id='piConfirmWrapper'>
-            <label><input type='checkbox' id='chk_pi' name='confirm_pi' value='agree'>
-                I have read the PI <a href="<?php echo $CONFIG["site"]["account_policy_url"]; ?>">
-                    account policy</a> guidelines. </label>
+        <label><input type='checkbox' id='chk_pi' name='confirm_pi' value='agree'>
+           I have read the PI <a href="<?php echo $CONFIG["site"]["account_policy_url"]; ?>">
+            account policy</a> guidelines. </label>
         </div>
         <br>
 
@@ -142,7 +140,7 @@ include $LOC_HEADER;
 <?php endif; ?>
 
 <script>
-    $('input[type=radio][name=new_user_sel]').change(function () {
+    $('input[type=radio][name=new_user_sel]').change(function() {
         let pi_cnf_text = $('#piConfirmWrapper');
         let pi_sel_text = $('#piSearchWrapper');
         if (this.value == 'not_pi') {
@@ -158,11 +156,11 @@ include $LOC_HEADER;
         }
     });
 
-    $("input[type=text][name=pi]").keyup(function () {
+    $("input[type=text][name=pi]").keyup(function() {
         var searchWrapper = $("div.searchWrapper");
         $.ajax({
             url: "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/pi_search.php?search=" + $(this).val(),
-            success: function (result) {
+            success: function(result) {
                 searchWrapper.html(result);
 
                 if (result == "") {
@@ -174,7 +172,7 @@ include $LOC_HEADER;
         });
     });
 
-    $("div.searchWrapper").on("click", "span", function (event) {
+    $("div.searchWrapper").on("click", "span", function(event) {
         var textBox = $("input[type=text][name=pi]");
         textBox.val($(this).html());
     });
@@ -182,7 +180,7 @@ include $LOC_HEADER;
     /**
      * Hides the searchresult box on click anywhere
      */
-    $(document).click(function () {
+    $(document).click(function() {
         $("div.searchWrapper").hide();
     });
 </script>
