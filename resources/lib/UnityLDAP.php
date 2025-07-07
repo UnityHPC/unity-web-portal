@@ -316,7 +316,7 @@ class UnityLDAP extends ldapConn
             fn($x) => $x["cn"][0],
             $this->pi_groupOU->getChildrenArray(
                 ["cn"],
-                true,
+                false,
                 "(memberuid=" . ldap_escape($uid, LDAP_ESCAPE_FILTER) . ")",
             )
         );
