@@ -165,10 +165,8 @@ class UnitySQL
 
         $stmt->execute();
 
-        $operator = $operator->uid;
-
         $this->addLog(
-            $operator,
+            $operator->uid,
             $_SERVER['REMOTE_ADDR'],
             "added_cluster_notice",
             $operator
@@ -252,10 +250,8 @@ class UnitySQL
 
         $stmt->execute();
 
-        $operator = $operator->uid;
-
         $this->addLog(
-            $operator,
+            $operator->uid,
             $_SERVER['REMOTE_ADDR'],
             "edited_page",
             $operator

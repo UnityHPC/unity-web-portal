@@ -59,7 +59,6 @@ class UnityOrg
     {
         $members = $this->getGroupMemberUIDs($ignorecache);
         $out = array();
-        $owner_uid = $this->getOwner()->uid;
         foreach ($members as $member) {
             $user_obj = new UnityUser(
                 $member,

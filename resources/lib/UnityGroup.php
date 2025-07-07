@@ -281,8 +281,7 @@ class UnityGroup
      */
     public function approveUser($new_user, $send_mail = true)
     {
-        $uid = $new_user->uid;
-        $request = $this->SQL->getRequest($uid, $this->gid);
+        $request = $this->SQL->getRequest($new_user->uid, $this->gid);
         // check if user exists
         if (!$new_user->exists()) {
             $new_user->init(
@@ -323,8 +322,7 @@ class UnityGroup
 
     public function denyUser($new_user, $send_mail = true)
     {
-        $uid = $new_user->uid;
-        $request = $this->SQL->getRequest($uid, $this->gid);
+        $request = $this->SQL->getRequest($new_user->uid, $this->gid);
 
         // remove request, this will fail silently if the request doesn't exist
         $this->SQL->removeRequest($new_user->uid, $this->gid);
@@ -464,7 +462,6 @@ class UnityGroup
     {
         $members = $this->getGroupMemberUIDs($ignorecache);
         $out = array();
-        $owner_uid = $this->getOwner()->uid;
         foreach ($members as $member) {
             $user_obj = new UnityUser(
                 $member,
