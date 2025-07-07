@@ -6,18 +6,19 @@ use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnitySSO;
 
-class PiMemberApproveTest extends TestCase {
-        static $userWithRequestSwitchArgs;
-        static $userWithoutRequestSwitchArgs;
-        static $piSwitchArgs;
-        static $pi;
-        static $userWithRequestUID;
-        static $userWithoutRequestUID;
-        static $piUID;
-        static $userWithRequest;
-        static $userWithoutRequest;
-        static $piGroup;
-        static $piGroupGID;
+class PiMemberApproveTest extends TestCase
+{
+    static $userWithRequestSwitchArgs;
+    static $userWithoutRequestSwitchArgs;
+    static $piSwitchArgs;
+    static $pi;
+    static $userWithRequestUID;
+    static $userWithoutRequestUID;
+    static $piUID;
+    static $userWithRequest;
+    static $userWithoutRequest;
+    static $piGroup;
+    static $piGroupGID;
 
     private function approveUser(string $uid)
     {
@@ -62,7 +63,7 @@ class PiMemberApproveTest extends TestCase {
         $this->assertEmpty($piGroup->getRequests());
         try {
             switchUser(...$userSwitchArgs);
-            $this->requestJoinPI($piGroup->getPIUID());
+            $this->requestJoinPI($piGroup->gid);
             $this->assertFalse($piGroup->userExists($user));
 
             switchUser(...$piSwitchArgs);

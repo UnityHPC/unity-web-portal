@@ -583,7 +583,7 @@ class UnityUser
     public function getPIGroup()
     {
         return new UnityGroup(
-            UnityGroup::getPIUIDfromUID($this->uid),
+            UnityGroup::ownerUID2GID($this->uid),
             $this->LDAP,
             $this->SQL,
             $this->MAILER,
@@ -639,7 +639,7 @@ class UnityUser
         foreach ($all_pi_groups as $pi_group) {
             if (in_array($this->getUID(), $pi_group->getGroupMemberUIDs())) {
                 array_push($out, $pi_group);
-                array_push($cache_arr, $pi_group->getPIUID());
+                array_push($cache_arr, $pi_group->gid);
             }
         }
 

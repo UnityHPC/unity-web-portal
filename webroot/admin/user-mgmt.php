@@ -56,7 +56,7 @@ include $LOC_HEADER;
         echo "<td>";
         $cur_user_groups = $user->getGroups();
         foreach ($cur_user_groups as $cur_group) {
-            echo "<a href='mailto:" . $cur_group->getOwner()->getMail() . "'>" . $cur_group->getPIUID() . "</a>";
+            echo "<a href='mailto:" . $cur_group->getOwner()->getMail() . "'>" . $cur_group->gid . "</a>";
             if ($cur_group !== array_key_last($cur_user_groups)) {
                 echo '<br>';
             }

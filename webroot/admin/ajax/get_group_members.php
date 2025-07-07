@@ -9,11 +9,11 @@ if (!$USER->isAdmin()) {
     UnitySite::forbidden("not an admin");
 }
 
-if (!isset($_GET["pi_uid"])) {
+if (!isset($_GET["gid"])) {
     UnitySite::badRequest("PI UID not set");
 }
 
-$group = new UnityGroup($_GET["pi_uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+$group = new UnityGroup($_GET["gid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
 $members = $group->getGroupMembers();
 $requests = $group->getRequests();
 
@@ -35,11 +35,11 @@ foreach ($members as $member) {
     echo "<td><a href='mailto:" . $member->getMail() . "'>" . $member->getMail() . "</a></td>";
     echo "<td>";
     echo
-    "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " .
-    $member->getUID() . " from this group?\");'>
+        "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " .
+        $member->getUID() . " from this group?\");'>
     <input type='hidden' name='form_type' value='remUserChild'>
     <input type='hidden' name='uid' value='" . $member->getUID() . "'>
-    <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
+    <input type='hidden' name='pi' value='" . $group->gid . "'>
     <input type='submit' value='Remove'>
     </form>";
     echo "</td>";
@@ -60,11 +60,11 @@ foreach ($requests as $i => [$user, $timestamp, $firstname, $lastname, $email, $
     echo "<td><a href='mailto:" . $email . "'>" . $email . "</a></td>";
     echo "<td>";
     echo
-    "<form action='' method='POST' 
+        "<form action='' method='POST'
     onsubmit='return confirm(\"Are you sure you want to approve " . $uid . "?\");'>
     <input type='hidden' name='form_type' value='reqChild'>
     <input type='hidden' name='uid' value='" . $uid . "'>
-    <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
+    <input type='hidden' name='pi' value='" . $group->gid . "'>
     <input type='submit' name='action' value='Approve'>
     <input type='submit' name='action' value='Deny'></form>";
     echo "</td>";

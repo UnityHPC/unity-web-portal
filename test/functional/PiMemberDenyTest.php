@@ -4,10 +4,12 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\UnityUser;
 
-class PiMemberDenyTest extends TestCase {
+class PiMemberDenyTest extends TestCase
+{
     static $requestUid;
 
-    public static function setUpBeforeClass(): void{
+    public static function setUpBeforeClass(): void
+    {
         global $USER;
         switchUser(...getNormalUser());
         self::$requestUid = $USER->getUID();
@@ -56,7 +58,7 @@ class PiMemberDenyTest extends TestCase {
             );
             $this->assertFalse($piGroup->userExists($requestedUser));
         } finally {
-            $SQL->removeRequest(self::$requestUid, $piGroup->getPIUID());
+            $SQL->removeRequest(self::$requestUid, $piGroup->gid);
         }
     }
 }
