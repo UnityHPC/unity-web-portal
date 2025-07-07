@@ -257,20 +257,20 @@ class UnityLDAP extends ldapConn
         return $out;
     }
 
-    public function getAllUsersArrays($attributes = [])
+    public function getAllUsersAttributes($attributes = [])
     {
-        $include_uids = $this->getAllUsersUIDs();
-        $user_arrays = $this->baseOU->getChildrenArray(
+        $include_uids = $this->getAllUsersAttributes();
+        $user_attributes = $this->baseOU->getChildrenArray(
             $attributes,
             true, // recursive
             "objectClass=posixAccount"
         );
-        foreach ($user_arrays as $i => $array) {
-            if (!in_array($array["uid"][0], $include_uids)) {
-                unset($user_arrays[$i]);
+        foreach ($user_attributes as $i => $attributes) {
+            if (!in_array($attributes["uid"][0], $include_uids)) {
+                unset($user_attributes[$i]);
             }
         }
-        return $user_arrays;
+        return $user_attributes;
     }
 
     public function getAllPIGroups($UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook, $ignorecache = false)
@@ -305,9 +305,9 @@ class UnityLDAP extends ldapConn
         return $out;
     }
 
-    public function getAllPIGroupsArrays()
+    public function getAllPIGroupsAttributes($attributes = [])
     {
-        return $this->pi_groupOU->getChildrenArray([], true);
+        return $this->pi_groupOU->getChildrenArray($attributes);
     }
 
     public function getPIGroupGIDsWithMemberUID($uid)
@@ -322,7 +322,7 @@ class UnityLDAP extends ldapConn
         );
     }
 
-    public function getAllPIGroupOwnerArrays($attributes = [])
+    public function getAllPIGroupOwnerAttributes($attributes = [])
     {
         // get the PI groups, filter for just the GIDs, then map the GIDs to owner UIDs
         $owner_uids = array_map(
@@ -332,13 +332,13 @@ class UnityLDAP extends ldapConn
                 $this->pi_groupOU->getChildrenArray(["cn"]),
             ),
         );
-        $owner_arrays = $this->getAllUsersArrays($attributes);
-        foreach ($owner_arrays as $i => $array) {
-            if (!in_array($array["uid"][0], $owner_uids)) {
-                unset($owner_arrays[$i]);
+        $owner_attributes = $this->getAllUsersAttributes($attributes);
+        foreach ($owner_attributes as $i => $attributes) {
+            if (!in_array($attributes["uid"][0], $owner_uids)) {
+                unset($owner_attributes[$i]);
             }
         }
-        return $owner_arrays;
+        return $owner_attributes;
     }
 
     /** Returns an assosiative array where keys are UIDs and values are arrays of PI GIDs */
@@ -348,7 +348,7 @@ class UnityLDAP extends ldapConn
         $uids = $this->getAllUsersUIDs();
         $uid2pigids = array_combine($uids, array_fill(0, count($uids), []));
         // for each PI group, append that GID to the member list for each of its member UIDs
-        foreach ($this->getAllPIGroupsArrays() as $array) {
+        foreach ($this->getAllPIGroupsAttributes(["cn", "memberuid"]) as $array) {
             $gid = $array["cn"][0];
             foreach ($array["memberuid"] as $uid) {
                 array_push($uid2pigids[$uid], $gid);
@@ -388,9 +388,9 @@ class UnityLDAP extends ldapConn
         return $out;
     }
 
-    public function getAllOrgGroupsArrays()
+    public function getAllOrgGroupsAttributes($attributes = [])
     {
-        return $this->org_groupOU->getChildrenArray([], true);
+        return $this->org_groupOU->getChildrenArray($attributes, true);
     }
 
     public function getUserEntry($uid)
