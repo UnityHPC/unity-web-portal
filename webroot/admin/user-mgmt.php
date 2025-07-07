@@ -38,19 +38,19 @@ include $LOC_HEADER;
 
     <?php
     $UID2PIGIDs = $LDAP->getAllUID2PIGIDs();
-    $user_arrays = $LDAP->getAllUsersArrays(["uid", "gecos", "o", "mail"]);
-    usort($user_arrays, fn ($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
-    foreach ($user_arrays as $array) {
-        $uid = $array["uid"][0];
+    $user_attributes = $LDAP->getAllUsersAttributes(["uid", "gecos", "o", "mail"]);
+    usort($user_attributes, fn ($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
+    foreach ($user_attributes as $attributes) {
+        $uid = $attributes["uid"][0];
         if ($SQL->accDeletionRequestExists($uid)) {
             echo "<tr style='color:grey; font-style: italic'>";
         } else {
             echo "<tr>";
         }
-        echo "<td>" . $array["gecos"][0] . "</td>";
+        echo "<td>" . $attributes["gecos"][0] . "</td>";
         echo "<td>" . $uid . "</td>";
-        echo "<td>" . $array["o"][0] . "</td>";
-        echo "<td><a href='mailto:" . $array["mail"][0] . "'>" . $array["mail"][0] . "</a></td>";
+        echo "<td>" . $attributes["o"][0] . "</td>";
+        echo "<td><a href='mailto:" . $attributes["mail"][0] . "'>" . $attributes["mail"][0] . "</a></td>";
         echo "<td>";
         foreach ($UID2PIGIDs[$uid] as $gid) {
             echo "<p>$gid</p>";
