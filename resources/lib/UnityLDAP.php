@@ -390,7 +390,7 @@ class UnityLDAP extends ldapConn
 
     public function getAllOrgGroupsAttributes($attributes = [])
     {
-        return $this->org_groupOU->getChildrenArray($attributes, true);
+        return $this->org_groupOU->getChildrenArray($attributes);
     }
 
     public function getUserEntry($uid)
