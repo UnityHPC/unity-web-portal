@@ -9,9 +9,9 @@ class PiBecomeRequestTest extends TestCase
     {
         global $USER, $SQL;
         if ($x == 0) {
-            $this->assertFalse($SQL->requestExists($USER->getUID()));
+            $this->assertFalse($SQL->requestExists($USER->uid));
         } elseif ($x > 0) {
-            $this->assertTrue($SQL->requestExists($USER->getUID()));
+            $this->assertTrue($SQL->requestExists($USER->uid));
         } else {
             throw new RuntimeError("x must not be negative");
         }
@@ -26,7 +26,7 @@ class PiBecomeRequestTest extends TestCase
         $stmt = $SQL->getConn()->prepare(
             "SELECT * FROM requests WHERE uid=:uid and request_for='admin'"
         );
-        $uid = $USER->getUID();
+        $uid = $USER->uid;
         $stmt->bindParam(":uid", $uid);
         $stmt->execute();
         return count($stmt->fetchAll());
@@ -61,7 +61,7 @@ class PiBecomeRequestTest extends TestCase
             $this->assertNumberPiBecomeRequests(1);
         } finally {
             if ($SQL->requestExists($USER, UnitySQL::REQUEST_BECOME_PI)) {
-                $SQL->removeRequest($USER->getUID(), UnitySQL::REQUEST_BECOME_PI);
+                $SQL->removeRequest($USER->uid, UnitySQL::REQUEST_BECOME_PI);
             }
         }
     }
@@ -72,7 +72,7 @@ class PiBecomeRequestTest extends TestCase
         switchUser(...getUserNotPiNotRequestedBecomePiRequestedAccountDeletion());
         $this->assertFalse($USER->isPI());
         $this->assertNumberPiBecomeRequests(0);
-        $this->assertTrue($SQL->accDeletionRequestExists($USER->getUID()));
+        $this->assertTrue($SQL->accDeletionRequestExists($USER->uid));
         try {
             http_post(
                 __DIR__ . "/../../webroot/panel/account.php",
@@ -81,7 +81,7 @@ class PiBecomeRequestTest extends TestCase
             $this->assertNumberPiBecomeRequests(0);
         } finally {
             if ($SQL->requestExists($USER, UnitySQL::REQUEST_BECOME_PI)) {
-                $SQL->removeRequest($USER->getUID(), UnitySQL::REQUEST_BECOME_PI);
+                $SQL->removeRequest($USER->uid, UnitySQL::REQUEST_BECOME_PI);
             }
         }
     }

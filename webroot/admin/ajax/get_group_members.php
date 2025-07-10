@@ -20,7 +20,7 @@ $requests = $group->getRequests();
 $i = 0;
 $count = count($members) + count($requests);
 foreach ($members as $member) {
-    if ($member->getUID() == $group->getOwner()->getUID()) {
+    if ($member->uid == $group->getOwner()->uid) {
         continue;
     }
 
@@ -31,14 +31,14 @@ foreach ($members as $member) {
     }
 
     echo "<td>" . $member->getFullname() . "</td>";
-    echo "<td>" . $member->getUID() . "</td>";
+    echo "<td>" . $member->uid . "</td>";
     echo "<td><a href='mailto:" . $member->getMail() . "'>" . $member->getMail() . "</a></td>";
     echo "<td>";
     echo
-    "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " .
-    $member->getUID() . " from this group?\");'>
+        "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " .
+        $member->uid . " from this group?\");'>
     <input type='hidden' name='form_type' value='remUserChild'>
-    <input type='hidden' name='uid' value='" . $member->getUID() . "'>
+    <input type='hidden' name='uid' value='" . $member->uid . "'>
     <input type='hidden' name='pi' value='" . $group->getPIUID() . "'>
     <input type='submit' value='Remove'>
     </form>";
@@ -54,13 +54,13 @@ foreach ($requests as $i => [$user, $timestamp, $firstname, $lastname, $email, $
     } else {
         echo "<tr class='expanded $i'>";
     }
-    $uid = $user->getUID();
+    $uid = $user->uid;
     echo "<td>" . $firstname . " " . $lastname . "</td>";
     echo "<td>" . $uid . "</td>";
     echo "<td><a href='mailto:" . $email . "'>" . $email . "</a></td>";
     echo "<td>";
     echo
-    "<form action='' method='POST' 
+        "<form action='' method='POST'
     onsubmit='return confirm(\"Are you sure you want to approve " . $uid . "?\");'>
     <input type='hidden' name='form_type' value='reqChild'>
     <input type='hidden' name='uid' value='" . $uid . "'>

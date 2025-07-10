@@ -10,10 +10,10 @@ class ViewAsUserTest extends TestCase
     {
         global $USER;
         switchUser(...$afterUser);
-        $afterUid = $USER->getUID();
+        $afterUid = $USER->uid;
         switchUser(...$beforeUser);
         // $this->assertTrue($USER->isAdmin());
-        $beforeUid = $USER->getUID();
+        $beforeUid = $USER->uid;
         // $this->assertNotEquals($afterUid, $beforeUid);
         http_post(
             __DIR__ . "/../../webroot/admin/user-mgmt.php",
@@ -28,7 +28,7 @@ class ViewAsUserTest extends TestCase
         session_write_close();
         http_get(__DIR__ . "/../../resources/init.php");
         // now we should be new user
-        $this->assertEquals($afterUid, $USER->getUID());
+        $this->assertEquals($afterUid, $USER->uid);
         // $this->assertTrue($_SESSION["user_exists"]);
         http_post(
             __DIR__ . "/../../resources/templates/header.php",
@@ -40,7 +40,7 @@ class ViewAsUserTest extends TestCase
         session_write_close();
         http_get(__DIR__ . "/../../resources/init.php");
         // now we should be back to original user
-        $this->assertEquals($beforeUid, $USER->getUID());
+        $this->assertEquals($beforeUid, $USER->uid);
     }
 
     public function testViewAsUser()
@@ -62,7 +62,7 @@ class ViewAsUserTest extends TestCase
     {
         global $USER;
         switchUser(...getAdminUser());
-        $adminUid = $USER->getUID();
+        $adminUid = $USER->uid;
         $this->assertTrue($USER->isAdmin());
         switchUser(...getNormalUser());
         http_post(
