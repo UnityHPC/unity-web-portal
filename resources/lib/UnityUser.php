@@ -198,7 +198,7 @@ class UnityUser
     public function setFirstname($firstname, $operator = null)
     {
         $this->entry->setAttribute("givenname", $firstname);
-        $operator = is_null($operator) ? $this->getUID() : $operator->uid;
+        $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog(
             $operator,
@@ -247,7 +247,7 @@ class UnityUser
     public function setLastname($lastname, $operator = null)
     {
         $this->entry->setAttribute("sn", $lastname);
-        $operator = is_null($operator) ? $this->getUID() : $operator->uid;
+        $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog(
             $operator,
@@ -302,7 +302,7 @@ class UnityUser
     public function setMail($email, $operator = null)
     {
         $this->entry->setAttribute("mail", $email);
-        $operator = is_null($operator) ? $this->getUID() : $operator->uid;
+        $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog(
             $operator,
@@ -350,7 +350,7 @@ class UnityUser
      */
     public function setSSHKeys($keys, $operator = null, $send_mail = true)
     {
-        $operator = is_null($operator) ? $this->getUID() : $operator->uid;
+        $operator = is_null($operator) ? $this->uid : $operator->uid;
         $keys_filt = array_values(array_unique($keys));
         if ($this->entry->exists()) {
             $this->entry->setAttribute("sshpublickey", $keys_filt);
@@ -486,7 +486,7 @@ class UnityUser
         if ($this->entry->exists()) {
             $this->entry->setAttribute("homedirectory", $home);
             $this->entry->write();
-            $operator = is_null($operator) ? $this->getUID() : $operator->uid;
+            $operator = is_null($operator) ? $this->uid : $operator->uid;
 
             $this->SQL->addLog(
                 $operator,
