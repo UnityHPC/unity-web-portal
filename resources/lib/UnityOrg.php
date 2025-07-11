@@ -7,6 +7,7 @@ use Exception;
 class UnityOrg
 {
     public $gid;
+    private $entry;
 
     private $MAILER;
     private $SQL;
@@ -17,6 +18,7 @@ class UnityOrg
     public function __construct($gid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
     {
         $this->gid = $gid;
+        $this->entry = $LDAP->getOrgGroupEntry($this->gid);
 
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
@@ -27,14 +29,12 @@ class UnityOrg
 
     public function init()
     {
-        $org_group = $this->getLDAPOrgGroup();
-
-        if (!$org_group->exists()) {
+        if (!$this->entry->exists()) {
             $nextGID = $this->LDAP->getNextOrgGIDNumber($this->SQL);
 
-            $org_group->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
-            $org_group->setAttribute("gidnumber", strval($nextGID));
-            $org_group->write();
+            $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
+            $this->entry->setAttribute("gidnumber", strval($nextGID));
+            $this->entry->write();
         }
 
         $this->REDIS->appendCacheArray("sorted_orgs", "", $this->gid);
@@ -42,12 +42,7 @@ class UnityOrg
 
     public function exists()
     {
-        return $this->getLDAPOrgGroup()->exists();
-    }
-
-    public function getLDAPOrgGroup()
-    {
-        return $this->LDAP->getOrgGroupEntry($this->gid);
+        return $this->entry->exists();
     }
 
     public function inOrg($user, $ignorecache = false)
@@ -83,8 +78,7 @@ class UnityOrg
         }
         $updatecache = false;
         if (!isset($members)) {
-            $org_group = $this->getLDAPOrgGroup();
-            $members = $org_group->getAttribute("memberuid");
+            $members = $this->entry->getAttribute("memberuid");
             $updatecache = true;
         }
         if (!$ignorecache && $updatecache) {
@@ -96,17 +90,15 @@ class UnityOrg
 
     public function addUser($user)
     {
-        $org_group = $this->getLDAPOrgGroup();
-        $org_group->appendAttribute("memberuid", $user->uid);
-        $org_group->write();
+        $this->entry->appendAttribute("memberuid", $user->uid);
+        $this->entry->write();
         $this->REDIS->appendCacheArray($this->gid, "members", $user->uid);
     }
 
     public function removeUser($user)
     {
-        $org_group = $this->getLDAPOrgGroup();
-        $org_group->removeAttributeEntryByValue("memberuid", $user->uid);
-        $org_group->write();
+        $this->entry->removeAttributeEntryByValue("memberuid", $user->uid);
+        $this->entry->write();
         $this->REDIS->removeCacheArray($this->gid, "members", $user->uid);
     }
 }

@@ -70,12 +70,12 @@ include $LOC_HEADER;
     <?php foreach ($pending_requests as $request) : ?>
         <ul><li>
         <?php
-        $pi_uid = $request["request_for"];
-        if ($pi_uid == UnitySQL::REQUEST_BECOME_PI) {
-            $group_uid = $USER->getPIGroup()->getPIUID();
+        $gid = $request["request_for"];
+        if ($gid == UnitySQL::REQUEST_BECOME_PI) {
+            $group_uid = $USER->getPIGroup()->gid;
             echo "<p>Ownership of PI Account/Group: <code>$group_uid</code> </p>";
         } else {
-            $owner_uid = UnityGroup::getUIDfromPIUID($pi_uid);
+            $owner_uid = UnityGroup::GID2OwnerUID($gid);
             echo "<p>Membership in PI Group owned by: <code>$owner_uid</code></p>";
         }
         ?>
