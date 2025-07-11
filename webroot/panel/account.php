@@ -57,13 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($USER->isPI()) {
                 UnitySite::badRequest("already a PI");
             }
-            if ($SQL->requestExists($USER->getUID())) {
+            if ($SQL->requestExists($USER->uid)) {
                 UnitySite::badRequest("already requested to be PI");
             }
-            if ($USER->getUID() != $SSO["user"]) {
+            if ($USER->uid != $SSO["user"]) {
                 UnitySite::badRequest(
                     "cannot request due to uid mismatch: " .
-                        "USER='{$USER->getUID()}' SSO[user]='$sso_user'"
+                    "USER='{$USER->uid}' SSO[user]='$sso_user'"
                 );
             }
             $USER->getPIGroup()->requestGroup(
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($hasGroups) {
                 break;
             }
-            if (!$SQL->accDeletionRequestExists($USER->getUID())) {
+            if (!$SQL->accDeletionRequestExists($USER->uid)) {
                 $USER->requestAccountDeletion();
             }
             break;
@@ -99,7 +99,7 @@ include $LOC_HEADER;
 <table>
     <tr>
         <th>Username</th>
-        <td><code><?php echo $USER->getUID(); ?></code></td>
+        <td><code><?php echo $USER->uid; ?></code></td>
     </tr>
     <tr>
         <th>Organization</th>
@@ -145,7 +145,7 @@ if (!$isPI) {
             id='piReq'
         >
     ";
-    if ($SQL->accDeletionRequestExists($USER->getUID())) {
+    if ($SQL->accDeletionRequestExists($USER->uid)) {
         echo "<input type='submit' value='Request PI Account' disabled />";
         echo "
             <label style='margin-left: 10px'>
@@ -153,7 +153,7 @@ if (!$isPI) {
             </label>
         ";
     } else {
-        if ($SQL->requestExists($USER->getUID())) {
+        if ($SQL->requestExists($USER->uid)) {
             $prompt = "onclick='return confirm(\"Are you sure you want to cancel this request?\")";
             echo "<input type='submit' value='Cancel PI Account Request' $prompt'/>";
             echo "
@@ -236,7 +236,7 @@ if ($hasGroups) {
         >
         <input type='hidden' name='form_type' value='account_deletion_request' />
     ";
-    if ($SQL->accDeletionRequestExists($USER->getUID())) {
+    if ($SQL->accDeletionRequestExists($USER->uid)) {
         echo "<input type='submit' value='Request Account Deletion' disabled />";
         echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
     } else {

@@ -107,7 +107,7 @@ class UnitySQL
         try {
             $this->getRequest($requestor, $dest);
             return true;
-        // FIXME use a specific exception
+            // FIXME use a specific exception
         } catch (\Exception) {
             return false;
         }
@@ -165,10 +165,8 @@ class UnitySQL
 
         $stmt->execute();
 
-        $operator = $operator->getUID();
-
         $this->addLog(
-            $operator,
+            $operator->uid,
             $_SERVER['REMOTE_ADDR'],
             "added_cluster_notice",
             $operator
@@ -252,10 +250,8 @@ class UnitySQL
 
         $stmt->execute();
 
-        $operator = $operator->getUID();
-
         $this->addLog(
-            $operator,
+            $operator->uid,
             $_SERVER['REMOTE_ADDR'],
             "edited_page",
             $operator
@@ -266,7 +262,7 @@ class UnitySQL
     public function addLog($operator, $operator_ip, $action_type, $recipient)
     {
         $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_AUDIT_LOG . " (operator, operator_ip, action_type, recipient) 
+            "INSERT INTO " . self::TABLE_AUDIT_LOG . " (operator, operator_ip, action_type, recipient)
             VALUE (:operator, :operator_ip, :action_type, :recipient)"
         );
         $stmt->bindParam(":operator", $operator);

@@ -83,7 +83,7 @@ include $LOC_HEADER;
         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
         echo "<td>";
         echo
-        "<form action='' method='POST'>
+            "<form action='' method='POST'>
         <input type='hidden' name='form_type' value='req'>
         <input type='hidden' name='uid' value='" . $request["uid"] . "'>
         <input type='submit' name='action' value='Approve'
@@ -109,11 +109,11 @@ include $LOC_HEADER;
         <td>Actions</td>
     </tr>
 
-<?php
+    <?php
     $accounts = $LDAP->getAllPIGroups($SQL, $MAILER, $REDIS, $WEBHOOK);
 
     usort($accounts, function ($a, $b) {
-        return strcmp($a->getPIUID(), $b->getPIUID());
+        return strcmp($a->gid, $b->gid);
     });
 
     foreach ($accounts as $pi_group) {
@@ -121,8 +121,8 @@ include $LOC_HEADER;
 
         echo "<tr class='expandable'>";
         echo "<td><button class='btnExpand'>&#9654;</button>" . $pi_user->getFirstname() .
-        " " . $pi_user->getLastname() . "</td>";
-        echo "<td>" . $pi_group->getPIUID() . "</td>";
+            " " . $pi_user->getLastname() . "</td>";
+        echo "<td>" . $pi_group->gid . "</td>";
         echo "<td><a href='mailto:" . $pi_user->getMail() . "'>" . $pi_user->getMail() . "</a></td>";
         echo "</tr>";
     }
@@ -132,7 +132,7 @@ include $LOC_HEADER;
 <script>
     $("table tr.tr-pichild").hide(); // Hide the children first (and then the women)
 
-    $("table tr").click(function() {
+    $("table tr").click(function () {
         if (!$(this).hasClass("tr-pichild")) {
             var current = $(this).next();
             while (current.hasClass("tr-pichild")) {
@@ -146,7 +146,7 @@ include $LOC_HEADER;
         }
     });
 
-    var ajax_url = "<?php echo $CONFIG["site"]["prefix"]; ?>/admin/ajax/get_group_members.php?pi_uid=";
+    var ajax_url = "<?php echo $CONFIG["site"]["prefix"]; ?>/admin/ajax/get_group_members.php?gid=";
 </script>
 
 <?php

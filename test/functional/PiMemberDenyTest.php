@@ -10,7 +10,7 @@ class PiMemberDenyTest extends TestCase {
     public static function setUpBeforeClass(): void{
         global $USER;
         switchUser(...getNormalUser());
-        self::$requestUid = $USER->getUID();
+        self::$requestUid = $USER->uid;
     }
 
     private function denyUser(string $uid)
@@ -30,7 +30,7 @@ class PiMemberDenyTest extends TestCase {
         $this->assertTrue($piGroup->exists());
         $this->assertTrue(
             arraysAreEqualUnOrdered(
-                [$pi->getUID()],
+                [$pi->uid],
                 $piGroup->getGroupMemberUIDs()
             )
         );
@@ -50,13 +50,13 @@ class PiMemberDenyTest extends TestCase {
             $this->assertEmpty($piGroup->getRequests());
             $this->assertTrue(
                 arraysAreEqualUnOrdered(
-                    [$pi->getUID()],
+                    [$pi->uid],
                     $piGroup->getGroupMemberUIDs()
                 )
             );
             $this->assertFalse($piGroup->userExists($requestedUser));
         } finally {
-            $SQL->removeRequest(self::$requestUid, $piGroup->getPIUID());
+            $SQL->removeRequest(self::$requestUid, $piGroup->gid);
         }
     }
 }

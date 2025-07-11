@@ -13,7 +13,7 @@ class NewUserTest extends TestCase
         global $USER, $SQL;
         $this->assertEquals(
             $expected,
-            $SQL->requestExists($USER->getUID(), UnitySQL::REQUEST_BECOME_PI)
+            $SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI)
         );
     }
 
@@ -22,7 +22,7 @@ class NewUserTest extends TestCase
         global $USER, $SQL;
         $this->assertEquals(
             $expected,
-            $SQL->requestExists($USER->getUID(), $gid)
+            $SQL->requestExists($USER->uid, $gid)
         );
     }
 
@@ -58,7 +58,7 @@ class NewUserTest extends TestCase
     private function ensureUserDoesNotExist()
     {
         global $USER, $SQL, $LDAP;
-        $SQL->deleteRequestsByUser($USER->getUID());
+        $SQL->deleteRequestsByUser($USER->uid);
         if ($USER->exists()) {
             $org = $USER->getOrgGroup();
             if ($org->exists() and $org->inOrg($USER)) {
@@ -70,14 +70,14 @@ class NewUserTest extends TestCase
         }
         $all_users_group = $LDAP->getUserGroup();
         $all_member_uids = $all_users_group->getAttribute("memberuid");
-        $new_uids = array_diff($all_member_uids, [$USER->getUID()]);
-        if (in_array($USER->getUID(), $all_member_uids)) {
+        $new_uids = array_diff($all_member_uids, [$USER->uid]);
+        if (in_array($USER->uid, $all_member_uids)) {
             $all_users_group->setAttribute(
                 "memberuid",
-                array_diff($all_member_uids, [$USER->getUID()])
+                array_diff($all_member_uids, [$USER->uid])
             );
             $all_users_group->write();
-            assert(!in_array($USER->getUID(), $all_users_group->getAttribute("memberuid")));
+            assert(!in_array($USER->uid, $all_users_group->getAttribute("memberuid")));
         }
     }
 
@@ -114,7 +114,7 @@ class NewUserTest extends TestCase
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
         switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
         $pi_group = $USER->getPIGroup();
-        $gid = $pi_group->getPIUID();
+        $gid = $pi_group->gid;
         switchUser(...getNonExistentUser());
         $this->assertTrue(!$USER->exists());
         $newOrg = new UnityOrg($SSO["org"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
@@ -123,12 +123,12 @@ class NewUserTest extends TestCase
         $this->assertTrue(!$pi_group->userExists($USER));
         $this->assertRequestedMembership(false, $gid);
         try {
-            $this->requestGroupMembership($pi_group->getPIUID());
+            $this->requestGroupMembership($pi_group->gid);
             $this->assertRequestedMembership(true, $gid);
 
             // $second_request_failed = false;
             // try {
-                $this->requestGroupMembership($pi_group->getPIUID());
+            $this->requestGroupMembership($pi_group->gid);
             // } catch(Exception) {
             //     $second_request_failed = true;
             // }
@@ -138,7 +138,7 @@ class NewUserTest extends TestCase
             $this->cancelAllRequests();
             $this->assertRequestedMembership(false, $gid);
 
-            $this->requestGroupMembership($pi_group->getPIUID());
+            $this->requestGroupMembership($pi_group->gid);
             $this->assertTrue($pi_group->requestExists($USER));
             $this->assertRequestedMembership(true, $gid);
 
@@ -153,7 +153,7 @@ class NewUserTest extends TestCase
 
             // $third_request_failed = false;
             // try {
-                $this->requestGroupMembership($pi_group->getPIUID());
+            $this->requestGroupMembership($pi_group->gid);
             // } catch(Exception) {
             //     $third_request_failed = true;
             // }
@@ -182,7 +182,7 @@ class NewUserTest extends TestCase
 
             // $second_request_failed = false;
             // try {
-                $this->requestGroupCreation();
+            $this->requestGroupCreation();
             // } catch(Exception) {
             //     $second_request_failed = true;
             // }
@@ -205,7 +205,7 @@ class NewUserTest extends TestCase
 
             // $third_request_failed = false;
             // try {
-                $this->requestGroupCreation();
+            $this->requestGroupCreation();
             // } catch(Exception) {
             //     $third_request_failed = true;
             // }
