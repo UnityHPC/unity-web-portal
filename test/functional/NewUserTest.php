@@ -84,9 +84,9 @@ class NewUserTest extends TestCase
     private function ensureOrgGroupDoesNotExist()
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
-        $org_group = new UnityOrg($SSO["org"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $org_group = $LDAP->getOrgGroupEntry($SSO["org"]);
         if ($org_group->exists()) {
-            $org_group->getLDAPOrgGroup()->delete();
+            $org_group->delete();
             assert(!$org_group->exists());
         }
     }
