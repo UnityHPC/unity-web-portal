@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $USER->getPIGroup()->cancelGroupRequest();
             break;
         case "account_deletion_request":
-            $hasGroups = count($USER->getGroups()) > 0;
+            $hasGroups = count($USER->getPIGroupGIDs()) > 0;
             if ($hasGroups) {
                 break;
             }
@@ -117,7 +117,7 @@ include $LOC_HEADER;
 
 <?php
 
-$isActive = count($USER->getGroups()) > 0;
+$isActive = count($USER->getPIGroupGIDs()) > 0;
 $isPI = $USER->isPI();
 
 if ($isPI) {
@@ -222,7 +222,7 @@ foreach ($CONFIG["loginshell"]["shell"] as $shell) {
 <h5>Account Deletion</h5>
 
 <?php
-$hasGroups = count($USER->getGroups()) > 0;
+$hasGroups = count($USER->getPIGroupGIDs()) > 0;
 
 if ($hasGroups) {
     echo "<p>You cannot request to delete your account while you are in a PI group.</p>";

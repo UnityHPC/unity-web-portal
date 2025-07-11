@@ -109,21 +109,14 @@ include $LOC_HEADER;
         <td>Actions</td>
     </tr>
 
-<?php
-    $accounts = $LDAP->getAllPIGroups($SQL, $MAILER, $REDIS, $WEBHOOK);
-
-    usort($accounts, function ($a, $b) {
-        return strcmp($a->getPIUID(), $b->getPIUID());
-    });
-
-    foreach ($accounts as $pi_group) {
-        $pi_user = $pi_group->getOwner();
-
+    <?php
+    $owner_attributes = $LDAP->getAllPIGroupOwnerAttributes(["uid", "gecos", "mail"]);
+    usort($owner_attributes, fn($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
+    foreach ($owner_attributes as $attributes) {
         echo "<tr class='expandable'>";
-        echo "<td><button class='btnExpand'>&#9654;</button>" . $pi_user->getFirstname() .
-        " " . $pi_user->getLastname() . "</td>";
-        echo "<td>" . $pi_group->getPIUID() . "</td>";
-        echo "<td><a href='mailto:" . $pi_user->getMail() . "'>" . $pi_user->getMail() . "</a></td>";
+        echo "<td><button class='btnExpand'>&#9654;</button>" . $attributes["gecos"][0] . "</td>";
+        echo "<td>" . UnityGroup::getPIUIDfromUID($attributes["uid"][0]) . "</td>";
+        echo "<td><a href='mailto:" . $attributes["mail"][0] . "'>" . $attributes["mail"][0] . "</a></td>";
         echo "</tr>";
     }
     ?>
