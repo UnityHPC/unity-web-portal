@@ -37,19 +37,24 @@ $REDIS = new UnityRedis(
 );
 
 // Creates LDAP service
-$LDAP = new UnityLDAP(
-    $CONFIG["ldap"]["uri"],
-    $CONFIG["ldap"]["user"],
-    $CONFIG["ldap"]["pass"],
-    __DIR__ . "/../deployment/custom_user_mappings",
-    $CONFIG["ldap"]["user_ou"],
-    $CONFIG["ldap"]["group_ou"],
-    $CONFIG["ldap"]["pigroup_ou"],
-    $CONFIG["ldap"]["orggroup_ou"],
-    $CONFIG["ldap"]["admin_group"],
-    $CONFIG["ldap"]["user_group"],
-    $CONFIG["ldap"]["def_user_shell"]
-);
+if (isset($GLOBALS["ldapconn"])) {
+    $LDAP = $GLOBALS["ldapconn"];
+} else {
+    $LDAP = new UnityLDAP(
+        $CONFIG["ldap"]["uri"],
+        $CONFIG["ldap"]["user"],
+        $CONFIG["ldap"]["pass"],
+        __DIR__ . "/../deployment/custom_user_mappings",
+        $CONFIG["ldap"]["user_ou"],
+        $CONFIG["ldap"]["group_ou"],
+        $CONFIG["ldap"]["pigroup_ou"],
+        $CONFIG["ldap"]["orggroup_ou"],
+        $CONFIG["ldap"]["admin_group"],
+        $CONFIG["ldap"]["user_group"],
+        $CONFIG["ldap"]["def_user_shell"]
+    );
+    $GLOBALS["ldapconn"] = $LDAP;
+}
 
 // Creates SQL service
 $SQL = new UnitySQL(
