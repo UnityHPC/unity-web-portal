@@ -146,7 +146,7 @@ class NewUserTest extends TestCase
         }
     }
 
-    public function testCreateUserByJoinGoup()
+    public function testCreateUserByJoinGoupByPI()
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
         $pi_user_args = getUserIsPIHasNoMembersNoMemberRequests();
