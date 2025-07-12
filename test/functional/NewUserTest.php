@@ -50,6 +50,43 @@ class NewUserTest extends TestCase
         );
     }
 
+    private function approveUserByAdmin($gid, $uid)
+    {
+        http_post(
+            __DIR__ . "/../../webroot/admin/pi-mgmt.php",
+            [
+                "form_type" => "reqChild",
+                "action" => "Approve",
+                "pi" => $gid,
+                "uid" => $uid,
+            ]
+        );
+    }
+
+    private function approveUserByPI($uid)
+    {
+        http_post(
+            __DIR__ . "/../../webroot/panel/pi.php",
+            [
+                "form_type" => "userReq",
+                "action" => "Approve",
+                "uid" => $uid,
+            ]
+        );
+    }
+
+    private function approveGroup($uid)
+    {
+        http_post(
+            __DIR__ . "/../../webroot/admin/pi-mgmt.php",
+            [
+                "form_type" => "req",
+                "action" => "Approve",
+                "uid" => $uid,
+            ]
+        );
+    }
+
     // delete requests made by that user
     // delete user entry
     // remove user from org group
@@ -112,10 +149,12 @@ class NewUserTest extends TestCase
     public function testCreateUserByJoinGoup()
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
-        switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
+        $pi_user_args = getUserIsPIHasNoMembersNoMemberRequests();
+        switchUser(...$pi_user_args);
         $pi_group = $USER->getPIGroup();
         $gid = $pi_group->gid;
-        switchUser(...getNonExistentUser());
+        $user_to_create_args = getNonExistentUser();
+        switchUser(...$user_to_create_args);
         $this->assertTrue(!$USER->exists());
         $newOrg = new UnityOrg($SSO["org"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
         $this->assertTrue(!$newOrg->exists());
@@ -144,7 +183,11 @@ class NewUserTest extends TestCase
 
             $REDIS->flushAll(); // regression test: flush used to break requests
 
-            $pi_group->approveUser($USER);
+            $approve_uid = $SSO["user"];
+            switchUser(...$pi_user_args);
+            $this->approveUserByPI($approve_uid);
+            switchUser(...$user_to_create_args);
+
             $this->assertTrue(!$pi_group->requestExists($USER));
             $this->assertRequestedMembership(false, $gid);
             $this->assertTrue($pi_group->userExists($USER));
@@ -161,16 +204,84 @@ class NewUserTest extends TestCase
             $this->assertRequestedMembership(false, $gid);
             $this->assertTrue(!$pi_group->requestExists($USER));
         } finally {
+            switchUser(...$user_to_create_args);
             $this->ensureOrgGroupDoesNotExist();
             $this->ensureUserNotInPIGroup($pi_group);
             $this->ensureUserDoesNotExist();
         }
     }
 
+
+    public function testCreateUserByJoinGoupByAdmin()
+    {
+        global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+        switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
+        $pi_group = $USER->getPIGroup();
+        $gid = $pi_group->gid;
+        $user_to_create_args = getNonExistentUser();
+        switchUser(...$user_to_create_args);
+        $this->assertTrue(!$USER->exists());
+        $newOrg = new UnityOrg($SSO["org"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $this->assertTrue(!$newOrg->exists());
+        $this->assertTrue($pi_group->exists());
+        $this->assertTrue(!$pi_group->userExists($USER));
+        $this->assertRequestedMembership(false, $gid);
+        try {
+            $this->requestGroupMembership($pi_group->gid);
+            $this->assertRequestedMembership(true, $gid);
+
+            // $second_request_failed = false;
+            // try {
+            $this->requestGroupMembership($pi_group->gid);
+            // } catch(Exception) {
+            //     $second_request_failed = true;
+            // }
+            // $this->assertTrue($second_request_failed);
+            $this->assertRequestedMembership(true, $gid);
+
+            $this->cancelAllRequests();
+            $this->assertRequestedMembership(false, $gid);
+
+            $this->requestGroupMembership($pi_group->gid);
+            $this->assertTrue($pi_group->requestExists($USER));
+            $this->assertRequestedMembership(true, $gid);
+
+            $REDIS->flushAll(); // regression test: flush used to break requests
+
+            $approve_uid = $SSO["user"];
+            switchUser(...getAdminUser());
+            $this->approveUserByAdmin($gid, $approve_uid);
+            switchUser(...$user_to_create_args);
+
+            $this->assertTrue(!$pi_group->requestExists($USER));
+            $this->assertRequestedMembership(false, $gid);
+            $this->assertTrue($pi_group->userExists($USER));
+            $this->assertTrue($USER->exists());
+            $this->assertTrue($newOrg->exists());
+
+            // $third_request_failed = false;
+            // try {
+            $this->requestGroupMembership($pi_group->gid);
+            // } catch(Exception) {
+            //     $third_request_failed = true;
+            // }
+            // $this->assertTrue($third_request_failed);
+            $this->assertRequestedMembership(false, $gid);
+            $this->assertTrue(!$pi_group->requestExists($USER));
+        } finally {
+            switchUser(...$user_to_create_args);
+            $this->ensureOrgGroupDoesNotExist();
+            $this->ensureUserNotInPIGroup($pi_group);
+            $this->ensureUserDoesNotExist();
+        }
+    }
+
+
     public function testCreateUserByCreateGroup()
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
-        switchuser(...getNonExistentUser());
+        $user_to_create_args = getNonExistentUser();
+        switchuser(...$user_to_create_args);
         $pi_group = $USER->getPIGroup();
         $this->assertTrue(!$USER->exists());
         $this->assertTrue(!$pi_group->exists());
@@ -197,7 +308,11 @@ class NewUserTest extends TestCase
 
             $REDIS->flushAll(); // regression test: flush used to break requests
 
-            $pi_group->approveGroup();
+            $approve_uid = $SSO["user"];
+            switchUser(...getAdminUser());
+            $this->approveGroup($approve_uid);
+            switchUser(...$user_to_create_args);
+
             $this->assertRequestedPIGroup(false);
             $this->assertTrue($pi_group->exists());
             $this->assertTrue($USER->exists());
