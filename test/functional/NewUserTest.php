@@ -102,7 +102,7 @@ class NewUserTest extends TestCase
                 $org->removeUser($USER);
                 assert(!$org->inOrg($USER));
             }
-            $USER->getLDAPUser()->delete();
+            $LDAP->getUserEntry($USER->uid)->delete();
             assert(!$USER->exists());
         }
         $all_users_group = $LDAP->getUserGroup();
@@ -121,9 +121,9 @@ class NewUserTest extends TestCase
     private function ensureOrgGroupDoesNotExist()
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
-        $org_group = new UnityOrg($SSO["org"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $org_group = $LDAP->getOrgGroupEntry($SSO["org"]);
         if ($org_group->exists()) {
-            $org_group->getLDAPOrgGroup()->delete();
+            $org_group->delete();
             assert(!$org_group->exists());
         }
     }
@@ -139,9 +139,9 @@ class NewUserTest extends TestCase
 
     private function ensurePIGroupDoesNotExist()
     {
-        global $USER;
+        global $USER, $LDAP;
         if ($USER->getPIGroup()->exists()) {
-            $USER->getPIGroup()->getLDAPPIGroup()->delete();
+            $LDAP->getPIGroupEntry($USER->getPIGroup()->gid)->delete();
             assert(!$USER->getPIGroup()->exists());
         }
     }

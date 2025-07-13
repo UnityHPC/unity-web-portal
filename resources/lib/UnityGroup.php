@@ -12,6 +12,7 @@ class UnityGroup
     public const PI_PREFIX = "pi_";
 
     public $gid;
+    private $entry;
 
     // Services
     private $LDAP;
@@ -30,6 +31,7 @@ class UnityGroup
     public function __construct($gid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
     {
         $this->gid = $gid;
+        $this->entry = $LDAP->getPIGroupEntry($gid);
 
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
@@ -59,7 +61,7 @@ class UnityGroup
      */
     public function exists()
     {
-        return $this->getLDAPPiGroup()->exists();
+        return $this->entry->exists();
     }
 
     //
@@ -255,9 +257,8 @@ class UnityGroup
     //     $users = $this->getGroupMembers();
 
     //     // now we delete the ldap entry
-    //     $ldapPiGroupEntry = $this->getLDAPPiGroup();
-    //     if ($ldapPiGroupEntry->exists()) {
-    //         $ldapPiGroupEntry->delete();
+    //     if ($this->entry->exists()) {
+    //         $this->entry->delete();
     //         $this->REDIS->removeCacheArray("sorted_groups", "", $this->gid);
     //         foreach ($users as $user) {
     //             $this->REDIS->removeCacheArray($user->uid, "groups", $this->gid);
@@ -486,8 +487,7 @@ class UnityGroup
         }
         $updatecache = false;
         if (!isset($members)) {
-            $pi_group = $this->getLDAPPiGroup();
-            $members = $pi_group->getAttribute("memberuid");
+            $members = $this->entry->getAttribute("memberuid");
             $updatecache = true;
         }
         if (!$ignorecache && $updatecache) {
@@ -520,16 +520,13 @@ class UnityGroup
         // make this user a PI
         $owner = $this->getOwner();
 
-        // (1) Create LDAP PI group
-        $ldapPiGroupEntry = $this->getLDAPPiGroup();
-
-        if (!$ldapPiGroupEntry->exists()) {
+        if (!$this->entry->exists()) {
             $nextGID = $this->LDAP->getNextPiGIDNumber($this->SQL);
 
-            $ldapPiGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
-            $ldapPiGroupEntry->setAttribute("gidnumber", strval($nextGID));
-            $ldapPiGroupEntry->setAttribute("memberuid", array($owner->uid));
-            $ldapPiGroupEntry->write();
+            $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
+            $this->entry->setAttribute("gidnumber", strval($nextGID));
+            $this->entry->setAttribute("memberuid", array($owner->uid));
+            $this->entry->write();
         }
 
         $this->REDIS->appendCacheArray("sorted_groups", "", $this->gid);
@@ -540,9 +537,8 @@ class UnityGroup
     private function addUserToGroup($new_user)
     {
         // Add to LDAP Group
-        $pi_group = $this->getLDAPPiGroup();
-        $pi_group->appendAttribute("memberuid", $new_user->uid);
-        $pi_group->write();
+        $this->entry->appendAttribute("memberuid", $new_user->uid);
+        $this->entry->write();
         $this->REDIS->appendCacheArray($this->gid, "members", $new_user->uid);
         $this->REDIS->appendCacheArray($new_user->uid, "groups", $this->gid);
     }
@@ -550,9 +546,8 @@ class UnityGroup
     private function removeUserFromGroup($old_user)
     {
         // Remove from LDAP Group
-        $pi_group = $this->getLDAPPiGroup();
-        $pi_group->removeAttributeEntryByValue("memberuid", $old_user->uid);
-        $pi_group->write();
+        $this->entry->removeAttributeEntryByValue("memberuid", $old_user->uid);
+        $this->entry->write();
         $this->REDIS->removeCacheArray($this->gid, "members", $old_user->uid);
         $this->REDIS->removeCacheArray($old_user->uid, "groups", $this->gid);
     }
@@ -581,11 +576,6 @@ class UnityGroup
             $this->REDIS,
             $this->WEBHOOK
         );
-    }
-
-    public function getLDAPPiGroup()
-    {
-        return $this->LDAP->getPIGroupEntry($this->gid);
     }
 
     public static function ownerUID2GID($uid)
