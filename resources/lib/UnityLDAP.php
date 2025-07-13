@@ -257,7 +257,7 @@ class UnityLDAP extends ldapConn
         return $out;
     }
 
-    public function getAllUsersAttributes($attributes = [])
+    public function getAllUsersAttributes($attributes)
     {
         $include_uids = $this->getAllUsersAttributes();
         $user_attributes = $this->baseOU->getChildrenArray(
@@ -305,7 +305,7 @@ class UnityLDAP extends ldapConn
         return $out;
     }
 
-    public function getAllPIGroupsAttributes($attributes = [])
+    public function getAllPIGroupsAttributes($attributes)
     {
         return $this->pi_groupOU->getChildrenArray($attributes);
     }
@@ -322,7 +322,7 @@ class UnityLDAP extends ldapConn
         );
     }
 
-    public function getAllPIGroupOwnerAttributes($attributes = [])
+    public function getAllPIGroupOwnerAttributes($attributes)
     {
         // get the PI groups, filter for just the GIDs, then map the GIDs to owner UIDs
         $owner_uids = array_map(
@@ -388,7 +388,7 @@ class UnityLDAP extends ldapConn
         return $out;
     }
 
-    public function getAllOrgGroupsAttributes($attributes = [])
+    public function getAllOrgGroupsAttributes($attributes)
     {
         return $this->org_groupOU->getChildrenArray($attributes);
     }
