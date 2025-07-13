@@ -60,7 +60,7 @@ class UnityUser
         //
         // Create LDAP group
         //
-        $ldapGroupEntry = $this->getLDAPGroup();
+        $ldapGroupEntry = $this->getGroupEntry();
         $id = $this->LDAP->getUnassignedID($this->uid, $this->SQL);
 
         if (!$ldapGroupEntry->exists()) {
@@ -146,14 +146,14 @@ class UnityUser
      *
      * @return ldapEntry posix group
      */
-    public function getLDAPGroup()
+    public function getGroupEntry()
     {
         return $this->LDAP->getGroupEntry($this->uid);
     }
 
     public function exists()
     {
-        return $this->entry->exists() && $this->getLDAPGroup()->exists();
+        return $this->entry->exists() && $this->getGroupEntry()->exists();
     }
 
     //
