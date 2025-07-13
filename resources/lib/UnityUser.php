@@ -586,7 +586,7 @@ class UnityUser
         }
         $gids = $this->LDAP->getPIGroupGIDsWithMemberUID($this->uid);
         if (!$ignorecache) {
-            $this->REDIS->setCache($this->getUID(), "groups", $gids);
+            $this->REDIS->setCache($this->uid, "groups", $gids);
         }
         return $gids;
     }
