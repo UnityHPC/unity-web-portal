@@ -4,6 +4,8 @@ require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnitySite;
 
+$hasGroups = count($USER->getPIGroupGIDs()) > 0;
+
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     switch (UnitySite::arrayGetOrBadRequest($_POST, "form_type")) {
         case "addKey":
@@ -78,7 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $USER->getPIGroup()->cancelGroupRequest();
             break;
         case "account_deletion_request":
-            $hasGroups = count($USER->getPIGroupGIDs()) > 0;
             if ($hasGroups) {
                 break;
             }
@@ -90,39 +91,38 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 }
 
 include $LOC_HEADER;
-?>
 
-<h1>Account Settings</h1>
+$uid = $USER->uid;
+$org = $USER->getOrg();
+$mail = $USER->getMail();
+echo "
+    <h1>Account Settings</h1>
+    <hr>
+    <h5>Account Details</h5>
+    <table>
+        <tr>
+            <th>Username</th>
+            <td><code>$uid</code></td>
+        </tr>
+        <tr>
+            <th>Organization</th>
+            <td><code>$org</code></td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>
+            <code>$mail</code></td>
+        </tr>
+    </table>
+    <hr>
+    <h5>AccountStatus</h5>
+";
 
-<hr>
-<h5>Account Details</h5>
-<table>
-    <tr>
-        <th>Username</th>
-        <td><code><?php echo $USER->uid; ?></code></td>
-    </tr>
-    <tr>
-        <th>Organization</th>
-        <td><code><?php echo $USER->getOrg(); ?></code></td>
-    </tr>
-    <tr>
-        <th>Email</th>
-        <td><code><?php echo $USER->getMail(); ?></code></td>
-    </tr>
-</table>
-
-<hr>
-<h5>Account Status</h5>
-
-
-<?php
-
-$isActive = count($USER->getPIGroupGIDs()) > 0;
 $isPI = $USER->isPI();
 
 if ($isPI) {
     echo "<p>You are curently a <strong>principal investigator</strong> on the Unity Cluster</p>";
-} elseif ($isActive) {
+} elseif ($hasGroups) {
     echo "<p>You are curently a <strong>user</strong> on the Unity Cluster</p>";
 } else {
     echo "
@@ -170,12 +170,8 @@ if (!$isPI) {
     }
     echo "</form>";
 }
-?>
+echo "<hr><h5>SSH Keys</h5>";
 
-<hr>
-<h5>SSH Keys</h5>
-
-<?php
 $sshPubKeys = $USER->getSSHKeys();  // Get ssh public key attr
 
 if (count($sshPubKeys) == 0) {
@@ -198,31 +194,25 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop th
     </div>";
 }
 
-?>
-
-<button type="button" class="plusBtn btnAddKey"><span>&#43;</span></button>
-
-<hr>
-<h5>Login Shell</h5>
-
-<form action="" method="POST">
-<input type="hidden" name="form_type" value="loginshell" />
-<select id="loginSelector" class="code" name="shellSelect">
-<?php
+echo '
+    <button type="button" class="plusBtn btnAddKey"><span>&#43;</span></button>
+    <hr>
+    <h5>Login Shell</h5>
+    <form action="" method="POST">
+    <input type="hidden" name="form_type" value="loginshell" />
+    <select id="loginSelector" class="code" name="shellSelect">
+';
 foreach ($CONFIG["loginshell"]["shell"] as $shell) {
     echo "<option>$shell</option>";
 }
-?>
-</select>
-<br>
-<input id='submitLoginShell' type='submit' value='Set Login Shell' />
-</form>
-
-<hr>
-<h5>Account Deletion</h5>
-
-<?php
-$hasGroups = count($USER->getPIGroupGIDs()) > 0;
+echo "
+    </select>
+    <br>
+    <input id='submitLoginShell' type='submit' value='Set Login Shell' />
+    </form>
+    <hr>
+    <h5>Account Deletion</h5>
+";
 
 if ($hasGroups) {
     echo "<p>You cannot request to delete your account while you are in a PI group.</p>";
