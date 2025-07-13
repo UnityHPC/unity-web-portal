@@ -31,11 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         case "reqChild":
             $parent_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             if ($_POST["action"] == "Approve") {
-                // initialize user if not initialized
-                if (!$form_user->exists()) {
-                    $form_user->init();
-                }
-
                 // approve request button clicked
                 $parent_group->approveUser($form_user);  // Add to group (ldap and slurm)
             } elseif ($_POST["action"] == "Deny") {
