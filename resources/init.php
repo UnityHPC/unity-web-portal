@@ -45,6 +45,7 @@ if (isset($GLOBALS["ldapconn"])) {
         $CONFIG["ldap"]["user"],
         $CONFIG["ldap"]["pass"],
         __DIR__ . "/../deployment/custom_user_mappings",
+        $CONFIG["ldap"]["basedn"],
         $CONFIG["ldap"]["user_ou"],
         $CONFIG["ldap"]["group_ou"],
         $CONFIG["ldap"]["pigroup_ou"],
@@ -55,7 +56,6 @@ if (isset($GLOBALS["ldapconn"])) {
     );
     $GLOBALS["ldapconn"] = $LDAP;
 }
-
 // Creates SQL service
 $SQL = new UnitySQL(
     $CONFIG["sql"]["host"],
