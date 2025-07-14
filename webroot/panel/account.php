@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($USER->uid != $SSO["user"]) {
                 UnitySite::badRequest(
                     "cannot request due to uid mismatch: " .
-                    "USER='{$USER->uid}' SSO[user]='$sso_user'"
+                    "USER='{$USER->uid}' SSO[user]='{$SSO["user"]}'"
                 );
             }
             $USER->getPIGroup()->requestGroup(
