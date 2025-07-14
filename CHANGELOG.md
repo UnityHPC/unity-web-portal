@@ -1,8 +1,14 @@
-# 1.2.2 (upcoming)
+# 1.2.3 (upcoming)
 * [Bug] Fixed `uidnumber`/`gidnumber` conflicts by @simonLeary42 in #248
 * [Internal] Refactored `UnitySQL` by @simonLeary42 in #252
 * [Internal] Refactored custom user mappings by @simonLeary42 in #253
 * [Internal] Style by @simonLeary42 in #254
+
+# 1.2.2
+* [Bug] Fixed missing get parameters on reload by @bryank-cs in #264
+* [Bug] Fixed crash when approving PI join request from `pi-mgmt.php` by @simonLeary42 in #274
+* [Internal] Refactored for cleanliness by @simonLeary42 in #267 #269 #271 #272
+* [Internal] Required UIDNumbers to be > 99 by @simonLeary42 in #270
 
 # 1.2.1
 * [Feature] Added cancellation of PI become / PI member requests for existing users by @bryank-cs and @simonLeary42 in #250
