@@ -35,15 +35,15 @@ See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for prod
     * Structure should be similar to `tools/docker-dev/sql/bootstrap.sql` <!-- TODO separate structure from data -->
 1. SMTP server
 1. Web server
-    * `unity-web` user and group should exist
-    * This repository cloned, with files owned by `unity-web:unity-web`
+    * This repository cloned
+    * `deployment/config/config.ini` should be owned by the apache user (`www-data` on Ubuntu), with mode `0600`
     * Submodules checked out (`git submodule update --checkout --init`)
     * Composer (`apt install composer` on Ubuntu)
     * Dependencies:
         * PHP extensions
             * cli, curl, intl, ldap, mbstring, mysql, pdo, redis, xml (`apt install php-<extension>` on Ubuntu)
         * Libraries
-            * `composer update`
+            * `COMPOSER_ALLOW_SUPERUSER=1 composer --no-dev --no-scripts --no-plugins install`
     * `httpd` should run as the `unity-web` user/group
     * `httpd` `DocumentRoot` set to `webroot/`
     * `httpd` Authentication
