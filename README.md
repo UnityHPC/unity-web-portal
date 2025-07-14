@@ -41,7 +41,7 @@ See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for prod
     * Composer (`apt install composer` on Ubuntu)
     * Dependencies:
         * PHP extensions
-            * cli, curl, intl, ldap, mbstring, mysql, pdo, redis, xml (`apt install php-<extension>` on Ubuntu)
+            * curl, intl, ldap, mbstring, mysql, pdo, redis, xml (`apt install php-<extension>` on Ubuntu)
         * Libraries
             * `COMPOSER_ALLOW_SUPERUSER=1 composer --no-dev --no-scripts --no-plugins install`
     * `httpd` should run as the `unity-web` user/group
