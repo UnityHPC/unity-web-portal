@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($_POST["new_user_sel"] == "not_pi") {
             $form_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             if (!$form_group->exists()) {
-                UnitySite::badRequest("The selected PI does not exist");
+                UnitySite::badRequest("The selected PI '" . $_POST["pi"] . "'does not exist");
             }
             $form_group->newUserRequest(
                 $USER,
