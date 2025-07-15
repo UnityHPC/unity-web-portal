@@ -21,6 +21,7 @@ class UnityUser
 
     public function __construct($uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
     {
+        $uid = trim($uid);
         $this->uid = $uid;
         $this->entry = $LDAP->getUserEntry($uid);
 

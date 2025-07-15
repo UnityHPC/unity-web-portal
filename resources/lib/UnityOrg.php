@@ -17,6 +17,7 @@ class UnityOrg
 
     public function __construct($gid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
     {
+        $gid = trim($gid);
         $this->gid = $gid;
         $this->entry = $LDAP->getOrgGroupEntry($this->gid);
 
