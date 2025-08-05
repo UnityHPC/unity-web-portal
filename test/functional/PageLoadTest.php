@@ -8,6 +8,7 @@ class PageLoadTest extends TestCase
     public static function provider()
     {
         $admin = getAdminUser();
+        $nonexistent_user = getNonExistentUser();
         $normal_user = getNormalUser();
         $pi = getUserIsPIHasNoMembersNoMemberRequests();
         return [
@@ -15,8 +16,8 @@ class PageLoadTest extends TestCase
             [$admin, __DIR__ . "/../../webroot/admin/user-mgmt.php"],
             [$admin, __DIR__ . "/../../webroot/admin/content.php"],
             [$admin, __DIR__ . "/../../webroot/admin/notices.php"],
+            [$nonexistent_user, __DIR__ . "/../../webroot/panel/new_account.php"],
             [$normal_user, __DIR__ . "/../../webroot/panel/account.php"],
-            [$normal_user, __DIR__ . "/../../webroot/panel/new_account.php"],
             [$normal_user, __DIR__ . "/../../webroot/panel/groups.php"],
             [$normal_user, __DIR__ . "/../../webroot/panel/support.php"],
             [$pi, __DIR__ . "/../../webroot/panel/pi.php"],
