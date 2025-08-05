@@ -27,7 +27,7 @@ class PageLoadTest extends TestCase
     public function testLoadPage($user, $path)
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
-        switchuser($user);
+        switchuser(...$user);
         http_get($path);
     }
 }
