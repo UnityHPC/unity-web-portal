@@ -1,6 +1,6 @@
 <?php
 
-require "../../resources/autoload.php";
+require_once __DIR__ . "/../../resources/autoload.php";
 
 include $LOC_HEADER;
 ?>

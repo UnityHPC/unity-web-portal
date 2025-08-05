@@ -94,7 +94,7 @@ class NewUserTest extends TestCase
     // does not remove user from PI groups
     private function ensureUserDoesNotExist()
     {
-        global $USER, $SQL, $LDAP;
+        global $USER, $SQL, $LDAP, $REDIS;
         $SQL->deleteRequestsByUser($USER->uid);
         if ($USER->exists()) {
             $org = $USER->getOrgGroup();
@@ -116,6 +116,7 @@ class NewUserTest extends TestCase
             $all_users_group->write();
             assert(!in_array($USER->uid, $all_users_group->getAttribute("memberuid")));
         }
+        $REDIS->removeCacheArray("sorted_users", "", $USER->uid);
     }
 
     private function ensureOrgGroupDoesNotExist()
@@ -126,24 +127,28 @@ class NewUserTest extends TestCase
             $org_group->delete();
             assert(!$org_group->exists());
         }
+        $REDIS->removeCacheArray("sorted_orgs", "", $SSO["org"]);
     }
 
     private function ensureUserNotInPIGroup(UnityGroup $pi_group)
     {
-        global $USER;
+        global $USER, $REDIS;
         if ($pi_group->userExists($USER)) {
             $pi_group->removeUser($USER);
             assert(!$pi_group->userExists($USER));
         }
+        $REDIS->removeCacheArray($pi_group->gid, "members", $USER->uid);
     }
 
     private function ensurePIGroupDoesNotExist()
     {
-        global $USER, $LDAP;
+        global $USER, $LDAP, $REDIS;
+        $gid = $USER->getPIGroup()->gid;
         if ($USER->getPIGroup()->exists()) {
-            $LDAP->getPIGroupEntry($USER->getPIGroup()->gid)->delete();
+            $LDAP->getPIGroupEntry($gid)->delete();
             assert(!$USER->getPIGroup()->exists());
         }
+        $REDIS->removeCacheArray("sorted_groups", "", $gid);
     }
 
     public function testCreateUserByJoinGoupByPI()
@@ -327,6 +332,7 @@ class NewUserTest extends TestCase
             // $this->assertTrue($third_request_failed);
             $this->assertRequestedPIGroup(false);
         } finally {
+            switchUser(...$user_to_create_args);
             $this->ensureOrgGroupDoesNotExist();
             $this->ensurePIGroupDoesNotExist();
             $this->ensureUserDoesNotExist();
