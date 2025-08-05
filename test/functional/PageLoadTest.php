@@ -1,10 +1,6 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
-use UnityWebPortal\lib\UnityGroup;
-use UnityWebPortal\lib\UnityOrg;
-use UnityWebPortal\lib\UnitySQL;
 
 class NewUserTest extends TestCase
 {
