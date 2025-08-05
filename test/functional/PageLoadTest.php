@@ -29,5 +29,6 @@ class PageLoadTest extends TestCase
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
         switchuser(...$user);
         http_get($path);
+        $this->assertTrue(true); // assert there were no errors
     }
 }
