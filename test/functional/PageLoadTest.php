@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class NewUserTest extends TestCase
+class PageLoadTest extends TestCase
 {
     public static function provider()
     {
