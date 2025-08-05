@@ -327,6 +327,7 @@ class NewUserTest extends TestCase
             // $this->assertTrue($third_request_failed);
             $this->assertRequestedPIGroup(false);
         } finally {
+            switchUser(...$user_to_create_args);
             $this->ensureOrgGroupDoesNotExist();
             $this->ensurePIGroupDoesNotExist();
             $this->ensureUserDoesNotExist();
