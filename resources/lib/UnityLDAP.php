@@ -259,7 +259,7 @@ class UnityLDAP extends ldapConn
 
     public function getAllUsersAttributes($attributes)
     {
-        $include_uids = $this->getAllUsersAttributes();
+        $include_uids = $this->getAllUsersUIDs();
         $user_attributes = $this->baseOU->getChildrenArray(
             $attributes,
             true, // recursive
