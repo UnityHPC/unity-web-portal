@@ -87,8 +87,8 @@ new="/srv/www/unity-web-1.2.0"
 mkdir "$new" && cd "$new"
 git clone "$url" .
 git submodule update --init --checkout
-composer update
-cp "$prod/deployment/config/config.ini" ./deployment/config/config.ini
+COMPOSER_ALLOW_SUPERUSER=1 composer --no-dev --no-scripts --no-plugins install
+cp --preserve=all "$prod/deployment/config/config.ini" ./deployment/config/config.ini
 rsync -a "$prod/deployment/custom_user_mappings/" ./deployment/custom_user_mappings/
 rsync -a "$prod/deployment/overrides/" ./deployment/overrides/
 rsync -a "$prod/webroot/assets/footer_logos/" ./footer_logos/
