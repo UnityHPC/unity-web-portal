@@ -80,9 +80,9 @@ Update instructions assuming the above structure:
 
 ```shell
 url="https://..."
-prod="/var/www/unity-web-portal"
-old="/var/www/unity-web-portal-1.1.0"
-new="/var/www/unity-web-portal-1.2.0"
+prod="/srv/www/unity-web"
+old="/srv/www/unity-web-1.1.0"
+new="/srv/www/unity-web-1.2.0"
 
 mkdir "$new" && cd "$new"
 git clone "$url" .
