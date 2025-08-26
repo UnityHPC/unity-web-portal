@@ -575,48 +575,21 @@ class UnityUser
 
     /**
      * Gets the groups this user is assigned to, can be more than one
-     * @return [type]
+     * @return string[]
      */
-    public function getGroups($ignorecache = false)
+    public function getPIGroupGIDs($ignorecache = false)
     {
-        $out = array();
-
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->uid, "groups");
             if (!is_null($cached_val)) {
-                $groups = $cached_val;
-                foreach ($groups as $group) {
-                    $group_obj = new UnityGroup(
-                        $group,
-                        $this->LDAP,
-                        $this->SQL,
-                        $this->MAILER,
-                        $this->REDIS,
-                        $this->WEBHOOK
-                    );
-                    array_push($out, $group_obj);
-                }
-
-                return $out;
+                return $cached_val;
             }
         }
-
-        $all_pi_groups = $this->LDAP->getAllPIGroups($this->SQL, $this->MAILER, $this->REDIS, $ignorecache);
-
-        $cache_arr = array();
-
-        foreach ($all_pi_groups as $pi_group) {
-            if (in_array($this->uid, $pi_group->getGroupMemberUIDs())) {
-                array_push($out, $pi_group);
-                array_push($cache_arr, $pi_group->gid);
-            }
-        }
-
+        $gids = $this->LDAP->getPIGroupGIDsWithMemberUID($this->uid);
         if (!$ignorecache) {
-            $this->REDIS->setCache($this->uid, "groups", $cache_arr);
+            $this->REDIS->setCache($this->uid, "groups", $gids);
         }
-
-        return $out;
+        return $gids;
     }
 
     /**

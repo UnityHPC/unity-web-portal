@@ -37,36 +37,34 @@ include $LOC_HEADER;
     </tr>
 
     <?php
-    $users = $LDAP->getAllUsers($SQL, $MAILER, $REDIS, $WEBHOOK);
-
-    usort($users, function ($a, $b) {
-        return strcmp($a->uid, $b->uid);
-    });
-
-    foreach ($users as $user) {
-        if ($user->hasRequestedAccountDeletion()) {
+    $UID2PIGIDs = $LDAP->getAllUID2PIGIDs();
+    $user_attributes = $LDAP->getAllUsersAttributes(["uid", "gecos", "o", "mail"]);
+    usort($user_attributes, fn ($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
+    foreach ($user_attributes as $attributes) {
+        $uid = $attributes["uid"][0];
+        if ($SQL->accDeletionRequestExists($uid)) {
             echo "<tr style='color:grey; font-style: italic'>";
         } else {
             echo "<tr>";
         }
-        echo "<td>" . $user->getFirstname() . " " . $user->getLastname() . "</td>";
-        echo "<td>" . $user->uid . "</td>";
-        echo "<td>" . $user->getOrg() . "</td>";
-        echo "<td><a href='mailto:" . $user->getMail() . "'>" . $user->getMail() . "</a></td>";
+        echo "<td>" . $attributes["gecos"][0] . "</td>";
+        echo "<td>" . $uid . "</td>";
+        echo "<td>" . $attributes["o"][0] . "</td>";
+        echo "<td><a href='mailto:" . $attributes["mail"][0] . "'>" . $attributes["mail"][0] . "</a></td>";
         echo "<td>";
-        $cur_user_groups = $user->getGroups();
-        foreach ($cur_user_groups as $cur_group) {
-            echo "<a href='mailto:" . $cur_group->getOwner()->getMail() . "'>" . $cur_group->gid . "</a>";
-            if ($cur_group !== array_key_last($cur_user_groups)) {
-                echo '<br>';
+        if (count($UID2PIGIDs[$uid]) > 0) {
+            echo "<table>";
+            foreach ($UID2PIGIDs[$uid] as $gid) {
+                echo "<tr><td>$gid</td></tr>";
             }
+            echo "</table>";
         }
         echo "</td>";
         echo "<td>";
         echo "<form class='viewAsUserForm' action='' method='POST'
-        onsubmit='return confirm(\"Are you sure you want to switch to the user " . $user->uid . "?\");'>
+        onsubmit='return confirm(\"Are you sure you want to switch to the user '$uid'?\");'>
         <input type='hidden' name='form_type' value='viewAsUser'>
-        <input type='hidden' name='uid' value='" . $user->uid . "'>
+        <input type='hidden' name='uid' value='$uid'>
         <input type='submit' name='action' value='Access'>
         </form>";
         echo "</td>";
