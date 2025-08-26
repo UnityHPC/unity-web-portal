@@ -110,8 +110,7 @@ echo "
         </tr>
         <tr>
             <th>Email</th>
-            <td>
-            <code>$mail</code></td>
+            <td><code>$mail</code></td>
         </tr>
     </table>
     <hr>
