@@ -52,10 +52,13 @@ include $LOC_HEADER;
         echo "<td>" . $attributes["o"][0] . "</td>";
         echo "<td><a href='mailto:" . $attributes["mail"][0] . "'>" . $attributes["mail"][0] . "</a></td>";
         echo "<td>";
-        foreach ($UID2PIGIDs[$uid] as $gid) {
-            echo "<p>$gid</p>";
+        if (count($UID2PIGIDs[$uid]) > 0) {
+            echo "<table>";
+            foreach ($UID2PIGIDs[$uid] as $gid) {
+                echo "<tr><td>$gid</td></tr>";
+            }
+            echo "</table>";
         }
-        echo "<br>";
         echo "</td>";
         echo "<td>";
         echo "<form class='viewAsUserForm' action='' method='POST'
