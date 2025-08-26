@@ -53,8 +53,7 @@ if (count($requests) > 0) {
     echo "<h5>Pending Requests</h5>";
     echo "<table>";
 
-    foreach ($requests as [$user, $timestamp, $firstname, $lastname, $email, $org]) {
-        $uid = $user->uid;
+    foreach ($requests as [$uid, $timestamp, $firstname, $lastname, $email, $org]) {
         $date = date("jS F, Y", strtotime($timestamp));
         echo "<tr>";
         echo "<td>" . $firstname . " " . $lastname . "</td>";

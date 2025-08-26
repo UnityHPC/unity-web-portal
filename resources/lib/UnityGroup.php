@@ -433,21 +433,12 @@ class UnityGroup
     public function getRequests()
     {
         $requests = $this->SQL->getRequests($this->gid);
-
         $out = array();
         foreach ($requests as $request) {
-            $user = new UnityUser(
-                $request["uid"],
-                $this->LDAP,
-                $this->SQL,
-                $this->MAILER,
-                $this->REDIS,
-                $this->WEBHOOK
-            );
             array_push(
                 $out,
                 [
-                    $user,
+                    $request["uid"],
                     $request["timestamp"],
                     $request["firstname"],
                     $request["lastname"],
@@ -456,7 +447,6 @@ class UnityGroup
                 ]
             );
         }
-
         return $out;
     }
 

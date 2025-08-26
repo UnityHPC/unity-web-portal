@@ -67,22 +67,21 @@ include $LOC_HEADER;
 
     <?php
     $requests = $SQL->getRequests();
-
-    foreach ($requests as $request) {
+    foreach ($requests as [$uid, $timestamp, $firstname, $lastname, $email, $org]) {
         echo "<tr>";
-        echo "<td>" . $request["firstname"] . " " . $request["lastname"] . "</td>";
-        echo "<td>" . $request["uid"] . "</td>";
-        echo "<td><a href='mailto:" . $request["email"] . "'>" . $request["email"] . "</a></td>";
+        echo "<td>" . $firstname . " " . $lastname . "</td>";
+        echo "<td>" . $uid . "</td>";
+        echo "<td><a href='mailto:" . $email . "'>" . $email . "</a></td>";
         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
         echo "<td>";
         echo
             "<form action='' method='POST'>
         <input type='hidden' name='form_type' value='req'>
-        <input type='hidden' name='uid' value='" . $request["uid"] . "'>
+        <input type='hidden' name='uid' value='" . $uid . "'>
         <input type='submit' name='action' value='Approve'
-        onclick='return confirm(\"Are you sure you want to approve " . $request["uid"] . "?\");'>
+        onclick='return confirm(\"Are you sure you want to approve " . $uid . "?\");'>
         <input type='submit' name='action' value='Deny'
-        onclick='return confirm(\"Are you sure you want to deny " . $request["uid"] . "?\");'>
+        onclick='return confirm(\"Are you sure you want to deny " . $uid . "?\");'>
         </form>";
         echo "</td>";
         echo "</tr>";
