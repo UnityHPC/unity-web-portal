@@ -108,7 +108,7 @@ include $LOC_HEADER;
     foreach ($owner_attributes as $attributes) {
         echo "<tr class='expandable'>";
         echo "<td><button class='btnExpand'>&#9654;</button>" . $attributes["gecos"][0] . "</td>";
-        echo "<td>" . UnityGroup::getPIUIDfromUID($attributes["uid"][0]) . "</td>";
+        echo "<td>" . UnityGroup::OwnerUID2GID($attributes["uid"][0]) . "</td>";
         echo "<td><a href='mailto:" . $attributes["mail"][0] . "'>" . $attributes["mail"][0] . "</a></td>";
         echo "</tr>";
     }

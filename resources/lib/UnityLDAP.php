@@ -326,7 +326,7 @@ class UnityLDAP extends ldapConn
     {
         // get the PI groups, filter for just the GIDs, then map the GIDs to owner UIDs
         $owner_uids = array_map(
-            fn($x) => UnityGroup::getUIDFromPIUID($x),
+            fn($x) => UnityGroup::GID2OwnerUID($x),
             array_map(
                 fn($x) => $x["cn"][0],
                 $this->pi_groupOU->getChildrenArray(["cn"]),
