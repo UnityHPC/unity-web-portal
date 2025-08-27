@@ -153,10 +153,6 @@ class UnityLDAP extends ldapConn
 
     public function getNextPIGIDNumber()
     {
-        $IDNumsInUse = array_merge(
-            array_values($this->getCustomIDMappings()),
-            $this->getAllGIDNumbersInUse(),
-        );
         $IDNumsInUse = $this->getAllGIDNumbersInUse();
         $start = $this->offset_PIGID;
         return $this->getNextIDNumber($start, $IDNumsInUse);
@@ -164,10 +160,7 @@ class UnityLDAP extends ldapConn
 
     public function getNextOrgGIDNumber()
     {
-        $IDNumsInUse = array_merge(
-            array_values($this->getCustomIDMappings()),
-            $this->getAllGIDNumbersInUse(),
-        );
+        $IDNumsInUse = array_values($this->getCustomIDMappings());
         $start = $this->offset_ORGGID;
         return $this->getNextIDNumber($start, $IDNumsInUse);
     }
@@ -181,6 +174,7 @@ class UnityLDAP extends ldapConn
 
     private function getNextIDNumber($start, $IDNumsInUse)
     {
+        $IDNumsInUse = array_merge($IDNumsInUse, array_values($this->getCustomIDMappings()));
         $new_id = $start;
         while ($this->isIDNumberForbidden($new_id) || in_array($new_id, $IDNumsInUse)) {
             $new_id++;
