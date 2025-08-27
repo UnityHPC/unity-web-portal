@@ -522,7 +522,7 @@ class UnityGroup
         $owner = $this->getOwner();
 
         if (!$this->entry->exists()) {
-            $nextGID = $this->LDAP->getNextPiGIDNumber($this->SQL);
+            $nextGID = $this->LDAP->getNextPIGIDNumber();
 
             $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
             $this->entry->setAttribute("gidnumber", strval($nextGID));

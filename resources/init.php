@@ -44,7 +44,7 @@ if (isset($GLOBALS["ldapconn"])) {
         $CONFIG["ldap"]["uri"],
         $CONFIG["ldap"]["user"],
         $CONFIG["ldap"]["pass"],
-        __DIR__ . "/../deployment/custom_user_mappings",
+        __DIR__ . "/../" . $CONFIG["ldap"]["custom_user_mappings_dir"],
         $CONFIG["ldap"]["basedn"],
         $CONFIG["ldap"]["user_ou"],
         $CONFIG["ldap"]["group_ou"],
@@ -52,7 +52,10 @@ if (isset($GLOBALS["ldapconn"])) {
         $CONFIG["ldap"]["orggroup_ou"],
         $CONFIG["ldap"]["admin_group"],
         $CONFIG["ldap"]["user_group"],
-        $CONFIG["ldap"]["def_user_shell"]
+        $CONFIG["ldap"]["def_user_shell"],
+        $CONFIG["ldap"]["offset_UIDGID"],
+        $CONFIG["ldap"]["offset_PIGID"],
+        $CONFIG["ldap"]["offset_ORGGID"],
     );
     $GLOBALS["ldapconn"] = $LDAP;
 }

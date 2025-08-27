@@ -18,6 +18,7 @@ account_policy_url = "https://github.com" ; this can be external or a portal pag
 uri = "ldap://identity"  ; URI of remote LDAP server
 user = "cn=admin,dc=unityhpc,dc=test"  ; Admin bind DN LDAP user
 pass = "password"  ; Admin bind password
+custom_user_mappings_dir = "deployment/custom_user_mappings" ; for internal use only
 basedn = "dc=unityhpc,dc=test"  ; Base search DN
 user_ou = "ou=users,dc=unityhpc,dc=test"  ; User organizational unit (may contain more than user group)
 user_group = "cn=unityusers,dc=unityhpc,dc=test" ; User group
@@ -26,6 +27,9 @@ pigroup_ou = "ou=pi_groups,dc=unityhpc,dc=test"  ; PI Group organizational unit
 orggroup_ou = "ou=org_groups,dc=unityhpc,dc=test"  ; ORG group organizational unit
 admin_group = "cn=web_admins,dc=unityhpc,dc=test"  ; admin dn (members of this group are admins on the web portal)
 def_user_shell = "/bin/bash"  ; Default shell for new users
+offset_UIDGID = 1000000 ; start point when allocating new UID/GID pairs for a new user
+offset_PIGID = 2000000 ; start point when allocating new GID for a new PI group
+offset_ORGGID = 3000000 ; start point when allocating new GID for a new org group
 
 [sql]
 host = "sql"  ; mariadb hostname
