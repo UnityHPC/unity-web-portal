@@ -89,6 +89,7 @@ class NewUserTest extends TestCase
 
     // delete requests made by that user
     // delete user entry
+    // delete user group entry
     // remove user from org group
     // remove user from "all users" group
     // does not remove user from PI groups
@@ -104,6 +105,10 @@ class NewUserTest extends TestCase
             }
             $LDAP->getUserEntry($USER->uid)->delete();
             assert(!$USER->exists());
+        }
+        if ($USER->getGroupEntry()->exists()) {
+            $USER->getGroupEntry()->delete();
+            assert(!$USER->getGroupEntry()->exists());
         }
         $all_users_group = $LDAP->getUserGroup();
         $all_member_uids = $all_users_group->getAttribute("memberuid");
