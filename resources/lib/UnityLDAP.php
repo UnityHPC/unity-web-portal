@@ -177,6 +177,7 @@ class UnityLDAP extends ldapConn
 
     private function getNextIDNumber($start, $IDNumsInUse)
     {
+        // custom ID mappings are considered both UIDs and GIDs
         $IDNumsInUse = array_merge($IDNumsInUse, array_values($this->getCustomIDMappings()));
         $new_id = $start;
         while ($this->isIDNumberForbidden($new_id) || in_array($new_id, $IDNumsInUse)) {
