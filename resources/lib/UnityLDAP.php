@@ -132,32 +132,6 @@ class UnityLDAP extends ldapConn
         return $this->def_user_shell;
     }
 
-    private function getAllUIDNumbersInUse()
-    {
-        return array_merge(
-            // use baseOU for awareness of externally managed entries
-            array_map(
-                fn($x) => $x["uidnumber"][0],
-                $this->baseOU->getChildrenArray(["uidNumber"], true, "(objectClass=posixAccount)"),
-            ),
-            // custom mappings are considered UID and GID
-            array_values($this->getCustomIDMappings()),
-        );
-    }
-
-    private function getAllGIDNumbersInUse()
-    {
-        return array_merge(
-            // use baseOU for awareness of externally managed entries
-            array_map(
-                fn($x) => $x["gidnumber"][0],
-                $this->baseOU->getChildrenArray(["gidNumber"], true, "(objectClass=posixGroup)"),
-            ),
-            // custom mappings are considered UID and GID
-            array_values($this->getCustomIDMappings()),
-        );
-    }
-
     public function getNextUIDGIDNumber($uid)
     {
         $IDNumsInUse = array_merge($this->getAllUIDNumbersInUse(), $this->getAllGIDNumbersInUse());
@@ -225,6 +199,32 @@ class UnityLDAP extends ldapConn
             }
         }
         return $output;
+    }
+
+    private function getAllUIDNumbersInUse()
+    {
+        return array_merge(
+            // use baseOU for awareness of externally managed entries
+            array_map(
+                fn($x) => $x["uidnumber"][0],
+                $this->baseOU->getChildrenArray(["uidNumber"], true, "(objectClass=posixAccount)"),
+            ),
+            // custom mappings are considered UID and GID
+            array_values($this->getCustomIDMappings()),
+        );
+    }
+
+    private function getAllGIDNumbersInUse()
+    {
+        return array_merge(
+            // use baseOU for awareness of externally managed entries
+            array_map(
+                fn($x) => $x["gidnumber"][0],
+                $this->baseOU->getChildrenArray(["gidNumber"], true, "(objectClass=posixGroup)"),
+            ),
+            // custom mappings are considered UID and GID
+            array_values($this->getCustomIDMappings()),
+        );
     }
 
     public function getAllUsersUIDs()
