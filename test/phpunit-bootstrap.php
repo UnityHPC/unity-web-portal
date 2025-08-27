@@ -22,6 +22,7 @@ require_once __DIR__ . "/../resources/lib/exceptions/PhpUnitNoDieException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/SSOException.php";
 
 $GLOBALS["PHPUNIT_NO_DIE_PLEASE"] = true;
+$GLOBALS["PHPUNIT_SIMPLE_ERROR_LOG_PLEASE"] = true;
 
 global $HTTP_HEADER_TEST_INPUTS;
 $HTTP_HEADER_TEST_INPUTS = [

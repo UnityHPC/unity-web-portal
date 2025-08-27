@@ -39,6 +39,10 @@ class UnitySite
 
     public static function errorLog(string $title, string $message)
     {
+        if (@$GLOBALS["PHPUNIT_SIMPLE_ERROR_LOG_PLEASE"] == true) {
+            error_log("$title: $message");
+            return;
+        }
         error_log(
             "$title: " . json_encode(
                 [
