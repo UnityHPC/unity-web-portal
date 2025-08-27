@@ -153,16 +153,16 @@ class UnityLDAP extends ldapConn
         $output = [];
         $dir = new \DirectoryIterator($this->custom_mappings_path);
         foreach ($dir as $fileinfo) {
-            if ($fileinfo->getExtension() != "csv") {
+            if ($fileinfo->getExtension() == "csv") {
+                $handle = fopen($fileinfo->getPathname(), "r");
+                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                    $output = array_merge($output, $data);
+                }
+            } else {
                 UnitySite::errorLog(
                     "warning",
                     "custom ID mapping file does not have the .csv extension so it is ignored.",
                 );
-                continue;
-            }
-            $handle = fopen($fileinfo->getPathname(), "r");
-            while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-                $output = array_merge($output, $data);
             }
         }
         return $output;
