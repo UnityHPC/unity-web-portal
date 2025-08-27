@@ -134,6 +134,10 @@ rm "$prod" && ln -s "$old" "$prod"
 ### 1.2 -> 1.3
 * SQL:
     * remove the `sitevars` table
+* `defaults/config.ini.default` has some new fields that need to be overriden:
+    * `offset_UIDGID`
+    * `offset_PIGID`
+    * `offset_ORGGID`
 
 ### 1.2.0 -> 1.2.1
 * SQL:
