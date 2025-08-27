@@ -195,8 +195,7 @@ class UnityLDAP extends ldapConn
             if ($fileinfo->isDot() || ($filename == "README.md")) {
                 continue;
             }
-            $extension = $fileinfo->getExtension();
-            if ($extension == "csv") {
+            if ($fileinfo->getExtension() == "csv") {
                 $handle = fopen($fileinfo->getPathname(), "r");
                 while (($row = fgetcsv($handle, null, ",")) !== false) {
                     array_push($output, $row);
