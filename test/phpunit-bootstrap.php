@@ -177,6 +177,14 @@ function getNonExistentUser()
     return ["user2001@org998.test", "foo", "bar", "user2001@org998.test"];
 }
 
+function getNonexistentUsersWithExistentOrg()
+{
+    return [
+        ["user2003@org1.test", "foo", "bar", "user2003@org1.test"],
+        ["user2004@org1.test", "foo", "bar", "user2004@org1.test"],
+    ];
+}
+
 function getAdminUser()
 {
     return ["user1@org1.test", "foo", "bar", "user1@org1.test"];

@@ -112,11 +112,12 @@ class NewUserTest extends TestCase
         }
         $all_users_group = $LDAP->getUserGroup();
         $all_member_uids = $all_users_group->getAttribute("memberuid");
-        $new_uids = array_diff($all_member_uids, [$USER->uid]);
         if (in_array($USER->uid, $all_member_uids)) {
             $all_users_group->setAttribute(
                 "memberuid",
-                array_diff($all_member_uids, [$USER->uid])
+                // array_diff will break the contiguity of the array indexes
+                // ldap_mod_replace requires contiguity, array_values restores contiguity
+                array_values(array_diff($all_member_uids, [$USER->uid]))
             );
             $all_users_group->write();
             assert(!in_array($USER->uid, $all_users_group->getAttribute("memberuid")));
@@ -221,6 +222,41 @@ class NewUserTest extends TestCase
         }
     }
 
+    public function testCreateMultipleUsersByJoinGoupByPI()
+    {
+        global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+        $pi_user_args = getUserIsPIHasNoMembersNoMemberRequests();
+        switchUser(...$pi_user_args);
+        $pi_group = $USER->getPIGroup();
+        $gid = $pi_group->gid;
+        $this->assertTrue($pi_group->exists());
+        $users_to_create_args = getNonexistentUsersWithExistentOrg();
+        try {
+            foreach ($users_to_create_args as $user_to_create_args) {
+                switchUser(...$user_to_create_args);
+                $this->assertTrue(!$USER->exists());
+                $this->assertTrue(!$pi_group->userExists($USER));
+                $this->assertRequestedMembership(false, $gid);
+                $this->requestGroupMembership($pi_group->gid);
+                $this->assertRequestedMembership(true, $gid);
+                $approve_uid = $USER->uid;
+                switchUser(...$pi_user_args);
+                // $this->assertTrue(!$pi_group->userExists($USER));
+                $this->approveUserByPI($approve_uid);
+                switchUser(...$user_to_create_args);
+                $this->assertTrue(!$pi_group->requestExists($USER));
+                $this->assertRequestedMembership(false, $gid);
+                $this->assertTrue($pi_group->userExists($USER));
+                $this->assertTrue($USER->exists());
+            }
+        } finally {
+            foreach ($users_to_create_args as $user_to_create_args) {
+                switchUser(...$user_to_create_args);
+                $this->ensureUserNotInPIGroup($pi_group);
+                $this->ensureUserDoesNotExist();
+            }
+        }
+    }
 
     public function testCreateUserByJoinGoupByAdmin()
     {
