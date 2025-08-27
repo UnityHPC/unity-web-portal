@@ -18,6 +18,7 @@ account_policy_url = "https://github.com" ; this can be external or a portal pag
 uri = "ldap://identity"  ; URI of remote LDAP server
 user = "cn=admin,dc=unityhpc,dc=test"  ; Admin bind DN LDAP user
 pass = "password"  ; Admin bind password
+custom_user_mappings_dir = "deployment/custom_user_mappings" ; for internal use only
 basedn = "dc=unityhpc,dc=test"  ; Base search DN
 user_ou = "ou=users,dc=unityhpc,dc=test"  ; User organizational unit (may contain more than user group)
 user_group = "cn=unityusers,dc=unityhpc,dc=test" ; User group

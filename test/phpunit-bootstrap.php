@@ -74,6 +74,7 @@ function switchUser(
     // session_start will be called on the first post()
     $_SERVER["REMOTE_USER"] = $eppn;
     $_SERVER["REMOTE_ADDR"] = "127.0.0.1";
+    $_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
     $_SERVER["eppn"] = $eppn;
     $_SERVER["givenName"] = $given_name;
     $_SERVER["sn"] = $sn;
@@ -183,6 +184,17 @@ function getNonexistentUsersWithExistentOrg()
         ["user2003@org1.test", "foo", "bar", "user2003@org1.test"],
         ["user2004@org1.test", "foo", "bar", "user2004@org1.test"],
     ];
+
+function getNonExistentUserAndExpectedUIDGIDNoCustomMapping()
+{
+    // defaults/config.ini.default: ldap.offset_UIDGID=1000000
+    return [["user2002@org998.test", "foo", "bar", "user2002@org998.test"], 1000000];
+}
+
+function getNonExistentUserAndExpectedUIDGIDWithCustomMapping()
+{
+    // test/custom_user_mappings/test.csv: {user2001: 555}
+    return [["user2001@org998.test", "foo", "bar", "user2001@org998.test"], 555];
 }
 
 function getAdminUser()

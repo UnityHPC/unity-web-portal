@@ -44,7 +44,7 @@ if (isset($GLOBALS["ldapconn"])) {
         $CONFIG["ldap"]["uri"],
         $CONFIG["ldap"]["user"],
         $CONFIG["ldap"]["pass"],
-        __DIR__ . "/../deployment/custom_user_mappings",
+        __DIR__ . "/../" . $CONFIG["ldap"]["custom_user_mappings_dir"],
         $CONFIG["ldap"]["basedn"],
         $CONFIG["ldap"]["user_ou"],
         $CONFIG["ldap"]["group_ou"],
