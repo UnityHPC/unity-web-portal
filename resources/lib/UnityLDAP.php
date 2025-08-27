@@ -132,42 +132,9 @@ class UnityLDAP extends ldapConn
         return $this->def_user_shell;
     }
 
-    private function isIDNumberForbidden($id)
-    {
-        // 0-99 are probably going to be used for local system accounts instead of LDAP accounts
-        // 100-999, 60000-64999 are reserved for debian packages
-        return (($id <= 999) || ($id >= 60000 && $id <= 64999));
-    }
-
-    private function getNextIDNumber($start, $IDNumsInUse)
-    {
-        $new_id = $start;
-        while ($this->isIDNumberForbidden($new_id) || in_array($new_id, $IDNumsInUse)) {
-            $new_id++;
-        }
-        return $new_id;
-    }
-
-    private function getCustomIDMappings()
-    {
-        $output = [];
-        $dir = new \DirectoryIterator($this->custom_mappings_path);
-        foreach ($dir as $fileinfo) {
-            if ($fileinfo->getExtension() == "csv") {
-                $handle = fopen($fileinfo->getPathname(), "r");
-                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-                    $output = array_merge($output, $data);
-                }
-            } else {
-                UnitySite::errorLog(
-                    "warning",
-                    "custom ID mapping file does not have the .csv extension so it is ignored.",
-                );
-            }
-        }
-        return $output;
-    }
-
+  //
+  // ID Number selection functions
+  //
     private function getAllUIDNumbersInUse()
     {
         return array_merge(
@@ -225,6 +192,42 @@ class UnityLDAP extends ldapConn
         $IDNumsInUse = $this->getAllGIDNumbersInUse();
         $start = $this->offset_ORGGID;
         return $this->getNextIDNumber($start, $IDNumsInUse);
+    }
+
+    private function isIDNumberForbidden($id)
+    {
+        // 0-99 are probably going to be used for local system accounts instead of LDAP accounts
+        // 100-999, 60000-64999 are reserved for debian packages
+        return (($id <= 999) || ($id >= 60000 && $id <= 64999));
+    }
+
+    private function getNextIDNumber($start, $IDNumsInUse)
+    {
+        $new_id = $start;
+        while ($this->isIDNumberForbidden($new_id) || in_array($new_id, $IDNumsInUse)) {
+            $new_id++;
+        }
+        return $new_id;
+    }
+
+    private function getCustomIDMappings()
+    {
+        $output = [];
+        $dir = new \DirectoryIterator($this->custom_mappings_path);
+        foreach ($dir as $fileinfo) {
+            if ($fileinfo->getExtension() == "csv") {
+                $handle = fopen($fileinfo->getPathname(), "r");
+                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                    $output = array_merge($output, $data);
+                }
+            } else {
+                UnitySite::errorLog(
+                    "warning",
+                    "custom ID mapping file does not have the .csv extension so it is ignored.",
+                );
+            }
+        }
+        return $output;
     }
 
     public function getAllUsersUIDs()
