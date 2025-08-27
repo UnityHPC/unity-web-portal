@@ -153,6 +153,10 @@ class UnityLDAP extends ldapConn
 
     public function getNextPIGIDNumber()
     {
+        $IDNumsInUse = array_merge(
+            array_values($this->getCustomIDMappings()),
+            $this->getAllGIDNumbersInUse(),
+        );
         $IDNumsInUse = $this->getAllGIDNumbersInUse();
         $start = $this->offset_PIGID;
         return $this->getNextIDNumber($start, $IDNumsInUse);
@@ -160,7 +164,10 @@ class UnityLDAP extends ldapConn
 
     public function getNextOrgGIDNumber()
     {
-        $IDNumsInUse = $this->getAllGIDNumbersInUse();
+        $IDNumsInUse = array_merge(
+            array_values($this->getCustomIDMappings()),
+            $this->getAllGIDNumbersInUse(),
+        );
         $start = $this->offset_ORGGID;
         return $this->getNextIDNumber($start, $IDNumsInUse);
     }
@@ -212,27 +219,19 @@ class UnityLDAP extends ldapConn
 
     private function getAllUIDNumbersInUse()
     {
-        return array_merge(
-            // use baseOU for awareness of externally managed entries
-            array_map(
-                fn($x) => $x["uidnumber"][0],
-                $this->baseOU->getChildrenArray(["uidNumber"], true, "(objectClass=posixAccount)"),
-            ),
-            // custom mappings are considered UID and GID
-            array_values($this->getCustomIDMappings()),
+        // use baseOU for awareness of externally managed entries
+        return array_map(
+            fn($x) => $x["uidnumber"][0],
+            $this->baseOU->getChildrenArray(["uidNumber"], true, "(objectClass=posixAccount)"),
         );
     }
 
     private function getAllGIDNumbersInUse()
     {
-        return array_merge(
-            // use baseOU for awareness of externally managed entries
-            array_map(
-                fn($x) => $x["gidnumber"][0],
-                $this->baseOU->getChildrenArray(["gidNumber"], true, "(objectClass=posixGroup)"),
-            ),
-            // custom mappings are considered UID and GID
-            array_values($this->getCustomIDMappings()),
+        // use baseOU for awareness of externally managed entries
+        return array_map(
+            fn($x) => $x["gidnumber"][0],
+            $this->baseOU->getChildrenArray(["gidNumber"], true, "(objectClass=posixGroup)"),
         );
     }
 
