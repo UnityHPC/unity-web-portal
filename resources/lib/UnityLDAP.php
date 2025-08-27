@@ -193,8 +193,8 @@ class UnityLDAP extends ldapConn
             $extension = $fileinfo->getExtension();
             if ($extension == "csv") {
                 $handle = fopen($fileinfo->getPathname(), "r");
-                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-                    $output = array_merge($output, $data);
+                while (($row = fgetcsv($handle, null, ",")) !== false) {
+                    array_push($output, $row);
                 }
             } else {
                 UnitySite::errorLog(
@@ -203,7 +203,11 @@ class UnityLDAP extends ldapConn
                 );
             }
         }
-        return $output;
+        $output_map = [];
+        foreach ($output as [$match, $id_str]) {
+            $output_map[$match] = $id_str;
+        }
+        return $output_map;
     }
 
     private function getAllUIDNumbersInUse()
