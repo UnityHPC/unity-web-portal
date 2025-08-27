@@ -132,9 +132,6 @@ class UnityLDAP extends ldapConn
         return $this->def_user_shell;
     }
 
-  //
-  // ID Number selection functions
-  //
     private function getAllUIDNumbersInUse()
     {
         return array_merge(
