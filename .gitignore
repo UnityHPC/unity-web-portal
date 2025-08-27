@@ -15,6 +15,5 @@ composer.lock
 # don't track site configs
 deployment/*
 !deployment/**/README.md
-!deployment/deploy.sh
 
 .phpunit.result.cache
