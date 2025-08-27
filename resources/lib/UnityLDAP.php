@@ -46,6 +46,10 @@ class UnityLDAP extends ldapConn
 
     private $def_user_shell;
 
+    private $offset_UIDGID;
+    private $offset_PIGID;
+    private $offset_ORGGID;
+
     public function __construct(
         $host,
         $dn,
@@ -58,7 +62,10 @@ class UnityLDAP extends ldapConn
         $orggroup_ou,
         $admin_group,
         $user_group_dn,
-        $def_user_shell
+        $def_user_shell,
+        $offset_UIDGID,
+        $offset_PIGID,
+        $offset_ORGGID,
     ) {
         parent::__construct($host, $dn, $pass);
 
@@ -81,6 +88,10 @@ class UnityLDAP extends ldapConn
         $this->custom_mappings_path = $custom_user_mappings;
 
         $this->def_user_shell = $def_user_shell;
+
+        $this->offset_UIDGID = $offset_UIDGID;
+        $this->offset_PIGID = $offset_PIGID;
+        $this->offset_ORGGID = $offset_ORGGID;
     }
 
   //
@@ -121,81 +132,62 @@ class UnityLDAP extends ldapConn
         return $this->def_user_shell;
     }
 
-  //
-  // ID Number selection functions
-  //
-    public function getNextUIDNumber($UnitySQL)
-    {
-        $max_uid = $UnitySQL->getSiteVar('MAX_UID');
-        $new_uid = $max_uid + 1;
-
-        while ($this->IDNumInUse($new_uid)) {
-            $new_uid++;
-        }
-
-        $UnitySQL->updateSiteVar('MAX_UID', $new_uid);
-
-        return $new_uid;
-    }
-
-    public function getNextPiGIDNumber($UnitySQL)
-    {
-        $max_pigid = $UnitySQL->getSiteVar('MAX_PIGID');
-        $new_pigid = $max_pigid + 1;
-
-        while ($this->IDNumInUse($new_pigid)) {
-            $new_pigid++;
-        }
-
-        $UnitySQL->updateSiteVar('MAX_PIGID', $new_pigid);
-
-        return $new_pigid;
-    }
-
-    public function getNextOrgGIDNumber($UnitySQL)
-    {
-        $max_gid = $UnitySQL->getSiteVar('MAX_GID');
-        $new_gid = $max_gid + 1;
-
-        while ($this->IDNumInUse($new_gid)) {
-            $new_gid++;
-        }
-
-        $UnitySQL->updateSiteVar('MAX_GID', $new_gid);
-
-        return $new_gid;
-    }
-
-    private function IDNumInUse($id)
+    private function isIDNumberForbidden($id)
     {
         // 0-99 are probably going to be used for local system accounts instead of LDAP accounts
         // 100-999, 60000-64999 are reserved for debian packages
-        if (($id <= 999) || ($id >= 60000 && $id <= 64999)) {
-            return true;
-        }
-        $users = $this->userOU->getChildrenArray([], true);
-        foreach ($users as $user) {
-            if ($user["uidnumber"][0] == $id) {
-                return true;
-            }
-        }
-        $pi_groups = $this->pi_groupOU->getChildrenArray(["gidnumber"], true);
-        foreach ($pi_groups as $pi_group) {
-            if ($pi_group["gidnumber"][0] == $id) {
-                return true;
-            }
-        }
-        $groups = $this->groupOU->getChildrenArray(["gidnumber"], true);
-        foreach ($groups as $group) {
-            if ($group["gidnumber"][0] == $id) {
-                return true;
-            }
-        }
-
-        return false;
+        return (($id <= 999) || ($id >= 60000 && $id <= 64999));
     }
 
-    public function getUnassignedID($uid, $UnitySQL)
+    private function getNextIDNumber($start, $IDNumsInUse)
+    {
+        $new_id = $start;
+        while ($this->isIDNumberForbidden($new_id) || in_array($new_id, $IDNumsInUse)) {
+            $new_id++;
+        }
+        return $new_id;
+    }
+
+    private function getAllUIDNumbersInUse()
+    {
+        // use baseOU for awareness of externally managed entries
+        return array_map(
+            fn($x) => $x["uidnumber"][0],
+            $this->baseOU->getChildrenArray(["uidNumber"], true, "(objectClass=posixAccount)"),
+        );
+    }
+
+    private function getAllGIDNumbersInUse()
+    {
+        // use baseOU for awareness of externally managed entries
+        return array_map(
+            fn($x) => $x["gidnumber"][0],
+            $this->baseOU->getChildrenArray(["gidNumber"], true, "(objectClass=posixGroup)"),
+        );
+    }
+
+    private function getNextUIDGIDNumber()
+    {
+        $IDNumsInUse = array_merge($this->getAllUIDNumbersInUse(), $this->getAllGIDNumbersInUse());
+        $start = $this->offset_UIDGID;
+        return $this->getNextIDNumber($start, $IDNumsInUse);
+    }
+
+    public function getNextPIGIDNumber()
+    {
+        $IDNumsInUse = $this->getAllGIDNumbersInUse();
+        $start = $this->offset_PIGID;
+        return $this->getNextIDNumber($start, $IDNumsInUse);
+    }
+
+    public function getNextOrgGIDNumber()
+    {
+        $IDNumsInUse = $this->getAllGIDNumbersInUse();
+        $start = $this->offset_ORGGID;
+        return $this->getNextIDNumber($start, $IDNumsInUse);
+    }
+
+    public function getUnassignedID($uid)
     {
         $netid = strtok($uid, "_");  // extract netid
       // scrape all files in custom folder
@@ -219,7 +211,7 @@ class UnityLDAP extends ldapConn
         }
 
       // didn't find anything from existing mappings, use next available
-        $next_uid = $this->getNextUIDNumber($UnitySQL);
+        $next_uid = $this->getNextUIDGIDNumber();
 
         return $next_uid;
     }
@@ -263,7 +255,7 @@ class UnityLDAP extends ldapConn
         $user_attributes = $this->baseOU->getChildrenArray(
             $attributes,
             true, // recursive
-            "objectClass=posixAccount"
+            "(objectClass=posixAccount)"
         );
         foreach ($user_attributes as $i => $attributes) {
             if (!in_array($attributes["uid"][0], $include_uids)) {
