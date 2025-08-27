@@ -148,28 +148,68 @@ class UnityLDAP extends ldapConn
         return $new_id;
     }
 
+    private function getCustomIDMappings()
+    {
+        $output = [];
+        $dir = new \DirectoryIterator($this->custom_mappings_path);
+        foreach ($dir as $fileinfo) {
+            if ($fileinfo->getExtension() != "csv") {
+                UnitySite::errorLog(
+                    "warning",
+                    "custom ID mapping file does not have the .csv extension so it is ignored.",
+                );
+                continue;
+            }
+            $handle = fopen($fileinfo->getPathname(), "r");
+            while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                $output = array_merge($output, $data);
+            }
+        }
+        return $output;
+    }
+
     private function getAllUIDNumbersInUse()
     {
-        // use baseOU for awareness of externally managed entries
-        return array_map(
-            fn($x) => $x["uidnumber"][0],
-            $this->baseOU->getChildrenArray(["uidNumber"], true, "(objectClass=posixAccount)"),
+        return array_merge(
+            // use baseOU for awareness of externally managed entries
+            array_map(
+                fn($x) => $x["uidnumber"][0],
+                $this->baseOU->getChildrenArray(["uidNumber"], true, "(objectClass=posixAccount)"),
+            ),
+            // custom mappings are considered UID and GID
+            array_values($this->getCustomIDMappings()),
         );
     }
 
     private function getAllGIDNumbersInUse()
     {
-        // use baseOU for awareness of externally managed entries
-        return array_map(
-            fn($x) => $x["gidnumber"][0],
-            $this->baseOU->getChildrenArray(["gidNumber"], true, "(objectClass=posixGroup)"),
+        return array_merge(
+            // use baseOU for awareness of externally managed entries
+            array_map(
+                fn($x) => $x["gidnumber"][0],
+                $this->baseOU->getChildrenArray(["gidNumber"], true, "(objectClass=posixGroup)"),
+            ),
+            // custom mappings are considered UID and GID
+            array_values($this->getCustomIDMappings()),
         );
     }
 
-    private function getNextUIDGIDNumber()
+    public function getNextUIDGIDNumber($uid)
     {
         $IDNumsInUse = array_merge($this->getAllUIDNumbersInUse(), $this->getAllGIDNumbersInUse());
         $start = $this->offset_UIDGID;
+        $netid = strtok($uid, "_");
+        $customIDMappings = $this->getCustomIDMappings();
+        $customMappedID = $customIDMappings[$uid] ?? $customIDMappings[$netid] ?? null;
+        if (!is_null($customMappedID) && !in_array($customMappedID, $IDNumsInUse)) {
+            return $customMappedID;
+        }
+        if (!is_null($customMappedID) && in_array($customMappedID, $IDNumsInUse)) {
+            UnitySite::errorLog(
+                "warning",
+                "user '$uid' has a custom mapped IDNumber $customMappedID but it's already in use!",
+            );
+        }
         return $this->getNextIDNumber($start, $IDNumsInUse);
     }
 
@@ -185,35 +225,6 @@ class UnityLDAP extends ldapConn
         $IDNumsInUse = $this->getAllGIDNumbersInUse();
         $start = $this->offset_ORGGID;
         return $this->getNextIDNumber($start, $IDNumsInUse);
-    }
-
-    public function getUnassignedID($uid)
-    {
-        $netid = strtok($uid, "_");  // extract netid
-      // scrape all files in custom folder
-        $dir = new \DirectoryIterator($this->custom_mappings_path);
-        foreach ($dir as $fileinfo) {
-            if ($fileinfo->getExtension() == "csv") {
-                // found csv file
-                $handle = fopen($fileinfo->getPathname(), "r");
-                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-                    $netid_match = $data[0];
-                    $uid_match = $data[1];
-
-                    if ($uid == $netid_match || $netid == $netid_match) {
-                        // found a match
-                        if (!$this->IDNumInUse($uid_match)) {
-                            return $uid_match;
-                        }
-                    }
-                }
-            }
-        }
-
-      // didn't find anything from existing mappings, use next available
-        $next_uid = $this->getNextUIDGIDNumber();
-
-        return $next_uid;
     }
 
     public function getAllUsersUIDs()
