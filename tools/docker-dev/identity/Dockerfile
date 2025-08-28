@@ -14,17 +14,18 @@ RUN chown openldap:openldap /var/lib/ldap
 COPY ssh.ldif /etc/ldap/schema/ssh.ldif
 COPY ldap-config.ldif /tmp/ldap-config.ldif
 COPY bootstrap.ldif /tmp/bootstrap.ldif
+COPY load-modules.ldif /tmp/load-modules.ldif
+COPY configure-unique.ldif /tmp/configure-unique.ldif
 
 RUN service slapd start; \
-    ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/cosine.ldif; \
-    ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/nis.ldif; \
-    ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/inetorgperson.ldif; \
-    ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ssh.ldif; \
+    ldapadd    -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/cosine.ldif; \
+    ldapadd    -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/nis.ldif; \
+    ldapadd    -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/inetorgperson.ldif; \
+    ldapadd    -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ssh.ldif; \
     ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/ldap-config.ldif; \
-    slapadd -l /tmp/bootstrap.ldif
-
-RUN rm -rf /tmp/ldap-config.ldif
-RUN rm -rf /tmp/bootstrap.ldif
+    ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/load-modules.ldif; \
+    ldapadd    -Y EXTERNAL -H ldapi:/// -f /tmp/configure-unique.ldif; \
+    slapadd                             -l /tmp/bootstrap.ldif
 
 # PHPLDAPAdmin Setup
 RUN rm -rf /etc/phpldapadmin/config.php
