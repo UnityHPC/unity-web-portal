@@ -103,13 +103,16 @@ rm "$prod" && ln -s "$old" "$prod"
 
 ### Version-specific update instructions:
 
-### 1.0 -> 1.1
+### 1.2.0 -> 1.2.1
 * SQL:
-  * Add the `home` content management row
-* `config/branding/config.ini.default` has some new fields that may need to be overriden:
-   * `mail.pi_approve*`
-   * `page.home`
-   * The entire `loginshell` section
+    * Add new columns to the `requests` table:
+       ```sql
+       ALTER TABLE `requests`
+       ADD `firstname` VARCHAR(768) NOT NULL AFTER `timestamp`,
+       ADD `lastname` VARCHAR(768) NOT NULL AFTER `firstname`,
+       ADD `email` VARCHAR(768) NOT NULL AFTER `lastname`,
+       ADD `org` VARCHAR(768) NOT NULL AFTER `email`; 
+       ```
 
 ### 1.1 -> 1.2
 * SQL:
@@ -131,13 +134,10 @@ rm "$prod" && ln -s "$old" "$prod"
 * LDAP:
     * Create a new group defined by `ldap.user_group` in the config
 
-### 1.2.0 -> 1.2.1
+### 1.0 -> 1.1
 * SQL:
-    * Add new columns to the `requests` table:
-       ```sql
-       ALTER TABLE `requests`
-       ADD `firstname` VARCHAR(768) NOT NULL AFTER `timestamp`,
-       ADD `lastname` VARCHAR(768) NOT NULL AFTER `firstname`,
-       ADD `email` VARCHAR(768) NOT NULL AFTER `lastname`,
-       ADD `org` VARCHAR(768) NOT NULL AFTER `email`; 
-       ```
+  * Add the `home` content management row
+* `config/branding/config.ini.default` has some new fields that may need to be overriden:
+   * `mail.pi_approve*`
+   * `page.home`
+   * The entire `loginshell` section
