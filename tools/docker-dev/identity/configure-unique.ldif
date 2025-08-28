@@ -1,0 +1,7 @@
+dn: olcOverlay=unique,olcDatabase={1}mdb,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcUniqueConfig
+olcOverlay: unique
+olcUniqueAttribute: uid
+olcUniqueAttribute: uidNumber
+olcUniqueAttribute: gidNumber
