@@ -47,7 +47,6 @@ See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for prod
             * curl, intl, ldap, mbstring, mysql, pdo, redis, xml (`apt install php-<extension>` on Ubuntu)
         * Libraries
             * `COMPOSER_ALLOW_SUPERUSER=1 composer --no-dev --no-scripts --no-plugins install`
-    * `httpd` should run as the `unity-web` user/group
     * `httpd` `DocumentRoot` set to `webroot/`
     * `httpd` Authentication
         * Any authentication will do as long as it defines `REMOTE_USER`, `givenName`, `sn`, and `mail`
