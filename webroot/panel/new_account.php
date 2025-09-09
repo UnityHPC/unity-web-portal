@@ -92,7 +92,7 @@ require $LOC_HEADER;
         <p>You will receive an email when your account has been approved.</p>
         <p>
         <?php
-        $addr = "mailto: " . $CONFIG['mail']['support'];
+        $addr = "mailto:" . $CONFIG['mail']['support'];
         $name = $CONFIG['mail']['support_name'];
         echo "Email <a href='$addr'>$name</a> if you have not heard back in one business day.";
         ?>
