@@ -96,8 +96,13 @@ foreach ($assocs as $assoc) {
         "<form action='' method='POST'>
     <input type='hidden' name='form_type' value='remUser'>
     <input type='hidden' name='uid' value='" . $assoc->uid . "'>
-    <input type='submit' value='Remove'
-    onclick='return confirm(\"Are you sure you want to remove " . $assoc->uid . " from your PI group?\")'>
+    <input
+        type='submit'
+        value='Remove'
+        onclick='
+            return confirm(\"Are you sure you want to remove '$assoc->uid' from your PI group?\")
+        '
+    >
     </form>";
     echo "</td>";
     echo "<td>" . $assoc->getFirstname() . " " . $assoc->getLastname() . "</td>";

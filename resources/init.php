@@ -107,7 +107,10 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
         $errorid = uniqid("sso-");
         $eppn = $_SERVER["REMOTE_USER"];
         UnitySite::errorLog("SSO Failure", "{$e} ($errorid)");
-        UnitySite::die("Invalid eppn: '$eppn'. Please contact {$CONFIG["mail"]["support"]} (id: $errorid)", true);
+        UnitySite::die(
+            "Invalid eppn: '$eppn'. Please contact {$CONFIG["mail"]["support"]} (id: $errorid)",
+            true
+        );
     }
     $_SESSION["SSO"] = $SSO;
 

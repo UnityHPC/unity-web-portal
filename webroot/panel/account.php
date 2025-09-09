@@ -30,7 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
             if (!empty($keys)) {
                 $keys = array_map("trim", $keys);
-                $validKeys = array_filter($keys, ["UnityWebPortal\lib\UnitySite", "testValidSSHKey"]);
+                $validKeys = array_filter(
+                    $keys,
+                    ["UnityWebPortal\lib\UnitySite", "testValidSSHKey"]
+                );
                 $USER->setSSHKeys(array_merge($USER->getSSHKeys(), $validKeys));
                 if (count($keys) != count($validKeys)) {
                     UnitySite::alert("invalid SSH key");
@@ -227,7 +230,10 @@ if ($hasGroups) {
     ";
     if ($SQL->accDeletionRequestExists($USER->uid)) {
         echo "<input type='submit' value='Request Account Deletion' disabled />";
-        echo "<label style='margin-left: 10px'>Your request has been submitted and is currently pending</label>";
+        echo "
+            <label style='margin-left: 10px'>
+            Your request has been submitted and is currently pending</label>
+        ";
     } else {
         echo "<input type='submit' value='Request Account Deletion' />";
     }

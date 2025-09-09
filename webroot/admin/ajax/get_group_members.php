@@ -34,14 +34,20 @@ foreach ($members as $member) {
     echo "<td>" . $member->uid . "</td>";
     echo "<td><a href='mailto:" . $member->getMail() . "'>" . $member->getMail() . "</a></td>";
     echo "<td>";
-    echo
-        "<form action='' method='POST' onsubmit='return confirm(\"Are you sure you want to remove " .
-        $member->uid . " from this group?\");'>
-    <input type='hidden' name='form_type' value='remUserChild'>
-    <input type='hidden' name='uid' value='" . $member->uid . "'>
-    <input type='hidden' name='pi' value='" . $group->gid . "'>
-    <input type='submit' value='Remove'>
-    </form>";
+    echo "
+        <form
+            action=''
+            method='POST'
+            onsubmit='
+                return confirm(\"Are you sure you want to remove '$member->uid' from this group?\");
+            '
+        >
+        <input type='hidden' name='form_type' value='remUserChild'>
+        <input type='hidden' name='uid' value='" . $member->uid . "'>
+        <input type='hidden' name='pi' value='" . $group->gid . "'>
+        <input type='submit' value='Remove'>
+        </form>
+    ";
     echo "</td>";
     echo "</tr>";
 

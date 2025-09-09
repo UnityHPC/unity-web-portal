@@ -20,7 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 if (isset($SSO)) {
-    if (!$_SESSION["user_exists"] && !str_ends_with($_SERVER['PHP_SELF'], "/panel/new_account.php")) {
+    if (
+        !$_SESSION["user_exists"]
+        && !str_ends_with($_SERVER['PHP_SELF'], "/panel/new_account.php")
+    ) {
         UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/new_account.php");
     }
 }
@@ -45,11 +48,16 @@ if (isset($SSO)) {
     ?>
   </style>
 
-  <link rel="stylesheet" type="text/css" href="<?php echo $CONFIG["site"]["prefix"]; ?>/css/global.css">
-  <link rel="stylesheet" type="text/css" href="<?php echo $CONFIG["site"]["prefix"]; ?>/css/navbar.css">
-  <link rel="stylesheet" type="text/css" href="<?php echo $CONFIG["site"]["prefix"]; ?>/css/modal.css">
-  <link rel="stylesheet" type="text/css" href="<?php echo $CONFIG["site"]["prefix"]; ?>/css/tables.css">
-  <link rel="stylesheet" type="text/css" href="<?php echo $CONFIG["site"]["prefix"]; ?>/css/filters.css">
+  <?php
+    $prefix = $CONFIG["site"]["prefix"];
+    echo "
+        <link rel='stylesheet' type='text/css' href='$prefix/css/global.css'>
+        <link rel='stylesheet' type='text/css' href='$prefix/css/navbar.css'>
+        <link rel='stylesheet' type='text/css' href='$prefix/css/modal.css'>
+        <link rel='stylesheet' type='text/css' href='$prefix/css/tables.css'>
+        <link rel='stylesheet' type='text/css' href='$prefix/css/filters.css'>
+    ";
+    ?>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="<?php echo $CONFIG["site"]["description"] ?>">
@@ -63,14 +71,19 @@ if (isset($SSO)) {
     <img id="imgLogo" draggable=false
     src="<?php echo $CONFIG["site"]["prefix"]; ?>/assets/<?php echo $CONFIG["site"]["logo"]; ?>">
     <button class="hamburger vertical-align">
-      <img draggable="false" src="<?php echo $CONFIG["site"]["prefix"]; ?>/assets/menu.png" alt="Menu Button">
+      <img
+        draggable="false"
+        src="<?php echo $CONFIG["site"]["prefix"]; ?>/assets/menu.png"
+        alt="Menu Button"
+      >
     </button>
   </header>
 
   <nav class="mainNav">
     <?php
+    $prefix = $CONFIG["site"]["prefix"];
     // Public Items - Always Visible
-    echo "<a href='" . $CONFIG["site"]["prefix"] . "/index.php'>Home</a>";
+    echo "<a href='$prefix/index.php'>Home</a>";
 
     $num_additional_items = count($CONFIG["menuitems"]["labels"]);
     for ($i = 0; $i < $num_additional_items; $i++) {
@@ -80,13 +93,13 @@ if (isset($SSO)) {
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
         // Menu Items for Present Users
-        echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/support.php'>Support</a>";
-        echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>Account Settings</a>";
-        echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/groups.php'>My PIs</a>";
+        echo "<a href='$prefix/panel/support.php'>Support</a>";
+        echo "<a href='$prefix/panel/account.php'>Account Settings</a>";
+        echo "<a href='$prefix/panel/groups.php'>My PIs</a>";
 
         if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
             // PI only pages
-            echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>My Users</a>";
+            echo "<a href='$prefix/panel/pi.php'>My Users</a>";
         }
 
         // additional branding items
@@ -97,16 +110,18 @@ if (isset($SSO)) {
         }
 
         // admin pages
-        if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] && !isset($_SESSION["viewUser"])) {
+        if (
+            isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] && !isset($_SESSION["viewUser"])
+        ) {
             echo "<hr class='navHR'>";
             // Admin only pages
-            echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/user-mgmt.php'>User Management</a>";
-            echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/pi-mgmt.php'>PI Management</a>";
-            echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/notices.php'>Cluster Notices</a>";
-            echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/content.php'>Content Management</a>";
+            echo "<a href='$prefix/admin/user-mgmt.php'>User Management</a>";
+            echo "<a href='$prefix/admin/pi-mgmt.php'>PI Management</a>";
+            echo "<a href='$prefix/admin/notices.php'>Cluster Notices</a>";
+            echo "<a href='$prefix/admin/content.php'>Content Management</a>";
         }
     } else {
-        echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>Login / Request Account</a>";
+        echo "<a href='$prefix/panel/account.php'>Login / Request Account</a>";
     }
     ?>
   </nav>
@@ -120,7 +135,9 @@ if (isset($SSO)) {
       <div class="modalBody"></div>
       <div class="modalMessages"></div>
       <div class="modalButtons">
-        <div class='buttonList messageButtons' style='display: none;'><button class='btnOkay'>Okay</button></div>
+        <div class='buttonList messageButtons' style='display: none;'>
+            <button class='btnOkay'>Okay</button>
+        </div>
         <div class='buttonList yesnoButtons' style='display: none;'>
         <button class='btnYes'>Yes</button>
         <button class='btnNo'>No</button>

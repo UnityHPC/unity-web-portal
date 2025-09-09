@@ -17,8 +17,13 @@
 
   </div>
   <div class="footerBlock">
-    <span>Unity Web Portal Version <a target="_blank" href="<?php echo $CONFIG["upstream"]["repo"]; ?>">
-    <?php echo $CONFIG["upstream"]["version"]; ?></a></span>&nbsp;|
+    <span>
+        Unity Web Portal Version
+        <a target="_blank" href="<?php echo $CONFIG["upstream"]["repo"]; ?>">
+            <?php echo $CONFIG["upstream"]["version"]; ?>
+        </a>
+    </span>
+    &nbsp;|
     <a href="<?php echo $CONFIG["site"]["terms_of_service_url"]; ?>">Terms of Service</a>
   </div>
 </footer>

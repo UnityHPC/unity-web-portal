@@ -110,7 +110,7 @@ action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/account.php">
                     $("textarea[name=key]").css("box-shadow", "none");
                 } else {
                     $("input[id=add-key]").prop("disabled", true);
-                    $("textarea[name=key]").css("box-shadow", "0 0 0 0.3rem rgba(220, 53, 69, 0.25)");
+                    $("textarea[name=key]").css("box-shadow", "0 0 0 0.3rem rgba(220,53,69,0.25)");
                 }
             }
         });

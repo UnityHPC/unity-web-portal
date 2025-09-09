@@ -21,7 +21,10 @@ class UnityPerms
 
         $role = $this->SQL->getRole($uid, $group);
 
-        if ($this->SQL->hasPerm($role, 'unity.admin') || $this->SQL->hasPerm($role, 'unity.admin_no_grant')) {
+        if (
+            $this->SQL->hasPerm($role, 'unity.admin')
+            || $this->SQL->hasPerm($role, 'unity.admin_no_grant')
+        ) {
             return true;
         }
 
@@ -46,7 +49,10 @@ class UnityPerms
 
         $role = $this->SQL->getRole($uid, $group);
 
-        if ($this->SQL->hasPerm($role, 'unity.admin') || $this->SQL->hasPerm($role, 'unity.admin_no_grant')) {
+        if (
+            $this->SQL->hasPerm($role, 'unity.admin')
+            || $this->SQL->hasPerm($role, 'unity.admin_no_grant')
+        ) {
             return true;
         }
 
@@ -79,7 +85,10 @@ class UnityPerms
             return false;
         }
 
-        if ($this->SQL->hasPerm($user_role, 'unity.admin') || $this->SQL->hasPerm($user_role, 'unity.admin_no_grant')) {
+        if (
+            $this->SQL->hasPerm($user_role, 'unity.admin')
+            || $this->SQL->hasPerm($user_role, 'unity.admin_no_grant')
+        ) {
             return true;
         }
 
@@ -112,7 +121,10 @@ class UnityPerms
             return false;
         }
 
-        if ($this->SQL->hasPerm($user_role, 'unity.admin') || $this->SQL->hasPerm($user_role, 'unity.admin_no_grant')) {
+        if (
+            $this->SQL->hasPerm($user_role, 'unity.admin')
+            || $this->SQL->hasPerm($user_role, 'unity.admin_no_grant')
+        ) {
             return true;
         }
 

@@ -19,7 +19,7 @@ class UnitySQL
     private const TABLE_GROUP_JOIN_REQUESTS = "groupJoinRequests";
 
 
-    // FIXME this string should be changed to something more intuitive, requires production sql change
+    // FIXME this string should be changed to something more intuitive, requires production change
     public const REQUEST_BECOME_PI = "admin";
 
     private $conn;
@@ -38,8 +38,14 @@ class UnitySQL
     //
     // requests table methods
     //
-    public function addRequest($requestor, $firstname, $lastname, $email, $org, $dest = self::REQUEST_BECOME_PI)
-    {
+    public function addRequest(
+        $requestor,
+        $firstname,
+        $lastname,
+        $email,
+        $org,
+        $dest = self::REQUEST_BECOME_PI
+    ) {
         if ($this->requestExists($requestor, $dest)) {
             return;
         }
@@ -156,8 +162,9 @@ class UnitySQL
 
     public function addNotice($title, $date, $content, $operator)
     {
+        $table = self::TABLE_NOTICES;
         $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_NOTICES . " (date, title, message) VALUES (:date, :title, :message)"
+            "INSERT INTO $table (date, title, message) VALUES (:date, :title, :message)"
         );
         $stmt->bindParam(":date", $date);
         $stmt->bindParam(":title", $title);
@@ -175,8 +182,9 @@ class UnitySQL
 
     public function editNotice($id, $title, $date, $content)
     {
+        $table = self::TABLE_NOTICES;
         $stmt = $this->conn->prepare(
-            "UPDATE " . self::TABLE_NOTICES . " SET date=:date, title=:title, message=:message WHERE id=:id"
+            "UPDATE $table SET date=:date, title=:title, message=:message WHERE id=:id"
         );
         $stmt->bindParam(":date", $date);
         $stmt->bindParam(":title", $title);
@@ -261,8 +269,9 @@ class UnitySQL
     // audit log table methods
     public function addLog($operator, $operator_ip, $action_type, $recipient)
     {
+        $table = self::TABLE_AUDIT_LOG;
         $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_AUDIT_LOG . " (operator, operator_ip, action_type, recipient)
+            "INSERT INTO $table (operator, operator_ip, action_type, recipient)
             VALUE (:operator, :operator_ip, :action_type, :recipient)"
         );
         $stmt->bindParam(":operator", $operator);
@@ -332,9 +341,8 @@ class UnitySQL
 
     public function getRole($uid, $group)
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_GROUP_ROLE_ASSIGNMENTS . " WHERE user=:uid AND `group`=:group"
-        );
+        $table = self::TABLE_GROUP_ROLE_ASSIGNMENTS;
+        $stmt = $this->conn->prepare("SELECT * FROM $table WHERE user=:uid AND `group`=:group");
         $stmt->bindParam(":uid", $uid);
         $stmt->bindParam(":group", $group);
 
@@ -372,9 +380,8 @@ class UnitySQL
 
     public function roleAvailableInGroup($uid, $group, $role)
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_GROUP_ROLE_ASSIGNMENTS . " WHERE user=:uid AND `group`=:group"
-        );
+        $table = self::TABLE_GROUP_ROLE_ASSIGNMENTS;
+        $stmt = $this->conn->prepare("SELECT * FROM $table WHERE user=:uid AND `group`=:group");
         $stmt->bindParam(":uid", $uid);
         $stmt->bindParam(":group", $group);
 
