@@ -100,7 +100,7 @@ foreach ($assocs as $assoc) {
         type='submit'
         value='Remove'
         onclick='
-            return confirm(\"Are you sure you want to remove '$assoc->uid' from your PI group?\")
+            return confirm(\"Are you sure you want to remove $assoc->uid from your PI group?\")
         '
     >
     </form>";

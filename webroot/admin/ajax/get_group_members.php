@@ -39,7 +39,7 @@ foreach ($members as $member) {
             action=''
             method='POST'
             onsubmit='
-                return confirm(\"Are you sure you want to remove '$member->uid' from this group?\");
+                return confirm(\"Are you sure you want to remove $member->uid from this group?\");
             '
         >
         <input type='hidden' name='form_type' value='remUserChild'>
