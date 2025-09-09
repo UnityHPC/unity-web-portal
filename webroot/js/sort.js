@@ -62,7 +62,7 @@ window.onload = function() {
         var sortElement = document.getElementById(sort);
         if (sortElement) {
             if (order == "asc") {
-                sortElement.click();   
+                sortElement.click();
             } else if (order == "desc") {
                 sortElement.click();
                 sortElement.click();
