@@ -7,7 +7,7 @@ $this->Subject = "Group Member Removed";
 <p>Hello,</p>
 
 <p>
-A user has been removed your PI group,
+A user has been removed from your PI group,
 '<?php echo $data["group"] ?>'.
 The details of the removed user are below:
 </p>
