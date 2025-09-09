@@ -139,7 +139,7 @@ echo "<table>";
 foreach ($PIGroupGIDs as $gid) {
     $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
     $owner = $group->getOwner();
-    $full_name = $requested_owner->getFirstname() . " " . $requested_owner->getLastname();
+    $full_name = $owner->getFirstname() . " " . $owner->getLastname();
     if ($USER->uid == $owner->uid) {
         continue;
     }
