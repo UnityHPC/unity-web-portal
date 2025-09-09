@@ -35,7 +35,9 @@ class UnityUser
     public function equals($other_user)
     {
         if (!is_a($other_user, self::class)) {
-            throw new Exception("Unable to check equality because the parameter is not a " . self::class . " object");
+            throw new Exception(
+                "Unable to check equality because the parameter is not a " . self::class . " object"
+            );
         }
 
         return $this->uid == $other_user->uid;
@@ -588,7 +590,8 @@ class UnityUser
     }
 
     /**
-     * Sends an email to admins about account deletion request and also adds it to a table in the database
+     * Sends an email to admins about account deletion request
+     * and also adds it to a table in the database
      */
     public function requestAccountDeletion()
     {

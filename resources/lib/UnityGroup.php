@@ -44,7 +44,9 @@ class UnityGroup
     public function equals($other_group)
     {
         if (!is_a($other_group, self::class)) {
-            throw new Exception("Unable to check equality because the parameter is not a " . self::class . " object");
+            throw new Exception(
+                "Unable to check equality because the parameter is not a " . self::class . " object"
+            );
         }
 
         return $this->gid == $other_group->gid;
@@ -69,8 +71,14 @@ class UnityGroup
     // Portal-facing methods, these are the methods called by scripts in webroot
     //
 
-    public function requestGroup($firstname, $lastname, $email, $org, $send_mail_to_admins, $send_mail = true)
-    {
+    public function requestGroup(
+        $firstname,
+        $lastname,
+        $email,
+        $org,
+        $send_mail_to_admins,
+        $send_mail = true
+    ) {
         // check for edge cases...
         if ($this->exists()) {
             return;
@@ -150,7 +158,8 @@ class UnityGroup
             );
         }
 
-        // initialize ldap objects, if this fails the script will crash, but nothing will persistently break
+        // initialize ldap objects, if this fails the script will crash,
+        // but nothing will persistently break
         $this->init();
 
         // remove the request from the sql table
@@ -278,7 +287,8 @@ class UnityGroup
     // }
 
     /**
-     * This method is executed when a user is approved to join the group (either by admin or the group owner)
+     * This method is executed when a user is approved to join the group
+     * (either by admin or the group owner)
      */
     public function approveUser($new_user, $send_mail = true)
     {
@@ -387,8 +397,14 @@ class UnityGroup
         }
     }
 
-    public function newUserRequest($new_user, $firstname, $lastname, $email, $org, $send_mail = true)
-    {
+    public function newUserRequest(
+        $new_user,
+        $firstname,
+        $lastname,
+        $email,
+        $org,
+        $send_mail = true
+    ) {
         if ($this->userExists($new_user)) {
             UnitySite::errorLog("warning", "user '$new_user' already in group");
             return;
@@ -530,7 +546,8 @@ class UnityGroup
 
         $this->REDIS->appendCacheArray("sorted_groups", "", $this->gid);
 
-        // TODO if we ever make this project based, we need to update the cache here with the memberuid
+        // TODO if we ever make this project based,
+        // we need to update the cache here with the memberuid
     }
 
     private function addUserToGroup($new_user)

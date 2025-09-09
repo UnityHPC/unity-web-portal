@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST["pi"])) {
             $pi_account = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             if (!$pi_account->exists()) {
-                // "\'"  instead of "'", otherwise it will close a single quote used to place the message
+                // "\'"  instead of "'", otherwise it will close a single quote from HTML
                 array_push($modalErrors, "This PI doesn\'t exist");
             }
         }
@@ -41,7 +41,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Add row to sql
                 if (empty($modalErrors)) {
-                    $pi_account->newUserRequest($USER, $SSO["firstname"], $SSO["lastname"], $SSO["mail"], $SSO["org"]);
+                    $pi_account->newUserRequest(
+                        $USER,
+                        $SSO["firstname"],
+                        $SSO["lastname"],
+                        $SSO["mail"],
+                        $SSO["org"]
+                    );
                 }
                 break;
             case "removePIForm":
@@ -79,12 +85,21 @@ if (count($req_filtered) > 0) {
     echo "<h5>Pending Requests</h5>";
     echo "<table>";
     foreach ($req_filtered as $request) {
-        $requested_account = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $requested_account = new UnityGroup(
+            $request["request_for"],
+            $LDAP,
+            $SQL,
+            $MAILER,
+            $REDIS,
+            $WEBHOOK
+        );
         $requested_owner = $requested_account->getOwner();
+        $full_name = $requested_owner->getFirstname() . " " . $requested_owner->getLastname();
+        $mail = $requested_owner->getMail();
         echo "<tr class='pending_request'>";
-        echo "<td>" . $requested_owner->getFirstname() . " " . $requested_owner->getLastname() . "</td>";
+        echo "<td>$full_name</td>";
         echo "<td>" . $requested_account->gid . "</td>";
-        echo "<td><a href='mailto:" . $requested_owner->getMail() . "'>" . $requested_owner->getMail() . "</a></td>";
+        echo "<td><a href='mailto:$mail'>$mail</a></td>";
         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
         echo "<td>";
         echo "<form action='' method='POST' id='cancelPI'>
@@ -105,8 +120,12 @@ if (count($req_filtered) > 0) {
 echo "<h5>Current Groups</h5>";
 
 if ($USER->isPI() && count($PIGroupGIDs) == 1) {
-    echo "You are only a member of your own PI group.
-    Navigate to the <a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>my users</a> page to see your group.";
+    echo "
+        You are only a member of your own PI group.
+        Navigate to the
+        <a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>my users</a>
+        page to see your group.
+    ";
 }
 
 if (count($PIGroupGIDs) == 0) {
@@ -120,15 +139,13 @@ echo "<table>";
 foreach ($PIGroupGIDs as $gid) {
     $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
     $owner = $group->getOwner();
-
+    $full_name = $owner->getFirstname() . " " . $owner->getLastname();
     if ($USER->uid == $owner->uid) {
         continue;
     }
 
     echo "<tr class='expandable'>";
-    echo
-        "<td>
-    <button class='btnExpand'>&#9654;</button>" . $owner->getFirstname() . " " . $owner->getLastname() . "</td>";
+    echo "<td><button class='btnExpand'>&#9654;</button>$full_name</td>";
     echo "<td>" . $group->gid . "</td>";
     echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
     echo

@@ -27,7 +27,13 @@ require $LOC_HEADER;
 
 <table class="searchable longTable sortable filterable">
     <tr class="key">
-        <input type="text" style="margin-right:5px;" placeholder="Filter by..." id="common-filter" class="filterSearch">
+        <input
+            type="text"
+            style="margin-right:5px;"
+            placeholder="Filter by..."
+            id="common-filter"
+            class="filterSearch"
+        >
         <td id="name"><span class="filter">⫧ </span>Name</td>
         <td id="uid"><span class="filter">⫧ </span>UID</td>
         <td id="org"><span class="filter">⫧ </span>Org</td>
@@ -50,7 +56,11 @@ require $LOC_HEADER;
         echo "<td>" . $attributes["gecos"][0] . "</td>";
         echo "<td>" . $uid . "</td>";
         echo "<td>" . $attributes["o"][0] . "</td>";
-        echo "<td><a href='mailto:" . $attributes["mail"][0] . "'>" . $attributes["mail"][0] . "</a></td>";
+        echo "
+            <td>
+                <a href='mailto:" . $attributes["mail"][0] . "'>" . $attributes["mail"][0] . "</a>
+            </td>
+        ";
         echo "<td>";
         if (count($UID2PIGIDs[$uid]) > 0) {
             echo "<table>";
@@ -62,7 +72,7 @@ require $LOC_HEADER;
         echo "</td>";
         echo "<td>";
         echo "<form class='viewAsUserForm' action='' method='POST'
-        onsubmit='return confirm(\"Are you sure you want to switch to the user '$uid'?\");'>
+        onsubmit='return confirm(\"Are you sure you want to switch to the user $uid?\");'>
         <input type='hidden' name='form_type' value='viewAsUser'>
         <input type='hidden' name='uid' value='$uid'>
         <input type='submit' name='action' value='Access'>

@@ -95,7 +95,13 @@ require $LOC_HEADER;
 
 <table class="searchable longTable sortable filterable">
     <tr class="key">
-        <input type="text" style="margin-right:5px;" placeholder="Filter by..." id="common-filter" class="filterSearch">
+        <input
+            type="text"
+            style="margin-right:5px;"
+            placeholder="Filter by..."
+            id="common-filter"
+            class="filterSearch"
+        >
         <td id="name"><span class="filter">⫧ </span>Name</td>
         <td id="unityID"><span class="filter">⫧ </span>Unity ID</td>
         <td id="mail"><span class="filter">⫧ </span>Mail</td>
@@ -106,10 +112,11 @@ require $LOC_HEADER;
     $owner_attributes = $LDAP->getAllPIGroupOwnerAttributes(["uid", "gecos", "mail"]);
     usort($owner_attributes, fn($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
     foreach ($owner_attributes as $attributes) {
+        $mail = $attributes["mail"][0];
         echo "<tr class='expandable'>";
         echo "<td><button class='btnExpand'>&#9654;</button>" . $attributes["gecos"][0] . "</td>";
         echo "<td>" . UnityGroup::OwnerUID2GID($attributes["uid"][0]) . "</td>";
-        echo "<td><a href='mailto:" . $attributes["mail"][0] . "'>" . $attributes["mail"][0] . "</a></td>";
+        echo "<td><a href='mailto:$mail'>$mail</a></td>";
         echo "</tr>";
     }
     ?>

@@ -6,7 +6,11 @@ $this->Subject = "Group Member Approved";
 
 <p>Hello,</p>
 
-<p>A new user has been added to your PI group, <?php echo $data["group"] ?>. The details of the new user are below:</p>
+<p>
+A new user has been added to your PI group,
+'<?php echo $data["group"] ?>'.
+The details of the new user are below:
+</p>
 
 <p>
 <strong>Username</strong> <?php echo $data["user"]; ?>

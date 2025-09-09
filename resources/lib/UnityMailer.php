@@ -57,7 +57,9 @@ class UnityMailer extends PHPMailer
 
         $security_conf_valid = empty($security) || $security == "tls" || $security == "ssl";
         if (!$security_conf_valid) {
-            throw new Exception("SMTP security is not set correctly, leave empty, use 'tls', or 'ssl'");
+            throw new Exception(
+                "SMTP security is not set correctly, leave empty, use 'tls', or 'ssl'"
+            );
         }
         $this->SMTPSecure = $security;
 

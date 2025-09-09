@@ -53,7 +53,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($request["request_for"] == "admin") {
                 $USER->getPIGroup()->cancelGroupRequest();
             } else {
-                $pi_group = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+                $pi_group = new UnityGroup(
+                    $request["request_for"],
+                    $LDAP,
+                    $SQL,
+                    $MAILER,
+                    $REDIS,
+                    $WEBHOOK
+                );
                 $pi_group->cancelGroupJoinRequest($user = $USER);
             }
         }
@@ -85,9 +92,9 @@ require $LOC_HEADER;
         <p>You will receive an email when your account has been approved.</p>
         <p>
         <?php
-        $addr = $CONFIG['mail']['support'];
+        $addr = "mailto:" . $CONFIG['mail']['support'];
         $name = $CONFIG['mail']['support_name'];
-        echo "Email <a href='mailto:$addr'>$name</a> if you have not heard back in one business day.";
+        echo "Email <a href='$addr'>$name</a> if you have not heard back in one business day.";
         ?>
         </p>
         <br>
@@ -103,8 +110,11 @@ require $LOC_HEADER;
     <form id="newAccountForm" action="" method="POST">
         <p>Please verify that the information below is correct before continuing</p>
         <div>
-            <strong>Name&nbsp;&nbsp;</strong><?php echo $SSO["firstname"] . " " . $SSO["lastname"]; ?><br>
-            <strong>Email&nbsp;&nbsp;</strong><?php echo $SSO["mail"]; ?>
+            <strong>Name&nbsp;&nbsp;</strong>
+            <?php echo $SSO["firstname"] . " " . $SSO["lastname"]; ?>
+            <br>
+            <strong>Email&nbsp;&nbsp;</strong>
+            <?php echo $SSO["mail"]; ?>
         </div>
         <p>Your unity cluster username will be <strong><?php echo $SSO["user"]; ?></strong></p>
 
@@ -114,7 +124,9 @@ require $LOC_HEADER;
         <hr>
 
         <label><input type='radio' name='new_user_sel' value='pi'>Request a PI account</label>
-        <label><input type='radio' name='new_user_sel' value='not_pi' checked>Join an existing PI group</label>
+        <label>
+            <input type='radio' name='new_user_sel' value='not_pi' checked>Join an existing PI group
+        </label>
 
         <div style='position: relative;' id='piSearchWrapper'>
             <input type='text' id='pi_search' name='pi' placeholder='Search PI by NetID' required>
@@ -131,9 +143,11 @@ require $LOC_HEADER;
         <br>
 
         <label><input type='checkbox' id='chk_eula' name='eula' value='agree' required>
-            I have read and accept the <a target='_blank' href='<?php echo $CONFIG["site"]["terms_of_service_url"]; ?>'>
-                Unity Terms of Service</a>.</label>
-
+            I have read and accept the
+            <a target='_blank' href='<?php echo $CONFIG["site"]["terms_of_service_url"]; ?>'>
+                Unity Terms of Service
+            </a>.
+        </label>
         <br>
         <input style='margin-top: 10px;' type='submit' value='Request Account'>
     </form>
@@ -158,8 +172,9 @@ require $LOC_HEADER;
 
     $("input[type=text][name=pi]").keyup(function() {
         var searchWrapper = $("div.searchWrapper");
+        const prefix = '<?php echo $CONFIG["site"]["prefix"]; ?>';
         $.ajax({
-            url: "<?php echo $CONFIG["site"]["prefix"]; ?>/panel/modal/pi_search.php?search=" + $(this).val(),
+            url: `${prefix}/panel/modal/pi_search.php?search=` + $(this).val(),
             success: function(result) {
                 searchWrapper.html(result);
 
