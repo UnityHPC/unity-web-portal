@@ -3,7 +3,8 @@
 use UnityWebPortal\lib\UnitySite;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if ((@$_SESSION["is_admin"] ?? false) == true
+    if (
+        (@$_SESSION["is_admin"] ?? false) == true
         && (@$_POST["form_type"] ?? null) == "clearView"
     ) {
         unset($_SESSION["viewUser"]);
@@ -78,27 +79,27 @@ if (isset($SSO)) {
     }
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
-      // Menu Items for Present Users
+        // Menu Items for Present Users
         echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/support.php'>Support</a>";
         echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/account.php'>Account Settings</a>";
         echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/groups.php'>My PIs</a>";
 
         if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
-          // PI only pages
+            // PI only pages
             echo "<a href='" . $CONFIG["site"]["prefix"] . "/panel/pi.php'>My Users</a>";
         }
 
-      // additional branding items
+        // additional branding items
         $num_additional_items = count($CONFIG["menuitems_secure"]["labels"]);
         for ($i = 0; $i < $num_additional_items; $i++) {
             echo "<a target='_blank' href='" . $CONFIG["menuitems_secure"]["links"][$i] . "'>" .
             $CONFIG["menuitems_secure"]["labels"][$i] . "</a>";
         }
 
-      // admin pages
+        // admin pages
         if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] && !isset($_SESSION["viewUser"])) {
             echo "<hr class='navHR'>";
-          // Admin only pages
+            // Admin only pages
             echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/user-mgmt.php'>User Management</a>";
             echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/pi-mgmt.php'>PI Management</a>";
             echo "<a href='" . $CONFIG["site"]["prefix"] . "/admin/notices.php'>Cluster Notices</a>";
@@ -132,7 +133,8 @@ if (isset($SSO)) {
   <main>
 
   <?php
-    if (isset($_SESSION["is_admin"])
+    if (
+        isset($_SESSION["is_admin"])
         && $_SESSION["is_admin"]
         && isset($_SESSION["viewUser"])
     ) {

@@ -10,7 +10,7 @@ use PHPOpenLDAPer\LDAPEntry;
  */
 class UnityLDAP extends ldapConn
 {
-  // User Specific Constants
+    // User Specific Constants
     private const RDN = "cn";  // The defauls RDN for LDAP entries is set to "common name"
 
     public const POSIX_ACCOUNT_CLASS = array(
@@ -25,7 +25,7 @@ class UnityLDAP extends ldapConn
     "top"
     );
 
-  // string vars for OUs
+    // string vars for OUs
     private $STR_BASEOU;
     private $STR_USEROU;
     private $STR_GROUPOU;
@@ -33,7 +33,7 @@ class UnityLDAP extends ldapConn
     private $STR_ORGGROUPOU;
     private $STR_ADMINGROUP;
 
-  // Instance vars for various ldapEntry objects
+    // Instance vars for various ldapEntry objects
     private $baseOU;
     private $userOU;
     private $groupOU;
@@ -69,7 +69,7 @@ class UnityLDAP extends ldapConn
         $this->STR_ORGGROUPOU = $orggroup_ou;
         $this->STR_ADMINGROUP = $admin_group;
 
-      // Get Global Entries
+        // Get Global Entries
         $this->baseOU = $this->getEntry($base_ou);
         $this->userOU = $this->getEntry($user_ou);
         $this->groupOU = $this->getEntry($group_ou);
@@ -83,9 +83,9 @@ class UnityLDAP extends ldapConn
         $this->def_user_shell = $def_user_shell;
     }
 
-  //
-  // Get methods for OU
-  //
+    //
+    // Get methods for OU
+    //
     public function getUserOU()
     {
         return $this->userOU;
@@ -121,9 +121,9 @@ class UnityLDAP extends ldapConn
         return $this->def_user_shell;
     }
 
-  //
-  // ID Number selection functions
-  //
+    //
+    // ID Number selection functions
+    //
     public function getNextUIDNumber($UnitySQL)
     {
         $max_uid = $UnitySQL->getSiteVar('MAX_UID');
@@ -198,7 +198,7 @@ class UnityLDAP extends ldapConn
     public function getUnassignedID($uid, $UnitySQL)
     {
         $netid = strtok($uid, "_");  // extract netid
-      // scrape all files in custom folder
+        // scrape all files in custom folder
         $dir = new \DirectoryIterator($this->custom_mappings_path);
         foreach ($dir as $fileinfo) {
             if ($fileinfo->getExtension() == "csv") {
@@ -218,7 +218,7 @@ class UnityLDAP extends ldapConn
             }
         }
 
-      // didn't find anything from existing mappings, use next available
+        // didn't find anything from existing mappings, use next available
         $next_uid = $this->getNextUIDNumber($UnitySQL);
 
         return $next_uid;
@@ -231,9 +231,9 @@ class UnityLDAP extends ldapConn
         return $this->userGroup->getAttribute("memberuid");
     }
 
-  //
-  // Functions that return user/group objects
-  //
+    //
+    // Functions that return user/group objects
+    //
     public function getAllUsers($UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook, $ignorecache = false)
     {
         $out = array();
@@ -292,14 +292,17 @@ class UnityLDAP extends ldapConn
         $pi_groups = $this->pi_groupOU->getChildren(true);
 
         foreach ($pi_groups as $pi_group) {
-            array_push($out, new UnityGroup(
-                $pi_group->getAttribute("cn")[0],
-                $this,
-                $UnitySQL,
-                $UnityMailer,
-                $UnityRedis,
-                $UnityWebhook
-            ));
+            array_push(
+                $out,
+                new UnityGroup(
+                    $pi_group->getAttribute("cn")[0],
+                    $this,
+                    $UnitySQL,
+                    $UnityMailer,
+                    $UnityRedis,
+                    $UnityWebhook
+                )
+            );
         }
 
         return $out;
@@ -341,7 +344,9 @@ class UnityLDAP extends ldapConn
         return $owner_attributes;
     }
 
-    /** Returns an associative array where keys are UIDs and values are arrays of PI GIDs */
+    /**
+     * Returns an associative array where keys are UIDs and values are arrays of PI GIDs
+     */
     public function getAllUID2PIGIDs()
     {
         // initialize output so each UID is a key with an empty array as its value
@@ -375,14 +380,17 @@ class UnityLDAP extends ldapConn
         $org_groups = $this->org_groupOU->getChildren(true);
 
         foreach ($org_groups as $org_group) {
-            array_push($out, new UnityOrg(
-                $org_group->getAttribute("cn")[0],
-                $this,
-                $UnitySQL,
-                $UnityMailer,
-                $UnityRedis,
-                $UnityWebhook
-            ));
+            array_push(
+                $out,
+                new UnityOrg(
+                    $org_group->getAttribute("cn")[0],
+                    $this,
+                    $UnitySQL,
+                    $UnityMailer,
+                    $UnityRedis,
+                    $UnityWebhook
+                )
+            );
         }
 
         return $out;

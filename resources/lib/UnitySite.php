@@ -105,9 +105,9 @@ class UnitySite
         try {
             PublicKeyLoader::load($key_str);
             return true;
-        // phpseclib should throw only NoKeyLoadedException but that is not the case
-        // https://github.com/phpseclib/phpseclib/pull/2078
-        // } catch (\phpseclib3\Exception\NoKeyLoadedException $e) {
+            // phpseclib should throw only NoKeyLoadedException but that is not the case
+            // https://github.com/phpseclib/phpseclib/pull/2078
+            // } catch (\phpseclib3\Exception\NoKeyLoadedException $e) {
         } catch (\Throwable $e) {
             return false;
         }

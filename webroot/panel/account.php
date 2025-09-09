@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     }
 }
 
-include $LOC_HEADER;
+require $LOC_HEADER;
 
 $uid = $USER->uid;
 $org = $USER->getOrg();

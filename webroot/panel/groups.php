@@ -56,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-include $LOC_HEADER;
+require $LOC_HEADER;
 ?>
 
 <h1>My Principal Investigators</h1>
@@ -192,4 +192,4 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
 </style>
 
 <?php
-include $LOC_FOOTER;
+require $LOC_FOOTER;

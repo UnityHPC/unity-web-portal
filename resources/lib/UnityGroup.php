@@ -24,9 +24,9 @@ class UnityGroup
     /**
      * Constructor for the object
      *
-     * @param string $gid PI UID in the format <PI_PREFIX><OWNER_UID>
-     * @param LDAP $LDAP LDAP Connection
-     * @param SQL $SQL SQL Connection
+     * @param string $gid  PI UID in the format <PI_PREFIX><OWNER_UID>
+     * @param LDAP   $LDAP LDAP Connection
+     * @param SQL    $SQL  SQL Connection
      */
     public function __construct($gid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
     {

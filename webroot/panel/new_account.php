@@ -54,12 +54,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $USER->getPIGroup()->cancelGroupRequest();
             } else {
                 $pi_group = new UnityGroup($request["request_for"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-                $pi_group->cancelGroupJoinRequest($user=$USER);
+                $pi_group->cancelGroupJoinRequest($user = $USER);
             }
         }
     }
 }
-include $LOC_HEADER;
+require $LOC_HEADER;
 ?>
 
 <h1>Request Account</h1>
