@@ -63,33 +63,30 @@ class UnityUser
         //
         $ldapGroupEntry = $this->getGroupEntry();
         $id = $this->LDAP->getUnassignedID($this->uid, $this->SQL);
-
-        if (!$ldapGroupEntry->exists()) {
-            $ldapGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
-            $ldapGroupEntry->setAttribute("gidnumber", strval($id));
-            $ldapGroupEntry->write();
-        }
+        assert(!$ldapGroupEntry->exists());
+        $ldapGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
+        $ldapGroupEntry->setAttribute("gidnumber", strval($id));
+        $ldapGroupEntry->write();
 
         //
         // Create LDAP user
         //
-        if (!$this->entry->exists()) {
-            $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_ACCOUNT_CLASS);
-            $this->entry->setAttribute("uid", $this->uid);
-            $this->entry->setAttribute("givenname", $firstname);
-            $this->entry->setAttribute("sn", $lastname);
-            $this->entry->setAttribute(
-                "gecos",
-                \transliterator_transliterate("Latin-ASCII", "$firstname $lastname")
-            );
-            $this->entry->setAttribute("mail", $email);
-            $this->entry->setAttribute("o", $org);
-            $this->entry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
-            $this->entry->setAttribute("loginshell", $this->LDAP->getDefUserShell());
-            $this->entry->setAttribute("uidnumber", strval($id));
-            $this->entry->setAttribute("gidnumber", strval($id));
-            $this->entry->write();
-        }
+        assert(!$this->entry->exists());
+        $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_ACCOUNT_CLASS);
+        $this->entry->setAttribute("uid", $this->uid);
+        $this->entry->setAttribute("givenname", $firstname);
+        $this->entry->setAttribute("sn", $lastname);
+        $this->entry->setAttribute(
+            "gecos",
+            \transliterator_transliterate("Latin-ASCII", "$firstname $lastname")
+        );
+        $this->entry->setAttribute("mail", $email);
+        $this->entry->setAttribute("o", $org);
+        $this->entry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
+        $this->entry->setAttribute("loginshell", $this->LDAP->getDefUserShell());
+        $this->entry->setAttribute("uidnumber", strval($id));
+        $this->entry->setAttribute("gidnumber", strval($id));
+        $this->entry->write();
 
         // update cache
         $this->REDIS->setCache($this->uid, "firstname", $firstname);
@@ -353,10 +350,9 @@ class UnityUser
     {
         $operator = is_null($operator) ? $this->uid : $operator->uid;
         $keys_filt = array_values(array_unique($keys));
-        if ($this->entry->exists()) {
-            $this->entry->setAttribute("sshpublickey", $keys_filt);
-            $this->entry->write();
-        }
+        assert($this->entry->exists());
+        $this->entry->setAttribute("sshpublickey", $keys_filt);
+        $this->entry->write();
 
         $this->REDIS->setCache($this->uid, "sshkeys", $keys_filt);
 
@@ -429,10 +425,9 @@ class UnityUser
         if (empty($shell)) {
             throw new Exception("login shell must not be empty!");
         }
-        if ($this->entry->exists()) {
-            $this->entry->setAttribute("loginshell", $shell);
-            $this->entry->write();
-        }
+        assert($this->entry->exists());
+        $this->entry->setAttribute("loginshell", $shell);
+        $this->entry->write();
 
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
@@ -484,20 +479,19 @@ class UnityUser
 
     public function setHomeDir($home, $operator = null)
     {
-        if ($this->entry->exists()) {
-            $this->entry->setAttribute("homedirectory", $home);
-            $this->entry->write();
-            $operator = is_null($operator) ? $this->uid : $operator->uid;
+        assert($this->entry->exists());
+        $this->entry->setAttribute("homedirectory", $home);
+        $this->entry->write();
+        $operator = is_null($operator) ? $this->uid : $operator->uid;
 
-            $this->SQL->addLog(
-                $operator,
-                $_SERVER['REMOTE_ADDR'],
-                "homedir_changed",
-                $this->uid
-            );
+        $this->SQL->addLog(
+            $operator,
+            $_SERVER['REMOTE_ADDR'],
+            "homedir_changed",
+            $this->uid
+        );
 
-            $this->REDIS->setCache($this->uid, "homedir", $home);
-        }
+        $this->REDIS->setCache($this->uid, "homedir", $home);
     }
 
     /**

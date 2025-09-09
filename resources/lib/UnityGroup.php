@@ -258,12 +258,11 @@ class UnityGroup
     //     $users = $this->getGroupMembers();
 
     //     // now we delete the ldap entry
-    //     if ($this->entry->exists()) {
-    //         $this->entry->delete();
-    //         $this->REDIS->removeCacheArray("sorted_groups", "", $this->gid);
-    //         foreach ($users as $user) {
-    //             $this->REDIS->removeCacheArray($user->uid, "groups", $this->gid);
-    //         }
+    //     assert($this->entry->exists());
+    //     $this->entry->delete();
+    //     $this->REDIS->removeCacheArray("sorted_groups", "", $this->gid);
+    //     foreach ($users as $user) {
+    //         $this->REDIS->removeCacheArray($user->uid, "groups", $this->gid);
     //     }
 
     //     // send email to every user of the now deleted PI group
@@ -521,14 +520,13 @@ class UnityGroup
         // make this user a PI
         $owner = $this->getOwner();
 
-        if (!$this->entry->exists()) {
-            $nextGID = $this->LDAP->getNextPiGIDNumber($this->SQL);
+        assert(!$this->entry->exists());
+        $nextGID = $this->LDAP->getNextPiGIDNumber($this->SQL);
 
-            $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
-            $this->entry->setAttribute("gidnumber", strval($nextGID));
-            $this->entry->setAttribute("memberuid", array($owner->uid));
-            $this->entry->write();
-        }
+        $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
+        $this->entry->setAttribute("gidnumber", strval($nextGID));
+        $this->entry->setAttribute("memberuid", array($owner->uid));
+        $this->entry->write();
 
         $this->REDIS->appendCacheArray("sorted_groups", "", $this->gid);
 
