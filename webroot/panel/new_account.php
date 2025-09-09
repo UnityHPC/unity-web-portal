@@ -174,7 +174,7 @@ require $LOC_HEADER;
         var searchWrapper = $("div.searchWrapper");
         const $prefix = '<?php echo $CONFIG["site"]["prefix"]; ?>';
         $.ajax({
-            url: "{$prefix}/panel/modal/pi_search.php?search=" + $(this).val(),
+            url: `${prefix}/panel/modal/pi_search.php?search=` + $(this).val(),
             success: function(result) {
                 searchWrapper.html(result);
 
