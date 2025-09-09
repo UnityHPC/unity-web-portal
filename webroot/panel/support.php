@@ -2,7 +2,7 @@
 
 require_once __DIR__ . "/../../resources/autoload.php";
 
-include $LOC_HEADER;
+require $LOC_HEADER;
 ?>
 
 <h1>Support</h1>

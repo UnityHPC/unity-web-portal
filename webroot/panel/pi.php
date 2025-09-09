@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-include $LOC_HEADER;
+require $LOC_HEADER;
 ?>
 
 <h1>My Users</h1>
@@ -110,4 +110,4 @@ echo "</table>";
 ?>
 
 <?php
-include $LOC_FOOTER;
+require $LOC_FOOTER;

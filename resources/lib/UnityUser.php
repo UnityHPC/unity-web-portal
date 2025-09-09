@@ -49,11 +49,11 @@ class UnityUser
     /**
      * This is the method that is run when a new account is created
      *
-     * @param string $firstname First name of new account
-     * @param string $lastname Last name of new account
-     * @param string $email email of new account
-     * @param string $org organization name of new account
-     * @param bool $isPI boolean value for if the user checked the "I am a PI box"
+     * @param  string $firstname First name of new account
+     * @param  string $lastname  Last name of new account
+     * @param  string $email     email of new account
+     * @param  string $org       organization name of new account
+     * @param  bool   $isPI      boolean value for if the user checked the "I am a PI box"
      * @return void
      */
     public function init($firstname, $lastname, $email, $org, $send_mail = true)
@@ -575,6 +575,7 @@ class UnityUser
 
     /**
      * Gets the groups this user is assigned to, can be more than one
+     *
      * @return string[]
      */
     public function getPIGroupGIDs($ignorecache = false)
@@ -621,11 +622,11 @@ class UnityUser
 
     /**
      * Checks whether a user is in a group or not
-     * @param  string  $uid   uid of the user
+     *
+     * @param  string            $uid   uid of the user
      * @param  string  or object $group group to check
      * @return boolean true if user is in group, false if not
      */
-
     public function isInGroup($uid, $group)
     {
         if (gettype($group) == "string") {
