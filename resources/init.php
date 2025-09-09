@@ -30,19 +30,7 @@ $WEBHOOK = new UnityWebhook();
 $GITHUB = new UnityGithub();
 
 if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
-    try {
-        $SSO = UnitySSO::getSSO();
-    } catch (SSOException $e) {
-        $errorid = uniqid("sso-");
-        $eppn = $_SERVER["REMOTE_USER"];
-        UnitySite::errorLog("SSO Failure", "{$e} ($errorid)");
-        UnitySite::die(
-            "Invalid eppn: '$eppn'. Please contact support at "
-                . CONFIG["mail"]["support"]
-                . " (id: $errorid)",
-            true
-        );
-    }
+    $SSO = UnitySSO::getSSO();
     $_SESSION["SSO"] = $SSO;
 
     $OPERATOR = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
@@ -76,3 +64,5 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
 
 $LOC_HEADER = __DIR__ . "/templates/header.php";
 $LOC_FOOTER = __DIR__ . "/templates/footer.php";
+
+register_shutdown_function(array("UnityWebPortal\lib\UnitySite", "shutdown"));
