@@ -19,7 +19,7 @@ repos:
         entry: phpcbf
         language: system
         files: \.php$
-        args: [--standard=PSR12, --colors]
+        args: [--standard=./.phpcs-ruleset.xml, --colors]
 
   # linters (work required) ########################################################################
   # - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -41,7 +41,7 @@ repos:
         entry: phpcs
         language: system
         files: \.php$
-        args: [--standard=PSR12, --colors]
+        args: [--standard=./.phpcs-ruleset.xml, --colors]
       - id: php-l
         name: php -l
         entry: php
