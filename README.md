@@ -1,7 +1,7 @@
 ![UNITY](https://user-images.githubusercontent.com/40907639/137608695-2d914da2-1ecc-480b-a47e-a9e33b2b1b45.png)
 
 # Unity Web Portal
-Unity Web Portal is a PHP application built in top of MariaDB and LDAP which acts as a central user portal for high-performance-computing clusters. 
+Unity Web Portal is a PHP application built in top of MariaDB and LDAP which acts as a central user portal for high-performance-computing clusters.
 
 Basic Features:
    * User signs up
@@ -113,7 +113,7 @@ rm "$prod" && ln -s "$old" "$prod"
        ADD `firstname` VARCHAR(768) NOT NULL AFTER `timestamp`,
        ADD `lastname` VARCHAR(768) NOT NULL AFTER `firstname`,
        ADD `email` VARCHAR(768) NOT NULL AFTER `lastname`,
-       ADD `org` VARCHAR(768) NOT NULL AFTER `email`; 
+       ADD `org` VARCHAR(768) NOT NULL AFTER `email`;
        ```
 
 ### 1.1 -> 1.2

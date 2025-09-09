@@ -60,7 +60,7 @@ if (isset($SSO)) {
 <body>
 
   <header>
-    <img id="imgLogo" draggable=false 
+    <img id="imgLogo" draggable=false
     src="<?php echo $CONFIG["site"]["prefix"]; ?>/assets/<?php echo $CONFIG["site"]["logo"]; ?>">
     <button class="hamburger vertical-align">
       <img draggable="false" src="<?php echo $CONFIG["site"]["prefix"]; ?>/assets/menu.png" alt="Menu Button">
