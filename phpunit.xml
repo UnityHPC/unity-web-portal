@@ -20,7 +20,6 @@
   </source>
   <extensions>
     <bootstrap class="RobinIngelbrecht\PHPUnitCoverageTools\PhpUnitExtension">
-      <parameter name="exitOnLowCoverage" value="1"/>
       <parameter name="cleanUpCloverXml" value="1"/>
     </bootstrap>
   </extensions>

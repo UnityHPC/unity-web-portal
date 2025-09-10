@@ -104,3 +104,5 @@ It recommends the use of "strict code coverage", where every single test explici
 That's a lot of work, so instead we accept what phpunit refers to as "risky unintentionally covered code".
 Using [robiningelbrecht/phpunit-coverage-tools](https://github.com/robiningelbrecht/phpunit-coverage-tools), our Github Actions testing will fail if the coverage falls below a certain percentage of lines of code.
 This percentage should be increased over time to just below whatever the current coverage is.
+
+To run a code coverage test, use the same procedure for phpunit but add these arguments: `--coverage-clover="$(mktemp --suffix=.xml)" -d --min-coverage=./coverage.php`
