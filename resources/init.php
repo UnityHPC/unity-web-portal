@@ -15,6 +15,8 @@ use UnityWebPortal\lib\UnityGithub;
 use UnityWebPortal\lib\UnitySite;
 use UnityWebPortal\lib\exceptions\SSOException;
 
+register_shutdown_function(array("UnityWebPortal\lib\UnitySite", "shutdown"));
+
 session_start();
 
 $REDIS = new UnityRedis();
@@ -64,5 +66,3 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
 
 $LOC_HEADER = __DIR__ . "/templates/header.php";
 $LOC_FOOTER = __DIR__ . "/templates/footer.php";
-
-register_shutdown_function(array("UnityWebPortal\lib\UnitySite", "shutdown"));
