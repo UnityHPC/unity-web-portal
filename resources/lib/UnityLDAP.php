@@ -24,13 +24,7 @@ class UnityLDAP extends ldapConn
     "top"
     );
 
-    // string vars for OUs
-    private $STR_BASEOU;
-    private $STR_USEROU;
-    private $STR_GROUPOU;
-    private $STR_PIGROUPOU;
-    private $STR_ORGGROUPOU;
-    private $STR_ADMINGROUP;
+    private $custom_mappings_path = __DIR__ . "/../../deployment/custom_user_mappings";
 
     // Instance vars for various ldapEntry objects
     private $baseOU;
@@ -40,45 +34,19 @@ class UnityLDAP extends ldapConn
     private $org_groupOU;
     private $adminGroup;
     private $userGroup;
-
-    private $custom_mappings_path;
-
     private $def_user_shell;
 
-    public function __construct(
-        $host,
-        $dn,
-        $pass,
-        $custom_user_mappings,
-        $base_ou,
-        $user_ou,
-        $group_ou,
-        $pigroup_ou,
-        $orggroup_ou,
-        $admin_group,
-        $user_group_dn,
-        $def_user_shell
-    ) {
-        parent::__construct($host, $dn, $pass);
-
-        $this->STR_BASEOU = $base_ou;
-        $this->STR_USEROU = $user_ou;
-        $this->STR_GROUPOU = $group_ou;
-        $this->STR_PIGROUPOU = $pigroup_ou;
-        $this->STR_ORGGROUPOU = $orggroup_ou;
-        $this->STR_ADMINGROUP = $admin_group;
-
-        $this->baseOU = $this->getEntry($base_ou);
-        $this->userOU = $this->getEntry($user_ou);
-        $this->groupOU = $this->getEntry($group_ou);
-        $this->pi_groupOU = $this->getEntry($pigroup_ou);
-        $this->org_groupOU = $this->getEntry($orggroup_ou);
-        $this->adminGroup = $this->getEntry($admin_group);
-        $this->userGroup = $this->getEntry($user_group_dn);
-
-        $this->custom_mappings_path = $custom_user_mappings;
-
-        $this->def_user_shell = $def_user_shell;
+    public function __construct()
+    {
+        parent::__construct(CONFIG["ldap"]["uri"], CONFIG["ldap"]["user"], CONFIG["ldap"]["pass"]);
+        $this->baseOU = $this->getEntry(CONFIG["ldap"]["basedn"]);
+        $this->userOU = $this->getEntry(CONFIG["ldap"]["user_ou"]);
+        $this->groupOU = $this->getEntry(CONFIG["ldap"]["group_ou"]);
+        $this->pi_groupOU = $this->getEntry(CONFIG["ldap"]["pigroup_ou"]);
+        $this->org_groupOU = $this->getEntry(CONFIG["ldap"]["orggroup_ou"]);
+        $this->adminGroup = $this->getEntry(CONFIG["ldap"]["admin_group"]);
+        $this->userGroup = $this->getEntry(CONFIG["ldap"]["user_group"]);
+        $this->def_user_shell = CONFIG["ldap"]["def_user_shell"];
     }
 
     public function getUserOU()
@@ -429,24 +397,24 @@ class UnityLDAP extends ldapConn
     public function getUserEntry($uid)
     {
         $uid = ldap_escape($uid, "", LDAP_ESCAPE_DN);
-        return $this->getEntry(unityLDAP::RDN . "=$uid," . $this->STR_USEROU);
+        return $this->getEntry(unityLDAP::RDN . "=$uid," . CONFIG["ldap"]["user_ou"]);
     }
 
     public function getGroupEntry($gid)
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
-        return $this->getEntry(unityLDAP::RDN . "=$gid," . $this->STR_GROUPOU);
+        return $this->getEntry(unityLDAP::RDN . "=$gid," . CONFIG["ldap"]["group_ou"]);
     }
 
     public function getPIGroupEntry($gid)
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
-        return $this->getEntry(unityLDAP::RDN . "=$gid," . $this->STR_PIGROUPOU);
+        return $this->getEntry(unityLDAP::RDN . "=$gid," . CONFIG["ldap"]["pigroup_ou"]);
     }
 
     public function getOrgGroupEntry($gid)
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
-        return $this->getEntry(unityLDAP::RDN . "=$gid," . $this->STR_ORGGROUPOU);
+        return $this->getEntry(unityLDAP::RDN . "=$gid," . CONFIG["ldap"]["orggroup_ou"]);
     }
 }

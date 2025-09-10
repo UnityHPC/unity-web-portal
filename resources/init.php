@@ -17,28 +17,12 @@ use UnityWebPortal\lib\exceptions\SSOException;
 
 session_start();
 
-$REDIS = new UnityRedis(
-    CONFIG["redis"]["host"] ?? "",
-    CONFIG["redis"]["port"] ?? ""
-);
+$REDIS = new UnityRedis();
 
 if (isset($GLOBALS["ldapconn"])) {
     $LDAP = $GLOBALS["ldapconn"];
 } else {
-    $LDAP = new UnityLDAP(
-        CONFIG["ldap"]["uri"],
-        CONFIG["ldap"]["user"],
-        CONFIG["ldap"]["pass"],
-        __DIR__ . "/../deployment/custom_user_mappings",
-        CONFIG["ldap"]["basedn"],
-        CONFIG["ldap"]["user_ou"],
-        CONFIG["ldap"]["group_ou"],
-        CONFIG["ldap"]["pigroup_ou"],
-        CONFIG["ldap"]["orggroup_ou"],
-        CONFIG["ldap"]["admin_group"],
-        CONFIG["ldap"]["user_group"],
-        CONFIG["ldap"]["def_user_shell"]
-    );
+    $LDAP = new UnityLDAP();
     $GLOBALS["ldapconn"] = $LDAP;
 }
 

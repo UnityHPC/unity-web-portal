@@ -11,8 +11,10 @@ class UnityRedis
 
     private $enabled;
 
-    public function __construct($host, $port)
+    public function __construct()
     {
+        $host = CONFIG["redis"]["host"] ?? "";
+        $port = CONFIG["redis"]["port"] ?? "";
         if (empty($host)) {
             $this->enabled = false;
         } else {
