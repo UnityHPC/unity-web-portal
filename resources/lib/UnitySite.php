@@ -81,13 +81,19 @@ class UnitySite
             self::errorLog("internal server error", json_encode($e));
             echo "
                 <h1>An internal server error has occurred.</h1>
-                <p>Please notify a Unity admin. Error ID: $errorid.</p>
+                <p>
+                    Please notify a Unity admin at "
+                    . CONFIG["mail"]["support"]
+                    . ". Error ID: $errorid.
+                </p>
             ";
             // if content already printed, status code will be ignored and alert text may not be
             // shown in the webpage in an obvious way, so make a popup
             self::alert(
-                "An internal server error has occurred. Please notify a Unity admin. "
-                . "Error ID: $errorid."
+                "An internal server error has occurred. "
+                . "Please notify a Unity admin at "
+                . CONFIG["mail"]["support"]
+                . ". Error ID: $errorid."
             );
         }
     }
