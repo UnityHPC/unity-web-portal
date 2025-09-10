@@ -16,27 +16,15 @@ use UnityWebPortal\lib\UnityGithub;
 use UnityWebPortal\lib\UnitySite;
 use UnityWebPortal\lib\exceptions\SSOException;
 
-//
-// Initialize Session
-//
 session_start();
 
-//
-// Config INIT
-//
 $CONFIG = UnityConfig::getConfig(__DIR__ . "/../defaults", __DIR__ . "/../deployment");
 
-//
-// Service Init
-//
-
-// Creates REDIS service
 $REDIS = new UnityRedis(
     $CONFIG["redis"]["host"] ?? "",
     $CONFIG["redis"]["port"] ?? ""
 );
 
-// Creates LDAP service
 if (isset($GLOBALS["ldapconn"])) {
     $LDAP = $GLOBALS["ldapconn"];
 } else {
@@ -57,7 +45,6 @@ if (isset($GLOBALS["ldapconn"])) {
     $GLOBALS["ldapconn"] = $LDAP;
 }
 
-// Creates SQL service
 $SQL = new UnitySQL(
     $CONFIG["sql"]["host"],
     $CONFIG["sql"]["dbname"],
@@ -65,7 +52,6 @@ $SQL = new UnitySQL(
     $CONFIG["sql"]["pass"]
 );
 
-// Creates SMTP service
 $MAILER = new UnityMailer(
     __DIR__ . "/mail",
     __DIR__ . "/../deployment/mail_overrides",
@@ -86,7 +72,6 @@ $MAILER = new UnityMailer(
     $CONFIG["mail"]["pi_approve_name"]
 );
 
-// Creates Webhook service
 $WEBHOOK = new UnityWebhook(
     __DIR__ . "/mail",
     __DIR__ . "/../deployment/mail_overrides",
@@ -95,10 +80,6 @@ $WEBHOOK = new UnityWebhook(
 );
 
 $GITHUB = new UnityGithub();
-
-//
-// SSO Init
-//
 
 if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
     try {
@@ -142,10 +123,6 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
         $REDIS->setCache($SSO["user"], "mail", $SSO["mail"]);
     }
 }
-
-//
-// Define vars
-//
 
 $LOC_HEADER = __DIR__ . "/templates/header.php";
 $LOC_FOOTER = __DIR__ . "/templates/footer.php";

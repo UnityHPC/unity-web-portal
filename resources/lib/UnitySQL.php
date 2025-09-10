@@ -266,7 +266,6 @@ class UnitySQL
         );
     }
 
-    // audit log table methods
     public function addLog($operator, $operator_ip, $action_type, $recipient)
     {
         $table = self::TABLE_AUDIT_LOG;

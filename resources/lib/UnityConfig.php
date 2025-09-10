@@ -6,12 +6,8 @@ class UnityConfig
 {
     public static function getConfig($def_config_loc, $deploy_loc)
     {
-        // Loading branding
         $CONFIG = parse_ini_file($def_config_loc . "/config.ini.default", true);
-
         $CONFIG = self::pullConfig($CONFIG, $deploy_loc);
-
-        // URL-based override
         if (array_key_exists("HTTP_HOST", $_SERVER)) {
             $cur_url = $_SERVER['HTTP_HOST'];
             $url_override_path = $deploy_loc . "/overrides/" . $cur_url;
@@ -19,7 +15,6 @@ class UnityConfig
                 $CONFIG = self::pullConfig($CONFIG, $url_override_path);
             }
         }
-
         return $CONFIG;
     }
 

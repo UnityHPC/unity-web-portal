@@ -2,9 +2,12 @@
 
 ## Conventions
 
-This code base is currently using PHP version 8.3.
-All files are required to be linted with PSR-12 standard.
-The maximum line length for any PHP file is 100 characters, instead of PSR-12's 120 characters.
+* PHP version 8.3.
+* All files are required to be linted with PSR-12 standard.
+* The maximum line length for any PHP file is 100 characters, instead of PSR-12's 120 characters.
+* Comments should be used sparingly.
+* Empty lines should be used sparingly.
+
 This repository will automatically check PRs for linting compliance.
 
 ## Development Environment

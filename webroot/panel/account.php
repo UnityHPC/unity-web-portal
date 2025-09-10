@@ -50,10 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($index >= count($keys)) {
                 break;
             }
-            unset($keys[$index]);  // remove key from array
+            unset($keys[$index]);
             $keys = array_values($keys);
 
-            $USER->setSSHKeys($keys, $OPERATOR);  // Update user keys
+            $USER->setSSHKeys($keys, $OPERATOR);
             break;
         case "loginshell":
             $USER->setLoginShell($_POST["shellSelect"], $OPERATOR);
@@ -174,13 +174,13 @@ if (!$isPI) {
 }
 echo "<hr><h5>SSH Keys</h5>";
 
-$sshPubKeys = $USER->getSSHKeys();  // Get ssh public key attr
+$sshPubKeys = $USER->getSSHKeys();
 
 if (count($sshPubKeys) == 0) {
     echo "<p>You do not have any SSH public keys, press the button below to add one.</p>";
 }
 
-for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {  // loop through keys
+for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {
     echo
     "<div class='key-box'>
         <textarea spellcheck='false' readonly>" . $sshPubKeys[$i] . "</textarea>

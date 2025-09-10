@@ -10,7 +10,6 @@ use PHPOpenLDAPer\LDAPEntry;
  */
 class UnityLDAP extends ldapConn
 {
-    // User Specific Constants
     private const RDN = "cn";  // The defauls RDN for LDAP entries is set to "common name"
 
     public const POSIX_ACCOUNT_CLASS = array(
@@ -69,7 +68,6 @@ class UnityLDAP extends ldapConn
         $this->STR_ORGGROUPOU = $orggroup_ou;
         $this->STR_ADMINGROUP = $admin_group;
 
-        // Get Global Entries
         $this->baseOU = $this->getEntry($base_ou);
         $this->userOU = $this->getEntry($user_ou);
         $this->groupOU = $this->getEntry($group_ou);
@@ -83,9 +81,6 @@ class UnityLDAP extends ldapConn
         $this->def_user_shell = $def_user_shell;
     }
 
-    //
-    // Get methods for OU
-    //
     public function getUserOU()
     {
         return $this->userOU;
@@ -121,9 +116,6 @@ class UnityLDAP extends ldapConn
         return $this->def_user_shell;
     }
 
-    //
-    // ID Number selection functions
-    //
     public function getNextUIDNumber($UnitySQL)
     {
         $max_uid = $UnitySQL->getSiteVar('MAX_UID');
@@ -231,9 +223,6 @@ class UnityLDAP extends ldapConn
         return $this->userGroup->getAttribute("memberuid");
     }
 
-    //
-    // Functions that return user/group objects
-    //
     public function getAllUsers(
         $UnitySQL,
         $UnityMailer,

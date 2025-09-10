@@ -32,11 +32,9 @@ class UnityOrg
     {
         assert(!$this->entry->exists());
         $nextGID = $this->LDAP->getNextOrgGIDNumber($this->SQL);
-
         $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
         $this->entry->setAttribute("gidnumber", strval($nextGID));
         $this->entry->write();
-
         $this->REDIS->appendCacheArray("sorted_orgs", "", $this->gid);
     }
 

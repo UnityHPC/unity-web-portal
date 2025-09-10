@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "/../../../resources/autoload.php";  // Load required libs
+require_once __DIR__ . "/../../../resources/autoload.php";
 ?>
 
 <form

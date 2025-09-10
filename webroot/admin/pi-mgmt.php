@@ -18,11 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     switch ($_POST["form_type"]) {
         case "req":
             if ($_POST["action"] == "Approve") {
-                // approve group
                 $group = $form_user->getPIGroup();
                 $group->approveGroup($OPERATOR);
             } elseif ($_POST["action"] == "Deny") {
-                // deny group
                 $group = $form_user->getPIGroup();
                 $group->denyGroup($OPERATOR);
             }
@@ -31,15 +29,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         case "reqChild":
             $parent_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             if ($_POST["action"] == "Approve") {
-                // approve request button clicked
-                $parent_group->approveUser($form_user);  // Add to group (ldap and slurm)
+                $parent_group->approveUser($form_user);
             } elseif ($_POST["action"] == "Deny") {
                 $parent_group->denyUser($form_user);
             }
 
             break;
         case "remUserChild":
-            // remove user button clicked
             $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             $parent->removeUser($form_user);
 

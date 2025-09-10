@@ -64,7 +64,6 @@ class UnityMailer extends PHPMailer
         $this->SMTPSecure = $security;
 
         if (!empty($user)) {
-            // smtp username provided
             $this->SMTPAuth = true;
             $this->Username = $user;
         } else {
@@ -72,7 +71,6 @@ class UnityMailer extends PHPMailer
         }
 
         if (!empty($pass)) {
-            // smtp password provided
             $this->Password = $pass;
         }
 
@@ -103,11 +101,9 @@ class UnityMailer extends PHPMailer
     public function sendMail($recipients, $template = null, $data = null)
     {
         if (isset($template)) {
-            // set addresses
             $this->setFrom($this->MSG_SENDER_EMAIL, $this->MSG_SENDER_NAME);
             $this->addReplyTo($this->MSG_SUPPORT_EMAIL, $this->MSG_SUPPORT_NAME);
 
-            // find mail template
             $template_filename = $template . ".php";
             if (file_exists($this->override_template_dir . "/" . $template_filename)) {
                 $template_path = $this->override_template_dir . "/" . $template_filename;
@@ -115,7 +111,6 @@ class UnityMailer extends PHPMailer
                 $template_path = $this->template_dir . "/" . $template_filename;
             }
 
-            // find footer template
             if (file_exists($this->override_template_dir . "/footer.php")) {
                 $footer_template_path = $this->override_template_dir . "/footer.php";
             } else {
@@ -144,7 +139,6 @@ class UnityMailer extends PHPMailer
         }
 
         if (parent::send()) {
-            // Clear addresses
             $this->clearAllRecipients();
             return true;
         } else {

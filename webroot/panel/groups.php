@@ -20,17 +20,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         switch ($_POST["form_type"]) {
             case "addPIform":
-                // The new PI modal was submitted
-                // existing PI request
-
                 if ($pi_account->requestExists($USER)) {
                     array_push($modalErrors, "You\'ve already requested this");
                 }
-
                 if ($pi_account->userExists($USER)) {
                     array_push($modalErrors, "You\'re already in this PI group");
                 }
-
                 if ($USER->uid != $SSO["user"]) {
                     $sso_user = $SSO["user"];
                     UnitySite::badRequest(
@@ -38,8 +33,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         "USER='{$USER->uid}' SSO[user]='$sso_user'"
                     );
                 }
-
-                // Add row to sql
                 if (empty($modalErrors)) {
                     $pi_account->newUserRequest(
                         $USER,
@@ -51,11 +44,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 break;
             case "removePIForm":
-                // Remove PI form
                 $pi_account->removeUser($USER);
                 break;
             case "cancelPIForm":
-                // cancel Group Join
                 $pi_account->cancelGroupJoinRequest($USER);
                 break;
         }

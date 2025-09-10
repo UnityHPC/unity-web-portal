@@ -12,7 +12,6 @@ class UnityUser
     public $uid;
     private $entry;
 
-    // service stack
     private $LDAP;
     private $SQL;
     private $MAILER;
@@ -60,9 +59,6 @@ class UnityUser
      */
     public function init($firstname, $lastname, $email, $org, $send_mail = true)
     {
-        //
-        // Create LDAP group
-        //
         $ldapGroupEntry = $this->getGroupEntry();
         $id = $this->LDAP->getUnassignedID($this->uid, $this->SQL);
         assert(!$ldapGroupEntry->exists());
@@ -70,9 +66,6 @@ class UnityUser
         $ldapGroupEntry->setAttribute("gidnumber", strval($id));
         $ldapGroupEntry->write();
 
-        //
-        // Create LDAP user
-        //
         assert(!$this->entry->exists());
         $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_ACCOUNT_CLASS);
         $this->entry->setAttribute("uid", $this->uid);
@@ -90,7 +83,6 @@ class UnityUser
         $this->entry->setAttribute("gidnumber", strval($id));
         $this->entry->write();
 
-        // update cache
         $this->REDIS->setCache($this->uid, "firstname", $firstname);
         $this->REDIS->setCache($this->uid, "lastname", $lastname);
         $this->REDIS->setCache($this->uid, "mail", $email);
@@ -99,11 +91,7 @@ class UnityUser
         $this->REDIS->setCache($this->uid, "loginshell", $this->LDAP->getDefUserShell());
         $this->REDIS->setCache($this->uid, "sshkeys", array());
 
-        //
-        // add to org group
-        //
         $org = $this->getOrgGroup();
-        // create organization if it doesn't exist
         if (!$org->exists()) {
             $org->init();
         }
@@ -112,16 +100,11 @@ class UnityUser
             $org->addUser($this);
         }
 
-        // add to user group as well as user OU
         $this->LDAP->getUserGroup()->appendAttribute("memberuid", $this->uid);
         $this->LDAP->getUserGroup()->write();
 
-        // add user to cache
         $this->REDIS->appendCacheArray("sorted_users", "", $this->uid);
 
-        //
-        // add to audit log
-        //
         $this->SQL->addLog(
             $this->uid,
             $_SERVER['REMOTE_ADDR'],
@@ -129,9 +112,6 @@ class UnityUser
             $this->uid
         );
 
-        //
-        // send email to user
-        //
         if ($send_mail) {
             $this->MAILER->sendMail(
                 $this->getMail(),
@@ -155,10 +135,6 @@ class UnityUser
     {
         return $this->entry->exists() && $this->getGroupEntry()->exists();
     }
-
-    //
-    // User Attribute Functions
-    //
 
     public function setOrg($org)
     {
@@ -358,9 +334,6 @@ class UnityUser
 
         $this->REDIS->setCache($this->uid, "sshkeys", $keys_filt);
 
-        //
-        // add audit log
-        //
         $this->SQL->addLog(
             $operator,
             $_SERVER['REMOTE_ADDR'],
