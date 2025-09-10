@@ -13,4 +13,9 @@
       <directory>test/functional</directory>
     </testsuite>
   </testsuites>
+  <source>
+    <include>
+      <directory suffix=".php">resources/lib</directory>
+    </include>
+  </source>
 </phpunit>
