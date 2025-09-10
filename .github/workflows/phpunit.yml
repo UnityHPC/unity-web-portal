@@ -1,9 +1,12 @@
-name: phpunit
+name: docker-compose-phpunit
 
-on: [push]
+on:
+  pull_request:
+  push:
+    branches: [main]
 
 jobs:
-  phpunit:
+  docker-compose-phpunit:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -13,10 +16,12 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: "8.3"
-        # php extensions also listed in tools/docker-dev/web/Dockerfile and README.md
-        extensions: curl,mysql,ldap,pdo,redis,intl
-        tools: composer:v2
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-    - name: Run PHPUnit tests
-      run: vendor/bin/phpunit --colors=always --testsuite unit
+        tools: composer
+    - name: install composer dependencies
+      run: composer update
+    - name: Run docker compose
+      uses: hoverkraft-tech/compose-action@v2.0.1
+      with:
+        compose-file: "./tools/docker-dev/docker-compose.yml"
+    - name: Execute tests in the running services
+      run: docker compose -f ./tools/docker-dev/docker-compose.yml exec -w '/var/www/unity-web-portal' web bash -c 'XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-clover="$(mktemp --suffix=.xml)" -d --min-coverage=./coverage.php'

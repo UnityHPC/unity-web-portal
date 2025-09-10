@@ -15,7 +15,8 @@ RUN apt-get update && apt-get install -y \
     php-cli \
     php-mbstring \
     php-xml \
-    php-intl
+    php-intl \
+    php-xdebug
 COPY htpasswd /etc/apache2/.htpasswd
 RUN chown www-data /etc/apache2/.htpasswd
 COPY unity-apache.conf /etc/apache2/sites-available/unity.conf
@@ -27,6 +28,7 @@ RUN sed -i '/display_errors/c\display_errors = on' /etc/php/8.3/apache2/php.ini
 RUN sed -i '/zend.assertions/c\zend.assertions = 1' /etc/php/8.3/apache2/php.ini
 RUN sed -i '/zend.assertions/c\zend.assertions = 1' /etc/php/8.3/cli/php.ini
 RUN sed -i '/memory_limit/c\memory_limit = -1' /etc/php/8.3/apache2/php.ini
+RUN echo 'xdebug.mode=coverage' >> /etc/php/8.3/cli/php.ini
 
 # Start apache2 server
 EXPOSE 80

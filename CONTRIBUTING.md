@@ -7,6 +7,7 @@
 * The maximum line length for any PHP file is 100 characters, instead of PSR-12's 120 characters.
 * Comments should be used sparingly.
 * Empty lines should be used sparingly.
+* No code should call `die()` or `exit()`, instead `UnitySite::die()`.
 
 This repository will automatically check PRs for linting compliance.
 
@@ -56,3 +57,52 @@ Notable users:
 ### Changes to Dev Environment
 
 Should the default schema of the web portal change, the `ldap/bootstrap.ldif` and `sql/bootstrap.sql` must be updated for the LDAP server and the MySQL server, respectively.
+
+## Testing
+
+Github Actions are used to execute all following tests for all pull requests.
+This means that if you're feeling lazy, you don't have to go out of your way to run tests, you just have to wait a bit longer for Github to do it for you.
+
+### `pre-commit`
+
+We use `pre-commit` for enforcing (and sometimes automatically fixing) the PSR-12 code standard, whitespace discrepancies, syntax validity, secret leak detection, and whatever else can be done quickly.
+`pre-commit` runs automatically every time you commit, assuming you set it up correctly.
+To save time, `pre-commit` only runs on the files with staged changes.
+To run on all files, use `pre-commit run --all-files`.
+
+### `phpunit`
+
+Since this codebase was not written with testing in mind, and this codebase makes extensive use of external resources such as SQL and LDAP, most of our testing does not focus on isolated "units", but high level functionality.
+Our functional tests pretend to make HTTP requests by modifying global variables in the same way that a production webserver would.
+This is preferred over directly calling library code because it helps to test the PHP logic in the webpages themselves, rather than just the internals.
+For example, one functional test would be to set `$_SERVER["REMOTE_USER"]` to authenticate as a user, `require "resources/init.php"` to setup the `$USER` global variable, set `$_POST["key"] = "ssh-rsa ..."` and `require "webroot/panel/account.php"` to make that user enter a new SSH key in the HTML form in the `account.php` page.
+Once a user action has been taken, internal interfaces are used to verify the results.
+
+To run `phpunit`, spawn 2 shells in differnt tabs:
+
+tab 1:
+```shell
+cd ./tools/docker-dev
+./build.sh
+./run.sh
+```
+
+tab 2:
+```
+$ container="$(docker container ls | grep web | awk '{print $1}')"
+$ docker exec "$container" -it bash
+> cd /var/www/unity-web
+> ./vendor/bin/phpunit /path/to/tests
+```
+
+For `/path/to/tests/`, you usually want `./test/functional/` but you can select a specific file to save time when troubleshooting specific tests.
+
+### code coverage
+
+`phpunit` has code coverage built in.
+It recommends the use of "strict code coverage", where every single test explicitly lists what functions it covers.
+That's a lot of work, so instead we accept what phpunit refers to as "risky unintentionally covered code".
+Using [robiningelbrecht/phpunit-coverage-tools](https://github.com/robiningelbrecht/phpunit-coverage-tools), our Github Actions testing will fail if the coverage falls below a certain percentage of lines of code.
+This percentage should be increased over time to just below whatever the current coverage is.
+
+To run a code coverage test, use the same procedure for phpunit but add these arguments: `--coverage-clover="$(mktemp --suffix=.xml)" -d --min-coverage=./coverage.php`
