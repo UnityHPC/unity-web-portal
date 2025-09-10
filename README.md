@@ -62,6 +62,7 @@ See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for prod
     * Make sure this file is not world readable!
 1. If using mulitple domains, create `deployment/overrides/<domain>/config/config.ini`
 1. If using custom UIDNumber/GIDNumber mappings, create `deployment/custom_user_mappings/*.csv`
+    * The 1st column is UID, the 2nd column is both UIDNumber and GIDNumber
 1. Add logos to `webroot/assets/footer_logos/`
 
 ## Integration
@@ -104,6 +105,15 @@ rm "$prod" && ln -s "$old" "$prod"
 ```
 
 ### Version-specific update instructions:
+
+### 1.2 -> 1.3
+* SQL:
+    * remove the `sitevars` table
+* `defaults/config.ini.default` has some new fields that need to be overriden:
+    * `offset_UIDGID`
+    * `offset_PIGID`
+    * `offset_ORGGID`
+* `custom_user_mappings` can no longer match with just the 1st segment of the logged in user's UID, an exact match is required
 
 ### 1.2.0 -> 1.2.1
 * SQL:
