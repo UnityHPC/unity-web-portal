@@ -6,7 +6,7 @@ require_once __DIR__ . "/../../../resources/autoload.php";
 <form
     id="newPIform"
     method="POST"
-    action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/groups.php"
+    action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/groups.php"
 >
     <input type="hidden" name="form_type" value="addPIform">
     <div style="position: relative;">
@@ -19,7 +19,7 @@ require_once __DIR__ . "/../../../resources/autoload.php";
 <script>
     $("input[type=text][name=pi]").keyup(function() {
         var searchWrapper = $("div.searchWrapper");
-        const prefix = '<?php echo $CONFIG["site"]["prefix"]; ?>';
+        const prefix = '<?php echo CONFIG["site"]["prefix"]; ?>';
         $.ajax({
             url: `${prefix}/panel/modal/pi_search.php?search=` + $(this).val(),
             success: function(result) {

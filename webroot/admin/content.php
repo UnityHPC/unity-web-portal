@@ -51,7 +51,7 @@ require $LOC_HEADER;
         .catch(error => {
             console.error(error)
         });
-    const prefix = '<?php echo $CONFIG["site"]["prefix"]; ?>';
+    const prefix = '<?php echo CONFIG["site"]["prefix"]; ?>';
     $("#pageForm > select[name=pageSel]").change(function(e) {
         $.ajax({
             url: `${prefix}/admin/ajax/get_page_contents.php?pageid=` + $(this).val(),

@@ -24,9 +24,13 @@ class UnitySQL
 
     private $conn;
 
-    public function __construct($db_host, $db, $db_user, $db_pass)
+    public function __construct()
     {
-        $this->conn = new PDO("mysql:host=" . $db_host . ";dbname=" . $db, $db_user, $db_pass);
+        $this->conn = new PDO(
+            "mysql:host=" . CONFIG["sql"]["host"] . ";dbname=" . CONFIG["sql"]["dbname"],
+            CONFIG["sql"]["user"],
+            CONFIG["sql"]["pass"]
+        );
         $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 

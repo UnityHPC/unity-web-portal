@@ -45,7 +45,7 @@ $assocs = $group->getGroupMembers();
 
 if (count($requests) + count($assocs) == 1) {
     echo "<p>You do not have any users attached to your PI account.
-    Ask your users to request to join your account on the <a href='" . $CONFIG["site"]["prefix"] .
+    Ask your users to request to join your account on the <a href='" . CONFIG["site"]["prefix"] .
         "/panel/groups.php'>My PIs</a> page.</p>";
 }
 
