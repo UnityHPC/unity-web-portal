@@ -1,6 +1,6 @@
 <?php
 
-use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
+use UnityWebPortal\lib\exceptions\SSOException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -27,8 +27,7 @@ class InvalidEPPNTest extends TestCase
             session_id(uniqid());
         }
         if (!$is_valid) {
-            $this->expectException(PhpUnitNoDieException::class);
-            $this->expectExceptionMessageMatches("/.*Invalid eppn.*/");
+            $this->expectException(SSOException::class);
         }
         try {
             $_SERVER["REMOTE_USER"] = $eppn;

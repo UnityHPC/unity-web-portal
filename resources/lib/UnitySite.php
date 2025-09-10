@@ -59,6 +59,7 @@ class UnitySite
     {
         self::headerResponseCode(400, "bad request");
         self::errorLog("bad request", $message);
+        error_clear_last();
         self::die($message);
     }
 
@@ -66,7 +67,35 @@ class UnitySite
     {
         self::headerResponseCode(403, "forbidden");
         self::errorLog("forbidden", $message);
+        error_clear_last();
         self::die($message);
+    }
+
+    // https://www.php.net/manual/en/function.register-shutdown-function.php
+    public static function shutdown()
+    {
+        if (!is_null($e = error_get_last())) {
+            self::headerResponseCode(500, "internal server error");
+            $errorid = uniqid();
+            $e["unity_error_id"] = $errorid;
+            self::errorLog("internal server error", json_encode($e));
+            echo "
+                <h1>An internal server error has occurred.</h1>
+                <p>
+                    Please notify a Unity admin at "
+                    . CONFIG["mail"]["support"]
+                    . ". Error ID: $errorid.
+                </p>
+            ";
+            // if content already printed, status code will be ignored and alert text may not be
+            // shown in the webpage in an obvious way, so make a popup
+            self::alert(
+                "An internal server error has occurred. "
+                . "Please notify a Unity admin at "
+                . CONFIG["mail"]["support"]
+                . ". Error ID: $errorid."
+            );
+        }
     }
 
     public static function arrayGetOrBadRequest(array $array, ...$keys)
@@ -83,6 +112,8 @@ class UnitySite
         return $cursor;
     }
 
+    // in firefox, the user can disable alert/confirm/prompt after the 2nd or 3rd popup
+    // after I disable alerts, if I quit and reopen my browser, the alerts come back
     public static function alert(string $message)
     {
         // json_encode escapes quotes
