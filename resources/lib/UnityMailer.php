@@ -10,51 +10,34 @@ use Exception;
  */
 class UnityMailer extends PHPMailer
 {
-    private $template_dir;  // location of all email templates
-    private $override_template_dir;
+    private $template_dir = __DIR__ . "/../mail"; // location of all email templates
+    private $override_template_dir = __DIR__ . "/../../deployment/mail_overrides";
+    private $MSG_LINKREF = CONFIG["site"]["url"] . CONFIG["site"]["prefix"];
+    private $MSG_SENDER_EMAIL = CONFIG["mail"]["sender"];
+    private $MSG_SENDER_NAME = CONFIG["mail"]["sender_name"];
+    private $MSG_SUPPORT_EMAIL = CONFIG["mail"]["support"];
+    private $MSG_SUPPORT_NAME = CONFIG["mail"]["support_name"];
+    private $MSG_ADMIN_EMAIL = CONFIG["mail"]["admin"];
+    private $MSG_ADMIN_NAME = CONFIG["mail"]["admin_name"];
+    private $MSG_PI_APPROVAL_EMAIL = CONFIG["mail"]["pi_approve"];
+    private $MSG_PI_APPROVAL_NAME = CONFIG["mail"]["pi_approve_name"];
 
-    private $MSG_LINKREF;
-    private $MSG_SENDER_EMAIL;
-    private $MSG_SENDER_NAME;
-    private $MSG_SUPPORT_EMAIL;
-    private $MSG_SUPPORT_NAME;
-    private $MSG_ADMIN_EMAIL;
-    private $MSG_ADMIN_NAME;
-    private $MSG_PI_APPROVAL_EMAIL;
-    private $MSG_PI_APPROVAL_NAME;
-
-    public function __construct(
-        $template_dir,
-        $override_template_dir,
-        $hostname,
-        $port,
-        $security,
-        $user,
-        $pass,
-        $ssl_verify,
-        $msg_linkref,
-        $msg_sender_email,
-        $msg_sender_name,
-        $msg_support_email,
-        $msg_support_name,
-        $msg_admin_email,
-        $msg_admin_name,
-        $msg_pi_approval_email,
-        $msg_pi_approval_name
-    ) {
+    public function __construct()
+    {
         parent::__construct();
         $this->isSMTP();
 
-        if (empty($hostname)) {
+        if (empty(CONFIG["smtp"]["host"])) {
             throw new Exception("SMTP server hostname not set");
         }
-        $this->Host = $hostname;
+        $this->Host = CONFIG["smtp"]["host"];
 
-        if (empty($port)) {
+        if (empty(CONFIG["smtp"]["port"])) {
             throw new Exception("SMTP server port not set");
         }
-        $this->Port = $port;
+        $this->Port = CONFIG["smtp"]["port"];
 
+        $security = CONFIG["smtp"]["security"];
         $security_conf_valid = empty($security) || $security == "tls" || $security == "ssl";
         if (!$security_conf_valid) {
             throw new Exception(
@@ -63,18 +46,18 @@ class UnityMailer extends PHPMailer
         }
         $this->SMTPSecure = $security;
 
-        if (!empty($user)) {
+        if (!empty(CONFIG["smtp"]["user"])) {
             $this->SMTPAuth = true;
-            $this->Username = $user;
+            $this->Username = CONFIG["smtp"]["user"];
         } else {
             $this->SMTPAuth = false;
         }
 
-        if (!empty($pass)) {
-            $this->Password = $pass;
+        if (!empty(CONFIG["smtp"]["pass"])) {
+            $this->Password = CONFIG["smtp"]["pass"];
         }
 
-        if ($ssl_verify == "false") {
+        if (CONFIG["smtp"]["ssl_verify"] == "false") {
             $this->SMTPOptions = array(
                 'ssl' => array(
                     'verify_peer' => false,
@@ -83,19 +66,6 @@ class UnityMailer extends PHPMailer
                 )
             );
         }
-
-        $this->template_dir = $template_dir;
-        $this->override_template_dir = $override_template_dir;
-
-        $this->MSG_LINKREF = $msg_linkref;
-        $this->MSG_SENDER_EMAIL = $msg_sender_email;
-        $this->MSG_SENDER_NAME = $msg_sender_name;
-        $this->MSG_SUPPORT_EMAIL = $msg_support_email;
-        $this->MSG_SUPPORT_NAME = $msg_support_name;
-        $this->MSG_ADMIN_EMAIL = $msg_admin_email;
-        $this->MSG_ADMIN_NAME = $msg_admin_name;
-        $this->MSG_PI_APPROVAL_EMAIL = $msg_pi_approval_email;
-        $this->MSG_PI_APPROVAL_NAME = $msg_pi_approval_name;
     }
 
     public function sendMail($recipients, $template = null, $data = null)

@@ -28,25 +28,7 @@ if (isset($GLOBALS["ldapconn"])) {
 
 $SQL = new UnitySQL();
 
-$MAILER = new UnityMailer(
-    __DIR__ . "/mail",
-    __DIR__ . "/../deployment/mail_overrides",
-    CONFIG["smtp"]["host"],
-    CONFIG["smtp"]["port"],
-    CONFIG["smtp"]["security"],
-    CONFIG["smtp"]["user"],
-    CONFIG["smtp"]["pass"],
-    CONFIG["smtp"]["ssl_verify"],
-    CONFIG["site"]["url"] . CONFIG["site"]["prefix"],
-    CONFIG["mail"]["sender"],
-    CONFIG["mail"]["sender_name"],
-    CONFIG["mail"]["support"],
-    CONFIG["mail"]["support_name"],
-    CONFIG["mail"]["admin"],
-    CONFIG["mail"]["admin_name"],
-    CONFIG["mail"]["pi_approve"],
-    CONFIG["mail"]["pi_approve_name"]
-);
+$MAILER = new UnityMailer();
 
 $WEBHOOK = new UnityWebhook(
     __DIR__ . "/mail",
