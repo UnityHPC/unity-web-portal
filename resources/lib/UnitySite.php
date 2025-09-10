@@ -9,7 +9,7 @@ class UnitySite
 {
     public static function die($x = null, $show_user = false)
     {
-        if (@$GLOBALS["PHPUNIT_NO_DIE_PLEASE"] == true) {
+        if (isset($GLOBALS["PHPUNIT_NO_DIE_PLEASE"]) && $GLOBALS["PHPUNIT_NO_DIE_PLEASE"] == true) {
             if (is_null($x)) {
                 throw new PhpUnitNoDieException();
             } else {
