@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityOrg;
@@ -8,6 +9,13 @@ use UnityWebPortal\lib\UnitySQL;
 
 class NewUserTest extends TestCase
 {
+    public static function provider() {
+        return [
+            getNonExistentUserAndExpectedUIDGIDNoCustomMapping(),
+            getNonExistentUserAndExpectedUIDGIDWithCustomMapping(),
+        ];
+    }
+
     private function assertRequestedPIGroup(bool $expected)
     {
         global $USER, $SQL;
@@ -157,14 +165,14 @@ class NewUserTest extends TestCase
         $REDIS->removeCacheArray("sorted_groups", "", $gid);
     }
 
-    public function testCreateUserByJoinGoupByPI()
+    #[DataProvider("provider")]
+    public function testCreateUserByJoinGoupByPI($user_to_create_args, $expected_uid_gid)
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
         $pi_user_args = getUserIsPIHasNoMembersNoMemberRequests();
         switchUser(...$pi_user_args);
         $pi_group = $USER->getPIGroup();
         $gid = $pi_group->gid;
-        $user_to_create_args = getNonExistentUser();
         switchUser(...$user_to_create_args);
         $this->assertTrue(!$USER->exists());
         $newOrg = new UnityOrg($SSO["org"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
@@ -204,6 +212,11 @@ class NewUserTest extends TestCase
             $this->assertTrue($pi_group->userExists($USER));
             $this->assertTrue($USER->exists());
             $this->assertTrue($newOrg->exists());
+
+            $user_entry = $LDAP->getUserEntry($approve_uid);
+            $user_group_entry = $LDAP->getGroupEntry($approve_uid);
+            $this->assertEquals($expected_uid_gid, $user_entry->getAttribute("uidnumber")[0]);
+            $this->assertEquals($expected_uid_gid, $user_group_entry->getAttribute("gidnumber")[0]);
 
             // $third_request_failed = false;
             // try {
@@ -258,13 +271,13 @@ class NewUserTest extends TestCase
         }
     }
 
-    public function testCreateUserByJoinGoupByAdmin()
+    #[DataProvider("provider")]
+    public function testCreateUserByJoinGoupByAdmin($user_to_create_args, $expected_uid_gid)
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
         switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
         $pi_group = $USER->getPIGroup();
         $gid = $pi_group->gid;
-        $user_to_create_args = getNonExistentUser();
         switchUser(...$user_to_create_args);
         $this->assertTrue(!$USER->exists());
         $newOrg = new UnityOrg($SSO["org"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
@@ -305,6 +318,11 @@ class NewUserTest extends TestCase
             $this->assertTrue($USER->exists());
             $this->assertTrue($newOrg->exists());
 
+            $user_entry = $LDAP->getUserEntry($approve_uid);
+            $user_group_entry = $LDAP->getGroupEntry($approve_uid);
+            $this->assertEquals($expected_uid_gid, $user_entry->getAttribute("uidnumber")[0]);
+            $this->assertEquals($expected_uid_gid, $user_group_entry->getAttribute("gidnumber")[0]);
+
             // $third_request_failed = false;
             // try {
             $this->requestGroupMembership($pi_group->gid);
@@ -322,11 +340,10 @@ class NewUserTest extends TestCase
         }
     }
 
-
-    public function testCreateUserByCreateGroup()
+    #[DataProvider("provider")]
+    public function testCreateUserByCreateGroup($user_to_create_args, $expected_uid_gid)
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
-        $user_to_create_args = getNonExistentUser();
         switchuser(...$user_to_create_args);
         $pi_group = $USER->getPIGroup();
         $this->assertTrue(!$USER->exists());
@@ -363,6 +380,11 @@ class NewUserTest extends TestCase
             $this->assertTrue($pi_group->exists());
             $this->assertTrue($USER->exists());
             $this->assertTrue($newOrg->exists());
+
+            $user_entry = $LDAP->getUserEntry($approve_uid);
+            $user_group_entry = $LDAP->getGroupEntry($approve_uid);
+            $this->assertEquals($expected_uid_gid, $user_entry->getAttribute("uidnumber")[0]);
+            $this->assertEquals($expected_uid_gid, $user_group_entry->getAttribute("gidnumber")[0]);
 
             // $third_request_failed = false;
             // try {

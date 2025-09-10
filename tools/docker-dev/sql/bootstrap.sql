@@ -208,21 +208,6 @@ CREATE TABLE `requests` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sitevars`
---
-
-CREATE TABLE `sitevars` (
-  `id` int(11) NOT NULL,
-  `name` varchar(768) NOT NULL,
-  `value` varchar(768) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-INSERT INTO `sitevars` (`id`, `name`, `value`) VALUES
-(0, 'MAX_UID', '2134'),
-(1, 'MAX_GID', '2134'),
-(2, 'MAX_PIGID', '2134');
-
---
 -- Indexes for dumped tables
 --
 
@@ -284,12 +269,6 @@ ALTER TABLE `pages`
 -- Indexes for table `requests`
 --
 ALTER TABLE `requests`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `sitevars`
---
-ALTER TABLE `sitevars`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -355,12 +334,6 @@ ALTER TABLE `pages`
 --
 ALTER TABLE `requests`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1031;
-
---
--- AUTO_INCREMENT for table `sitevars`
---
-ALTER TABLE `sitevars`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

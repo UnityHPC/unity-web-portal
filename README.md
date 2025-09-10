@@ -105,6 +105,14 @@ rm "$prod" && ln -s "$old" "$prod"
 
 ### Version-specific update instructions:
 
+### 1.2 -> 1.3
+* SQL:
+    * remove the `sitevars` table
+* `defaults/config.ini.default` has some new fields that need to be overriden:
+    * `offset_UIDGID`
+    * `offset_PIGID`
+    * `offset_ORGGID`
+
 ### 1.2.0 -> 1.2.1
 * SQL:
     * Add new columns to the `requests` table:
@@ -135,8 +143,6 @@ rm "$prod" && ln -s "$old" "$prod"
         * example, using old site policy page: `https://unity.rc.umass.edu/panel/priv.php`
 * LDAP:
     * Create a new group defined by `ldap.user_group` in the config
-
-### 1.0 -> 1.1
 * SQL:
   * Add the `home` content management row
 * `config/branding/config.ini.default` has some new fields that may need to be overriden:
