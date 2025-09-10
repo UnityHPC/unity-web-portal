@@ -7,9 +7,13 @@ class UnityWebhook
     private $template_dir = __DIR__ . "/../mail";
     private $override_template_dir = __DIR__ . "/../../deployment/mail_overrides";
     private $url = CONFIG["webhook"]["url"];
-    private $MSG_LINKREF = CONFIG["site"]["url"] . CONFIG["site"]["prefix"];
+    private $MSG_LINKREF;
     private $Subject; // set by template
 
+    public function __construct()
+    {
+        $this->MSG_LINKREF = CONFIG["site"]["url"] . CONFIG["site"]["prefix"];
+    }
     public function htmlToMarkdown($html)
     {
         // Define regex patterns for each markdown format
