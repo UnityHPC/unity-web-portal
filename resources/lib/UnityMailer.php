@@ -12,21 +12,30 @@ class UnityMailer extends PHPMailer
 {
     private $template_dir = __DIR__ . "/../mail"; // location of all email templates
     private $override_template_dir = __DIR__ . "/../../deployment/mail_overrides";
-    private $MSG_LINKREF = CONFIG["site"]["url"] . CONFIG["site"]["prefix"];
-    private $MSG_SENDER_EMAIL = CONFIG["mail"]["sender"];
-    private $MSG_SENDER_NAME = CONFIG["mail"]["sender_name"];
-    private $MSG_SUPPORT_EMAIL = CONFIG["mail"]["support"];
-    private $MSG_SUPPORT_NAME = CONFIG["mail"]["support_name"];
-    private $MSG_ADMIN_EMAIL = CONFIG["mail"]["admin"];
-    private $MSG_ADMIN_NAME = CONFIG["mail"]["admin_name"];
-    private $MSG_PI_APPROVAL_EMAIL = CONFIG["mail"]["pi_approve"];
-    private $MSG_PI_APPROVAL_NAME = CONFIG["mail"]["pi_approve_name"];
+    private $MSG_LINKREF;
+    private $MSG_SENDER_EMAIL;
+    private $MSG_SENDER_NAME;
+    private $MSG_SUPPORT_EMAIL;
+    private $MSG_SUPPORT_NAME;
+    private $MSG_ADMIN_EMAIL;
+    private $MSG_ADMIN_NAME;
+    private $MSG_PI_APPROVAL_EMAIL;
+    private $MSG_PI_APPROVAL_NAME;
 
     public function __construct()
     {
         parent::__construct();
         $this->isSMTP();
 
+        $this->MSG_LINKREF = CONFIG["site"]["url"] . CONFIG["site"]["prefix"];
+        $this->MSG_SENDER_EMAIL = CONFIG["mail"]["sender"];
+        $this->MSG_SENDER_NAME = CONFIG["mail"]["sender_name"];
+        $this->MSG_SUPPORT_EMAIL = CONFIG["mail"]["support"];
+        $this->MSG_SUPPORT_NAME = CONFIG["mail"]["support_name"];
+        $this->MSG_ADMIN_EMAIL = CONFIG["mail"]["admin"];
+        $this->MSG_ADMIN_NAME = CONFIG["mail"]["admin_name"];
+        $this->MSG_PI_APPROVAL_EMAIL = CONFIG["mail"]["pi_approve"];
+        $this->MSG_PI_APPROVAL_NAME = CONFIG["mail"]["pi_approve_name"];
         if (empty(CONFIG["smtp"]["host"])) {
             throw new Exception("SMTP server hostname not set");
         }
