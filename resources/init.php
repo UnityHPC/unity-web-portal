@@ -30,12 +30,7 @@ $SQL = new UnitySQL();
 
 $MAILER = new UnityMailer();
 
-$WEBHOOK = new UnityWebhook(
-    __DIR__ . "/mail",
-    __DIR__ . "/../deployment/mail_overrides",
-    CONFIG["webhook"]["url"],
-    CONFIG["site"]["url"] . CONFIG["site"]["prefix"]
-);
+$WEBHOOK = new UnityWebhook();
 
 $GITHUB = new UnityGithub();
 
