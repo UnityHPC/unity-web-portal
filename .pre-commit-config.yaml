@@ -22,18 +22,18 @@ repos:
         args: [--standard=./.phpcs-ruleset.xml, --colors]
 
   # linters (work required) ########################################################################
-  # - repo: https://github.com/pre-commit/pre-commit-hooks
-  #   rev: v5.0.0
-  #   hooks:
-  #     - id: check-yaml
-  #     - id: check-json
-  #     - id: check-xml
-  #     - id: check-added-large-files
-  #     - id: check-executables-have-shebangs
-  # - repo: https://github.com/gitleaks/gitleaks
-  #   rev: v8.23.1
-  #   hooks:
-  #     - id: gitleaks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-yaml
+      - id: check-json
+      - id: check-xml
+      - id: check-added-large-files
+      - id: check-executables-have-shebangs
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.23.1
+    hooks:
+      - id: gitleaks
   - repo: local
     hooks:
       - id: phpcs
