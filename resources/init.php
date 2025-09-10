@@ -26,12 +26,7 @@ if (isset($GLOBALS["ldapconn"])) {
     $GLOBALS["ldapconn"] = $LDAP;
 }
 
-$SQL = new UnitySQL(
-    CONFIG["sql"]["host"],
-    CONFIG["sql"]["dbname"],
-    CONFIG["sql"]["user"],
-    CONFIG["sql"]["pass"]
-);
+$SQL = new UnitySQL();
 
 $MAILER = new UnityMailer(
     __DIR__ . "/mail",
