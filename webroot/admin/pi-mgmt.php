@@ -135,7 +135,7 @@ require $LOC_HEADER;
         }
     });
 
-    var ajax_url = "<?php echo $CONFIG["site"]["prefix"]; ?>/admin/ajax/get_group_members.php?gid=";
+    var ajax_url = "<?php echo CONFIG["site"]["prefix"]; ?>/admin/ajax/get_group_members.php?gid=";
 </script>
 
 <?php

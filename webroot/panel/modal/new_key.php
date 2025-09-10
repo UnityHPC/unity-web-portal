@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../resources/autoload.php";  // Load required lib
 ?>
 
 <form id="newKeyform" enctype="multipart/form-data" method="POST"
-action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/account.php">
+action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/account.php">
     <input type='hidden' name='form_type' value='addKey'>
 
     <div class='inline'>
@@ -69,7 +69,7 @@ action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/account.php">
         var endingSection = "</section>";
 
         $.ajax({
-            url: "<?php echo $CONFIG["site"]["prefix"]; ?>/js/ajax/ssh_generate.php?type=" + type,
+            url: "<?php echo CONFIG["site"]["prefix"]; ?>/js/ajax/ssh_generate.php?type=" + type,
             success: function(result) {
                 var pubKey = result.substr(result.indexOf(pubSection) + pubSection.length,
                 result.indexOf(endingSection) - result.indexOf(pubSection) - pubSection.length);
@@ -98,7 +98,7 @@ action="<?php echo $CONFIG["site"]["prefix"]; ?>/panel/account.php">
     $("textarea[name=key]").on("input", function() {
         var key = $(this).val();
         $.ajax({
-            url: "<?php echo $CONFIG["site"]["prefix"]; ?>/js/ajax/ssh_validate.php",
+            url: "<?php echo CONFIG["site"]["prefix"]; ?>/js/ajax/ssh_validate.php",
             type: "POST",
             data: {
                 key: key

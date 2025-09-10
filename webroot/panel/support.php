@@ -9,7 +9,7 @@ require $LOC_HEADER;
 <hr>
 
 <?php
-echo $SQL->getPage($CONFIG["page"]["support"])["content"];
+echo $SQL->getPage(CONFIG["page"]["support"])["content"];
 ?>
 
 <?php

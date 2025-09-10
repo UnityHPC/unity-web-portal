@@ -7,7 +7,7 @@ require $LOC_HEADER;
 
 
 <?php
-echo $SQL->getPage($CONFIG["page"]["home"])["content"];
+echo $SQL->getPage(CONFIG["page"]["home"])["content"];
 ?>
 
 <h1>Cluster Notices</h1>

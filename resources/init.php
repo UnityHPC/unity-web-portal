@@ -4,7 +4,6 @@
  * init.php - Initialization script that is run on every page of Unity
  */
 
-use UnityWebPortal\lib\UnityConfig;
 use UnityWebPortal\lib\UnityLDAP;
 use UnityWebPortal\lib\UnityMailer;
 use UnityWebPortal\lib\UnitySQL;
@@ -18,65 +17,63 @@ use UnityWebPortal\lib\exceptions\SSOException;
 
 session_start();
 
-$CONFIG = UnityConfig::getConfig(__DIR__ . "/../defaults", __DIR__ . "/../deployment");
-
 $REDIS = new UnityRedis(
-    $CONFIG["redis"]["host"] ?? "",
-    $CONFIG["redis"]["port"] ?? ""
+    CONFIG["redis"]["host"] ?? "",
+    CONFIG["redis"]["port"] ?? ""
 );
 
 if (isset($GLOBALS["ldapconn"])) {
     $LDAP = $GLOBALS["ldapconn"];
 } else {
     $LDAP = new UnityLDAP(
-        $CONFIG["ldap"]["uri"],
-        $CONFIG["ldap"]["user"],
-        $CONFIG["ldap"]["pass"],
+        CONFIG["ldap"]["uri"],
+        CONFIG["ldap"]["user"],
+        CONFIG["ldap"]["pass"],
         __DIR__ . "/../deployment/custom_user_mappings",
-        $CONFIG["ldap"]["basedn"],
-        $CONFIG["ldap"]["user_ou"],
-        $CONFIG["ldap"]["group_ou"],
-        $CONFIG["ldap"]["pigroup_ou"],
-        $CONFIG["ldap"]["orggroup_ou"],
-        $CONFIG["ldap"]["admin_group"],
-        $CONFIG["ldap"]["user_group"],
-        $CONFIG["ldap"]["def_user_shell"]
+        CONFIG["ldap"]["basedn"],
+        CONFIG["ldap"]["user_ou"],
+        CONFIG["ldap"]["group_ou"],
+        CONFIG["ldap"]["pigroup_ou"],
+        CONFIG["ldap"]["orggroup_ou"],
+        CONFIG["ldap"]["admin_group"],
+        CONFIG["ldap"]["user_group"],
+        CONFIG["ldap"]["def_user_shell"]
     );
     $GLOBALS["ldapconn"] = $LDAP;
 }
 
 $SQL = new UnitySQL(
-    $CONFIG["sql"]["host"],
-    $CONFIG["sql"]["dbname"],
-    $CONFIG["sql"]["user"],
-    $CONFIG["sql"]["pass"]
+    CONFIG["sql"]["host"],
+    CONFIG["sql"]["dbname"],
+    CONFIG["sql"]["user"],
+    CONFIG["sql"]["pass"]
 );
 
 $MAILER = new UnityMailer(
     __DIR__ . "/mail",
     __DIR__ . "/../deployment/mail_overrides",
-    $CONFIG["smtp"]["host"],
-    $CONFIG["smtp"]["port"],
-    $CONFIG["smtp"]["security"],
-    $CONFIG["smtp"]["user"],
-    $CONFIG["smtp"]["pass"],
-    $CONFIG["smtp"]["ssl_verify"],
-    $CONFIG["site"]["url"] . $CONFIG["site"]["prefix"],
-    $CONFIG["mail"]["sender"],
-    $CONFIG["mail"]["sender_name"],
-    $CONFIG["mail"]["support"],
-    $CONFIG["mail"]["support_name"],
-    $CONFIG["mail"]["admin"],
-    $CONFIG["mail"]["admin_name"],
-    $CONFIG["mail"]["pi_approve"],
-    $CONFIG["mail"]["pi_approve_name"]
+    CONFIG["smtp"]["host"],
+    CONFIG["smtp"]["port"],
+    CONFIG["smtp"]["security"],
+    CONFIG["smtp"]["user"],
+    CONFIG["smtp"]["pass"],
+    CONFIG["smtp"]["ssl_verify"],
+    CONFIG["site"]["url"] . CONFIG["site"]["prefix"],
+    CONFIG["mail"]["sender"],
+    CONFIG["mail"]["sender_name"],
+    CONFIG["mail"]["support"],
+    CONFIG["mail"]["support_name"],
+    CONFIG["mail"]["admin"],
+    CONFIG["mail"]["admin_name"],
+    CONFIG["mail"]["pi_approve"],
+    CONFIG["mail"]["pi_approve_name"]
 );
 
 $WEBHOOK = new UnityWebhook(
     __DIR__ . "/mail",
     __DIR__ . "/../deployment/mail_overrides",
-    $CONFIG["webhook"]["url"],
-    $CONFIG["site"]["url"] . $CONFIG["site"]["prefix"]
+    CONFIG["webhook"]["url"],
+    CONFIG["site"]["url"] . CONFIG["site"]["prefix"]
 );
 
 $GITHUB = new UnityGithub();
@@ -89,7 +86,9 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
         $eppn = $_SERVER["REMOTE_USER"];
         UnitySite::errorLog("SSO Failure", "{$e} ($errorid)");
         UnitySite::die(
-            "Invalid eppn: '$eppn'. Please contact {$CONFIG["mail"]["support"]} (id: $errorid)",
+            "Invalid eppn: '$eppn'. Please contact support at "
+                . CONFIG["mail"]["support"]
+                . " (id: $errorid)",
             true
         );
     }
@@ -106,7 +105,7 @@ if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
 
     $_SESSION["user_exists"] = $USER->exists();
     $_SESSION["is_pi"] = $USER->isPI();
-    $SEND_PIMESG_TO_ADMINS = $CONFIG["mail"]["send_pimesg_to_admins"];
+    $SEND_PIMESG_TO_ADMINS = CONFIG["mail"]["send_pimesg_to_admins"];
 
     $SQL->addLog(
         $OPERATOR->uid,

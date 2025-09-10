@@ -64,7 +64,7 @@ function switchUser(
     string $mail,
     string|null $session_id = null
 ): void {
-    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
+    global $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     session_write_close();
     if (is_null($session_id)) {
         session_id(str_replace(["_", "@", "."], "-", uniqid($eppn . "_")));
@@ -83,7 +83,7 @@ function switchUser(
 
 function http_post(string $phpfile, array $post_data): void
 {
-    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
+    global $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "POST";
     $_SERVER["PHP_SELF"] = preg_replace("/.*webroot\//", "/", $phpfile);
@@ -106,7 +106,7 @@ function http_post(string $phpfile, array $post_data): void
 
 function http_get(string $phpfile, array $get_data = array()): void
 {
-    global $CONFIG, $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
+    global $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "GET";
     $_SERVER["PHP_SELF"] = preg_replace("/.*webroot\//", "/", $phpfile);

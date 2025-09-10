@@ -7,7 +7,7 @@ use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnitySQL;
 
 if ($USER->exists()) {
-    UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/account.php");
+    UnitySite::redirect(CONFIG["site"]["prefix"] . "/panel/account.php");
 }
 
 $pending_requests = $SQL->getRequestsByUser($USER->uid);
@@ -92,8 +92,8 @@ require $LOC_HEADER;
         <p>You will receive an email when your account has been approved.</p>
         <p>
         <?php
-        $addr = "mailto:" . $CONFIG['mail']['support'];
-        $name = $CONFIG['mail']['support_name'];
+        $addr = "mailto:" . CONFIG['mail']['support'];
+        $name = CONFIG['mail']['support_name'];
         echo "Email <a href='$addr'>$name</a> if you have not heard back in one business day.";
         ?>
         </p>
@@ -137,14 +137,14 @@ require $LOC_HEADER;
 
         <div style='position: relative;display: none;' id='piConfirmWrapper'>
         <label><input type='checkbox' id='chk_pi' name='confirm_pi' value='agree'>
-           I have read the PI <a href="<?php echo $CONFIG["site"]["account_policy_url"]; ?>">
+           I have read the PI <a href="<?php echo CONFIG["site"]["account_policy_url"]; ?>">
             account policy</a> guidelines. </label>
         </div>
         <br>
 
         <label><input type='checkbox' id='chk_eula' name='eula' value='agree' required>
             I have read and accept the
-            <a target='_blank' href='<?php echo $CONFIG["site"]["terms_of_service_url"]; ?>'>
+            <a target='_blank' href='<?php echo CONFIG["site"]["terms_of_service_url"]; ?>'>
                 Unity Terms of Service
             </a>.
         </label>
@@ -172,7 +172,7 @@ require $LOC_HEADER;
 
     $("input[type=text][name=pi]").keyup(function() {
         var searchWrapper = $("div.searchWrapper");
-        const prefix = '<?php echo $CONFIG["site"]["prefix"]; ?>';
+        const prefix = '<?php echo CONFIG["site"]["prefix"]; ?>';
         $.ajax({
             url: `${prefix}/panel/modal/pi_search.php?search=` + $(this).val(),
             success: function(result) {

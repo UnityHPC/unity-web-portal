@@ -204,7 +204,7 @@ echo '
     <input type="hidden" name="form_type" value="loginshell" />
     <select id="loginSelector" class="code" name="shellSelect">
 ';
-foreach ($CONFIG["loginshell"]["shell"] as $shell) {
+foreach (CONFIG["loginshell"]["shell"] as $shell) {
     echo "<option>$shell</option>";
 }
 echo "
@@ -243,7 +243,7 @@ if ($hasGroups) {
 ?>
 
 <script>
-    const sitePrefix = '<?php echo $CONFIG["site"]["prefix"]; ?>';
+    const sitePrefix = '<?php echo CONFIG["site"]["prefix"]; ?>';
     const ldapLoginShell = '<?php echo $USER->getLoginShell(); ?>';
 
     $("button.btnAddKey").click(function() {

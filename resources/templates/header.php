@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         && (@$_POST["form_type"] ?? null) == "clearView"
     ) {
         unset($_SESSION["viewUser"]);
-        UnitySite::redirect($CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
+        UnitySite::redirect(CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
     }
     // Webroot files need to handle their own POSTs before loading the header
     // so that they can do UnitySite::badRequest before anything else has been printed.
@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // header also needs to handle POST data. So this header does the PRG redirect
     // for all pages.
     unset($_POST); // unset ensures that header must not come before POST handling
-    UnitySite::redirect($CONFIG["site"]["prefix"] . $_SERVER['REQUEST_URI']);
+    UnitySite::redirect(CONFIG["site"]["prefix"] . $_SERVER['REQUEST_URI']);
 }
 
 if (isset($SSO)) {
@@ -24,7 +24,7 @@ if (isset($SSO)) {
         !$_SESSION["user_exists"]
         && !str_ends_with($_SERVER['PHP_SELF'], "/panel/new_account.php")
     ) {
-        UnitySite::redirect($CONFIG["site"]["prefix"] . "/panel/new_account.php");
+        UnitySite::redirect(CONFIG["site"]["prefix"] . "/panel/new_account.php");
     }
 }
 
@@ -41,7 +41,7 @@ if (isset($SSO)) {
     <?php
     // set global css variables from branding
     echo ":root {";
-    foreach ($CONFIG["colors"] as $var_name => $var_value) {
+    foreach (CONFIG["colors"] as $var_name => $var_value) {
         echo "--$var_name: $var_value;";
     }
     echo "}";
@@ -49,7 +49,7 @@ if (isset($SSO)) {
   </style>
 
   <?php
-    $prefix = $CONFIG["site"]["prefix"];
+    $prefix = CONFIG["site"]["prefix"];
     echo "
         <link rel='stylesheet' type='text/css' href='$prefix/css/global.css'>
         <link rel='stylesheet' type='text/css' href='$prefix/css/navbar.css'>
@@ -60,20 +60,20 @@ if (isset($SSO)) {
     ?>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="<?php echo $CONFIG["site"]["description"] ?>">
+  <meta name="description" content="<?php echo CONFIG["site"]["description"] ?>">
 
-  <title><?php echo $CONFIG["site"]["name"]; ?></title>
+  <title><?php echo CONFIG["site"]["name"]; ?></title>
 </head>
 
 <body>
 
   <header>
     <img id="imgLogo" draggable=false
-    src="<?php echo $CONFIG["site"]["prefix"]; ?>/assets/<?php echo $CONFIG["site"]["logo"]; ?>">
+    src="<?php echo CONFIG["site"]["prefix"]; ?>/assets/<?php echo CONFIG["site"]["logo"]; ?>">
     <button class="hamburger vertical-align">
       <img
         draggable="false"
-        src="<?php echo $CONFIG["site"]["prefix"]; ?>/assets/menu.png"
+        src="<?php echo CONFIG["site"]["prefix"]; ?>/assets/menu.png"
         alt="Menu Button"
       >
     </button>
@@ -81,14 +81,14 @@ if (isset($SSO)) {
 
   <nav class="mainNav">
     <?php
-    $prefix = $CONFIG["site"]["prefix"];
+    $prefix = CONFIG["site"]["prefix"];
     // Public Items - Always Visible
     echo "<a href='$prefix/index.php'>Home</a>";
 
-    $num_additional_items = count($CONFIG["menuitems"]["labels"]);
+    $num_additional_items = count(CONFIG["menuitems"]["labels"]);
     for ($i = 0; $i < $num_additional_items; $i++) {
-        echo "<a target='_blank' href='" . $CONFIG["menuitems"]["links"][$i] . "'>" .
-        $CONFIG["menuitems"]["labels"][$i] . "</a>";
+        echo "<a target='_blank' href='" . CONFIG["menuitems"]["links"][$i] . "'>" .
+        CONFIG["menuitems"]["labels"][$i] . "</a>";
     }
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
@@ -103,10 +103,10 @@ if (isset($SSO)) {
         }
 
         // additional branding items
-        $num_additional_items = count($CONFIG["menuitems_secure"]["labels"]);
+        $num_additional_items = count(CONFIG["menuitems_secure"]["labels"]);
         for ($i = 0; $i < $num_additional_items; $i++) {
-            echo "<a target='_blank' href='" . $CONFIG["menuitems_secure"]["links"][$i] . "'>" .
-            $CONFIG["menuitems_secure"]["labels"][$i] . "</a>";
+            echo "<a target='_blank' href='" . CONFIG["menuitems_secure"]["links"][$i] . "'>" .
+            CONFIG["menuitems_secure"]["labels"][$i] . "</a>";
         }
 
         // admin pages
@@ -145,7 +145,7 @@ if (isset($SSO)) {
       </div>
     </div>
   </div>
-  <script src="<?php echo $CONFIG["site"]["prefix"]; ?>/js/modal.js"></script>
+  <script src="<?php echo CONFIG["site"]["prefix"]; ?>/js/modal.js"></script>
 
   <main>
 
