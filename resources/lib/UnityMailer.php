@@ -12,6 +12,7 @@ class UnityMailer extends PHPMailer
 {
     private $template_dir = __DIR__ . "/../mail"; // location of all email templates
     private $override_template_dir = __DIR__ . "/../../deployment/mail_overrides";
+
     private $MSG_LINKREF;
     private $MSG_SENDER_EMAIL;
     private $MSG_SENDER_NAME;
