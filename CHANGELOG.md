@@ -1,8 +1,20 @@
-# 1.2.3 (upcoming)
-* [Bug] Fixed `uidnumber`/`gidnumber` conflicts by @simonLeary42 in #248
-* [Internal] Refactored `UnitySQL` by @simonLeary42 in #252
+# 1.2.4 (upcoming)
+* [Bug] Fixed `uidnumber`/`gidnumber` conflicts by @simonLeary42 in #286
 * [Internal] Refactored custom user mappings by @simonLeary42 in #253
-* [Internal] Style by @simonLeary42 in #254
+
+# 1.2.3
+* [Feature] Replace white screen of death with proper error message by @simonLeary42 in #297
+* [Bug] Fix `ldap_escape` calls to correct the argument list by @bryank-cs in #284
+* [Bug] trim UID and GID always by @simonLeary42 in #278
+* [Bug] Fix unreferenced `sso_user` variable by @bryank-cs in #277
+* [Bug] Fixed redirect by @bryank-cs in #276
+* [Dev] Add more testing by @simonLeary42 in #280 #299 [36539](https://github.com/UnityHPC/unity-web-portal/commit/3653913d6ba5f57c467296a592f0a8c033dd6049)  [17737](https://github.com/UnityHPC/unity-web-portal/commit/177377e8d33580f0b24a760c70cec1ad9d20f275) [bbe71](https://github.com/UnityHPC/unity-web-portal/commit/bbe714f4e6df9936828b1ace3fb66c9c1de2caae)
+* [Dev] Setup the openldap unique overlay by @simonLeary42 in #291
+* [Internal] Refactored for style by @simonLeary42 in #294 #295 #296
+* [Internal] Optimize code and remove caching by @simonLeary42 in #266
+* [Internal] Moved config to global by @simonLeary42 in #298
+* [Internal] Added assertions to avoid bad behavior by @simonLeary42 in #293
+* [Internal] better error message by @simonLeary42 in #279
 
 # 1.2.2
 * [Bug] Fixed missing get parameters on reload by @bryank-cs in #264
