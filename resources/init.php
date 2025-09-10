@@ -18,20 +18,15 @@ use UnityWebPortal\lib\exceptions\SSOException;
 session_start();
 
 $REDIS = new UnityRedis();
-
 if (isset($GLOBALS["ldapconn"])) {
     $LDAP = $GLOBALS["ldapconn"];
 } else {
     $LDAP = new UnityLDAP();
     $GLOBALS["ldapconn"] = $LDAP;
 }
-
 $SQL = new UnitySQL();
-
 $MAILER = new UnityMailer();
-
 $WEBHOOK = new UnityWebhook();
-
 $GITHUB = new UnityGithub();
 
 if (isset($_SERVER["REMOTE_USER"])) {  // Check if SSO is enabled on this page
