@@ -4,8 +4,8 @@ use UnityWebPortal\lib\UnitySite;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (
-        (@$_SESSION["is_admin"] ?? false) == true
-        && (@$_POST["form_type"] ?? null) == "clearView"
+        ($_SESSION["is_admin"] ?? false) == true
+        && ($_POST["form_type"] ?? null) == "clearView"
     ) {
         unset($_SESSION["viewUser"]);
         UnitySite::redirect(CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
