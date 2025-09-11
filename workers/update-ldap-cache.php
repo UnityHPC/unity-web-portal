@@ -65,7 +65,7 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     $REDIS->setCache("sorted_orgs", "", $org_group_CNs);
     foreach ($org_groups as $org_group) {
         $gid = $org_group["cn"][0];
-        $REDIS->setCache($gid, "members", (@$org_group["memberuid"] ?? []));
+        $REDIS->setCache($gid, "members", ($org_group["memberuid"] ?? []));
     }
 
     $pi_group_ou = new LDAPEntry($LDAP->getConn(), CONFIG["ldap"]["pigroup_ou"]);
@@ -85,7 +85,7 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     }
     foreach ($pi_groups as $pi_group) {
         $gid = $pi_group["cn"][0];
-        $members = (@$pi_group["memberuid"] ?? []);
+        $members = ($pi_group["memberuid"] ?? []);
         foreach ($members as $uid) {
             if (in_array($uid, $user_CNs)) {
                 array_push($user_pi_group_member_of[$uid], $gid);
@@ -93,7 +93,7 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
                 echo "warning: group '$gid' has member '$uid' who is not in the users group!\n";
             }
         }
-        $REDIS->setCache($gid, "members", (@$pi_group["memberuid"] ?? []));
+        $REDIS->setCache($gid, "members", ($pi_group["memberuid"] ?? []));
     }
     foreach ($user_pi_group_member_of as $uid => $pi_groups) {
         // FIXME should be pi_groups
