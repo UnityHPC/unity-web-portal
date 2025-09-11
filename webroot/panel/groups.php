@@ -7,7 +7,6 @@ use UnityWebPortal\lib\UnitySite;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $modalErrors = array();
-    $errors = array();
 
     if (isset($_POST["form_type"])) {
         if (isset($_POST["pi"])) {
