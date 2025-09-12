@@ -1,5 +1,7 @@
 <?php
 
+$_SERVER["HTTP_HOST"] = "worker"; // see deployment/overrides/worker
+
 require_once __DIR__ . "/../resources/autoload.php";
 require_once __DIR__ . "/../resources/init.php";
 

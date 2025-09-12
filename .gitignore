@@ -10,11 +10,14 @@ vendor
 composer.lock
 
 # don't track site configs
-deployment/*
+deployment/**/*
 !deployment/overrides/
 !deployment/overrides/phpunit/
 !deployment/overrides/phpunit/config/
 !deployment/overrides/phpunit/config/config.ini
+!deployment/overrides/worker/
+!deployment/overrides/worker/config/
+!deployment/overrides/worker/config/config.ini
 !deployment/**/README.md
 
 .phpunit.result.cache
