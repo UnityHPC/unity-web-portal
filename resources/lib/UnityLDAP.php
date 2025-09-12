@@ -24,7 +24,11 @@ class UnityLDAP extends ldapConn
     "top"
     );
 
-    private $custom_mappings_path = CONFIG["ldap"]["custom_user_mappings_dir"];
+    private $custom_mappings_path = (
+        __DIR__
+        . "/../../"
+        . CONFIG["ldap"]["custom_user_mappings_dir"]
+    );
     private $def_user_shell = CONFIG["ldap"]["def_user_shell"];
     private $offset_UIDGID = CONFIG["ldap"]["offset_UIDGID"];
     private $offset_PIGID = CONFIG["ldap"]["offset_PIGID"];
