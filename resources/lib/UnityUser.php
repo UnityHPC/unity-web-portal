@@ -60,7 +60,7 @@ class UnityUser
     public function init($firstname, $lastname, $email, $org, $send_mail = true)
     {
         $ldapGroupEntry = $this->getGroupEntry();
-        $id = $this->LDAP->getUnassignedID($this->uid, $this->SQL);
+        $id = $this->LDAP->getNextUIDGIDNumber($this->uid);
         assert(!$ldapGroupEntry->exists());
         $ldapGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
         $ldapGroupEntry->setAttribute("gidnumber", strval($id));

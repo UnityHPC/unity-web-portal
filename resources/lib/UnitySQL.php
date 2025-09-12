@@ -11,7 +11,6 @@ class UnitySQL
     private const TABLE_PAGES = "pages";
     private const TABLE_AUDIT_LOG = "audit_log";
     private const TABLE_ACCOUNT_DELETION_REQUESTS = "account_deletion_requests";
-    private const TABLE_SITEVARS = "sitevars";
     private const TABLE_GROUP_ROLES = "groupRoles";
     private const TABLE_GROUP_TYPES = "groupTypes";
     private const TABLE_GROUP_ROLE_ASSIGNMENTS = "groupRoleAssignments";
@@ -316,29 +315,6 @@ class UnitySQL
             "DELETE FROM " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " WHERE uid=:uid"
         );
         $stmt->bindParam(":uid", $uid);
-        $stmt->execute();
-    }
-
-    public function getSiteVar($name)
-    {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_SITEVARS . " WHERE name=:name"
-        );
-        $stmt->bindParam(":name", $name);
-
-        $stmt->execute();
-
-        return $stmt->fetchAll()[0]['value'];
-    }
-
-    public function updateSiteVar($name, $value)
-    {
-        $stmt = $this->conn->prepare(
-            "UPDATE " . self::TABLE_SITEVARS . " SET value=:value WHERE name=:name"
-        );
-        $stmt->bindParam(":name", $name);
-        $stmt->bindParam(":value", $value);
-
         $stmt->execute();
     }
 

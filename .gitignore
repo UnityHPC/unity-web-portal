@@ -1,6 +1,3 @@
-# don't track custom user mappings
-resources/custom_user_mappings/*.csv
-
 # vscode project files
 .vscode/
 
@@ -14,6 +11,10 @@ composer.lock
 
 # don't track site configs
 deployment/*
+!deployment/overrides/
+!deployment/overrides/phpunit/
+!deployment/overrides/phpunit/config/
+!deployment/overrides/phpunit/config/config.ini
 !deployment/**/README.md
 
 .phpunit.result.cache
