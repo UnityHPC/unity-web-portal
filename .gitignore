@@ -18,6 +18,9 @@ deployment/**/*
 !deployment/overrides/worker/
 !deployment/overrides/worker/config/
 !deployment/overrides/worker/config/config.ini
+!deployment/overrides/course-creator/
+!deployment/overrides/course-creator/config/
+!deployment/overrides/course-creator/config/config.ini
 !deployment/**/README.md
 
 .phpunit.result.cache
