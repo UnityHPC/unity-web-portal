@@ -1,7 +1,4 @@
 <?php
-
-require_once __DIR__ . "/../vendor/autoload.php";
-
 // submodule
 require_once __DIR__ . "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPEntry.php";
 require_once __DIR__ . "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPConn.php";
@@ -14,14 +11,15 @@ require_once __DIR__ . "/../resources/lib/UnitySQL.php";
 require_once __DIR__ . "/../resources/lib/UnityMailer.php";
 require_once __DIR__ . "/../resources/lib/UnitySSO.php";
 require_once __DIR__ . "/../resources/lib/UnitySite.php";
+require_once __DIR__ . "/../resources/lib/UnityConfig.php";
 require_once __DIR__ . "/../resources/lib/UnityWebhook.php";
 require_once __DIR__ . "/../resources/lib/UnityRedis.php";
 require_once __DIR__ . "/../resources/lib/UnityGithub.php";
 require_once __DIR__ . "/../resources/lib/exceptions/PhpUnitNoDieException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/SSOException.php";
 
-$GLOBALS["PHPUNIT_NO_DIE_PLEASE"] = true;
-$GLOBALS["PHPUNIT_SIMPLE_ERROR_LOG_PLEASE"] = true;
+$_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
+require_once __DIR__ .  "/../resources/config.php";
 
 global $HTTP_HEADER_TEST_INPUTS;
 $HTTP_HEADER_TEST_INPUTS = [

@@ -9,7 +9,7 @@ class UnitySite
 {
     public static function die($x = null, $show_user = false)
     {
-        if (isset($GLOBALS["PHPUNIT_NO_DIE_PLEASE"]) && $GLOBALS["PHPUNIT_NO_DIE_PLEASE"] == true) {
+        if (CONFIG["site"]["allow_die"] == false) {
             if (is_null($x)) {
                 throw new PhpUnitNoDieException();
             } else {
@@ -39,7 +39,7 @@ class UnitySite
 
     public static function errorLog(string $title, string $message)
     {
-        if (@$GLOBALS["PHPUNIT_SIMPLE_ERROR_LOG_PLEASE"] == true) {
+        if (CONFIG["site"]["enable_verbose_error_log"] == false) {
             error_log("$title: $message");
             return;
         }
@@ -74,6 +74,9 @@ class UnitySite
     // https://www.php.net/manual/en/function.register-shutdown-function.php
     public static function shutdown()
     {
+        if (CONFIG["site"]["enable_shutdown_msg"] == false) {
+            return;
+        }
         if (!is_null($e = error_get_last())) {
             if (!headers_sent()) {
                 self::headerResponseCode(500, "internal server error");
