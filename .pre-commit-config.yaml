@@ -1,9 +1,8 @@
-# intentionally malformed files
 # pre-commit automatically excludes submodules
-exclude: |
-  (?x)^(
-      test/.*|
-  )$
+# exclude: |
+#   (?x)^(
+#       test/.*|
+#   )$
 
 repos:
   # auto formatters (no work required) #############################################################
@@ -12,6 +11,7 @@ repos:
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
+
   - repo: local
     hooks:
       - id: phpcbf
@@ -20,6 +20,11 @@ repos:
         language: system
         files: \.php$
         args: [--standard=./.phpcs-ruleset.xml, --colors]
+        exclude: |
+          (?x)^(
+              test/.*|
+              workers/.*|
+          )$
 
   # linters (work required) ########################################################################
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -30,10 +35,12 @@ repos:
       - id: check-xml
       - id: check-added-large-files
       - id: check-executables-have-shebangs
+
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.23.1
     hooks:
       - id: gitleaks
+
   - repo: local
     hooks:
       - id: phpcs
@@ -42,6 +49,11 @@ repos:
         language: system
         files: \.php$
         args: [--standard=./.phpcs-ruleset.xml, --colors]
+        exclude: |
+          (?x)^(
+              test/.*|
+              workers/.*|
+          )$
       - id: php-l
         name: php -l
         entry: php
