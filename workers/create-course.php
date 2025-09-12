@@ -10,7 +10,7 @@ use UnityWebPortal\lib\UnityGroup;
 function cn2org($cn) {
     $matches = array();
     preg_match("/.*_([^_]+_[^_]+)$/", $cn, $matches);
-    assert(count($matches) == 2, "failed to extract org from cn");
+    assert(count($matches) == 2, "failed to extract org from cn: '$cn'");
     return $matches[1];
 }
 
