@@ -75,7 +75,9 @@ class UnitySite
     public static function shutdown()
     {
         if (!is_null($e = error_get_last())) {
-            self::headerResponseCode(500, "internal server error");
+            if (!headers_sent()) {
+                self::headerResponseCode(500, "internal server error");
+            }
             $errorid = uniqid();
             $e["unity_error_id"] = $errorid;
             self::errorLog("internal server error", json_encode($e));
