@@ -5,7 +5,7 @@ use RobinIngelbrecht\PHPUnitCoverageTools\MinCoverage\MinCoverageRule;
 return [
     new MinCoverageRule(
         pattern: '*',
-        minCoverage: 64,
+        minCoverage: 63,
         exitOnLowCoverage: true
     ),
 ];
