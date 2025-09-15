@@ -78,7 +78,7 @@ class UnitySite
             return;
         }
         $e = error_get_last();
-        if (is_null($e) || $e["type"] != E_ERROR) {
+        if (is_null($e) || $e["type"] !== E_ERROR) {
             return;
         }
         if (!headers_sent()) {
