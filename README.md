@@ -114,6 +114,8 @@ rm "$prod" && ln -s "$old" "$prod"
     * `offset_PIGID`
     * `offset_ORGGID`
 * `custom_user_mappings` can no longer match with just the 1st segment of the logged in user's UID, an exact match is required
+* LDAP:
+    * create the `gecos` attribute for all users by concatenating `givenName` and `sn`
 
 ### 1.2.0 -> 1.2.1
 * SQL:
