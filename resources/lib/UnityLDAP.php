@@ -337,7 +337,14 @@ class UnityLDAP extends ldapConn
         foreach ($this->getAllPIGroupsAttributes(["cn", "memberuid"]) as $array) {
             $gid = $array["cn"][0];
             foreach ($array["memberuid"] as $uid) {
-                array_push($uid2pigids[$uid], $gid);
+                if (array_key_exists($uid, $uid2pigids)) {
+                    array_push($uid2pigids[$uid], $gid);
+                } else {
+                    UnitySite::errorLog(
+                        "warning",
+                        "user '$uid' is a member of a PI group but is not a Unity user!"
+                    );
+                }
             }
         }
         return $uid2pigids;
