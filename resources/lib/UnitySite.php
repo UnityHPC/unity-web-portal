@@ -77,30 +77,32 @@ class UnitySite
         if (CONFIG["site"]["enable_shutdown_msg"] == false) {
             return;
         }
-        if (!is_null($e = error_get_last())) {
-            if (!headers_sent()) {
-                self::headerResponseCode(500, "internal server error");
-            }
-            $errorid = uniqid();
-            $e["unity_error_id"] = $errorid;
-            self::errorLog("internal server error", json_encode($e));
-            echo "
-                <h1>An internal server error has occurred.</h1>
-                <p>
-                    Please notify a Unity admin at "
-                    . CONFIG["mail"]["support"]
-                    . ". Error ID: $errorid.
-                </p>
-            ";
-            // if content already printed, status code will be ignored and alert text may not be
-            // shown in the webpage in an obvious way, so make a popup
-            self::alert(
-                "An internal server error has occurred. "
-                . "Please notify a Unity admin at "
-                . CONFIG["mail"]["support"]
-                . ". Error ID: $errorid."
-            );
+        $e = error_get_last();
+        if (is_null($e) || $e["type"] !== E_ERROR) {
+            return;
         }
+        if (!headers_sent()) {
+            self::headerResponseCode(500, "internal server error");
+        }
+        $errorid = uniqid();
+        $e["unity_error_id"] = $errorid;
+        self::errorLog("internal server error", json_encode($e));
+        echo "
+            <h1>An internal server error has occurred.</h1>
+            <p>
+                Please notify a Unity admin at "
+                . CONFIG["mail"]["support"]
+                . ". Error ID: $errorid.
+            </p>
+        ";
+        // if content already printed, status code will be ignored and alert text may not be
+        // shown in the webpage in an obvious way, so make a popup
+        self::alert(
+            "An internal server error has occurred. "
+            . "Please notify a Unity admin at "
+            . CONFIG["mail"]["support"]
+            . ". Error ID: $errorid."
+        );
     }
 
     public static function arrayGetOrBadRequest(array $array, ...$keys)
