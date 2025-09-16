@@ -322,6 +322,17 @@ class UnityLDAP extends ldapConn
                 unset($owner_attributes[$i]);
             }
         }
+        $owner_attributes = array_values($owner_attributes); // reindex
+        $owners_not_found = array_diff(
+            $owner_uids,
+            array_map(fn($x) => $x["uid"][0], $owner_attributes)
+        );
+        if (count($owners_not_found) > 0) {
+            UnitySite::errorLog(
+                "warning",
+                "PI group owners not found: " . json_encode($owners_not_found) . "\n"
+            );
+        }
         return $owner_attributes;
     }
 
