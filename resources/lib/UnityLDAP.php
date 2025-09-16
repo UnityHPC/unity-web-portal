@@ -244,7 +244,7 @@ class UnityLDAP extends ldapConn
                 unset($user_attributes[$i]);
             }
         }
-        return $user_attributes;
+        return array_values($user_attributes); // reindex
     }
 
     public function getAllPIGroups(
