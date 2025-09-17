@@ -117,7 +117,7 @@ class UnityLDAP extends ldapConn
 
     public function getNextOrgGIDNumber()
     {
-        $IDNumsInUse = array_values($this->getCustomIDMappings());
+        $IDNumsInUse = $this->getAllGIDNumbersInUse();
         $start = $this->offset_ORGGID;
         return $this->getNextIDNumber($start, $IDNumsInUse);
     }
