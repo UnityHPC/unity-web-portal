@@ -93,7 +93,6 @@ class UnityLDAP extends ldapConn
     public function getNextUIDGIDNumber($uid)
     {
         $IDNumsInUse = array_merge($this->getAllUIDNumbersInUse(), $this->getAllGIDNumbersInUse());
-        $start = $this->offset_UIDGID;
         $customIDMappings = $this->getCustomIDMappings();
         $customMappedID = $customIDMappings[$uid] ?? null;
         if (!is_null($customMappedID) && !in_array($customMappedID, $IDNumsInUse)) {
@@ -105,21 +104,26 @@ class UnityLDAP extends ldapConn
                 "user '$uid' has a custom mapped IDNumber $customMappedID but it's already in use!",
             );
         }
-        return $this->getNextIDNumber($start, $IDNumsInUse);
+        return $this->getNextIDNumber(
+            $this->offset_UIDGID,
+            array_merge($IDNumsInUse, array_values($this->getCustomIDMappings()))
+        );
     }
 
     public function getNextPIGIDNumber()
     {
-        $IDNumsInUse = $this->getAllGIDNumbersInUse();
-        $start = $this->offset_PIGID;
-        return $this->getNextIDNumber($start, $IDNumsInUse);
+        return $this->getNextIDNumber(
+            $this->offset_PIGID,
+            array_merge($this->getAllGIDNumbersInUse(), array_values($this->getCustomIDMappings()))
+        );
     }
 
     public function getNextOrgGIDNumber()
     {
-        $IDNumsInUse = $this->getAllGIDNumbersInUse();
-        $start = $this->offset_ORGGID;
-        return $this->getNextIDNumber($start, $IDNumsInUse);
+        return $this->getNextIDNumber(
+            $this->offset_ORGGID,
+            array_merge($this->getAllGIDNumbersInUse(), array_values($this->getCustomIDMappings()))
+        );
     }
 
     private function isIDNumberForbidden($id)
@@ -129,12 +133,10 @@ class UnityLDAP extends ldapConn
         return (($id <= 999) || ($id >= 60000 && $id <= 64999));
     }
 
-    private function getNextIDNumber($start, $IDNumsInUse)
+    private function getNextIDNumber($start, $IDsToSkip)
     {
-        // custom ID mappings are considered both UIDs and GIDs
-        $IDNumsInUse = array_merge($IDNumsInUse, array_values($this->getCustomIDMappings()));
         $new_id = $start;
-        while ($this->isIDNumberForbidden($new_id) || in_array($new_id, $IDNumsInUse)) {
+        while ($this->isIDNumberForbidden($new_id) || in_array($new_id, $IDsToSkip)) {
             $new_id++;
         }
         return $new_id;
