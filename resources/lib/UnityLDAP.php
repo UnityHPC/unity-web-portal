@@ -133,10 +133,10 @@ class UnityLDAP extends ldapConn
         return (($id <= 999) || ($id >= 60000 && $id <= 64999));
     }
 
-    private function getNextIDNumber($start, $IDNumsInUse)
+    private function getNextIDNumber($start, $IDsToSkip)
     {
         $new_id = $start;
-        while ($this->isIDNumberForbidden($new_id) || in_array($new_id, $IDNumsInUse)) {
+        while ($this->isIDNumberForbidden($new_id) || in_array($new_id, $IDsToSkip)) {
             $new_id++;
         }
         return $new_id;
