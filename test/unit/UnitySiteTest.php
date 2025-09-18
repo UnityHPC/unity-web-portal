@@ -4,7 +4,7 @@ namespace UnityWebPortal\lib;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
+use UnityWebPortal\lib\exceptions\NoDieException;
 // use PHPUnit\Framework\Attributes\BackupGlobals;
 // use PHPUnit\Framework\Attributes\RunTestsInSeparateProcess;
 
@@ -108,7 +108,7 @@ class UnitySiteTest extends TestCase
     public function testArrayGetOrBadRequestThrowsOnMissingKeyFirstLevel()
     {
         $array = ['x' => 1];
-        $this->expectException(PhpUnitNoDieException::class);
+        $this->expectException(NoDieException::class);
         $this->expectExceptionMessage('["y"]');
         UnitySite::arrayGetOrBadRequest($array, 'y');
     }
@@ -116,7 +116,7 @@ class UnitySiteTest extends TestCase
     public function testArrayGetOrBadRequestThrowsOnMissingKeyNested()
     {
         $array = ['a' => []];
-        $this->expectException(PhpUnitNoDieException::class);
+        $this->expectException(NoDieException::class);
         // Should include both levels
         $this->expectExceptionMessage('["a","b"]');
         UnitySite::arrayGetOrBadRequest($array, 'a', 'b');
@@ -125,7 +125,7 @@ class UnitySiteTest extends TestCase
     public function testArrayGetOrBadRequestThrowsWhenValueIsNullButKeyNotSet()
     {
         $array = ['a' => null];
-        $this->expectException(PhpUnitNoDieException::class);
+        $this->expectException(NoDieException::class);
         $this->expectExceptionMessage('["a"]');
         UnitySite::arrayGetOrBadRequest($array, 'a');
     }

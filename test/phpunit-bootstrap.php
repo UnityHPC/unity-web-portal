@@ -15,7 +15,7 @@ require_once __DIR__ . "/../resources/lib/UnityConfig.php";
 require_once __DIR__ . "/../resources/lib/UnityWebhook.php";
 require_once __DIR__ . "/../resources/lib/UnityRedis.php";
 require_once __DIR__ . "/../resources/lib/UnityGithub.php";
-require_once __DIR__ . "/../resources/lib/exceptions/PhpUnitNoDieException.php";
+require_once __DIR__ . "/../resources/lib/exceptions/NoDieException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/SSOException.php";
 
 $_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
@@ -91,7 +91,7 @@ function http_post(string $phpfile, array $post_data): void
     $post_did_redirect_or_die = false;
     try {
         include $phpfile;
-    } catch (UnityWebPortal\lib\exceptions\PhpUnitNoDieException $e) {
+    } catch (UnityWebPortal\lib\exceptions\NoDieException $e) {
         $post_did_redirect_or_die = true;
     } finally {
         ob_get_clean(); // discard output
