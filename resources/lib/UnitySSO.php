@@ -26,6 +26,8 @@ class UnitySSO
         return strtolower($org);
     }
 
+    // shibboleth service provider writes attribute into "server variables":
+    // https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2065335257/AttributeAccess#PHP-Header-Access
     private static function getAttribute($attributeName, $fallbackAttributeName = null)
     {
         if (!is_null($fallbackAttributeName) && !(isset($_SERVER[$attributeName]))) {
