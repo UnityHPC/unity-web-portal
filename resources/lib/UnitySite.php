@@ -3,7 +3,7 @@
 namespace UnityWebPortal\lib;
 
 use phpseclib3\Crypt\PublicKeyLoader;
-use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
+use UnityWebPortal\lib\exceptions\NoDieException;
 
 class UnitySite
 {
@@ -11,9 +11,9 @@ class UnitySite
     {
         if (CONFIG["site"]["allow_die"] == false) {
             if (is_null($x)) {
-                throw new PhpUnitNoDieException();
+                throw new NoDieException();
             } else {
-                throw new PhpUnitNoDieException($x);
+                throw new NoDieException($x);
             }
         } else {
             if (!is_null($x) and $show_user) {
