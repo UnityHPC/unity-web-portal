@@ -7,20 +7,31 @@ use UnityWebPortal\lib\exceptions\NoDieException;
 
 class UnitySite
 {
-    public static function die($x = null, $show_user = false)
+    private static function die($msg)
     {
         if (CONFIG["site"]["allow_die"] == false) {
-            if (is_null($x)) {
-                throw new NoDieException();
-            } else {
-                throw new NoDieException($x);
-            }
+            throw new NoDieException($msg);
         } else {
-            if (!is_null($x) and $show_user) {
-                die($x);
-            } else {
-                die();
-            }
+            $errorid = uniqid();
+            $e["unity_error_id"] = $errorid;
+            self::errorLog("internal server error", json_encode($e));
+            echo "
+                <h1>$msg</h1>
+                <p>
+                    Please notify a Unity admin at "
+                    . CONFIG["mail"]["support"]
+                    . ". Error ID: $errorid.
+                </p>
+            ";
+            // if content already printed, status code will be ignored and alert text may not be
+            // shown in the webpage in an obvious way, so make a popup
+            self::alert(
+                $msg
+                . " Please notify a Unity admin at "
+                . CONFIG["mail"]["support"]
+                . ". Error ID: $errorid."
+            );
+            die();
         }
     }
 
@@ -59,16 +70,14 @@ class UnitySite
     {
         self::headerResponseCode(400, "bad request");
         self::errorLog("bad request", $message);
-        error_clear_last();
-        self::die($message);
+        self::die("Requested action or provided data is invalid.");
     }
 
     public static function forbidden($message)
     {
         self::headerResponseCode(403, "forbidden");
         self::errorLog("forbidden", $message);
-        error_clear_last();
-        self::die($message);
+        self::die("Permission denied.");
     }
 
     // https://www.php.net/manual/en/function.register-shutdown-function.php
@@ -84,25 +93,7 @@ class UnitySite
         if (!headers_sent()) {
             self::headerResponseCode(500, "internal server error");
         }
-        $errorid = uniqid();
-        $e["unity_error_id"] = $errorid;
-        self::errorLog("internal server error", json_encode($e));
-        echo "
-            <h1>An internal server error has occurred.</h1>
-            <p>
-                Please notify a Unity admin at "
-                . CONFIG["mail"]["support"]
-                . ". Error ID: $errorid.
-            </p>
-        ";
-        // if content already printed, status code will be ignored and alert text may not be
-        // shown in the webpage in an obvious way, so make a popup
-        self::alert(
-            "An internal server error has occurred. "
-            . "Please notify a Unity admin at "
-            . CONFIG["mail"]["support"]
-            . ". Error ID: $errorid."
-        );
+        self::die("An internal server error has occurred.");
     }
 
     public static function arrayGetOrBadRequest(array $array, ...$keys)
