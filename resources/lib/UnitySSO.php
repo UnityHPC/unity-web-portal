@@ -26,15 +26,27 @@ class UnitySSO
         return strtolower($org);
     }
 
+    private static function getAttribute($attributeName, $fallbackAttributeName = null)
+    {
+        if (!is_null($fallbackAttributeName) && !(isset($_SERVER[$attributeName]))) {
+            $attribute = UnitySite::arrayGetOrBadRequest($_SERVER, $fallbackAttributeName);
+        } else {
+            $attribute = UnitySite::arrayGetOrBadRequest($_SERVER, $attributeName);
+        }
+        // shib attributes may have multiple values, by default they are split by ';'
+        // see SPConfig setting attributeValueDelimiter
+        return explode(";", $attribute)[0];
+    }
+
     public static function getSSO()
     {
         return array(
-            "user" => self::eppnToUID($_SERVER["REMOTE_USER"]),
-            "org" => self::eppnToOrg($_SERVER["REMOTE_USER"]),
-            "firstname" => $_SERVER["givenName"],
-            "lastname" => $_SERVER["sn"],
-            "name" => $_SERVER["givenName"] . " " . $_SERVER["sn"],
-            "mail" => isset($_SERVER["mail"]) ? $_SERVER["mail"] : $_SERVER["eppn"]
+            "user" => self::eppnToUID(self::getAttribute("REMOTE_USER")),
+            "org" => self::eppnToOrg(self::getAttribute("REMOTE_USER")),
+            "firstname" => self::getAttribute("givenName"),
+            "lastname" => self::getAttribute("sn"),
+            "name" => self::getAttribute("givenName") . " " . self::getAttribute("sn"),
+            "mail" => self::getAttribute("mail", "eppn")
         );
     }
 }
