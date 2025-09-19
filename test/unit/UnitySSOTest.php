@@ -2,6 +2,7 @@
 
 namespace UnityWebPortal\lib;
 
+use UnityWebPortal\lib\exceptions\SSOException;
 use PHPUnit\Framework\TestCase;
 
 class UnitySSOTest extends TestCase
@@ -18,6 +19,30 @@ class UnitySSOTest extends TestCase
             $this->assertEquals($expectedSSO["firstname"], $sso["firstname"]);
             $this->assertEquals($expectedSSO["lastname"], $sso["lastname"]);
             $this->assertEquals($expectedSSO["mail"], $sso["mail"]);
+        } finally {
+            $_PREVIOUS_SERVER = $_SERVER;
+        }
+    }
+
+    public function testUnsetAttribute()
+    {
+        $PREVIOUS_SERVER = $_SERVER;
+        $this->expectException(SSOException::class);
+        try {
+            unset($_SERVER["REMOTE_USER"]);
+            $sso = UnitySSO::getSSO();
+        } finally {
+            $_PREVIOUS_SERVER = $_SERVER;
+        }
+    }
+
+    public function testEmptyAttribute()
+    {
+        $PREVIOUS_SERVER = $_SERVER;
+        $this->expectException(SSOException::class);
+        try {
+            $_SERVER["REMOTE_USER"] = "";
+            $sso = UnitySSO::getSSO();
         } finally {
             $_PREVIOUS_SERVER = $_SERVER;
         }
