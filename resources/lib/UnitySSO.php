@@ -26,18 +26,33 @@ class UnitySSO
         return strtolower($org);
     }
 
-    // shibboleth service provider writes attribute into "server variables":
-    // https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2065335257/AttributeAccess#PHP-Header-Access
+    // shibboleth service provider writes attributes into "server variables"
+    // shibboleth service provider does not garuntee attributes are set, even REMOTE_USER
+    // https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2065335257/AttributeAccess
+    // I have observed attributes to be set to empty strings while shibd complains of bad config
+    private static function getAttributeRaw($attributeName, $fallbackAttributeName = null)
+    {
+        if (isset($_SERVER[$attributeName]) && $_SERVER[$attributeName] != "") {
+            return $_SERVER[$attributeName];
+        }
+        if (is_null($fallbackAttributeName)) {
+            throw new SSOException("\$_SERVER[\"$attributeName\"] is unset or empty!");
+        }
+        if (isset($_SERVER[$fallbackAttributeName]) && $_SERVER[$fallbackAttributeName] != "") {
+            return $_SERVER[$fallbackAttributeName];
+        }
+        throw new SSOException(
+            "\$_SERVER[\"$attributeName\"] and \$_SERVER[\"$fallbackAttributeName\"]"
+            . " are both unset or empty!"
+        );
+    }
+
     private static function getAttribute($attributeName, $fallbackAttributeName = null)
     {
-        if (!is_null($fallbackAttributeName) && !(isset($_SERVER[$attributeName]))) {
-            $attribute = UnitySite::arrayGetOrBadRequest($_SERVER, $fallbackAttributeName);
-        } else {
-            $attribute = UnitySite::arrayGetOrBadRequest($_SERVER, $attributeName);
-        }
-        // shib attributes may have multiple values, by default they are split by ';'
+        $attribute_raw = self::getAttributeRaw($attributeName, $fallbackAttributeName);
+        // attributes may have multiple values, by default they are split by ';'
         // see SPConfig setting attributeValueDelimiter
-        return explode(";", $attribute)[0];
+        return explode(";", $attribute_raw)[0];
     }
 
     public static function getSSO()
