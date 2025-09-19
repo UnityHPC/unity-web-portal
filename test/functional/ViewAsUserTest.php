@@ -1,7 +1,6 @@
 <?php
 
 use UnityWebPortal\lib\UnitySite;
-use UnityWebPortal\lib\exceptions\PhpUnitNoDieException;
 use PHPUnit\Framework\TestCase;
 
 class ViewAsUserTest extends TestCase

@@ -2,6 +2,6 @@
 
 namespace UnityWebPortal\lib\exceptions;
 
-class PhpUnitNoDieException extends \Exception
+class NoDieException extends \Exception
 {
 }
