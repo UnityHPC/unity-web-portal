@@ -24,7 +24,9 @@ require_once __DIR__ . "/lib/UnityConfig.php";
 require_once __DIR__ . "/lib/UnityWebhook.php";
 require_once __DIR__ . "/lib/UnityRedis.php";
 require_once __DIR__ . "/lib/UnityGithub.php";
+require_once __DIR__ . "/lib/exceptions/NoDieException.php";
 require_once __DIR__ . "/lib/exceptions/SSOException.php";
+require_once __DIR__ . "/lib/exceptions/ArrayKeyException.php";
 
 require_once __DIR__ . "/config.php";
 require __DIR__ . "/init.php";
