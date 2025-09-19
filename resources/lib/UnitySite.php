@@ -123,6 +123,9 @@ class UnitySite
             self::badRequest(strval($e));
         }
         $contents = file_get_contents($tmpfile_path);
+        if ($contents === false) {
+            self::badRequest("Failed to read uploaded file: " . $tmpfile_path);
+        }
         if ($do_delete_tmpfile_after_read) {
             unlink($tmpfile_path);
         }
