@@ -157,7 +157,7 @@ class UnitySite
         }
         $contents = file_get_contents($tmpfile_path);
         if ($contents === false) {
-            self::badRequest("Failed to read uploaded file: " . $tmpfile_path);
+            throw new \Exception("Failed to read file: " . $tmpfile_path);
         }
         if ($do_delete_tmpfile_after_read) {
             unlink($tmpfile_path);
