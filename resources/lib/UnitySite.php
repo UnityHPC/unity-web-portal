@@ -139,28 +139,10 @@ class UnitySite
         self::internalServerError("An internal server error has occurred.", data: ["error" => $e]);
     }
 
-    public static function arrayGet($array, ...$keys)
-    {
-        $cursor = $array;
-        $keysTraversed = [];
-        foreach ($keys as $key) {
-            array_push($keysTraversed, $key);
-            if (!isset($cursor[$key])) {
-                throw new ArrayKeyException(
-                    "key not found: \$array" .
-                    // [1, 2, "foo"] => [1][2]["foo"]
-                    implode("", array_map(fn($x) => json_encode([$x]), $keysTraversed))
-                );
-            }
-            $cursor = $cursor[$key];
-        }
-        return $cursor;
-    }
-
     public static function getPostData(...$keys)
     {
         try {
-            return self::arrayGet($_POST, ...$keys);
+            return \arrayGet($_POST, ...$keys);
         } catch (ArrayKeyException $e) {
             self::badRequest(strval($e));
         }
@@ -169,7 +151,7 @@ class UnitySite
     public static function getUploadedFileContents($filename, $do_delete_tmpfile_after_read = true)
     {
         try {
-            $tmpfile_path = self::arrayGet($_FILES, $filename, "tmp_name");
+            $tmpfile_path = \arrayGet($_FILES, $filename, "tmp_name");
         } catch (ArrayKeyException $e) {
             self::badRequest(strval($e));
         }
