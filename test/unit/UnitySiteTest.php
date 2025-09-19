@@ -84,56 +84,56 @@ class UnitySiteTest extends TestCase
     public function testArrayGetOrBadRequestReturnsValueWhenKeyExists()
     {
         $array = [
-            'a' => [
-                'b' => [
-                    'c' => 123
+            "a" => [
+                "b" => [
+                    "c" => 123
                 ]
             ]
         ];
-        $result = UnitySite::arrayGetOrBadRequest($array, 'a', 'b', 'c');
+        $result = UnitySite::arrayGetOrBadRequest($array, "a", "b", "c");
         $this->assertSame(123, $result);
     }
 
     public function testArrayGetOrBadRequestReturnsArrayWhenTraversingPartially()
     {
         $array = [
-            'foo' => [
-                'bar' => 'baz'
+            "foo" => [
+                "bar" => "baz"
             ]
         ];
-        $result = UnitySite::arrayGetOrBadRequest($array, 'foo');
-        $this->assertSame(['bar' => 'baz'], $result);
+        $result = UnitySite::arrayGetOrBadRequest($array, "foo");
+        $this->assertSame(["bar" => "baz"], $result);
     }
 
     public function testArrayGetOrBadRequestThrowsOnMissingKeyFirstLevel()
     {
-        $array = ['x' => 1];
+        $array = ["x" => 1];
         $this->expectException(PhpUnitNoDieException::class);
         $this->expectExceptionMessage('["y"]');
-        UnitySite::arrayGetOrBadRequest($array, 'y');
+        UnitySite::arrayGetOrBadRequest($array, "y");
     }
 
     public function testArrayGetOrBadRequestThrowsOnMissingKeyNested()
     {
-        $array = ['a' => []];
+        $array = ["a" => []];
         $this->expectException(PhpUnitNoDieException::class);
         // Should include both levels
         $this->expectExceptionMessage('["a","b"]');
-        UnitySite::arrayGetOrBadRequest($array, 'a', 'b');
+        UnitySite::arrayGetOrBadRequest($array, "a", "b");
     }
 
     public function testArrayGetOrBadRequestThrowsWhenValueIsNullButKeyNotSet()
     {
-        $array = ['a' => null];
+        $array = ["a" => null];
         $this->expectException(PhpUnitNoDieException::class);
         $this->expectExceptionMessage('["a"]');
-        UnitySite::arrayGetOrBadRequest($array, 'a');
+        UnitySite::arrayGetOrBadRequest($array, "a");
     }
 
     public function testArrayGetOrBadRequestReturnsValueWhenValueIsFalsyButSet()
     {
-        $array = ['a' => 0];
-        $result = UnitySite::arrayGetOrBadRequest($array, 'a');
+        $array = ["a" => 0];
+        $result = UnitySite::arrayGetOrBadRequest($array, "a");
         $this->assertSame(0, $result);
     }
 
