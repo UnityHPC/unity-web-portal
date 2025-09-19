@@ -4,6 +4,7 @@ namespace UnityWebPortal\lib;
 
 use phpseclib3\Crypt\PublicKeyLoader;
 use UnityWebPortal\lib\exceptions\NoDieException;
+use UnityWebPortal\lib\exceptions\ArrayKeyException;
 
 class UnitySite
 {
@@ -138,18 +139,45 @@ class UnitySite
         self::internalServerError("An internal server error has occurred.", data: ["error" => $e]);
     }
 
-    public static function arrayGetOrBadRequest(array $array, ...$keys)
+    public static function arrayGet($array, ...$keys)
     {
         $cursor = $array;
         $keysTraversed = [];
         foreach ($keys as $key) {
             array_push($keysTraversed, $key);
             if (!isset($cursor[$key])) {
-                self::badRequest("array key not found: " . json_encode($keysTraversed));
+                throw new ArrayKeyException(
+                    "key not found: \$array" .
+                    // [1, 2, "foo"] => [1][2]["foo"]
+                    implode("", array_map(fn($x) => json_encode([$x]), $keysTraversed))
+                );
             }
             $cursor = $cursor[$key];
         }
         return $cursor;
+    }
+
+    public static function getPostData(...$keys)
+    {
+        try {
+            return self::arrayGet($_POST, ...$keys);
+        } catch (ArrayKeyException $e) {
+            self::badRequest(strval($e));
+        }
+    }
+
+    public static function getUploadedFileContents($filename, $do_delete_tmpfile_after_read = true)
+    {
+        try {
+            $tmpfile_path = self::arrayGet($_FILES, $filename, "tmp_name");
+        } catch (ArrayKeyException $e) {
+            self::badRequest(strval($e));
+        }
+        $contents = file_get_contents($tmpfile_path);
+        if ($do_delete_tmpfile_after_read) {
+            unlink($tmpfile_path);
+        }
+        return $contents;
     }
 
     // in firefox, the user can disable alert/confirm/prompt after the 2nd or 3rd popup

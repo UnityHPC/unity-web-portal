@@ -4,7 +4,7 @@ namespace UnityWebPortal\lib;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use UnityWebPortal\lib\exceptions\NoDieException;
+use UnityWebPortal\lib\exceptions\ArrayKeyException;
 // use PHPUnit\Framework\Attributes\BackupGlobals;
 // use PHPUnit\Framework\Attributes\RunTestsInSeparateProcess;
 
@@ -81,7 +81,7 @@ class UnitySiteTest extends TestCase
         $this->assertEquals($expected, UnitySite::testValidSSHKey($key));
     }
 
-    public function testArrayGetOrBadRequestReturnsValueWhenKeyExists()
+    public function testArrayGetReturnsValueWhenKeyExists()
     {
         $array = [
             "a" => [
@@ -90,50 +90,50 @@ class UnitySiteTest extends TestCase
                 ]
             ]
         ];
-        $result = UnitySite::arrayGetOrBadRequest($array, "a", "b", "c");
+        $result = UnitySite::arrayGet($array, "a", "b", "c");
         $this->assertSame(123, $result);
     }
 
-    public function testArrayGetOrBadRequestReturnsArrayWhenTraversingPartially()
+    public function testArrayGetReturnsArrayWhenTraversingPartially()
     {
         $array = [
             "foo" => [
                 "bar" => "baz"
             ]
         ];
-        $result = UnitySite::arrayGetOrBadRequest($array, "foo");
+        $result = UnitySite::arrayGet($array, "foo");
         $this->assertSame(["bar" => "baz"], $result);
     }
 
-    public function testArrayGetOrBadRequestThrowsOnMissingKeyFirstLevel()
+    public function testArrayGetThrowsOnMissingKeyFirstLevel()
     {
         $array = ["x" => 1];
-        $this->expectException(NoDieException::class);
-        $this->expectExceptionMessage('["y"]');
-        UnitySite::arrayGetOrBadRequest($array, "y");
+        $this->expectException(ArrayKeyException::class);
+        $this->expectExceptionMessage('$array["y"]');
+        UnitySite::arrayGet($array, "y");
     }
 
-    public function testArrayGetOrBadRequestThrowsOnMissingKeyNested()
+    public function testArrayGetThrowsOnMissingKeyNested()
     {
         $array = ["a" => []];
-        $this->expectException(NoDieException::class);
+        $this->expectException(ArrayKeyException::class);
         // Should include both levels
-        $this->expectExceptionMessage('["a","b"]');
-        UnitySite::arrayGetOrBadRequest($array, "a", "b");
+        $this->expectExceptionMessage('$array["a"]["b"]');
+        UnitySite::arrayGet($array, "a", "b");
     }
 
-    public function testArrayGetOrBadRequestThrowsWhenValueIsNullButKeyNotSet()
+    public function testArrayGetThrowsWhenValueIsNullButKeyNotSet()
     {
         $array = ["a" => null];
-        $this->expectException(NoDieException::class);
-        $this->expectExceptionMessage('["a"]');
-        UnitySite::arrayGetOrBadRequest($array, "a");
+        $this->expectException(ArrayKeyException::class);
+        $this->expectExceptionMessage('$array["a"]');
+        UnitySite::arrayGet($array, "a");
     }
 
-    public function testArrayGetOrBadRequestReturnsValueWhenValueIsFalsyButSet()
+    public function testArrayGetReturnsValueWhenValueIsFalsyButSet()
     {
         $array = ["a" => 0];
-        $result = UnitySite::arrayGetOrBadRequest($array, "a");
+        $result = UnitySite::arrayGet($array, "a");
         $this->assertSame(0, $result);
     }
 

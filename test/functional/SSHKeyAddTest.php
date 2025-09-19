@@ -31,8 +31,8 @@ class SSHKeyAddTest extends TestCase
                     __DIR__ . "/../../webroot/panel/account.php",
                     ["form_type" => "addKey", "add_type" => "import"]
                 );
+                $this->assertFalse(file_exists($tmp_path));
             } finally {
-                unlink($tmp_path);
                 unset($_FILES["keyfile"]);
             }
         }
