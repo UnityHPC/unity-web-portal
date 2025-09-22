@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 $_SERVER["HTTP_HOST"] = "worker"; // see deployment/overrides/worker
