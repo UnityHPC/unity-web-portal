@@ -15,7 +15,7 @@ terms_of_service_url = "https://github.com" ; this can be external or a portal p
 account_policy_url = "https://github.com" ; this can be external or a portal page created with "content management"
 allow_die = true ; internal use only
 enable_verbose_error_log = true ; internal use only
-enable_shutdown_msg = true ; internal use only
+enable_error_to_user = true ; internal use only
 
 [ldap]
 uri = "ldap://identity"  ; URI of remote LDAP server
