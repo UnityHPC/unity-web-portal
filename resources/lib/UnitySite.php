@@ -24,85 +24,118 @@ class UnitySite
         }
     }
 
-    public static function redirect($destination)
+    public static function redirect($dest)
     {
-        header("Location: $destination");
-        self::die("Redirect failed, click <a href='$destination'>here</a> to continue.", true);
+        header("Location: $dest");
+        self::errorToUser("Redirect failed, click <a href='$dest'>here</a> to continue.", 302);
+        self::die();
     }
 
-    private static function headerResponseCode(int $code, string $reason)
-    {
-        $protocol = $_SERVER["SERVER_PROTOCOL"] ?? "HTTP/1.1";
-        $msg = $protocol . " " . strval($code) . " " . $reason;
-        header($msg, true, $code);
-    }
-
-    public static function errorLog(string $title, string $message)
-    {
-        if (CONFIG["site"]["enable_verbose_error_log"] == false) {
+    // $data must be JSON serializable
+    public static function errorLog(
+        string $title,
+        string $message,
+        string|null $errorid = null,
+        Throwable|null $error = null,
+        mixed $data = null,
+    ) {
+        if (!CONFIG["site"]["enable_verbose_error_log"]) {
             error_log("$title: $message");
             return;
         }
-        error_log(
-            "$title: " . json_encode(
-                [
-                    "message" => $message,
-                    "REMOTE_USER" => @$_SERVER["REMOTE_USER"],
-                    "REMOTE_ADDR" => @$_SERVER["REMOTE_ADDR"],
-                    "trace" => (new \Exception())->getTraceAsString()
-                ]
-            )
-        );
+        $output = [
+            "message" => $message,
+            "REMOTE_USER" => $_SERVER["REMOTE_USER"] ?? null,
+            "REMOTE_ADDR" => $_SERVER["REMOTE_ADDR"] ?? null,
+        ];
+        if (!is_null($errorid)) {
+            $output["errorid"] = $errorid;
+        }
+        if (!is_null($error)) {
+            $output["error"] = self::throwableToArray($error);
+        } else {
+            // newlines are bad for error log, but getTrace() is too verbose
+            $output["trace"] = explode("\n", (new \Exception())->getTraceAsString());
+        }
+        if (!is_null($data)) {
+            $output["data"] = $data;
+        }
+        error_log("$title: " . json_encode($output, JSON_UNESCAPED_SLASHES));
     }
 
-    public static function badRequest($message)
+    // recursive on $t->getPrevious()
+    private static function throwableToArray(Throwable $t): array
     {
-        self::headerResponseCode(400, "bad request");
-        self::errorLog("bad request", $message);
-        error_clear_last();
+        $output = [
+            "type" => gettype($t),
+            "msg" => $t->getMessage(),
+            // newlines are bad for error log, but getTrace() is too verbose
+            "trace" => explode("\n", $t->getTraceAsString()),
+        ];
+        $previous = $t->getPrevious();
+        if (!is_null($previous)) {
+            $output["previous"] = self::throwableToArray($previous);
+        }
+        return $output;
+    }
+
+    private static function errorToUser(
+        string $msg,
+        int $http_response_code,
+        string|null $errorid = null
+    ) {
+        if (!CONFIG["site"]["enable_error_to_user"]) {
+            return;
+        }
+        $notes = "Please notify a Unity admin at " . CONFIG["mail"]["support"] . ".";
+        if (!is_null($errorid)) {
+            $notes = $notes . " Error ID: $errorid.";
+        }
+        if (!headers_sent()) {
+            http_response_code($http_response_code);
+        }
+        // text may not be shown in the webpage in an obvious way, so make a popup
+        self::alert("$msg $notes");
+        echo "<h1>$msg</h1><p>$notes</p>";
+    }
+
+    public static function badRequest($message, $error = null, $data = null)
+    {
+        $errorid = uniqid();
+        self::errorToUser("Invalid requested action or submitted data.", 400, $errorid);
+        self::errorLog("bad request", $message, $errorid, $error, $data);
         self::die($message);
     }
 
-    public static function forbidden($message)
+    public static function forbidden($message, $error = null, $data = null)
     {
-        self::headerResponseCode(403, "forbidden");
-        self::errorLog("forbidden", $message);
-        error_clear_last();
+        $errorid = uniqid();
+        self::errorToUser("Permission denied.", 403, $errorid);
+        self::errorLog("forbidden", $message, $errorid, $error, $data);
+        self::die($message);
+    }
+
+    public static function internalServerError($message, $error = null, $data = null)
+    {
+        $errorid = uniqid();
+        self::errorToUser("An internal server error has occurred.", 500, $errorid);
+        self::errorLog("internal server error", $message, $errorid, $error, $data);
         self::die($message);
     }
 
     // https://www.php.net/manual/en/function.register-shutdown-function.php
     public static function shutdown()
     {
-        if (CONFIG["site"]["enable_shutdown_msg"] == false) {
-            return;
-        }
         $e = error_get_last();
         if (is_null($e) || $e["type"] !== E_ERROR) {
             return;
         }
-        if (!headers_sent()) {
-            self::headerResponseCode(500, "internal server error");
+        // newlines are bad for error log
+        if (!is_null($e) && array_key_exists("message", $e) && str_contains($e["message"], "\n")) {
+            $e["message"] = explode("\n", $e["message"]);
         }
-        $errorid = uniqid();
-        $e["unity_error_id"] = $errorid;
-        self::errorLog("internal server error", json_encode($e));
-        echo "
-            <h1>An internal server error has occurred.</h1>
-            <p>
-                Please notify a Unity admin at "
-                . CONFIG["mail"]["support"]
-                . ". Error ID: $errorid.
-            </p>
-        ";
-        // if content already printed, status code will be ignored and alert text may not be
-        // shown in the webpage in an obvious way, so make a popup
-        self::alert(
-            "An internal server error has occurred. "
-            . "Please notify a Unity admin at "
-            . CONFIG["mail"]["support"]
-            . ". Error ID: $errorid."
-        );
+        // error_get_last is an array, not a Throwable
+        self::internalServerError("An internal server error has occurred.", data: ["error" => $e]);
     }
 
     public static function arrayGetOrBadRequest(array $array, ...$keys)
