@@ -7,23 +7,22 @@ use UnityWebPortal\lib\UnitySite;
 $hasGroups = count($USER->getPIGroupGIDs()) > 0;
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    switch (UnitySite::arrayGetOrBadRequest($_POST, "form_type")) {
+    switch (UnitySite::getPostData("form_type")) {
         case "addKey":
             $keys = array();
-            switch (UnitySite::arrayGetOrBadRequest($_POST, "add_type")) {
+            switch (UnitySite::getPostData("add_type")) {
                 case "paste":
-                    array_push($keys, UnitySite::arrayGetOrBadRequest($_POST, "key"));
+                    array_push($keys, UnitySite::getPostData("key"));
                     break;
                 case "import":
-                    $keyPath = UnitySite::arrayGetOrBadRequest($_FILES, "keyfile", "tmp_name");
-                    $key = file_get_contents($keyPath);
+                    $key = UnitySite::getUploadedFileContents("keyfile");
                     array_push($keys, $key);
                     break;
                 case "generate":
-                    array_push($keys, UnitySite::arrayGetOrBadRequest($_POST, "gen_key"));
+                    array_push($keys, UnitySite::getPostData("gen_key"));
                     break;
                 case "github":
-                    $githubUsername = UnitySite::arrayGetOrBadRequest($_POST, "gh_user");
+                    $githubUsername = UnitySite::getPostData("gh_user");
                     $githubKeys = $GITHUB->getSshPublicKeys($githubUsername);
                     $keys = array_merge($keys, $githubKeys);
                     break;

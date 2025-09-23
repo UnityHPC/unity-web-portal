@@ -15,8 +15,10 @@ require_once __DIR__ . "/../resources/lib/UnityConfig.php";
 require_once __DIR__ . "/../resources/lib/UnityWebhook.php";
 require_once __DIR__ . "/../resources/lib/UnityRedis.php";
 require_once __DIR__ . "/../resources/lib/UnityGithub.php";
+require_once __DIR__ . "/../resources/lib/utils.php";
 require_once __DIR__ . "/../resources/lib/exceptions/NoDieException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/SSOException.php";
+require_once __DIR__ . "/../resources/lib/exceptions/ArrayKeyException.php";
 
 $_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
 require_once __DIR__ .  "/../resources/config.php";
