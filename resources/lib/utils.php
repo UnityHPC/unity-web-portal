@@ -22,7 +22,7 @@ function arrayGet($array, ...$keys)
 }
 
 // like assert() but not subject to zend.assertions config
-function ensure(bool $condition, str|null $message = null)
+function ensure(bool $condition, ?string $message = null)
 {
     if (!$condition) {
         throw new EnsureException($message ?? "ensure condition is false");
