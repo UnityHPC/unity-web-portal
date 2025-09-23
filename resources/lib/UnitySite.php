@@ -36,8 +36,8 @@ class UnitySite
     public static function errorLog(
         string $title,
         string $message,
-        string|null $errorid = null,
-        Throwable|null $error = null,
+        ?string $errorid = null,
+        ?Throwable $error = null,
         mixed $data = null,
     ) {
         if (!CONFIG["site"]["enable_verbose_error_log"]) {
@@ -83,7 +83,7 @@ class UnitySite
     private static function errorToUser(
         string $msg,
         int $http_response_code,
-        string|null $errorid = null
+        ?string $errorid = null
     ) {
         if (!CONFIG["site"]["enable_error_to_user"]) {
             return;

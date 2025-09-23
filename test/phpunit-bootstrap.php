@@ -61,7 +61,7 @@ function switchUser(
     string $given_name,
     string $sn,
     string $mail,
-    string|null $session_id = null
+    ?string $session_id = null
 ): void {
     global $REDIS, $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $OPERATOR, $USER, $SEND_PIMESG_TO_ADMINS, $LOC_HEADER, $LOC_FOOTER;
     session_write_close();
