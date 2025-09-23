@@ -7,7 +7,7 @@
 * The maximum line length for any PHP file is 100 characters, instead of PSR-12's 120 characters.
 * Comments should be used sparingly.
 * Empty lines should be used sparingly.
-* No code should call `die()` or `exit()`, instead `UnitySite::die()`.
+* No code should call `die()` or `exit()`, instead `UnitySite::die()`. This will avoid the premature death of our automated testing processes.
 
 This repository will automatically check PRs for linting compliance.
 
