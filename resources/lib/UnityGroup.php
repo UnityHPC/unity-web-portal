@@ -229,7 +229,7 @@ class UnityGroup
     //     $users = $this->getGroupMembers();
 
     //     // now we delete the ldap entry
-    //     \ensure($this->entry->exists());
+    //     $this->entry->ensureExists();
     //     $this->entry->delete();
     //     $this->REDIS->removeCacheArray("sorted_groups", "", $this->gid);
     //     foreach ($users as $user) {
