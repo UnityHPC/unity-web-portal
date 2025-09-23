@@ -145,7 +145,7 @@ class UnityUser
 
     public function getOrg($ignorecache = false)
     {
-        \ensure($this->exists());
+        $this->entry->ensureExists();
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->uid, "org");
             if (!is_null($cached_val)) {
@@ -194,7 +194,7 @@ class UnityUser
      */
     public function getFirstname($ignorecache = false)
     {
-        \ensure($this->exists());
+        $this->entry->ensureExists();
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->uid, "firstname");
             if (!is_null($cached_val)) {
@@ -243,7 +243,7 @@ class UnityUser
      */
     public function getLastname($ignorecache = false)
     {
-        \ensure($this->exists());
+        $this->entry->ensureExists();
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->uid, "lastname");
             if (!is_null($cached_val)) {
@@ -266,7 +266,7 @@ class UnityUser
 
     public function getFullname()
     {
-        \ensure($this->exists());
+        $this->entry->ensureExists();
         return $this->getFirstname() . " " . $this->getLastname();
     }
 
@@ -298,7 +298,7 @@ class UnityUser
      */
     public function getMail($ignorecache = false)
     {
-        \ensure($this->exists());
+        $this->entry->ensureExists();
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->uid, "mail");
             if (!is_null($cached_val)) {
@@ -357,7 +357,7 @@ class UnityUser
      */
     public function getSSHKeys($ignorecache = false)
     {
-        \ensure($this->exists());
+        $this->entry->ensureExists();
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->uid, "sshkeys");
             if (!is_null($cached_val)) {
@@ -431,7 +431,7 @@ class UnityUser
      */
     public function getLoginShell($ignorecache = false)
     {
-        \ensure($this->exists());
+        $this->entry->ensureExists();
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->uid, "loginshell");
             if (!is_null($cached_val)) {
@@ -476,7 +476,7 @@ class UnityUser
      */
     public function getHomeDir($ignorecache = false)
     {
-        \ensure($this->exists());
+        $this->entry->ensureExists();
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->uid, "homedir");
             if (!is_null($cached_val)) {
