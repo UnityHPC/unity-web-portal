@@ -8,6 +8,7 @@
 * Comments should be used sparingly.
 * Empty lines should be used sparingly.
 * No code should call `die()` or `exit()`, instead `UnitySite::die()`. This will avoid the premature death of our automated testing processes.
+* Instead of `assert`, use `\ensure`. This will enforce conditions even in production.
 
 This repository will automatically check PRs for linting compliance.
 

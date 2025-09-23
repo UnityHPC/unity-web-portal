@@ -229,7 +229,7 @@ class UnityGroup
     //     $users = $this->getGroupMembers();
 
     //     // now we delete the ldap entry
-    //     assert($this->entry->exists());
+    //     \ensure($this->entry->exists());
     //     $this->entry->delete();
     //     $this->REDIS->removeCacheArray("sorted_groups", "", $this->gid);
     //     foreach ($users as $user) {
@@ -463,7 +463,7 @@ class UnityGroup
     private function init()
     {
         $owner = $this->getOwner();
-        assert(!$this->entry->exists());
+        \ensure(!$this->entry->exists());
         $nextGID = $this->LDAP->getNextPIGIDNumber();
         $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
         $this->entry->setAttribute("gidnumber", strval($nextGID));
