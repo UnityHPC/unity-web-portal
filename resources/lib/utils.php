@@ -1,6 +1,7 @@
 <?php
 
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
+use UnityWebPortal\lib\exceptions\EnsureException;
 
 function arrayGet($array, ...$keys)
 {
@@ -18,4 +19,12 @@ function arrayGet($array, ...$keys)
         $cursor = $cursor[$key];
     }
     return $cursor;
+}
+
+// like assert() but not subject to zend.assertions config
+function ensure(bool $condition, str|null $message = null)
+{
+    if (!$condition) {
+        throw new EnsureException($message ?? "ensure condition is false");
+    }
 }
