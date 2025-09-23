@@ -106,3 +106,51 @@ Using [robiningelbrecht/phpunit-coverage-tools](https://github.com/robiningelbre
 This percentage should be increased over time to just below whatever the current coverage is.
 
 To run a code coverage test, use the same procedure for phpunit but add this argument: `--coverage-text=/dev/stdout`
+
+### LDAP cleanliness
+
+Any test that makes changes to LDAP must clean up after itself using `try`/`finally`.
+When a test fails to clean up after itself, it can cause other tests to fail or become otherwise un-useful.
+Because LDAP may not always be clean, any test that relies on a certain LDAP state should `assert` everything about that state.
+To reset LDAP to a clean slate, just re-run the `build.sh` script.
+
+Note: `phpunit` can misbehave when using `expectException` and `try`/`finally`, see https://github.com/UnityHPC/unity-web-portal/issues/258.
+
+### creating the conditions for a test
+
+Selecting users for tests happens with the `get...User...` family of functions from `phpunit-bootstrap.php`.
+Since this family of functions is growing large and their names long and complicated, it is better to start with a simpler state and create the desired conditions manually.
+For example, rather than using `getUserWithOneKey`, use `getUserHasNoSSHKeys` and add one key for them.
+
+The LDAP entries available in the dev environment are defined in `tools/docker-dev/identity/bootstrap.ldif`.
+These entries may be subject to change.
+Only `phpunit-bootstrap.php` should have hard-coded references to these entries.
+
+### testing the HTTP API
+
+When writing a test, it may be tempting to use the PHP API directly, but the HTTP API must also be tested.
+
+Example:
+
+using the PHP API:
+```php
+private function requestGroupCreation()
+{
+    $USER->getPIGroup()->requestGroup();
+}
+```
+
+using the HTTP API:
+```php
+private function requestGroupCreation()
+{
+    http_post(
+        __DIR__ . "/../../webroot/panel/new_account.php",
+        ["new_user_sel" => "pi", "eula" => "agree", "confirm_pi" => "agree"]
+    );
+}
+```
+
+`http_post` is defined in `phpunit-bootstrap.php`.
+
+It is fine to use the PHP API when making assertions and doing cleanup.
