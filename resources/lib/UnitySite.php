@@ -144,7 +144,7 @@ class UnitySite
         try {
             return \arrayGet($_POST, ...$keys);
         } catch (ArrayKeyException $e) {
-            self::badRequest(strval($e));
+            self::badRequest('failed to get $_POST data', $e, ['$_POST' => $_POST]);
         }
     }
 
@@ -153,7 +153,7 @@ class UnitySite
         try {
             $tmpfile_path = \arrayGet($_FILES, $filename, "tmp_name");
         } catch (ArrayKeyException $e) {
-            self::badRequest(strval($e));
+            self::badRequest('no such uploaded file', $e, ['$_FILES' => $_FILES]);
         }
         $contents = file_get_contents($tmpfile_path);
         if ($contents === false) {
