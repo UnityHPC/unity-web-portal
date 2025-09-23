@@ -116,11 +116,19 @@ class UnitySite
         self::die($message);
     }
 
-    public static function internalServerError($message, $error = null, $data = null)
-    {
+    public static function internalServerError(
+        $message,
+        $error = null,
+        $data = null,
+        $do_verbose_error_log = true
+    ) {
         $errorid = uniqid();
         self::errorToUser("An internal server error has occurred.", 500, $errorid);
-        self::errorLog("internal server error", $message, $errorid, $error, $data);
+        if ($do_verbose_error_log) {
+            self::errorLog("internal server error", $message, $errorid, $error, $data);
+        } else {
+            self::errorLog("internal server error", $message);
+        }
         self::die($message);
     }
 
@@ -135,8 +143,11 @@ class UnitySite
         if (!is_null($e) && array_key_exists("message", $e) && str_contains($e["message"], "\n")) {
             $e["message"] = explode("\n", $e["message"]);
         }
-        // error_get_last is an array, not a Throwable
-        self::internalServerError("An internal server error has occurred.", data: ["error" => $e]);
+        self::internalServerError(
+            "An internal server error has occurred.",
+            data: ["error" => $e], // error_get_last is an array, not a Throwable
+            do_error_log: false, // fatal errors are already written to error log before this point
+        );
     }
 
     public static function getPostData(...$keys)
