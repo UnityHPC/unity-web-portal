@@ -34,15 +34,6 @@ While the environment is running, the following is accessible:
 * http://127.0.0.1:8020 - PHPMyAdmin Portal
 * http://127.0.0.1:8030 - Mailcatcher Portal
 
-To run tests:
-```
-docker exec -it "$(docker container ls | grep web | awk '{print $1}')" bash
-cd /var/www/unity-web
-./vendor/bin/phpunit /optional/path/to/tests
-```
-
-If you bork your LDAP or SQL server, just run `./build.sh` again
-
 ### Test Users
 
 The test environment ships with a number of users that can be used for testing.
