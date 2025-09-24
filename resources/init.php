@@ -16,6 +16,8 @@ use UnityWebPortal\lib\UnitySite;
 use UnityWebPortal\lib\exceptions\SSOException;
 
 register_shutdown_function(array("UnityWebPortal\lib\UnitySite", "shutdown"));
+// shutdown function logs errors, don't want duplicate output
+ini_set("log_errors", false);
 
 session_start();
 
