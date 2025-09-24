@@ -292,7 +292,7 @@ class UnityGroup
         $this->SQL->removeRequest($new_user->uid, $this->gid);
         if ($send_mail) {
             $this->MAILER->sendMail(
-                $new_user->getMail(),
+                $request["email"],
                 "group_user_denied",
                 array("group" => $this->gid)
             );
