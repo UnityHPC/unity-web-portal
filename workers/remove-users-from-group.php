@@ -27,7 +27,7 @@ $handle = fopen($filename, "r") or _die("Can't open '$filename'\n");
 while (($line = fgets($handle)) !== false) {
     $uid = trim($line);
     $user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-    if (!$group->userExists($user)) {
+    if (!$group->memberExists($user)) {
         print("Skipping '$uid' who doesn't appear to be in '$gid'\n");
         continue;
     }

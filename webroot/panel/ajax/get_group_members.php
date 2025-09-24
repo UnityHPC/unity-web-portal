@@ -10,7 +10,7 @@ if (!isset($_GET["gid"])) {
 }
 
 $group = new UnityGroup($_GET["gid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-if (!$group->userExists($USER)) {
+if (!$group->memberExists($USER)) {
     UnityHTTPD::forbidden("not a group member");
 }
 $members = $group->getGroupMembers();

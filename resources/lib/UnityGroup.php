@@ -312,7 +312,7 @@ class UnityGroup
 
     public function removeUser($new_user, $send_mail = true)
     {
-        if (!$this->userExists($new_user)) {
+        if (!$this->memberExists($new_user)) {
             return;
         }
         if ($new_user->uid == $this->getOwner()->uid) {
@@ -348,7 +348,7 @@ class UnityGroup
         $org,
         $send_mail = true
     ) {
-        if ($this->userExists($new_user)) {
+        if ($this->memberExists($new_user)) {
             UnityHTTPD::errorLog("warning", "user '$new_user' already in group");
             return;
         }
@@ -490,7 +490,7 @@ class UnityGroup
         $this->REDIS->removeCacheArray($old_user->uid, "groups", $this->gid);
     }
 
-    public function userExists($user)
+    public function memberExists($user)
     {
         return in_array($user->uid, $this->getGroupMemberUIDs());
     }
