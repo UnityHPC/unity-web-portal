@@ -37,7 +37,7 @@ class UnitySite
         string $title,
         string $message,
         ?string $errorid = null,
-        ?Throwable $error = null,
+        ?\Throwable $error = null,
         mixed $data = null,
     ) {
         if (!CONFIG["site"]["enable_verbose_error_log"]) {
@@ -65,7 +65,7 @@ class UnitySite
     }
 
     // recursive on $t->getPrevious()
-    private static function throwableToArray(Throwable $t): array
+    private static function throwableToArray(\Throwable $t): array
     {
         $output = [
             "type" => gettype($t),

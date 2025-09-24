@@ -24,7 +24,12 @@ foreach ($assocs as $assoc_obj) {
             break;
         }
     }
-    $fn = strtolower($assoc_obj->getOwner()->getFullName());
+    try {
+        $fn = strtolower($assoc_obj->getOwner()->getFullName());
+    } catch (Throwable $e) {
+        UnitySite::errorLog("warning", "failed to get owner name for PI group '$assoc'", error: $e);
+        $fn = "";
+    }
     if (strpos($fn, strtolower($search_query)) !== false) {
         if (!in_array($assoc, $out)) {
             array_push($out, $assoc);
