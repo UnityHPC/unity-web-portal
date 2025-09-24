@@ -4,10 +4,8 @@ namespace UnityWebPortal\lib;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-// use PHPUnit\Framework\Attributes\BackupGlobals;
-// use PHPUnit\Framework\Attributes\RunTestsInSeparateProcess;
 
-class UnitySiteTest extends TestCase
+class UnityHTTPDTest extends TestCase
 {
     public static function SSHKeyProvider()
     {
@@ -77,6 +75,6 @@ class UnitySiteTest extends TestCase
     #[DataProvider("SSHKeyProvider")]
     public function testTestValidSSHKey(bool $expected, string $key)
     {
-        $this->assertEquals($expected, UnitySite::testValidSSHKey($key));
+        $this->assertEquals($expected, testValidSSHKey($key));
     }
 }

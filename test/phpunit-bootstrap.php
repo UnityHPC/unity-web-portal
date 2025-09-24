@@ -10,7 +10,7 @@ require_once __DIR__ . "/../resources/lib/UnityOrg.php";
 require_once __DIR__ . "/../resources/lib/UnitySQL.php";
 require_once __DIR__ . "/../resources/lib/UnityMailer.php";
 require_once __DIR__ . "/../resources/lib/UnitySSO.php";
-require_once __DIR__ . "/../resources/lib/UnitySite.php";
+require_once __DIR__ . "/../resources/lib/UnityHTTPD.php";
 require_once __DIR__ . "/../resources/lib/UnityConfig.php";
 require_once __DIR__ . "/../resources/lib/UnityWebhook.php";
 require_once __DIR__ . "/../resources/lib/UnityRedis.php";

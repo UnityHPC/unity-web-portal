@@ -349,11 +349,11 @@ class UnityGroup
         $send_mail = true
     ) {
         if ($this->userExists($new_user)) {
-            UnitySite::errorLog("warning", "user '$new_user' already in group");
+            UnityHTTPD::errorLog("warning", "user '$new_user' already in group");
             return;
         }
         if ($this->requestExists($new_user)) {
-            UnitySite::errorLog("warning", "user '$new_user' already requested group membership");
+            UnityHTTPD::errorLog("warning", "user '$new_user' already requested group membership");
             return;
         }
         if ($this->SQL->accDeletionRequestExists($new_user->uid)) {

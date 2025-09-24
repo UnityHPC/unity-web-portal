@@ -3,14 +3,14 @@
 require_once __DIR__ . "/../../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityGroup;
-use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\UnityHTTPD;
 
 if (!$USER->isAdmin()) {
-    UnitySite::forbidden("not an admin");
+    UnityHTTPD::forbidden("not an admin");
 }
 
 if (!isset($_GET["gid"])) {
-    UnitySite::badRequest("PI UID not set");
+    UnityHTTPD::badRequest("PI UID not set");
 }
 
 $group = new UnityGroup($_GET["gid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);

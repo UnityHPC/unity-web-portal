@@ -1,6 +1,6 @@
 <?php
 
-use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\UnityHTTPD;
 
 header('Content-type: text/plain');
 
@@ -13,7 +13,7 @@ if (isset($_GET["line_wrap"])) {
 }
 
 if (!isset($_GET["content_name"])) {
-    UnitySite::badRequest("content_name not set");
+    UnityHTTPD::badRequest("content_name not set");
 }
 
 echo $SQL->getPage($_GET["content_name"])["content"];

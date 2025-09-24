@@ -1,6 +1,6 @@
 <?php
 
-use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\UnityHTTPD;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (
@@ -8,15 +8,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         && ($_POST["form_type"] ?? null) == "clearView"
     ) {
         unset($_SESSION["viewUser"]);
-        UnitySite::redirect(CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
+        UnityHTTPD::redirect(CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
     }
     // Webroot files need to handle their own POSTs before loading the header
-    // so that they can do UnitySite::badRequest before anything else has been printed.
+    // so that they can do UnityHTTPD::badRequest before anything else has been printed.
     // They also must not redirect like standard PRG practice because this
     // header also needs to handle POST data. So this header does the PRG redirect
     // for all pages.
     unset($_POST); // unset ensures that header must not come before POST handling
-    UnitySite::redirect(CONFIG["site"]["prefix"] . $_SERVER['REQUEST_URI']);
+    UnityHTTPD::redirect(CONFIG["site"]["prefix"] . $_SERVER['REQUEST_URI']);
 }
 
 if (isset($SSO)) {
@@ -24,7 +24,7 @@ if (isset($SSO)) {
         !$_SESSION["user_exists"]
         && !str_ends_with($_SERVER['PHP_SELF'], "/panel/new_account.php")
     ) {
-        UnitySite::redirect(CONFIG["site"]["prefix"] . "/panel/new_account.php");
+        UnityHTTPD::redirect(CONFIG["site"]["prefix"] . "/panel/new_account.php");
     }
 }
 

@@ -67,6 +67,6 @@ repos:
         files: \.php$
         exclude: |
           (?x)^(
-              resources/lib/UnitySite\.php$|
+              resources/lib/UnityHTTPD\.php$|
               workers/.*|
           )$

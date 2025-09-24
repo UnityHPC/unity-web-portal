@@ -3,7 +3,7 @@
 require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityGroup;
-use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\UnityHTTPD;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $modalErrors = array();
@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 if ($USER->uid != $SSO["user"]) {
                     $sso_user = $SSO["user"];
-                    UnitySite::badRequest(
+                    UnityHTTPD::badRequest(
                         "cannot request due to uid mismatch: " .
                         "USER='{$USER->uid}' SSO[user]='$sso_user'"
                     );

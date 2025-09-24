@@ -12,9 +12,9 @@ use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityRedis;
 use UnityWebPortal\lib\UnityWebhook;
 use UnityWebPortal\lib\UnityGithub;
-use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\UnityHTTPD;
 
-register_shutdown_function(array("UnityWebPortal\lib\UnitySite", "shutdown"));
+register_shutdown_function(array("UnityWebPortal\lib\UnityHTTPD", "shutdown"));
 // shutdown function logs errors, don't want duplicate output
 ini_set("log_errors", false);
 
