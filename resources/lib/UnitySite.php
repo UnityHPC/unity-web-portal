@@ -120,11 +120,11 @@ class UnitySite
         $message,
         $error = null,
         $data = null,
-        $do_verbose_error_log = true
+        $enable_verbose_error_log = true
     ) {
         $errorid = uniqid();
         self::errorToUser("An internal server error has occurred.", 500, $errorid);
-        if ($do_verbose_error_log) {
+        if ($enable_verbose_error_log) {
             self::errorLog("internal server error", $message, $errorid, $error, $data);
         } else {
             self::errorLog("internal server error", $message);
