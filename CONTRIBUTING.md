@@ -82,7 +82,7 @@ cd ./tools/docker-dev
 tab 2:
 ```
 $ container="$(docker container ls | grep web | awk '{print $1}')"
-$ docker exec "$container" -it bash
+$ docker exec -it "$container" bash
 > cd /var/www/unity-web
 > ./vendor/bin/phpunit /path/to/tests
 ```
