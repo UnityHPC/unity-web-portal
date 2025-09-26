@@ -161,7 +161,7 @@ class UnityGroup
      */
     public function denyGroup($operator = null, $send_mail = true)
     {
-        // remove request - this will fail silently if the request doesn't exist
+        $request = $this->SQL->getRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         $this->SQL->removeRequest($this->getOwner()->uid);
         if ($this->exists()) {
             return;
@@ -175,7 +175,7 @@ class UnityGroup
         );
         if ($send_mail) {
             $this->MAILER->sendMail(
-                $this->getOwner()->getMail(),
+                $request["email"],
                 "group_denied"
             );
         }
