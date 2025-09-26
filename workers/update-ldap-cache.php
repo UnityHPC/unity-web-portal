@@ -9,7 +9,7 @@ use UnityWebPortal\lib\UnityConfig;
 use UnityWebPortal\lib\UnityLDAP;
 use UnityWebPortal\lib\UnityMailer;
 use UnityWebPortal\lib\UnitySQL;
-use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UnitySSO;
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityRedis;
@@ -22,7 +22,7 @@ if (array_key_exists("h", $options) or array_key_exists("help", $options)) {
     f: flush cache and then update
     u: update cache even if already initialized
     h --help: display this message\n";
-    UnitySite::die();
+    UnityHTTPD::die();
 }
 if (array_key_exists("f", $options)) {
     echo "flushing cache...\n";

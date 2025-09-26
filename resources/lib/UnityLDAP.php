@@ -99,7 +99,7 @@ class UnityLDAP extends ldapConn
             return $customMappedID;
         }
         if (!is_null($customMappedID) && in_array($customMappedID, $IDNumsInUse)) {
-            UnitySite::errorLog(
+            UnityHTTPD::errorLog(
                 "warning",
                 "user '$uid' has a custom mapped IDNumber $customMappedID but it's already in use!",
             );
@@ -157,7 +157,7 @@ class UnityLDAP extends ldapConn
                     array_push($output, $row);
                 }
             } else {
-                UnitySite::errorLog(
+                UnityHTTPD::errorLog(
                     "warning",
                     "custom ID mapping file '$filename' ignored, extension != .csv",
                 );
@@ -330,7 +330,7 @@ class UnityLDAP extends ldapConn
             array_map(fn($x) => $x["uid"][0], $owner_attributes)
         );
         if (count($owners_not_found) > 0) {
-            UnitySite::errorLog(
+            UnityHTTPD::errorLog(
                 "warning",
                 "PI group owners not found: " . json_encode($owners_not_found) . "\n"
             );
@@ -353,7 +353,7 @@ class UnityLDAP extends ldapConn
                 if (array_key_exists($uid, $uid2pigids)) {
                     array_push($uid2pigids[$uid], $gid);
                 } else {
-                    UnitySite::errorLog(
+                    UnityHTTPD::errorLog(
                         "warning",
                         "user '$uid' is a member of a PI group but is not a Unity user!"
                     );

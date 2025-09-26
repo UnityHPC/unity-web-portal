@@ -2,40 +2,37 @@
 
 require_once __DIR__ . "/../../resources/autoload.php";
 
-use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\UnityHTTPD;
 
 $hasGroups = count($USER->getPIGroupGIDs()) > 0;
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    switch (UnitySite::getPostData("form_type")) {
+    switch (UnityHTTPD::getPostData("form_type")) {
         case "addKey":
             $keys = array();
-            switch (UnitySite::getPostData("add_type")) {
+            switch (UnityHTTPD::getPostData("add_type")) {
                 case "paste":
-                    array_push($keys, UnitySite::getPostData("key"));
+                    array_push($keys, UnityHTTPD::getPostData("key"));
                     break;
                 case "import":
-                    $key = UnitySite::getUploadedFileContents("keyfile");
+                    $key = UnityHTTPD::getUploadedFileContents("keyfile");
                     array_push($keys, $key);
                     break;
                 case "generate":
-                    array_push($keys, UnitySite::getPostData("gen_key"));
+                    array_push($keys, UnityHTTPD::getPostData("gen_key"));
                     break;
                 case "github":
-                    $githubUsername = UnitySite::getPostData("gh_user");
+                    $githubUsername = UnityHTTPD::getPostData("gh_user");
                     $githubKeys = $GITHUB->getSshPublicKeys($githubUsername);
                     $keys = array_merge($keys, $githubKeys);
                     break;
             }
             if (!empty($keys)) {
                 $keys = array_map("trim", $keys);
-                $validKeys = array_filter(
-                    $keys,
-                    ["UnityWebPortal\lib\UnitySite", "testValidSSHKey"]
-                );
+                $validKeys = array_filter($keys, "testValidSSHKey");
                 $USER->setSSHKeys(array_merge($USER->getSSHKeys(), $validKeys));
                 if (count($keys) != count($validKeys)) {
-                    UnitySite::alert("invalid SSH key");
+                    UnityHTTPD::alert("invalid SSH key");
                 }
             }
             break;
@@ -59,13 +56,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break;
         case "pi_request":
             if ($USER->isPI()) {
-                UnitySite::badRequest("already a PI");
+                UnityHTTPD::badRequest("already a PI");
             }
             if ($SQL->requestExists($USER->uid)) {
-                UnitySite::badRequest("already requested to be PI");
+                UnityHTTPD::badRequest("already requested to be PI");
             }
             if ($USER->uid != $SSO["user"]) {
-                UnitySite::badRequest(
+                UnityHTTPD::badRequest(
                     "cannot request due to uid mismatch: " .
                     "USER='{$USER->uid}' SSO[user]='{$SSO["user"]}'"
                 );

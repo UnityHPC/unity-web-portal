@@ -2,12 +2,12 @@
 
 require_once __DIR__ . "/../../resources/autoload.php";
 
-use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnitySQL;
 
 if ($USER->exists()) {
-    UnitySite::redirect(CONFIG["site"]["prefix"] . "/panel/account.php");
+    UnityHTTPD::redirect(CONFIG["site"]["prefix"] . "/panel/account.php");
 }
 
 $pending_requests = $SQL->getRequestsByUser($USER->uid);
@@ -15,18 +15,18 @@ $pending_requests = $SQL->getRequestsByUser($USER->uid);
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["new_user_sel"])) {
         if (!isset($_POST["eula"]) || $_POST["eula"] != "agree") {
-            UnitySite::badRequest("user did not agree to EULA");
+            UnityHTTPD::badRequest("user did not agree to EULA");
         }
         if ($USER->uid != $SSO["user"]) {
             $sso_user = $SSO["user"];
-            UnitySite::badRequest(
+            UnityHTTPD::badRequest(
                 "cannot request due to uid mismatch: USER='{$USER->uid}' SSO[user]='$sso_user'"
             );
         }
         if ($_POST["new_user_sel"] == "not_pi") {
             $form_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             if (!$form_group->exists()) {
-                UnitySite::badRequest("The selected PI '" . $_POST["pi"] . "'does not exist");
+                UnityHTTPD::badRequest("The selected PI '" . $_POST["pi"] . "'does not exist");
             }
             $form_group->newUserRequest(
                 $USER,
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         if ($_POST["new_user_sel"] == "pi") {
             if (!isset($_POST["confirm_pi"]) || $_POST["confirm_pi"] != "agree") {
-                UnitySite::badRequest("user did not agree to account policy");
+                UnityHTTPD::badRequest("user did not agree to account policy");
             }
             $USER->getPIGroup()->requestGroup(
                 $SSO["firstname"],

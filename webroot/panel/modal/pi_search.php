@@ -2,12 +2,12 @@
 
 require_once __DIR__ . "/../../../resources/autoload.php";  // Load required libs
 
-use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\UnityHTTPD;
 
 $search_query = $_GET["search"];  // Search is passed as a get var
 if (empty($search_query)) {
     echo "<span>No Results</span>";
-    UnitySite::die();
+    UnityHTTPD::die();
 }
 
 $assocs = $LDAP->getAllPIGroups($SQL, $MAILER, $REDIS, $WEBHOOK);

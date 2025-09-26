@@ -2,17 +2,17 @@
 
 require_once __DIR__ . "/../../resources/autoload.php";
 
-use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\UnityHTTPD;
 
 if (!$USER->isAdmin()) {
-    UnitySite::forbidden("not an admin");
+    UnityHTTPD::forbidden("not an admin");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     switch ($_POST["form_type"]) {
         case "viewAsUser":
             $_SESSION["viewUser"] = $_POST["uid"];
-            UnitySite::redirect(CONFIG["site"]["prefix"] . "/panel/account.php");
+            UnityHTTPD::redirect(CONFIG["site"]["prefix"] . "/panel/account.php");
             break;
     }
 }

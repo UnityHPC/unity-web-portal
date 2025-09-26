@@ -2,10 +2,10 @@
 
 require_once __DIR__ . "/../../resources/autoload.php";
 
-use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\UnityHTTPD;
 
 if (!$USER->isAdmin()) {
-    UnitySite::forbidden("not an admin");
+    UnityHTTPD::forbidden("not an admin");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

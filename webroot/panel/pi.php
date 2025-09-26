@@ -3,12 +3,12 @@
 require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityUser;
-use UnityWebPortal\lib\UnitySite;
+use UnityWebPortal\lib\UnityHTTPD;
 
 $group = $USER->getPIGroup();
 
 if (!$USER->isPI()) {
-    UnitySite::forbidden("not a PI");
+    UnityHTTPD::forbidden("not a PI");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
