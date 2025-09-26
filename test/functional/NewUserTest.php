@@ -146,9 +146,9 @@ class NewUserTest extends TestCase
     private function ensureUserNotInPIGroup(UnityGroup $pi_group)
     {
         global $USER, $REDIS;
-        if ($pi_group->userExists($USER)) {
+        if ($pi_group->memberExists($USER)) {
             $pi_group->removeUser($USER);
-            assert(!$pi_group->userExists($USER));
+            assert(!$pi_group->memberExists($USER));
         }
         $REDIS->removeCacheArray($pi_group->gid, "members", $USER->uid);
     }
@@ -177,7 +177,7 @@ class NewUserTest extends TestCase
         $newOrg = new UnityOrg($SSO["org"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
         $this->assertTrue(!$newOrg->exists());
         $this->assertTrue($pi_group->exists());
-        $this->assertTrue(!$pi_group->userExists($USER));
+        $this->assertTrue(!$pi_group->memberExists($USER));
         $this->assertRequestedMembership(false, $gid);
         try {
             $this->requestGroupMembership($pi_group->gid);
@@ -208,7 +208,7 @@ class NewUserTest extends TestCase
 
             $this->assertTrue(!$pi_group->requestExists($USER));
             $this->assertRequestedMembership(false, $gid);
-            $this->assertTrue($pi_group->userExists($USER));
+            $this->assertTrue($pi_group->memberExists($USER));
             $this->assertTrue($USER->exists());
             $this->assertTrue($newOrg->exists());
 
@@ -247,18 +247,18 @@ class NewUserTest extends TestCase
             foreach ($users_to_create_args as $user_to_create_args) {
                 switchUser(...$user_to_create_args);
                 $this->assertTrue(!$USER->exists());
-                $this->assertTrue(!$pi_group->userExists($USER));
+                $this->assertTrue(!$pi_group->memberExists($USER));
                 $this->assertRequestedMembership(false, $gid);
                 $this->requestGroupMembership($pi_group->gid);
                 $this->assertRequestedMembership(true, $gid);
                 $approve_uid = $USER->uid;
                 switchUser(...$pi_user_args);
-                // $this->assertTrue(!$pi_group->userExists($USER));
+                // $this->assertTrue(!$pi_group->memberExists($USER));
                 $this->approveUserByPI($approve_uid);
                 switchUser(...$user_to_create_args);
                 $this->assertTrue(!$pi_group->requestExists($USER));
                 $this->assertRequestedMembership(false, $gid);
-                $this->assertTrue($pi_group->userExists($USER));
+                $this->assertTrue($pi_group->memberExists($USER));
                 $this->assertTrue($USER->exists());
             }
         } finally {
@@ -282,7 +282,7 @@ class NewUserTest extends TestCase
         $newOrg = new UnityOrg($SSO["org"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
         $this->assertTrue(!$newOrg->exists());
         $this->assertTrue($pi_group->exists());
-        $this->assertTrue(!$pi_group->userExists($USER));
+        $this->assertTrue(!$pi_group->memberExists($USER));
         $this->assertRequestedMembership(false, $gid);
         try {
             $this->requestGroupMembership($pi_group->gid);
@@ -313,7 +313,7 @@ class NewUserTest extends TestCase
 
             $this->assertTrue(!$pi_group->requestExists($USER));
             $this->assertRequestedMembership(false, $gid);
-            $this->assertTrue($pi_group->userExists($USER));
+            $this->assertTrue($pi_group->memberExists($USER));
             $this->assertTrue($USER->exists());
             $this->assertTrue($newOrg->exists());
 

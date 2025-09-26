@@ -63,16 +63,16 @@ class PiMemberApproveTest extends TestCase {
         try {
             switchUser(...$userSwitchArgs);
             $this->requestJoinPI($piGroup->gid);
-            $this->assertFalse($piGroup->userExists($user));
+            $this->assertFalse($piGroup->memberExists($user));
 
             switchUser(...$piSwitchArgs);
             $this->approveUser($uid);
             $this->assertTrue(!$piGroup->requestExists($user));
             $this->assertEmpty($piGroup->getRequests());
             $this->assertGroupMembers($piGroup, [$piUID, $uid]);
-            $this->assertTrue($piGroup->userExists($user));
+            $this->assertTrue($piGroup->memberExists($user));
         } finally {
-            if ($piGroup->userExists($user)) {
+            if ($piGroup->memberExists($user)) {
                 $piGroup->removeUser($user);
             }
             if ($piGroup->requestExists($user)) {
@@ -94,13 +94,13 @@ class PiMemberApproveTest extends TestCase {
         $this->assertTrue($piGroup->exists());
         $this->assertGroupMembers($piGroup, [$piUID]);
         $this->assertEmpty($piGroup->getRequests());
-        $this->assertFalse($piGroup->userExists($user));
+        $this->assertFalse($piGroup->memberExists($user));
         $this->assertEmpty($piGroup->getRequests());
         try {
             $this->expectException(Exception::class);
             $piGroup->approveUser($user);
         } finally {
-            if ($piGroup->userExists($user)) {
+            if ($piGroup->memberExists($user)) {
                 $piGroup->removeUser($user);
             }
         }

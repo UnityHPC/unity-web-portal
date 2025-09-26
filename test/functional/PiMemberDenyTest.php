@@ -44,7 +44,7 @@ class PiMemberDenyTest extends TestCase {
                 $requestedUser->getMail(),
                 $requestedUser->getOrg(),
             );
-            $this->assertFalse($piGroup->userExists($requestedUser));
+            $this->assertFalse($piGroup->memberExists($requestedUser));
 
             $piGroup->denyUser($requestedUser);
             $this->assertEmpty($piGroup->getRequests());
@@ -54,7 +54,7 @@ class PiMemberDenyTest extends TestCase {
                     $piGroup->getGroupMemberUIDs()
                 )
             );
-            $this->assertFalse($piGroup->userExists($requestedUser));
+            $this->assertFalse($piGroup->memberExists($requestedUser));
         } finally {
             $SQL->removeRequest(self::$requestUid, $piGroup->gid);
         }

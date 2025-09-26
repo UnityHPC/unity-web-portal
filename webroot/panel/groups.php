@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($pi_account->requestExists($USER)) {
                     array_push($modalErrors, "You\'ve already requested this");
                 }
-                if ($pi_account->userExists($USER)) {
+                if ($pi_account->memberExists($USER)) {
                     array_push($modalErrors, "You\'re already in this PI group");
                 }
                 if ($USER->uid != $SSO["user"]) {
