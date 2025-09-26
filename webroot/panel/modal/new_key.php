@@ -118,5 +118,5 @@ action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/account.php">
 
     $("#keyfile").on("change", function() {
         $("#submit-keyfile")[0].disabled = !this.files.length;
-    })
+    });
 </script>
