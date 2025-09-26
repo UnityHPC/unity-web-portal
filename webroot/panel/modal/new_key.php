@@ -37,8 +37,8 @@ action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/account.php">
 
     <div style="display: none;" id="key_import">
         <label for="keyfile">Select local file:</label>
-        <input type="file" id="keyfile" name="keyfile">
-        <input type="submit" value="Import Key">
+        <input type="file" id="keyfile" name="keyfile" />
+        <input type="submit" id="submit-keyfile" value="Import Key" disabled />
     </div>
 
     <div style="display: none;" id="key_generate">
@@ -116,4 +116,7 @@ action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/account.php">
         });
     });
 
+    $("#keyfile").on("change", function() {
+        $("#submit-keyfile")[0].disabled = !this.files.length;
+    })
 </script>
