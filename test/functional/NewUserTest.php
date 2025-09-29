@@ -108,14 +108,14 @@ class NewUserTest extends TestCase
             $org = $USER->getOrgGroup();
             if ($org->exists() and $org->inOrg($USER)) {
                 $org->removeUser($USER);
-                assert(!$org->inOrg($USER));
+                ensure(!$org->inOrg($USER));
             }
             $LDAP->getUserEntry($USER->uid)->delete();
-            assert(!$USER->exists());
+            ensure(!$USER->exists());
         }
         if ($USER->getGroupEntry()->exists()) {
             $USER->getGroupEntry()->delete();
-            assert(!$USER->getGroupEntry()->exists());
+            ensure(!$USER->getGroupEntry()->exists());
         }
         $all_users_group = $LDAP->getUserGroup();
         $all_member_uids = $all_users_group->getAttribute("memberuid");
@@ -127,7 +127,7 @@ class NewUserTest extends TestCase
                 array_values(array_diff($all_member_uids, [$USER->uid]))
             );
             $all_users_group->write();
-            assert(!in_array($USER->uid, $all_users_group->getAttribute("memberuid")));
+            ensure(!in_array($USER->uid, $all_users_group->getAttribute("memberuid")));
         }
         $REDIS->removeCacheArray("sorted_users", "", $USER->uid);
     }
@@ -138,7 +138,7 @@ class NewUserTest extends TestCase
         $org_group = $LDAP->getOrgGroupEntry($SSO["org"]);
         if ($org_group->exists()) {
             $org_group->delete();
-            assert(!$org_group->exists());
+            ensure(!$org_group->exists());
         }
         $REDIS->removeCacheArray("sorted_orgs", "", $SSO["org"]);
     }
@@ -148,7 +148,7 @@ class NewUserTest extends TestCase
         global $USER, $REDIS;
         if ($pi_group->memberExists($USER)) {
             $pi_group->removeUser($USER);
-            assert(!$pi_group->memberExists($USER));
+            ensure(!$pi_group->memberExists($USER));
         }
         $REDIS->removeCacheArray($pi_group->gid, "members", $USER->uid);
     }
@@ -159,7 +159,7 @@ class NewUserTest extends TestCase
         $gid = $USER->getPIGroup()->gid;
         if ($USER->getPIGroup()->exists()) {
             $LDAP->getPIGroupEntry($gid)->delete();
-            assert(!$USER->getPIGroup()->exists());
+            ensure(!$USER->getPIGroup()->exists());
         }
         $REDIS->removeCacheArray("sorted_groups", "", $gid);
     }
