@@ -2,6 +2,8 @@
 
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use UnityWebPortal\lib\exceptions\EnsureException;
+use UnityWebPortal\lib\exceptions\EncodingUnknownException;
+use UnityWebPortal\lib\exceptions\EncodingConversionException;
 use phpseclib3\Crypt\PublicKeyLoader;
 
 function arrayGet($array, ...$keys)
