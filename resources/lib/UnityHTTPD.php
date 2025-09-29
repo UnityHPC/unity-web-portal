@@ -169,7 +169,10 @@ class UnityHTTPD
         if ($do_delete_tmpfile_after_read) {
             unlink($tmpfile_path);
         }
-        $old_encoding = mb_detect_encoding($contents);
+        $old_encoding = mb_detect_encoding($contents, strict: true);
+        if ($old_encoding === false) {
+            self::badRequest("file '$filename' has invalid encoding");
+        }
         if ($old_encoding === $encoding) {
             return $contents;
         }
