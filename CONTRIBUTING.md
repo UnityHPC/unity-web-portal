@@ -8,7 +8,8 @@
 * Comments should be used sparingly.
 * Empty lines should be used sparingly.
 * No code should call `die()` or `exit()`, instead `UnityHTTPD::die()`. This will avoid the premature death of our automated testing processes.
-* Instead of `assert`, use `\ensure`. This will enforce conditions even in production.
+* No code should call `assert()`, instead `\ensure()`. This will enforce conditions even in production.
+* No code should call `json_encode()`, instead `\jsonEncode()`. This will throw errors and escape slashes by default.
 
 This repository will automatically check PRs for linting compliance.
 

@@ -70,3 +70,23 @@ repos:
               resources/lib/UnityHTTPD\.php$|
               workers/.*|
           )$
+      - id: assert-no-assert
+        name: Assert no assert()
+        entry: ./test/assert-no-assert.bash
+        language: system
+        files: \.php$
+        exclude: |
+          (?x)^(
+              resources/lib/utils\.php$|
+              workers/.*|
+          )$
+      - id: assert-no-json_encode
+        name: Assert no json_encode()
+        entry: ./test/assert-no-json_encode.bash
+        language: system
+        files: \.php$
+        exclude: |
+          (?x)^(
+              resources/lib/utils\.php$|
+              workers/.*|
+          )$
