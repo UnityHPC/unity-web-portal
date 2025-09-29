@@ -79,6 +79,7 @@ repos:
           (?x)^(
               resources/lib/utils\.php$|
               workers/.*|
+              test/.*|
           )$
       - id: assert-no-json_encode
         name: Assert no json_encode()
