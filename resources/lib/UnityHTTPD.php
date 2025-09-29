@@ -61,8 +61,8 @@ class UnityHTTPD
             try {
                 \jsonEncode($data);
                 $output["data"] = $data;
-            } catch (\JsonException) {
-                $output["data"] = "data could not be JSON encoded";
+            } catch (\JsonException $e) {
+                $output["data"] = "data could not be JSON encoded: " . $e->getMessage();
             }
         }
         error_log("$title: " . \jsonEncode($output));
