@@ -332,7 +332,7 @@ class UnityLDAP extends ldapConn
         if (count($owners_not_found) > 0) {
             UnityHTTPD::errorLog(
                 "warning",
-                "PI group owners not found: " . json_encode($owners_not_found) . "\n"
+                "PI group owners not found: " . \jsonEncode($owners_not_found) . "\n"
             );
         }
         return $owner_attributes;

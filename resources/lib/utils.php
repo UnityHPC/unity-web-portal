@@ -14,7 +14,7 @@ function arrayGet($array, ...$keys)
             throw new ArrayKeyException(
                 "key not found: \$array" .
                 // [1, 2, "foo"] => [1][2]["foo"]
-                implode("", array_map(fn($x) => json_encode([$x]), $keysTraversed))
+                implode("", array_map(fn($x) => jsonEncode([$x]), $keysTraversed))
             );
         }
         $cursor = $cursor[$key];
@@ -52,4 +52,10 @@ function testValidSSHKey($key_str)
     } catch (\Throwable $e) {
         return false;
     }
+}
+
+function jsonEncode($value, $flags = 0, $depth = 512)
+{
+    $flags |= JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES;
+    return json_encode($value, $flags, $depth);
 }

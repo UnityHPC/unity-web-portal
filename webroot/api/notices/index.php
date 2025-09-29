@@ -15,5 +15,5 @@ foreach ($notices as $notice) {
     $jsonArray[] = $formattedNotice;
 }
 
-$jsonOutput = json_encode($jsonArray, JSON_PRETTY_PRINT);
+$jsonOutput = jsonEncode($jsonArray, JSON_PRETTY_PRINT);
 echo $jsonOutput;

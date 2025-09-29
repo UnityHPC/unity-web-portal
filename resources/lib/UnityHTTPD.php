@@ -58,9 +58,14 @@ class UnityHTTPD
             $output["trace"] = explode("\n", (new \Exception())->getTraceAsString());
         }
         if (!is_null($data)) {
-            $output["data"] = $data;
+            try {
+                \jsonEncode($data);
+                $output["data"] = $data;
+            } catch (\JsonException) {
+                $output["data"] = "data could not be JSON encoded";
+            }
         }
-        error_log("$title: " . json_encode($output, JSON_UNESCAPED_SLASHES));
+        error_log("$title: " . \jsonEncode($output));
     }
 
     // recursive on $t->getPrevious()
@@ -147,8 +152,11 @@ class UnityHTTPD
         }
     }
 
-    public static function getUploadedFileContents($filename, $do_delete_tmpfile_after_read = true)
-    {
+    public static function getUploadedFileContents(
+        $filename,
+        $do_delete_tmpfile_after_read = true,
+        $encoding = "UTF-8",
+    ) {
         try {
             $tmpfile_path = \arrayGet($_FILES, $filename, "tmp_name");
         } catch (ArrayKeyException $e) {
@@ -161,7 +169,19 @@ class UnityHTTPD
         if ($do_delete_tmpfile_after_read) {
             unlink($tmpfile_path);
         }
-        return $contents;
+        $old_encoding = mb_detect_encoding($contents);
+        if ($old_encoding !== $encoding) {
+            $converted = mb_convert_encoding($contents, $encoding, $old_encoding);
+            if ($converted === false) {
+                self::badRequest(
+                    "failed to convert file '$filename' from '$old_encoding' to '$encoding'"
+                );
+            } else {
+                return $converted;
+            }
+        } else {
+            return $contents;
+        }
     }
 
     // in firefox, the user can disable alert/confirm/prompt after the 2nd or 3rd popup

@@ -54,7 +54,7 @@ class UnityWebhook
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array('text' => $message)));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, \jsonEncode(array('text' => $message)));
         $result = curl_exec($ch);
         curl_close($ch);
         return $result;
