@@ -50,7 +50,7 @@ $HTTP_HEADER_TEST_INPUTS = [
     '{"key": "value"}',
     'SGVsbG8sIFdvcmxkIQ==',
     "Hello\x00World",
-    mbConvertEncoding("Hello, World!", "UTF-16", "UTF-8")
+    mbConvertEncoding("Hello, World!", "UTF-16")
 ];
 
 function arraysAreEqualUnOrdered(array $a, array $b): bool

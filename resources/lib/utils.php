@@ -62,7 +62,7 @@ function jsonEncode($value, $flags = 0, $depth = 512)
     return json_encode($value, $flags, $depth);
 }
 
-function mbConvertEncoding($string, $to_encoding, $from_encoding)
+function mbConvertEncoding($string, $to_encoding, $from_encoding = null)
 {
     $output = mb_convert_encoding($string, $to_encoding, $from_encoding);
     if ($output === false) {
