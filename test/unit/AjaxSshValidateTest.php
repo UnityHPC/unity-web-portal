@@ -19,6 +19,7 @@ class AjaxSshValidateTest extends TestCase
     #[DataProvider("providerTestSshValidate")]
     public function testSshValidate(bool $is_valid, string $pubkey)
     {
+        // doesn't use http_post because http_post doesn't capture output
         $_SERVER["REQUEST_METHOD"] = "POST";
         $_POST["key"] = $pubkey;
         ob_start();
