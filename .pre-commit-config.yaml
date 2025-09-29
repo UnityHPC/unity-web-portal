@@ -91,3 +91,23 @@ repos:
               resources/lib/utils\.php$|
               workers/.*|
           )$
+      - id: assert-no-mb_convert_encoding
+        name: Assert no mb_convert_encoding()
+        entry: ./test/assert-no-mb_convert_encoding.bash
+        language: system
+        files: \.php$
+        exclude: |
+          (?x)^(
+              resources/lib/utils\.php$|
+              workers/.*|
+          )$
+      - id: assert-no-mb_detect_encoding
+        name: Assert no mb_detect_encoding()
+        entry: ./test/assert-no-mb_detect_encoding.bash
+        language: system
+        files: \.php$
+        exclude: |
+          (?x)^(
+              resources/lib/utils\.php$|
+              workers/.*|
+          )$

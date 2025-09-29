@@ -59,3 +59,25 @@ function jsonEncode($value, $flags = 0, $depth = 512)
     $flags |= JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES;
     return json_encode($value, $flags, $depth);
 }
+
+function mbConvertEncoding($string, $to_encoding, $from_encoding)
+{
+    $output = mb_convert_encoding($string, $to_encoding, $from_encoding);
+    if ($output === false) {
+        throw new EncodingConversionException(
+            jsonEncode(
+                ["to" => $to_encoding, "from" => $from_encoding, "base64" => base64_encode($string)]
+            )
+        );
+    }
+    return $output;
+}
+
+function mbDetectEncoding($string, $encodings = null, $_ = null)
+{
+    $output = mb_detect_encoding($string, $encodings, strict: true);
+    if ($output === false) {
+        throw new EncodingUnknownException(base64_encode($string));
+    }
+    return $output;
+}

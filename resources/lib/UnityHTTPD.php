@@ -169,20 +169,8 @@ class UnityHTTPD
         if ($do_delete_tmpfile_after_read) {
             unlink($tmpfile_path);
         }
-        $old_encoding = mb_detect_encoding($contents, strict: true);
-        if ($old_encoding === false) {
-            self::badRequest("file '$filename' has invalid encoding");
-        }
-        if ($old_encoding === $encoding) {
-            return $contents;
-        }
-        $converted = mb_convert_encoding($contents, $encoding, $old_encoding);
-        if ($converted === false) {
-            self::badRequest(
-                "failed to convert file '$filename' from '$old_encoding' to '$encoding'"
-            );
-        }
-        return $converted;
+        $old_encoding = mbDetectEncoding($contents);
+        return mbConvertEncoding($contents, $encoding, $old_encoding);
     }
 
     // in firefox, the user can disable alert/confirm/prompt after the 2nd or 3rd popup

@@ -10,6 +10,8 @@
 * No code should call `die()` or `exit()`, instead `UnityHTTPD::die()`. This will avoid the premature death of our automated testing processes.
 * No code should call `assert()`, instead `\ensure()`. This will enforce conditions even in production.
 * No code should call `json_encode()`, instead `\jsonEncode()`. This will throw errors and escape slashes by default.
+* No code should call `mb_convert_encoding()`, instead `\mbConvertEncoding()`. This will throw an exception rather than returning `false`.
+* No code should call `mb_detect_encoding()`, instead `\mbConvertEncoding()`. This will enable strict mode and throw an exception rather than returning `false`.
 
 This repository will automatically check PRs for linting compliance.
 
