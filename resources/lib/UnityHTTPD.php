@@ -184,7 +184,7 @@ class UnityHTTPD
     // after I disable alerts, if I quit and reopen my browser, the alerts come back
     public static function alert(string $message)
     {
-        // json_encode escapes quotes
-        echo "<script type='text/javascript'>alert(" . json_encode($message) . ");</script>";
+        // jsonEncode escapes quotes
+        echo "<script type='text/javascript'>alert(" . \jsonEncode($message) . ");</script>";
     }
 }
