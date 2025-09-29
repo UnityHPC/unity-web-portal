@@ -32,7 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 $validKeys = array_filter($keys, "testValidSSHKey");
                 $USER->setSSHKeys(array_merge($USER->getSSHKeys(), $validKeys));
                 if (count($keys) != count($validKeys)) {
-                    UnityHTTPD::alert("invalid SSH key");
+                    UnityHTTPD::badRequest(
+                        "one more more invalid SSH keys were not added",
+                        data: [
+                            "keys_valid_added" => $validKeys,
+                            "keys_invalid_not_added" => array_diff($keys, $validKeys),
+                        ],
+                    );
                 }
             }
             break;
