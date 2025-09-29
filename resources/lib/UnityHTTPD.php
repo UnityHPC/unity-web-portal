@@ -170,18 +170,14 @@ class UnityHTTPD
             unlink($tmpfile_path);
         }
         $old_encoding = mb_detect_encoding($contents);
-        if ($old_encoding !== $encoding) {
-            $converted = mb_convert_encoding($contents, $encoding, $old_encoding);
-            if ($converted === false) {
-                self::badRequest(
-                    "failed to convert file '$filename' from '$old_encoding' to '$encoding'"
-                );
-            } else {
-                return $converted;
-            }
-        } else {
+        if ($old_encoding === $encoding) {
             return $contents;
         }
+        $converted = mb_convert_encoding($contents, $encoding, $old_encoding);
+        if ($converted !== false) {
+            return $converted;
+        }
+        self::badRequest("failed to convert file '$filename' from '$old_encoding' to '$encoding'");
     }
 
     // in firefox, the user can disable alert/confirm/prompt after the 2nd or 3rd popup
