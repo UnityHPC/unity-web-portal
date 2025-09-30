@@ -62,7 +62,7 @@ repos:
         args: [-l]
       - id: assert-UnityHTTPD-used
         name: Assert UnityHTTPD functions are used
-        entry: ./test/assert-UnityHTTPD-used.bash
+        entry: bash ./test/assert-UnityHTTPD-used.bash
         language: system
         files: \.php$
         exclude: |
@@ -72,13 +72,13 @@ repos:
           )$
       - id: assert-utils-used
         name: Assert utils are used
-        entry: ./test/assert-utils-used.bash
+        entry: bash ./test/assert-utils-used.bash
         language: system
         files: \.php$
         exclude: ^resources/lib/utils\.php$
       - id: assert-exceptions-used
         name: Assert exceptions are used
-        entry: ./test/assert-exceptions-used.bash
+        entry: bash ./test/assert-exceptions-used.bash
         language: system
         files: ^resources/.*\.php$
         exclude: ^resources/lib/UnityHTTPD\.php$
