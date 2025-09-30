@@ -67,7 +67,7 @@ repos:
         files: \.php$
         exclude: |
           (?x)^(
-              resources/lib/UnityHTTPD\.php$|
+              resources/lib/UnityHTTPD\.php|
               workers/.*|
           )$
       - id: assert-utils-used
