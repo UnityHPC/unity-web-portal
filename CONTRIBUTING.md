@@ -7,11 +7,20 @@
 * The maximum line length for any PHP file is 100 characters, instead of PSR-12's 120 characters.
 * Comments should be used sparingly.
 * Empty lines should be used sparingly.
-* No code should call `die()` or `exit()`, instead `UnityHTTPD::die()`. This will avoid the premature death of our automated testing processes.
-* No code should call `assert()`, instead `\ensure()`. This will enforce conditions even in production.
-* No code should call `json_encode()`, instead `\jsonEncode()`. This will throw errors and escape slashes by default.
-* No code should call `mb_convert_encoding()`, instead `\mbConvertEncoding()`. This will throw an exception rather than returning `false`.
-* No code should call `mb_detect_encoding()`, instead `\mbDetectEncoding()`. This will enable strict mode and throw an exception rather than returning `false`.
+* No code should fail quietly, instead exceptions should be thrown.
+  PHP builtin functions that fail quietly (ex: `json_encode`) should be replaced with a wrapper in `resources/utils.php`.
+* No code should call `die()` or `exit()`, instead `UnityHTTPD::die()`.
+  This will avoid the premature death of our automated testing processes.
+* No code should call `assert()`, instead `\ensure()`.
+  This will enforce conditions even in production.
+* No code should call `json_encode()`, instead `\jsonEncode()`.
+  This will throw errors and escape slashes by default.
+* No code should call `mb_convert_encoding()`, instead `\mbConvertEncoding()`.
+  This will throw an exception rather than returning `false`.
+* No code should call `mb_detect_encoding()`, instead `\mbDetectEncoding()`.
+  This will enable strict mode and throw an exception rather than returning `false`.
+* `UnityHTTPD`'s user-facing error functionality (ex: `badRequest`) should only be called from `webroot/**/*.php`.
+  `resources/**/*.php` should throw exceptions instead.
 
 This repository will automatically check PRs for linting compliance.
 
