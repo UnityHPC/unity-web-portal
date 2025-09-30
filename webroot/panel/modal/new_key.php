@@ -30,7 +30,7 @@ action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/account.php">
     <hr>
 
     <div id="key_paste">
-        <textarea placeholder="ssh-rsa AAARs1..." form="newKeyform" name="key" />
+        <textarea placeholder="ssh-rsa AAARs1..." form="newKeyform" name="key"></textarea>
         <input type="submit" value="Add Key" id="add-key" disabled />
     </div>
 
