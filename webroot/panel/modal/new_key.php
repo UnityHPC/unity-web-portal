@@ -116,9 +116,9 @@ action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/account.php">
     });
 
     $("input[name=keyfile]").on("change", function() {
-        $(this).siblings("input[type=submit]")[0].disabled = (this.files.length === 0);
+        $(this).siblings("input[type=submit]").prop("disabled", (this.files.length === 0));
     });
     $("input[name=gh_user]").on("input", function() {
-        $(this).siblings("input[type=submit]")[0].disabled = (this.value === "");
+        $(this).siblings("input[type=submit]").prop("disabled", (this.value === ""));
     });
 </script>
