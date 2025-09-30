@@ -31,26 +31,25 @@ action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/account.php">
 
     <div id="key_paste">
         <textarea placeholder="ssh-rsa AAARs1..." form="newKeyform" name="key"></textarea>
-
-        <input type="submit" value="Add Key" id="add-key">
+        <input type="submit" value="Add Key" id="add-key" disabled />
     </div>
 
     <div style="display: none;" id="key_import">
         <label for="keyfile">Select local file:</label>
-        <input type="file" id="keyfile" name="keyfile" />
-        <input type="submit" id="submit-keyfile" value="Import Key" disabled />
+        <input type="file" name="keyfile" />
+        <input type="submit" value="Import Key" disabled />
     </div>
 
     <div style="display: none;" id="key_generate">
-        <input type="hidden" name="gen_key">
+        <input type="hidden" name="gen_key" />
         <button type="button" class="btnLin">OpenSSH</button>
         <button type="button" class="btnWin">PuTTY</button>
     </div>
 
     <div style="display: none;" id="key_github">
         <div class='inline'>
-            <input type="text" name="gh_user" placeholder="GitHub Username">
-            <input type="submit" value="Import Key(s)">
+            <input type="text" name="gh_user" placeholder="GitHub Username" />
+            <input type="submit" value="Import Key(s)" disabled />
         </div>
     </div>
 </form>
@@ -116,7 +115,10 @@ action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/account.php">
         });
     });
 
-    $("#keyfile").on("change", function() {
-        $("#submit-keyfile")[0].disabled = !this.files.length;
+    $("input[name=keyfile]").on("change", function() {
+        $(this).siblings("input[type=submit]").prop("disabled", (this.files.length === 0));
+    });
+    $("input[name=gh_user]").on("input", function() {
+        $(this).siblings("input[type=submit]").prop("disabled", (this.value === ""));
     });
 </script>
