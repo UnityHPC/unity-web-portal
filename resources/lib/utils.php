@@ -2,6 +2,8 @@
 
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use UnityWebPortal\lib\exceptions\EnsureException;
+use UnityWebPortal\lib\exceptions\EncodingUnknownException;
+use UnityWebPortal\lib\exceptions\EncodingConversionException;
 use phpseclib3\Crypt\PublicKeyLoader;
 
 function arrayGet($array, ...$keys)
@@ -14,7 +16,7 @@ function arrayGet($array, ...$keys)
             throw new ArrayKeyException(
                 "key not found: \$array" .
                 // [1, 2, "foo"] => [1][2]["foo"]
-                implode("", array_map(fn($x) => json_encode([$x]), $keysTraversed))
+                implode("", array_map(fn($x) => jsonEncode([$x]), $keysTraversed))
             );
         }
         $cursor = $cursor[$key];
@@ -52,4 +54,32 @@ function testValidSSHKey($key_str)
     } catch (\Throwable $e) {
         return false;
     }
+}
+
+function jsonEncode($value, $flags = 0, $depth = 512)
+{
+    $flags |= JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES;
+    return json_encode($value, $flags, $depth);
+}
+
+function mbConvertEncoding($string, $to_encoding, $from_encoding = null)
+{
+    $output = mb_convert_encoding($string, $to_encoding, $from_encoding);
+    if ($output === false) {
+        throw new EncodingConversionException(
+            jsonEncode(
+                ["to" => $to_encoding, "from" => $from_encoding, "base64" => base64_encode($string)]
+            )
+        );
+    }
+    return $output;
+}
+
+function mbDetectEncoding($string, $encodings = null, $_ = null)
+{
+    $output = mb_detect_encoding($string, $encodings, strict: true);
+    if ($output === false) {
+        throw new EncodingUnknownException(base64_encode($string));
+    }
+    return $output;
 }

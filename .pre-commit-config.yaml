@@ -60,13 +60,25 @@ repos:
         language: system
         files: \.php$
         args: [-l]
-      - id: assert-no-die-exit
-        name: Assert no die()/exit()
-        entry: ./test/assert-no-die-exit.bash
+      - id: assert-UnityHTTPD-used
+        name: Assert UnityHTTPD functions are used
+        entry: bash ./test/assert-UnityHTTPD-used.bash
         language: system
         files: \.php$
         exclude: |
           (?x)^(
-              resources/lib/UnityHTTPD\.php$|
+              resources/lib/UnityHTTPD\.php|
               workers/.*|
           )$
+      - id: assert-utils-used
+        name: Assert utils are used
+        entry: bash ./test/assert-utils-used.bash
+        language: system
+        files: \.php$
+        exclude: ^resources/lib/utils\.php$
+      - id: assert-exceptions-used
+        name: Assert exceptions are used
+        entry: bash ./test/assert-exceptions-used.bash
+        language: system
+        files: ^resources/.*\.php$
+        exclude: ^resources/lib/UnityHTTPD\.php$

@@ -20,6 +20,8 @@ require_once __DIR__ . "/../resources/lib/exceptions/NoDieException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/SSOException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/ArrayKeyException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/EnsureException.php";
+require_once __DIR__ . "/../resources/lib/exceptions/EncodingUnknownException.php";
+require_once __DIR__ . "/../resources/lib/exceptions/EncodingConversionException.php";
 
 $_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
 require_once __DIR__ .  "/../resources/config.php";
@@ -48,7 +50,7 @@ $HTTP_HEADER_TEST_INPUTS = [
     '{"key": "value"}',
     'SGVsbG8sIFdvcmxkIQ==',
     "Hello\x00World",
-    mb_convert_encoding("Hello, World!", "UTF-16")
+    mbConvertEncoding("Hello, World!", "UTF-16")
 ];
 
 function arraysAreEqualUnOrdered(array $a, array $b): bool
@@ -79,7 +81,7 @@ function switchUser(
     $_SERVER["givenName"] = $given_name;
     $_SERVER["sn"] = $sn;
     include __DIR__ .  "/../resources/autoload.php";
-    assert(!is_null($USER));
+    ensure(!is_null($USER));
 }
 
 function http_post(string $phpfile, array $post_data): void
@@ -102,7 +104,7 @@ function http_post(string $phpfile, array $post_data): void
         $_SERVER = $_PREVIOUS_SERVER;
     }
     // https://en.wikipedia.org/wiki/Post/Redirect/Get
-    assert($post_did_redirect_or_die, "post did not redirect or die!");
+    ensure($post_did_redirect_or_die, "post did not redirect or die!");
 }
 
 function http_get(string $phpfile, array $get_data = array()): void

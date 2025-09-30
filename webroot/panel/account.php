@@ -3,6 +3,8 @@
 require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityHTTPD;
+use UnityWebPortal\lib\exceptions\EncodingUnknownException;
+use UnityWebPortal\lib\exceptions\EncodingConversionException;
 
 $hasGroups = count($USER->getPIGroupGIDs()) > 0;
 
@@ -15,7 +17,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     array_push($keys, UnityHTTPD::getPostData("key"));
                     break;
                 case "import":
-                    $key = UnityHTTPD::getUploadedFileContents("keyfile");
+                    try {
+                        $key = UnityHTTPD::getUploadedFileContents("keyfile");
+                    } catch (EncodingUnknownException | EncodingConversionException $e) {
+                        UnityHTTPD::badRequest("uploaded key has bad encoding", error: $e);
+                    }
                     array_push($keys, $key);
                     break;
                 case "generate":

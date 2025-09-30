@@ -58,9 +58,14 @@ class UnityHTTPD
             $output["trace"] = explode("\n", (new \Exception())->getTraceAsString());
         }
         if (!is_null($data)) {
-            $output["data"] = $data;
+            try {
+                \jsonEncode($data);
+                $output["data"] = $data;
+            } catch (\JsonException $e) {
+                $output["data"] = "data could not be JSON encoded: " . $e->getMessage();
+            }
         }
-        error_log("$title: " . json_encode($output, JSON_UNESCAPED_SLASHES));
+        error_log("$title: " . \jsonEncode($output));
     }
 
     // recursive on $t->getPrevious()
@@ -147,8 +152,11 @@ class UnityHTTPD
         }
     }
 
-    public static function getUploadedFileContents($filename, $do_delete_tmpfile_after_read = true)
-    {
+    public static function getUploadedFileContents(
+        $filename,
+        $do_delete_tmpfile_after_read = true,
+        $encoding = "UTF-8",
+    ) {
         try {
             $tmpfile_path = \arrayGet($_FILES, $filename, "tmp_name");
         } catch (ArrayKeyException $e) {
@@ -161,14 +169,15 @@ class UnityHTTPD
         if ($do_delete_tmpfile_after_read) {
             unlink($tmpfile_path);
         }
-        return $contents;
+        $old_encoding = mbDetectEncoding($contents);
+        return mbConvertEncoding($contents, $encoding, $old_encoding);
     }
 
     // in firefox, the user can disable alert/confirm/prompt after the 2nd or 3rd popup
     // after I disable alerts, if I quit and reopen my browser, the alerts come back
     public static function alert(string $message)
     {
-        // json_encode escapes quotes
-        echo "<script type='text/javascript'>alert(" . json_encode($message) . ");</script>";
+        // jsonEncode escapes quotes
+        echo "<script type='text/javascript'>alert(" . \jsonEncode($message) . ");</script>";
     }
 }
