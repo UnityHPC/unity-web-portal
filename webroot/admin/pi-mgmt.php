@@ -65,6 +65,7 @@ require $LOC_HEADER;
     $requests = $SQL->getRequests();
 
     foreach ($requests as $request) {
+        $uid = $request["uid"];
         echo "<tr>";
         echo "<td>" . $request["firstname"] . " " . $request["lastname"] . "</td>";
         echo "<td>" . $request["uid"] . "</td>";
@@ -76,9 +77,17 @@ require $LOC_HEADER;
         <input type='hidden' name='form_type' value='req'>
         <input type='hidden' name='uid' value='" . $request["uid"] . "'>
         <input type='submit' name='action' value='Approve'
-        onclick='return confirm(\"Are you sure you want to approve " . $request["uid"] . "?\");'>
+        onclick='
+          confirm(\"Are you sure you want to approve $uid?\")
+          && this.form.submit()
+          && this.disabled=true;
+        '>
         <input type='submit' name='action' value='Deny'
-        onclick='return confirm(\"Are you sure you want to deny " . $request["uid"] . "?\");'>
+        onclick='
+          confirm(\"Are you sure you want to deny $uid?\")
+          && this.form.submit()
+          && this.disabled=true;
+        '>
         </form>";
         echo "</td>";
         echo "</tr>";

@@ -162,7 +162,11 @@ if (isset($SSO)) {
             <form method='POST' action=''>
               <input type='hidden' name='form_type' value='clearView'>
               <input type='hidden' name='uid' value='$viewUser'>
-              <input type='submit' value='Return to My User'>
+              <input
+                type='submit'
+                value='Return to My User'
+                onclick='this.form.submit(); this.disabled=true;'
+              />
             </form>
           </div>
         ";

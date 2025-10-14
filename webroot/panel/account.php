@@ -156,7 +156,14 @@ if (!$isPI) {
         >
     ";
     if ($SQL->accDeletionRequestExists($USER->uid)) {
-        echo "<input type='submit' value='Request PI Account' disabled />";
+        echo "
+          <input
+            type='submit'
+            value='Request PI Account'
+            onclick='this.form.submit(); this.disabled=true;'
+            disabled
+          />
+        ";
         echo "
             <label style='margin-left: 10px'>
                 You cannot request PI Account while you have requested account deletion.
@@ -164,8 +171,17 @@ if (!$isPI) {
         ";
     } else {
         if ($SQL->requestExists($USER->uid)) {
-            $prompt = "onclick='return confirm(\"Are you sure you want to cancel this request?\")";
-            echo "<input type='submit' value='Cancel PI Account Request' $prompt'/>";
+            echo "
+              <input
+                type='submit'
+                value='Cancel PI Account Request'
+                onclick='
+                  confirm(\"Are you sure you want to cancel this request?\")
+                  && this.form.submit()
+                  && this.disabled=true;
+                '
+              />
+            ";
             echo "
                 <label style='margin-left: 10px'>
                     Your request has been submitted and is currently pending
@@ -174,8 +190,17 @@ if (!$isPI) {
             ";
         } else {
             echo "<input type='hidden' name='form_type' value='pi_request'/>";
-            $prompt = "onclick='return confirm(\"Are you sure you want to request a PI account?\")";
-            echo "<input type='submit' value='Request PI Account' $prompt'/>";
+            echo "
+              <input
+                type='submit'
+                value='Request PI Account'
+                onclick='
+                  confirm(\"Are you sure you want to request a PI account?\")
+                  && this.form.submit()
+                  && this.disabled=true;
+                '
+              />
+            ";
         }
     }
     echo "</form>";
@@ -199,7 +224,11 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {
         >
             <input type='hidden' name='delIndex' value='$i' />
             <input type='hidden' name='form_type' value='delKey' />
-            <input type='submit' value='&times;' />
+            <input
+              type='submit'
+              value='&times;'
+              onclick='this.form.submit(); this.disabled=true;'
+            />
         </form>
     </div>";
 }
@@ -216,12 +245,17 @@ foreach (CONFIG["loginshell"]["shell"] as $shell) {
     echo "<option>$shell</option>";
 }
 echo "
-    </select>
-    <br>
-    <input id='submitLoginShell' type='submit' value='Set Login Shell' />
-    </form>
-    <hr>
-    <h5>Account Deletion</h5>
+  </select>
+  <br>
+  <input
+    type='submit'
+    id='submitLoginShell'
+    value='Set Login Shell'
+    onclick='this.form.submit(); this.disabled=true;'
+  />
+  </form>
+  <hr>
+  <h5>Account Deletion</h5>
 ";
 
 if ($hasGroups) {
@@ -237,13 +271,25 @@ if ($hasGroups) {
         <input type='hidden' name='form_type' value='account_deletion_request' />
     ";
     if ($SQL->accDeletionRequestExists($USER->uid)) {
-        echo "<input type='submit' value='Request Account Deletion' disabled />";
         echo "
-            <label style='margin-left: 10px'>
-            Your request has been submitted and is currently pending</label>
+          <input
+            type='submit'
+            value='Request Account Deletion'
+            onclick='this.form.submit(); this.disabled=true;'
+            disabled
+          />
+          <label style='margin-left: 10px'>
+            Your request has been submitted and is currently pending
+          </label>
         ";
     } else {
-        echo "<input type='submit' value='Request Account Deletion' />";
+        echo "
+          <input
+            type='submit'
+            value='Request Account Deletion'
+            onclick='this.form.submit(); this.disabled=true;'
+          >
+        ";
     }
     echo "</form>";
 }

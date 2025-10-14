@@ -67,9 +67,17 @@ if (count($requests) > 0) {
         <input type='hidden' name='form_type' value='userReq'>
         <input type='hidden' name='uid' value='" . $uid . "'>
         <input type='submit' name='action' value='Approve'
-        onclick='return confirm(\"Are you sure you want to approve " . $uid . "?\")'>
+        onclick='
+          confirm(\"Are you sure you want to approve $uid?\")
+          && this.form.submit()
+          && this.disabled=true;
+        '>
         <input type='submit' name='action' value='Deny'
-        onclick='return confirm(\"Are you sure you want to deny " . $uid . "?\")'>
+        onclick='
+          confirm(\"Are you sure you want to deny $uid?\")
+          && this.form.submit()
+          && this.disabled=true;
+        '>
         </form>";
         echo "</td>";
         echo "</tr>";
@@ -100,7 +108,9 @@ foreach ($assocs as $assoc) {
         type='submit'
         value='Remove'
         onclick='
-            return confirm(\"Are you sure you want to remove $assoc->uid from your PI group?\")
+          confirm(\"Are you sure you want to remove $assoc->uid from your PI group?\")
+          && this.form.submit()
+          && this.disabled=true;
         '
     >
     </form>";

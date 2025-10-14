@@ -103,7 +103,13 @@ require $LOC_HEADER;
         <p>You may need to remind them.</p>
         <hr>
         <form action="" method="POST">
-            <input name="cancel" style='margin-top: 10px;' type='submit' value='Cancel Request'/>
+          <input
+            name="cancel"
+            style='margin-top: 10px;'
+            type='submit'
+            value='Cancel Request'
+            onclick='this.form.submit(); this.disabled=true;'
+          />
         </form>
     <?php endforeach; ?>
 <?php else : ?>
@@ -149,7 +155,12 @@ require $LOC_HEADER;
             </a>.
         </label>
         <br>
-        <input style='margin-top: 10px;' type='submit' value='Request Account'>
+        <input
+          style='margin-top: 10px;'
+          type='submit'
+          value='Request Account'
+          onclick='this.form.submit(); this.disabled=true;'
+        />
     </form>
 <?php endif; ?>
 

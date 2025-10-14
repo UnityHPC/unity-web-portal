@@ -95,7 +95,13 @@ if (count($req_filtered) > 0) {
         echo "<form action='' method='POST' id='cancelPI'>
             <input type='hidden' name='pi' value='{$requested_account->gid}'>
             <input type='hidden' name='form_type' value='cancelPIForm'>
-            <input name='cancel' style='margin-top: 10px;' type='submit' value='Cancel Request'/>
+            <input
+              name='cancel'
+              style='margin-top: 10px;'
+              type='submit'
+              value='Cancel Request'
+              onclick='this.form.submit(); this.disabled=true;'
+            />
             </form>";
         echo "</td>";
         echo "</tr>";
@@ -144,7 +150,7 @@ foreach ($PIGroupGIDs as $gid) {
     onsubmit='return confirm(\"Are you sure you want to leave the PI group " . $group->gid . "?\")'>
     <input type='hidden' name='form_type' value='removePIForm'>
     <input type='hidden' name='pi' value='" . $group->gid . "'>
-    <input type='submit' value='Leave Group'>
+    <input type='submit' value='Leave Group' onclick='this.form.submit(); this.disabled=true;'>
     </form>
     </td>";
     echo "</tr>";
