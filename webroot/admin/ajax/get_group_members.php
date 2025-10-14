@@ -72,15 +72,11 @@ foreach ($requests as $i => [$user, $timestamp, $firstname, $lastname, $email, $
     <input type='hidden' name='uid' value='" . $uid . "'>
     <input type='hidden' name='pi' value='" . $group->gid . "'>
     <input
-      type='submit'
-      name='action'
-      value='Approve'
+      type='submit' name='action' value='Approve'
       onclick='this.form.submit(); this.disabled=true;'
     />
     <input
-      type='submit'
-      name='action'
-      value='Deny'
+      type='submit' name='action' value='Deny'
       onclick='this.form.submit(); this.disabled=true;'
     />
     </form>

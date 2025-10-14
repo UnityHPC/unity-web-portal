@@ -32,11 +32,8 @@ action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/account.php">
     <div id="key_paste">
         <textarea placeholder="ssh-rsa AAARs1..." form="newKeyform" name="key"></textarea>
         <input
-          type="submit"
-          value="Add Key"
-          id="add-key"
+          type="submit" value="Add Key" id="add-key" disabled
           onclick="this.form.submit(); this.disabled=true;"
-          disabled
         />
     </div>
 
@@ -44,10 +41,8 @@ action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/account.php">
         <label for="keyfile">Select local file:</label>
         <input type="file" name="keyfile" />
         <input
-          type="submit"
-          value="Import Key"
+          type="submit" value="Import Key" disabled
           onclick="this.form.submit(); this.disabled=true;"
-          disabled
         />
     </div>
 
@@ -61,10 +56,8 @@ action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/account.php">
         <div class='inline'>
             <input type="text" name="gh_user" placeholder="GitHub Username" />
             <input
-              type="submit"
-              value="Import Key(s)"
+              type="submit" value="Import Key(s)" disabled
               onclick="this.form.submit(); this.disabled=true;"
-              disabled
             />
         </div>
     </div>

@@ -104,10 +104,7 @@ require $LOC_HEADER;
         <hr>
         <form action="" method="POST">
           <input
-            name="cancel"
-            style='margin-top: 10px;'
-            type='submit'
-            value='Cancel Request'
+            name="cancel" style='margin-top: 10px;' type='submit' value='Cancel Request'
             onclick='this.form.submit(); this.disabled=true;'
           />
         </form>
@@ -156,9 +153,7 @@ require $LOC_HEADER;
         </label>
         <br>
         <input
-          style='margin-top: 10px;'
-          type='submit'
-          value='Request Account'
+          style='margin-top: 10px;' type='submit' value='Request Account'
           onclick='this.form.submit(); this.disabled=true;'
         />
     </form>

@@ -158,10 +158,8 @@ if (!$isPI) {
     if ($SQL->accDeletionRequestExists($USER->uid)) {
         echo "
           <input
-            type='submit'
-            value='Request PI Account'
+            type='submit' value='Request PI Account' disabled
             onclick='this.form.submit(); this.disabled=true;'
-            disabled
           />
         ";
         echo "
@@ -173,8 +171,7 @@ if (!$isPI) {
         if ($SQL->requestExists($USER->uid)) {
             echo "
               <input
-                type='submit'
-                value='Cancel PI Account Request'
+                type='submit' value='Cancel PI Account Request'
                 onclick='
                   confirm(\"Are you sure you want to cancel this request?\")
                   && this.form.submit()
@@ -192,8 +189,7 @@ if (!$isPI) {
             echo "<input type='hidden' name='form_type' value='pi_request'/>";
             echo "
               <input
-                type='submit'
-                value='Request PI Account'
+                type='submit' value='Request PI Account'
                 onclick='
                   confirm(\"Are you sure you want to request a PI account?\")
                   && this.form.submit()
@@ -225,8 +221,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {
             <input type='hidden' name='delIndex' value='$i' />
             <input type='hidden' name='form_type' value='delKey' />
             <input
-              type='submit'
-              value='&times;'
+              type='submit' value='&times;'
               onclick='this.form.submit(); this.disabled=true;'
             />
         </form>
@@ -249,8 +244,7 @@ echo "
   <br>
   <input
     type='submit'
-    id='submitLoginShell'
-    value='Set Login Shell'
+    id='submitLoginShell' value='Set Login Shell'
     onclick='this.form.submit(); this.disabled=true;'
   />
   </form>
@@ -273,8 +267,7 @@ if ($hasGroups) {
     if ($SQL->accDeletionRequestExists($USER->uid)) {
         echo "
           <input
-            type='submit'
-            value='Request Account Deletion'
+            type='submit' value='Request Account Deletion'
             onclick='this.form.submit(); this.disabled=true;'
             disabled
           />
@@ -285,8 +278,7 @@ if ($hasGroups) {
     } else {
         echo "
           <input
-            type='submit'
-            value='Request Account Deletion'
+            type='submit' value='Request Account Deletion'
             onclick='this.form.submit(); this.disabled=true;'
           >
         ";

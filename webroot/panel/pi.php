@@ -66,18 +66,22 @@ if (count($requests) > 0) {
             "<form action='' method='POST'>
         <input type='hidden' name='form_type' value='userReq'>
         <input type='hidden' name='uid' value='" . $uid . "'>
-        <input type='submit' name='action' value='Approve'
-        onclick='
-          confirm(\"Are you sure you want to approve $uid?\")
-          && this.form.submit()
-          && this.disabled=true;
-        '>
-        <input type='submit' name='action' value='Deny'
-        onclick='
-          confirm(\"Are you sure you want to deny $uid?\")
-          && this.form.submit()
-          && this.disabled=true;
-        '>
+        <input
+          type='submit' name='action' value='Approve'
+          onclick='
+            confirm(\"Are you sure you want to approve $uid?\")
+            && this.form.submit()
+            && this.disabled=true;
+          '
+        >
+        <input
+          type='submit' name='action' value='Deny'
+          onclick='
+            confirm(\"Are you sure you want to deny $uid?\")
+            && this.form.submit()
+            && this.disabled=true;
+          '
+        >
         </form>";
         echo "</td>";
         echo "</tr>";
@@ -105,8 +109,7 @@ foreach ($assocs as $assoc) {
     <input type='hidden' name='form_type' value='remUser'>
     <input type='hidden' name='uid' value='" . $assoc->uid . "'>
     <input
-        type='submit'
-        value='Remove'
+        type='submit' value='Remove'
         onclick='
           confirm(\"Are you sure you want to remove $assoc->uid from your PI group?\")
           && this.form.submit()
