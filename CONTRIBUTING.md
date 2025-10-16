@@ -37,6 +37,7 @@ This repository will automatically check PRs for linting compliance.
 1. Run the environment: `./run.sh`. Press `CTRL+C` to exit
 1. Install [pre-commit](https://pre-commit.com/)
 1. setup pre-commit hooks: `pre-commit install`
+1. Install modern implementation of grep (not macOS builtin grep): `brew install grep`
 
 ### Environment Usage
 
