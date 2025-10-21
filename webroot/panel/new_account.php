@@ -136,7 +136,7 @@ require $LOC_HEADER;
         <hr>
 
         <div style='position: relative;display: none;' id='piConfirmWrapper'>
-        <label><input type='checkbox' id='chk_pi' name='confirm_pi' value='agree'>
+        <label><input type='checkbox' id='chk_pi' name='confirm_pi' value='agree' required>
            I have read the PI <a href="<?php echo CONFIG["site"]["account_policy_url"]; ?>">
             account policy</a> guidelines. </label>
         </div>
