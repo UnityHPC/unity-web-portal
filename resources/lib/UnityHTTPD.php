@@ -43,11 +43,17 @@ class UnityHTTPD
             error_log("$title: $message");
             return;
         }
-        $output = [
-            "message" => $message,
-            "REMOTE_USER" => $_SERVER["REMOTE_USER"] ?? null,
-            "REMOTE_ADDR" => $_SERVER["REMOTE_ADDR"] ?? null,
-        ];
+        $output = ["message" => $message];
+        if (!is_null($data)) {
+            try {
+                \jsonEncode($data);
+                $output["data"] = $data;
+            } catch (\JsonException $e) {
+                $output["data"] = "data could not be JSON encoded: " . $e->getMessage();
+            }
+        }
+        $output["REMOTE_USER"] = $_SERVER["REMOTE_USER"] ?? null;
+        $output["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"] ?? null;
         if (!is_null($errorid)) {
             $output["errorid"] = $errorid;
         }
@@ -56,14 +62,6 @@ class UnityHTTPD
         } else {
             // newlines are bad for error log, but getTrace() is too verbose
             $output["trace"] = explode("\n", (new \Exception())->getTraceAsString());
-        }
-        if (!is_null($data)) {
-            try {
-                \jsonEncode($data);
-                $output["data"] = $data;
-            } catch (\JsonException $e) {
-                $output["data"] = "data could not be JSON encoded: " . $e->getMessage();
-            }
         }
         error_log("$title: " . \jsonEncode($output));
     }
