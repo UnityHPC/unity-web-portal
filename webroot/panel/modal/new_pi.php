@@ -13,7 +13,7 @@ require_once __DIR__ . "/../../../resources/autoload.php";
         <input type="text" id="pi_search" name="pi" placeholder="Search PI by NetID" required>
         <div class="searchWrapper" style="display: none;"></div>
     </div>
-    <input type="submit" value="Send Request">
+    <input type="submit" value="Send Request" onclick="this.form.submit(); this.disabled=true;">
 </form>
 
 <script>
