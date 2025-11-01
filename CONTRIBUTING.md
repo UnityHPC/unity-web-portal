@@ -55,9 +55,9 @@ When accessing locked down portions of the portal, you will be asked for a usern
 The password is always `password`. `tools/docker-dev/web/htpasswd` contains all valid usernames.
 
 Notable users:
-* `user1@org1.test` - admin, PI
-* `user2@org1.test` - not admin, not PI
-* `user2000@org2.test` - does not yet have an account
+* `user1_org1_test` - admin, PI
+* `user2_org1_test` - not admin, not PI
+* `user2000_org2_test` - does not yet have an account
 
 ### Changes to Dev Environment
 

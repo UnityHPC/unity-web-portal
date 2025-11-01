@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
     php-xml \
     php-intl \
     php-xdebug
+RUN a2enmod rewrite
 COPY htpasswd /etc/apache2/.htpasswd
 RUN chown www-data /etc/apache2/.htpasswd
 COPY unity-apache.conf /etc/apache2/sites-available/unity.conf

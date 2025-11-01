@@ -7,13 +7,6 @@ use UnityWebPortal\lib\exceptions\SSOException;
 
 class UnitySSO
 {
-    private static function eppnToUID($eppn)
-    {
-        $eppn_output = str_replace(".", "_", $eppn);
-        $eppn_output = str_replace("@", "_", $eppn_output);
-        return strtolower($eppn_output);
-    }
-
     private static function eppnToOrg($eppn)
     {
         $parts = explode("@", $eppn);
@@ -58,8 +51,8 @@ class UnitySSO
     public static function getSSO()
     {
         return array(
-            "user" => self::eppnToUID(self::getAttribute("REMOTE_USER")),
-            "org" => self::eppnToOrg(self::getAttribute("REMOTE_USER")),
+            "user" => self::getAttribute("REMOTE_USER"),
+            "org" => self::eppnToOrg(self::getAttribute("eppn")),
             "firstname" => self::getAttribute("givenName"),
             "lastname" => self::getAttribute("sn"),
             "name" => self::getAttribute("givenName") . " " . self::getAttribute("sn"),

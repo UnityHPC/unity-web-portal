@@ -9,15 +9,15 @@ class InvalidEPPNTest extends TestCase
     public static function provider()
     {
         return [
-            ["",      false],
-            ["a",     false],
-            ["a@b",   true],
-            ["a@b@c", false],
+            ["",      "",      false],
+            ["a",     "a",     false],
+            ["a@b",   "a_b",   true],
+            ["a@b@c", "a_b_c", false],
         ];
     }
 
     #[DataProvider("provider")]
-    public function testInitGetSSO(string $eppn, bool $is_valid): void
+    public function testInitGetSSO(string $eppn, string $uid, bool $is_valid): void
     {
         global $SSO;
         $original_server = $_SERVER;
@@ -30,7 +30,7 @@ class InvalidEPPNTest extends TestCase
             $this->expectException(SSOException::class);
         }
         try {
-            $_SERVER["REMOTE_USER"] = $eppn;
+            $_SERVER["REMOTE_USER"] = $uid;
             $_SERVER["REMOTE_ADDR"] = "127.0.0.1";
             $_SERVER["eppn"] = $eppn;
             $_SERVER["givenName"] = "foo";
