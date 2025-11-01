@@ -126,19 +126,10 @@ class UnityHTTPD
         self::die($message);
     }
 
-    // https://www.php.net/manual/en/function.register-shutdown-function.php
-    public static function shutdown()
+    // https://www.php.net/manual/en/function.set-exception-handler.php
+    public static function exceptionHandler(\Throwable $e)
     {
-        $e = error_get_last();
-        if (is_null($e) || $e["type"] !== E_ERROR) {
-            return;
-        }
-        // newlines are bad for error log
-        if (!is_null($e) && array_key_exists("message", $e) && str_contains($e["message"], "\n")) {
-            $e["message"] = explode("\n", $e["message"]);
-        }
-        // error_get_last is an array, not a Throwable
-        self::internalServerError("An internal server error has occurred.", data: ["error" => $e]);
+        self::internalServerError("An internal server error has occurred.", error: $e);
     }
 
     public static function getPostData(...$keys)
