@@ -15,8 +15,6 @@ use UnityWebPortal\lib\UnityGithub;
 use UnityWebPortal\lib\UnityHTTPD;
 
 set_exception_handler(["UnityWebPortal\lib\UnityHTTPD", "exceptionHandler"]);
-// exception handler logs errors, don't want duplicate output
-ini_set("log_errors", false);
 
 session_start();
 

@@ -129,11 +129,10 @@ class UnityHTTPD
     // https://www.php.net/manual/en/function.set-exception-handler.php
     public static function exceptionHandler($e)
     {
-        try {
-            self::internalServerError("An internal server error has occurred.", error: $e);
-        } catch (\Throwable $e) {
-            error_log("exception handler failed! $e");
-        }
+        // if this fails for any reason log_errors will be enabled
+        ini_set("log_errors", true);
+        self::internalServerError("An internal server error has occurred.", error: $e);
+        ini_set("log_errors", false);
     }
 
     public static function getPostData(...$keys)
