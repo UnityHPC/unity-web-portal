@@ -14,7 +14,9 @@ use UnityWebPortal\lib\UnityWebhook;
 use UnityWebPortal\lib\UnityGithub;
 use UnityWebPortal\lib\UnityHTTPD;
 
-set_exception_handler(["UnityWebPortal\lib\UnityHTTPD", "exceptionHandler"]);
+if (CONFIG["site"]["enable_exception_handler"]) {
+    set_exception_handler(["UnityWebPortal\lib\UnityHTTPD", "exceptionHandler"]);
+}
 
 session_start();
 

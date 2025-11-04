@@ -16,6 +16,7 @@ account_policy_url = "https://github.com" ; this can be external or a portal pag
 allow_die = true ; internal use only
 enable_verbose_error_log = true ; internal use only
 enable_error_to_user = true ; internal use only
+enable_exception_handler = true ; internal use only
 
 [ldap]
 uri = "ldap://identity"  ; URI of remote LDAP server
