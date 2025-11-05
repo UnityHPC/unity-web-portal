@@ -60,6 +60,7 @@ function arraysAreEqualUnOrdered(array $a, array $b): bool
 
 
 function switchUser(
+    string $uid,
     string $eppn,
     string $given_name,
     string $sn,
@@ -74,7 +75,7 @@ function switchUser(
         session_id($session_id);
     }
     // session_start will be called on the first post()
-    $_SERVER["REMOTE_USER"] = $eppn;
+    $_SERVER["REMOTE_USER"] = $uid;
     $_SERVER["REMOTE_ADDR"] = "127.0.0.1";
     $_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
     $_SERVER["eppn"] = $eppn;
@@ -127,64 +128,64 @@ function http_get(string $phpfile, array $get_data = array()): void
 
 function getNormalUser()
 {
-    return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
+    return ["user2_org1_test", "user2@org1.test", "foo", "bar", "user2@org1.test"];
 }
 
 function getNormalUser2()
 {
-    return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
+    return ["user2_org1_test", "user2@org1.test", "foo", "bar", "user2@org1.test"];
 }
 
 function getUserHasNotRequestedAccountDeletionHasGroup()
 {
-    return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
+    return ["user1_org1_test", "user1@org1.test", "foo", "bar", "user1@org1.test"];
 }
 
 function getUserHasNotRequestedAccountDeletionHasNoGroups()
 {
-    return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
+    return ["user2_org1_test", "user2@org1.test", "foo", "bar", "user2@org1.test"];
 }
 
 function getUserHasNoSshKeys()
 {
-    return ["user3@org1.test", "foo", "bar", "user3@org1.test"];
+    return ["user3_org1_test", "user3@org1.test", "foo", "bar", "user3@org1.test"];
 }
 
 function getUserNotPiNotRequestedBecomePi()
 {
-    return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
+    return ["user2_org1_test", "user2@org1.test", "foo", "bar", "user2@org1.test"];
 }
 
 function getUserNotPiNotRequestedBecomePiRequestedAccountDeletion()
 {
-    return ["user4@org1.test", "foo", "bar", "user4@org1.test"];
+    return ["user4_org1_test", "user4@org1.test", "foo", "bar", "user4@org1.test"];
 }
 
 function getUserWithOneKey()
 {
-    return ["user5@org2.test", "foo", "bar", "user5@org2.test"];
+    return ["user5_org2_test", "user5@org2.test", "foo", "bar", "user5@org2.test"];
 }
 
 function getUserIsPIHasNoMembersNoMemberRequests()
 {
-    return ["user5@org2.test", "foo", "bar", "user5@org2.test"];
+    return ["user5_org2_test", "user5@org2.test", "foo", "bar", "user5@org2.test"];
 }
 
 function getUserIsPIHasAtLeastOneMember()
 {
-    return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
+    return ["user1_org1_test", "user1@org1.test", "foo", "bar", "user1@org1.test"];
 }
 
 function getNonExistentUser()
 {
-    return ["user2001@org998.test", "foo", "bar", "user2001@org998.test"];
+    return ["user2001_org998_test", "user2001@org998.test", "foo", "bar", "user2001@org998.test"];
 }
 
 function getNonexistentUsersWithExistentOrg()
 {
     return [
-        ["user2003@org1.test", "foo", "bar", "user2003@org1.test"],
-        ["user2004@org1.test", "foo", "bar", "user2004@org1.test"],
+        ["user2003_org1_test", "user2003@org1.test", "foo", "bar", "user2003@org1.test"],
+        ["user2004_org1_test", "user2004@org1.test", "foo", "bar", "user2004@org1.test"],
     ];
 }
 
@@ -192,20 +193,21 @@ function getNonExistentUserAndExpectedUIDGIDNoCustomMapping()
 {
     // defaults/config.ini.default: ldap.offset_UIDGID=1000000
     // test/custom_user_mappings/test.csv has reservations for 1000000-1000004
-    return [["user2002@org998.test", "foo", "bar", "user2002@org998.test"], 1000005];
+    return [["user2002_org998_test", "user2002@org998.test", "foo", "bar", "user2002@org998.test"], 1000005];
 }
 
 function getNonExistentUserAndExpectedUIDGIDWithCustomMapping()
 {
     // test/custom_user_mappings/test.csv: {user2001: 555}
-    return [["user2001@org998.test", "foo", "bar", "user2001@org998.test"], 555];
+    return [["user2001_org998_test", "user2001@org998.test", "foo", "bar", "user2001@org998.test"], 555];
 }
 
 function getMultipleValueAttributesAndExpectedSSO()
 {
     return [
         [
-            "REMOTE_USER" => "user2003@org998.test",
+            "REMOTE_USER" => "user2003_org998_test",
+            "eppn" => "user2003@org998.test",
             "givenName" => "foo;foo",
             "sn" => "bar;bar",
             "mail" => "user2003@org998.test;user2003@org998.test",
@@ -220,5 +222,5 @@ function getMultipleValueAttributesAndExpectedSSO()
 
 function getAdminUser()
 {
-    return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
+    return ["user1_org1_test", "user1@org1.test", "foo", "bar", "user1@org1.test"];
 }

@@ -49,8 +49,9 @@ See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for prod
             * `COMPOSER_ALLOW_SUPERUSER=1 composer --no-dev --no-scripts --no-plugins install`
     * `httpd` `DocumentRoot` set to `webroot/`
     * `httpd` Authentication
-        * Any authentication will do as long as it defines `REMOTE_USER`, `givenName`, `sn`, and `mail`
-            * `REMOTE_USER` must also be unique, non-reassignable, and persistent
+        * Any authentication will do as long as it defines `REMOTE_USER`, `eppn`, `givenName`, `sn`, and `mail`
+            * `REMOTE_USER` is used for the UID attribute for users in LDAP
+            * Unity uses Shibboleth `AttributeResolver type=Transform` to convert `eppn` into `REMOTE_USER` ([private link to config](https://gitlab.rc.umass.edu/unity/admin/ansible/-/blob/fe42ba30f722b75a7980a0b07d93be90055e4f83/roles/shibboleth/templates/shibboleth2.xml.j2))
         * Unity uses Shibboleth SP and the Apache Shibboleth module (`apt install shibboleth-sp-utils libapache2-mod-shib` on Ubuntu)
     * `httpd` Authorization
         * Global access to `webroot/panel/`
