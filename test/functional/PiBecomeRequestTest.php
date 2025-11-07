@@ -13,7 +13,7 @@ class PiBecomeRequestTest extends TestCase
         } elseif ($x > 0) {
             $this->assertTrue($SQL->requestExists($USER->uid));
         } else {
-            throw new \RuntimeError("x must not be negative");
+            throw new RuntimeException("x must not be negative");
         }
         $this->assertEquals($x, $this->getNumberPiBecomeRequests());
     }
