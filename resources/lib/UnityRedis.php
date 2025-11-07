@@ -85,11 +85,8 @@ class UnityRedis
     }
 
     // TODO return void
-    public function removeCacheArray(
-        string $object,
-        string $key,
-        mixed $value,
-    ): mixed {
+    public function removeCacheArray(string $object, string $key, mixed $value)
+    {
         if (!$this->enabled) {
             return null;
         }
