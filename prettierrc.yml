@@ -1,0 +1,4 @@
+overrides:
+  - files: ["*.php"]
+    options:
+      printWidth: 100

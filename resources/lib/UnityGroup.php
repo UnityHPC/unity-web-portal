@@ -44,7 +44,9 @@ class UnityGroup
     {
         if (!is_a($other_group, self::class)) {
             throw new Exception(
-                "Unable to check equality because the parameter is not a " . self::class . " object"
+                "Unable to check equality because the parameter is not a " .
+                    self::class .
+                    " object",
             );
         }
 
@@ -72,7 +74,7 @@ class UnityGroup
         $email,
         $org,
         $send_mail_to_admins,
-        $send_mail = true
+        $send_mail = true,
     ) {
         if ($this->exists()) {
             return;
@@ -80,43 +82,35 @@ class UnityGroup
         if ($this->SQL->accDeletionRequestExists($this->getOwner()->uid)) {
             return;
         }
-        $this->SQL->addRequest($this->getOwner()->uid, $firstname, $lastname, $email, $org);
+        $this->SQL->addRequest(
+            $this->getOwner()->uid,
+            $firstname,
+            $lastname,
+            $email,
+            $org,
+        );
         if ($send_mail) {
-            $this->MAILER->sendMail(
-                $email,
-                "group_request"
-            );
-            $this->WEBHOOK->sendWebhook(
-                "group_request_admin",
-                array(
-                    "user" => $this->getOwner()->uid,
-                    "org" => $org,
-                    "name" => "$firstname $lastname",
-                    "email" => $email
-                )
-            );
+            $this->MAILER->sendMail($email, "group_request");
+            $this->WEBHOOK->sendWebhook("group_request_admin", [
+                "user" => $this->getOwner()->uid,
+                "org" => $org,
+                "name" => "$firstname $lastname",
+                "email" => $email,
+            ]);
             if ($send_mail_to_admins) {
-                $this->MAILER->sendMail(
-                    "admin",
-                    "group_request_admin",
-                    array(
-                        "user" => $this->getOwner()->uid,
-                        "org" => $org,
-                        "name" => "$firstname $lastname",
-                        "email" => $email
-                    )
-                );
-            }
-            $this->MAILER->sendMail(
-                "pi_approve",
-                "group_request_admin",
-                array(
+                $this->MAILER->sendMail("admin", "group_request_admin", [
                     "user" => $this->getOwner()->uid,
                     "org" => $org,
                     "name" => "$firstname $lastname",
-                    "email" => $email
-                )
-            );
+                    "email" => $email,
+                ]);
+            }
+            $this->MAILER->sendMail("pi_approve", "group_request_admin", [
+                "user" => $this->getOwner()->uid,
+                "org" => $org,
+                "name" => "$firstname $lastname",
+                "email" => $email,
+            ]);
         }
     }
 
@@ -136,23 +130,22 @@ class UnityGroup
                 $request["lastname"],
                 $request["email"],
                 $request["org"],
-                $send_mail
+                $send_mail,
             );
         }
         $this->init();
         $this->SQL->removeRequest($this->getOwner()->uid);
-        $operator = is_null($operator) ? $this->getOwner()->uid : $operator->uid;
+        $operator = is_null($operator)
+            ? $this->getOwner()->uid
+            : $operator->uid;
         $this->SQL->addLog(
             $operator,
-            $_SERVER['REMOTE_ADDR'],
+            $_SERVER["REMOTE_ADDR"],
             "approved_group",
-            $this->getOwner()->uid
+            $this->getOwner()->uid,
         );
         if ($send_mail) {
-            $this->MAILER->sendMail(
-                $request["email"],
-                "group_created"
-            );
+            $this->MAILER->sendMail($request["email"], "group_created");
         }
     }
 
@@ -161,23 +154,25 @@ class UnityGroup
      */
     public function denyGroup($operator = null, $send_mail = true)
     {
-        $request = $this->SQL->getRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
+        $request = $this->SQL->getRequest(
+            $this->getOwner()->uid,
+            UnitySQL::REQUEST_BECOME_PI,
+        );
         $this->SQL->removeRequest($this->getOwner()->uid);
         if ($this->exists()) {
             return;
         }
-        $operator = is_null($operator) ? $this->getOwner()->uid : $operator->uid;
+        $operator = is_null($operator)
+            ? $this->getOwner()->uid
+            : $operator->uid;
         $this->SQL->addLog(
             $operator,
-            $_SERVER['REMOTE_ADDR'],
+            $_SERVER["REMOTE_ADDR"],
             "denied_group",
-            $this->getOwner()->uid
+            $this->getOwner()->uid,
         );
         if ($send_mail) {
-            $this->MAILER->sendMail(
-                $request["email"],
-                "group_denied"
-            );
+            $this->MAILER->sendMail($request["email"], "group_denied");
         }
     }
 
@@ -188,11 +183,9 @@ class UnityGroup
         }
         $this->SQL->removeRequest($this->getOwner()->uid);
         if ($send_mail) {
-            $this->MAILER->sendMail(
-                "admin",
-                "group_request_cancelled",
-                ["uid" => $this->getOwner()->uid],
-            );
+            $this->MAILER->sendMail("admin", "group_request_cancelled", [
+                "uid" => $this->getOwner()->uid,
+            ]);
         }
     }
 
@@ -206,7 +199,7 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_join_request_cancelled",
-                ["uid" => $user->uid]
+                ["uid" => $user->uid],
             );
         }
     }
@@ -266,21 +259,20 @@ class UnityGroup
         $this->addUserToGroup($new_user);
         $this->SQL->removeRequest($new_user->uid, $this->gid);
         if ($send_mail) {
-            $this->MAILER->sendMail(
-                $new_user->getMail(),
-                "group_user_added",
-                array("group" => $this->gid)
-            );
+            $this->MAILER->sendMail($new_user->getMail(), "group_user_added", [
+                "group" => $this->gid,
+            ]);
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_user_added_owner",
-                array(
+                [
                     "group" => $this->gid,
                     "user" => $new_user->uid,
-                    "name" => $request["firstname"] . " " . $request["lastname"],
+                    "name" =>
+                        $request["firstname"] . " " . $request["lastname"],
                     "email" => $request["email"],
                     "org" => $request["org"],
-                )
+                ],
             );
         }
     }
@@ -291,21 +283,19 @@ class UnityGroup
         // remove request, this will fail silently if the request doesn't exist
         $this->SQL->removeRequest($new_user->uid, $this->gid);
         if ($send_mail) {
-            $this->MAILER->sendMail(
-                $request["email"],
-                "group_user_denied",
-                array("group" => $this->gid)
-            );
+            $this->MAILER->sendMail($request["email"], "group_user_denied", [
+                "group" => $this->gid,
+            ]);
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_user_denied_owner",
-                array(
+                [
                     "group" => $this->gid,
                     "user" => $new_user->uid,
                     "name" => $new_user->getFullName(),
                     "email" => $new_user->getMail(),
-                    "org" => $new_user->getOrg()
-                )
+                    "org" => $new_user->getOrg(),
+                ],
             );
         }
     }
@@ -316,7 +306,9 @@ class UnityGroup
             return;
         }
         if ($new_user->uid == $this->getOwner()->uid) {
-            throw new Exception("Cannot delete group owner from group. Disband group instead");
+            throw new Exception(
+                "Cannot delete group owner from group. Disband group instead",
+            );
         }
         // remove request, this will fail silently if the request doesn't exist
         $this->removeUserFromGroup($new_user);
@@ -324,18 +316,18 @@ class UnityGroup
             $this->MAILER->sendMail(
                 $new_user->getMail(),
                 "group_user_removed",
-                array("group" => $this->gid)
+                ["group" => $this->gid],
             );
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_user_removed_owner",
-                array(
+                [
                     "group" => $this->gid,
                     "user" => $new_user->uid,
                     "name" => $new_user->getFullName(),
                     "email" => $new_user->getMail(),
-                    "org" => $new_user->getOrg()
-                )
+                    "org" => $new_user->getOrg(),
+                ],
             );
         }
     }
@@ -346,14 +338,20 @@ class UnityGroup
         $lastname,
         $email,
         $org,
-        $send_mail = true
+        $send_mail = true,
     ) {
         if ($this->memberExists($new_user)) {
-            UnityHTTPD::errorLog("warning", "user '$new_user' already in group");
+            UnityHTTPD::errorLog(
+                "warning",
+                "user '$new_user' already in group",
+            );
             return;
         }
         if ($this->requestExists($new_user)) {
-            UnityHTTPD::errorLog("warning", "user '$new_user' already requested group membership");
+            UnityHTTPD::errorLog(
+                "warning",
+                "user '$new_user' already requested group membership",
+            );
             return;
         }
         if ($this->SQL->accDeletionRequestExists($new_user->uid)) {
@@ -362,21 +360,19 @@ class UnityGroup
         }
         $this->addRequest($new_user->uid, $firstname, $lastname, $email, $org);
         if ($send_mail) {
-            $this->MAILER->sendMail(
-                $email,
-                "group_user_request",
-                array("group" => $this->gid)
-            );
+            $this->MAILER->sendMail($email, "group_user_request", [
+                "group" => $this->gid,
+            ]);
             $this->MAILER->sendMail(
                 $this->getOwner()->getMail(),
                 "group_user_request_owner",
-                array(
+                [
                     "group" => $this->gid,
                     "user" => $new_user->uid,
                     "name" => "$firstname $lastname",
                     "email" => $email,
                     "org" => $org,
-                )
+                ],
             );
         }
     }
@@ -384,7 +380,7 @@ class UnityGroup
     public function getRequests()
     {
         $requests = $this->SQL->getRequests($this->gid);
-        $out = array();
+        $out = [];
         foreach ($requests as $request) {
             $user = new UnityUser(
                 $request["uid"],
@@ -392,19 +388,16 @@ class UnityGroup
                 $this->SQL,
                 $this->MAILER,
                 $this->REDIS,
-                $this->WEBHOOK
+                $this->WEBHOOK,
             );
-            array_push(
-                $out,
-                [
-                    $user,
-                    $request["timestamp"],
-                    $request["firstname"],
-                    $request["lastname"],
-                    $request["email"],
-                    $request["org"],
-                ]
-            );
+            array_push($out, [
+                $user,
+                $request["timestamp"],
+                $request["firstname"],
+                $request["lastname"],
+                $request["email"],
+                $request["org"],
+            ]);
         }
         return $out;
     }
@@ -412,7 +405,7 @@ class UnityGroup
     public function getGroupMembers($ignorecache = false)
     {
         $members = $this->getGroupMemberUIDs($ignorecache);
-        $out = array();
+        $out = [];
         foreach ($members as $member) {
             $user_obj = new UnityUser(
                 $member,
@@ -420,7 +413,7 @@ class UnityGroup
                 $this->SQL,
                 $this->MAILER,
                 $this->REDIS,
-                $this->WEBHOOK
+                $this->WEBHOOK,
             );
             array_push($out, $user_obj);
         }
@@ -467,7 +460,7 @@ class UnityGroup
         $nextGID = $this->LDAP->getNextPIGIDNumber();
         $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
         $this->entry->setAttribute("gidnumber", strval($nextGID));
-        $this->entry->setAttribute("memberuid", array($owner->uid));
+        $this->entry->setAttribute("memberuid", [$owner->uid]);
         $this->entry->write();
         $this->REDIS->appendCacheArray("sorted_groups", "", $this->gid);
         // TODO if we ever make this project based,
@@ -497,7 +490,14 @@ class UnityGroup
 
     private function addRequest($uid, $firstname, $lastname, $email, $org)
     {
-        $this->SQL->addRequest($uid, $firstname, $lastname, $email, $org, $this->gid);
+        $this->SQL->addRequest(
+            $uid,
+            $firstname,
+            $lastname,
+            $email,
+            $org,
+            $this->gid,
+        );
     }
 
     public function getOwner()
@@ -508,7 +508,7 @@ class UnityGroup
             $this->SQL,
             $this->MAILER,
             $this->REDIS,
-            $this->WEBHOOK
+            $this->WEBHOOK,
         );
     }
 
@@ -520,7 +520,9 @@ class UnityGroup
     public static function GID2OwnerUID($gid)
     {
         if (substr($gid, 0, strlen(self::PI_PREFIX)) != self::PI_PREFIX) {
-            throw new Exception("PI group GID doesn't have the correct prefix.");
+            throw new Exception(
+                "PI group GID doesn't have the correct prefix.",
+            );
         }
         return substr($gid, strlen(self::PI_PREFIX));
     }

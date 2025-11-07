@@ -1,8 +1,7 @@
 <?php
 
 // this template is sent when a user account gets created
-$this->Subject = "User Created";
-?>
+$this->Subject = "User Created"; ?>
 
 <p>Hello,</p>
 

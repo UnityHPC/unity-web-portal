@@ -7,9 +7,7 @@ class UnityGithub
     public function getSshPublicKeys($username)
     {
         $url = "https://api.github.com/users/$username/keys";
-        $headers = array(
-        "User-Agent: Unity Cluster User Portal"
-        );
+        $headers = ["User-Agent: Unity Cluster User Portal"];
 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -21,11 +19,13 @@ class UnityGithub
         // normally returns array of objects each with a ->key attribute
         // if bad URL or no such user, returns status=404 object
         // if no keys, returns []
-        if ((!is_array($keys)) || (count($keys) == 0)) {
+        if (!is_array($keys) || count($keys) == 0) {
             return [];
         }
         // phpcs:disable
-        return array_map(function($x){return $x->key;}, $keys);
+        return array_map(function ($x) {
+            return $x->key;
+        }, $keys);
         // phpcs:enable
     }
 }

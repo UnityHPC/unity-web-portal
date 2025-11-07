@@ -14,13 +14,10 @@ class ViewAsUserTest extends TestCase
         // $this->assertTrue($USER->isAdmin());
         $beforeUid = $USER->uid;
         // $this->assertNotEquals($afterUid, $beforeUid);
-        http_post(
-            __DIR__ . "/../../webroot/admin/user-mgmt.php",
-            [
-                "form_type" => "viewAsUser",
-                "uid" => $afterUid,
-            ],
-        );
+        http_post(__DIR__ . "/../../webroot/admin/user-mgmt.php", [
+            "form_type" => "viewAsUser",
+            "uid" => $afterUid,
+        ]);
         $this->assertArrayHasKey("viewUser", $_SESSION);
         // redirect means that php process dies and user's browser will initiate a new one
         // this makes `require_once autoload.php` run again and init.php changes $USER
@@ -29,10 +26,9 @@ class ViewAsUserTest extends TestCase
         // now we should be new user
         $this->assertEquals($afterUid, $USER->uid);
         // $this->assertTrue($_SESSION["user_exists"]);
-        http_post(
-            __DIR__ . "/../../resources/templates/header.php",
-            ["form_type" => "clearView"],
-        );
+        http_post(__DIR__ . "/../../resources/templates/header.php", [
+            "form_type" => "clearView",
+        ]);
         $this->assertArrayNotHasKey("viewUser", $_SESSION);
         // redirect means that php process dies and user's browser will initiate a new one
         // this makes `require_once autoload.php` run again and init.php changes $USER
@@ -64,13 +60,10 @@ class ViewAsUserTest extends TestCase
         $adminUid = $USER->uid;
         $this->assertTrue($USER->isAdmin());
         switchUser(...getNormalUser());
-        http_post(
-            __DIR__ . "/../../webroot/admin/user-mgmt.php",
-            [
-                "form_type" => "viewAsUser",
-                "uid" => $adminUid,
-            ],
-        );
+        http_post(__DIR__ . "/../../webroot/admin/user-mgmt.php", [
+            "form_type" => "viewAsUser",
+            "uid" => $adminUid,
+        ]);
         $this->assertArrayNotHasKey("viewUser", $_SESSION);
     }
 }

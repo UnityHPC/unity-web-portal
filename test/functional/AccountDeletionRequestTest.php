@@ -22,9 +22,9 @@ class AccountDeletionRequestTest extends TestCase
     private function getNumberAccountDeletionRequests()
     {
         global $USER, $SQL;
-        $stmt = $SQL->getConn()->prepare(
-            "SELECT * FROM account_deletion_requests WHERE uid=:uid"
-        );
+        $stmt = $SQL
+            ->getConn()
+            ->prepare("SELECT * FROM account_deletion_requests WHERE uid=:uid");
         $uid = $USER->uid;
         $stmt->bindParam(":uid", $uid);
         $stmt->execute();
@@ -38,15 +38,13 @@ class AccountDeletionRequestTest extends TestCase
         $this->assertEmpty($USER->getPIGroupGIDs());
         $this->assertNumberAccountDeletionRequests(0);
         try {
-            http_post(
-                __DIR__ . "/../../webroot/panel/account.php",
-                ["form_type" => "account_deletion_request"]
-            );
+            http_post(__DIR__ . "/../../webroot/panel/account.php", [
+                "form_type" => "account_deletion_request",
+            ]);
             $this->assertNumberAccountDeletionRequests(1);
-            http_post(
-                __DIR__ . "/../../webroot/panel/account.php",
-                ["form_type" => "account_deletion_request"]
-            );
+            http_post(__DIR__ . "/../../webroot/panel/account.php", [
+                "form_type" => "account_deletion_request",
+            ]);
             $this->assertNumberAccountDeletionRequests(1);
         } finally {
             $SQL->deleteAccountDeletionRequest($USER->uid);
@@ -62,10 +60,9 @@ class AccountDeletionRequestTest extends TestCase
         $this->assertNotEmpty($USER->getPIGroupGIDs());
         $this->assertNumberAccountDeletionRequests(0);
         try {
-            http_post(
-                __DIR__ . "/../../webroot/panel/account.php",
-                ["form_type" => "account_deletion_request"]
-            );
+            http_post(__DIR__ . "/../../webroot/panel/account.php", [
+                "form_type" => "account_deletion_request",
+            ]);
             $this->assertNumberAccountDeletionRequests(0);
         } finally {
             $SQL->deleteAccountDeletionRequest($USER->uid);

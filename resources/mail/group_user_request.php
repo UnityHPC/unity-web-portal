@@ -1,8 +1,7 @@
 <?php
 
 // This email is sent to the requestor when they make a new request to join a group
-$this->Subject = "Request Submitted";
-?>
+$this->Subject = "Request Submitted"; ?>
 
 <p>Hello,</p>
 

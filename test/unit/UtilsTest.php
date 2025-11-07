@@ -11,9 +11,9 @@ class UtilsTest extends TestCase
         $array = [
             "a" => [
                 "b" => [
-                    "c" => 123
-                ]
-            ]
+                    "c" => 123,
+                ],
+            ],
         ];
         $result = \arrayGet($array, "a", "b", "c");
         $this->assertSame(123, $result);
@@ -23,8 +23,8 @@ class UtilsTest extends TestCase
     {
         $array = [
             "foo" => [
-                "bar" => "baz"
-            ]
+                "bar" => "baz",
+            ],
         ];
         $result = \arrayGet($array, "foo");
         $this->assertSame(["bar" => "baz"], $result);
@@ -120,10 +120,14 @@ class UtilsTest extends TestCase
                 "gG7Fy2a+VWwcB6w0nzyxbqg16AP+luuqHxfVsvP6Uyde4C7LPeB3r3GhAfuU",
                 "Nxnpz/bXGxbJu3+aCnbtaZMzGJ6UFBeJp8MtlmVajDnjx3oEuOGGmobTlaop",
                 "HYVsQ3ySfQ==",
-            ])
+            ]),
         ];
-        $validKeysArgs = array_map(function($x){return [true, $x];}, $validKeys);
-        $invalidKeysArgs = array_map(function($x){return [false, $x];}, $HTTP_HEADER_TEST_INPUTS);
+        $validKeysArgs = array_map(function ($x) {
+            return [true, $x];
+        }, $validKeys);
+        $invalidKeysArgs = array_map(function ($x) {
+            return [false, $x];
+        }, $HTTP_HEADER_TEST_INPUTS);
         return $validKeysArgs + $invalidKeysArgs;
     }
 

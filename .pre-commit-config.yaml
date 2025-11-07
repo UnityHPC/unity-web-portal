@@ -11,19 +11,64 @@ repos:
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
+        # https://github.com/prettier/plugin-php/issues/2430
+        exclude: workers/.*
+
+  - repo: https://github.com/rbubley/mirrors-prettier
+    rev: v3.4.2
+    hooks:
+      - id: prettier
+        exclude: |
+          (?x)^(
+              composer\.json|
+              composer\.lock|
+          )$
 
   - repo: local
     hooks:
       - id: phpcbf
         name: PHP Code Beautifier and Fixer
-        entry: phpcbf
+        entry: ./vendor/bin/phpcbf
+        args: [--standard=./.phpcs-ruleset.xml, --colors]
         language: system
         files: \.php$
-        args: [--standard=./.phpcs-ruleset.xml, --colors]
+        # exclude pure PHP files
         exclude: |
           (?x)^(
               test/.*|
               workers/.*|
+              node_modules/.*|
+              resources/lib/phpopenldaper/.*|
+              vendor/.*|
+              resources/lib/.*|
+          )$
+
+  - repo: local
+    hooks:
+      - id: prettier (php)
+        name: prettier (php)
+        entry: npx
+        args:
+          [
+            -p,
+            prettier,
+            -p,
+            "@prettier/plugin-php",
+            prettier,
+            --plugin=@prettier/plugin-php,
+            --php-version=8.3,
+            --write,
+          ]
+        language: system
+        files: \.php$
+        # exclude impure PHP files
+        exclude: |
+          (?x)^(
+              node_modules/.*|
+              resources/lib/phpopenldaper/.*|
+              vendor/.*|
+              resources/templates/.*|
+              webroot/.*|
           )$
 
   # linters (work required) ########################################################################
@@ -45,14 +90,19 @@ repos:
     hooks:
       - id: phpcs
         name: PHP CodeSniffer
-        entry: phpcs
+        entry: ./vendor/bin/phpcs
         language: system
         files: \.php$
         args: [--standard=./.phpcs-ruleset.xml, --colors]
+        # exclude pure PHP files
         exclude: |
           (?x)^(
               test/.*|
               workers/.*|
+              node_modules/.*|
+              resources/lib/phpopenldaper/.*|
+              vendor/.*|
+              resources/lib/.*|
           )$
       - id: php-l
         name: php -l

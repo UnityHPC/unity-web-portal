@@ -2,6 +2,4 @@
 
 namespace UnityWebPortal\lib\exceptions;
 
-class ArrayKeyException extends \Exception
-{
-}
+class ArrayKeyException extends \Exception {}

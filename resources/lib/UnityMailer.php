@@ -11,7 +11,8 @@ use Exception;
 class UnityMailer extends PHPMailer
 {
     private $template_dir = __DIR__ . "/../mail"; // location of all email templates
-    private $override_template_dir = __DIR__ . "/../../deployment/mail_overrides";
+    private $override_template_dir =
+        __DIR__ . "/../../deployment/mail_overrides";
 
     private $MSG_LINKREF;
     private $MSG_SENDER_EMAIL;
@@ -48,10 +49,11 @@ class UnityMailer extends PHPMailer
         $this->Port = CONFIG["smtp"]["port"];
 
         $security = CONFIG["smtp"]["security"];
-        $security_conf_valid = empty($security) || $security == "tls" || $security == "ssl";
+        $security_conf_valid =
+            empty($security) || $security == "tls" || $security == "ssl";
         if (!$security_conf_valid) {
             throw new Exception(
-                "SMTP security is not set correctly, leave empty, use 'tls', or 'ssl'"
+                "SMTP security is not set correctly, leave empty, use 'tls', or 'ssl'",
             );
         }
         $this->SMTPSecure = $security;
@@ -68,13 +70,13 @@ class UnityMailer extends PHPMailer
         }
 
         if (CONFIG["smtp"]["ssl_verify"] == "false") {
-            $this->SMTPOptions = array(
-                'ssl' => array(
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                    'allow_self_signed' => true
-                )
-            );
+            $this->SMTPOptions = [
+                "ssl" => [
+                    "verify_peer" => false,
+                    "verify_peer_name" => false,
+                    "allow_self_signed" => true,
+                ],
+            ];
         }
     }
 
@@ -82,17 +84,26 @@ class UnityMailer extends PHPMailer
     {
         if (isset($template)) {
             $this->setFrom($this->MSG_SENDER_EMAIL, $this->MSG_SENDER_NAME);
-            $this->addReplyTo($this->MSG_SUPPORT_EMAIL, $this->MSG_SUPPORT_NAME);
+            $this->addReplyTo(
+                $this->MSG_SUPPORT_EMAIL,
+                $this->MSG_SUPPORT_NAME,
+            );
 
             $template_filename = $template . ".php";
-            if (file_exists($this->override_template_dir . "/" . $template_filename)) {
-                $template_path = $this->override_template_dir . "/" . $template_filename;
+            if (
+                file_exists(
+                    $this->override_template_dir . "/" . $template_filename,
+                )
+            ) {
+                $template_path =
+                    $this->override_template_dir . "/" . $template_filename;
             } else {
                 $template_path = $this->template_dir . "/" . $template_filename;
             }
 
             if (file_exists($this->override_template_dir . "/footer.php")) {
-                $footer_template_path = $this->override_template_dir . "/footer.php";
+                $footer_template_path =
+                    $this->override_template_dir . "/footer.php";
             } else {
                 $footer_template_path = $this->template_dir . "/footer.php";
             }
@@ -106,7 +117,10 @@ class UnityMailer extends PHPMailer
             if ($recipients == "admin") {
                 $this->addBCC($this->MSG_ADMIN_EMAIL, $this->MSG_ADMIN_NAME);
             } elseif ($recipients == "pi_approve") {
-                $this->addBCC($this->MSG_PI_APPROVAL_EMAIL, $this->MSG_PI_APPROVAL_NAME);
+                $this->addBCC(
+                    $this->MSG_PI_APPROVAL_EMAIL,
+                    $this->MSG_PI_APPROVAL_NAME,
+                );
             } else {
                 if (is_array($recipients)) {
                     foreach ($recipients as $addr) {

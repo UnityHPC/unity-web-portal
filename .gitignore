@@ -20,3 +20,5 @@ deployment/**/*
 !deployment/**/README.md
 
 .phpunit.result.cache
+
+node_modules

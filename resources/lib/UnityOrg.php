@@ -51,7 +51,7 @@ class UnityOrg
     public function getOrgMembers($ignorecache = false)
     {
         $members = $this->getGroupMemberUIDs($ignorecache);
-        $out = array();
+        $out = [];
         foreach ($members as $member) {
             $user_obj = new UnityUser(
                 $member,
@@ -59,7 +59,7 @@ class UnityOrg
                 $this->SQL,
                 $this->MAILER,
                 $this->REDIS,
-                $this->WEBHOOK
+                $this->WEBHOOK,
             );
             array_push($out, $user_obj);
         }

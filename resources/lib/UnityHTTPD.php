@@ -27,7 +27,10 @@ class UnityHTTPD
     public static function redirect($dest)
     {
         header("Location: $dest");
-        self::errorToUser("Redirect failed, click <a href='$dest'>here</a> to continue.", 302);
+        self::errorToUser(
+            "Redirect failed, click <a href='$dest'>here</a> to continue.",
+            302,
+        );
         self::die();
     }
 
@@ -49,7 +52,8 @@ class UnityHTTPD
                 \jsonEncode($data);
                 $output["data"] = $data;
             } catch (\JsonException $e) {
-                $output["data"] = "data could not be JSON encoded: " . $e->getMessage();
+                $output["data"] =
+                    "data could not be JSON encoded: " . $e->getMessage();
             }
         }
         $output["REMOTE_USER"] = $_SERVER["REMOTE_USER"] ?? null;
@@ -61,7 +65,10 @@ class UnityHTTPD
             $output["error"] = self::throwableToArray($error);
         } else {
             // newlines are bad for error log, but getTrace() is too verbose
-            $output["trace"] = explode("\n", (new \Exception())->getTraceAsString());
+            $output["trace"] = explode(
+                "\n",
+                (new \Exception())->getTraceAsString(),
+            );
         }
         error_log("$title: " . \jsonEncode($output));
     }
@@ -85,12 +92,13 @@ class UnityHTTPD
     private static function errorToUser(
         string $msg,
         int $http_response_code,
-        ?string $errorid = null
+        ?string $errorid = null,
     ) {
         if (!CONFIG["site"]["enable_error_to_user"]) {
             return;
         }
-        $notes = "Please notify a Unity admin at " . CONFIG["mail"]["support"] . ".";
+        $notes =
+            "Please notify a Unity admin at " . CONFIG["mail"]["support"] . ".";
         if (!is_null($errorid)) {
             $notes = $notes . " Error ID: $errorid.";
         }
@@ -105,7 +113,11 @@ class UnityHTTPD
     public static function badRequest($message, $error = null, $data = null)
     {
         $errorid = uniqid();
-        self::errorToUser("Invalid requested action or submitted data.", 400, $errorid);
+        self::errorToUser(
+            "Invalid requested action or submitted data.",
+            400,
+            $errorid,
+        );
         self::errorLog("bad request", $message, $errorid, $error, $data);
         self::die($message);
     }
@@ -118,11 +130,24 @@ class UnityHTTPD
         self::die($message);
     }
 
-    public static function internalServerError($message, $error = null, $data = null)
-    {
+    public static function internalServerError(
+        $message,
+        $error = null,
+        $data = null,
+    ) {
         $errorid = uniqid();
-        self::errorToUser("An internal server error has occurred.", 500, $errorid);
-        self::errorLog("internal server error", $message, $errorid, $error, $data);
+        self::errorToUser(
+            "An internal server error has occurred.",
+            500,
+            $errorid,
+        );
+        self::errorLog(
+            "internal server error",
+            $message,
+            $errorid,
+            $error,
+            $data,
+        );
         self::die($message);
     }
 
@@ -130,7 +155,10 @@ class UnityHTTPD
     public static function exceptionHandler($e)
     {
         ini_set("log_errors", true); // in case something goes wrong and error is not logged
-        self::internalServerError("An internal server error has occurred.", error: $e);
+        self::internalServerError(
+            "An internal server error has occurred.",
+            error: $e,
+        );
         ini_set("log_errors", false); // error logged successfully
     }
 
@@ -139,7 +167,9 @@ class UnityHTTPD
         try {
             return \arrayGet($_POST, ...$keys);
         } catch (ArrayKeyException $e) {
-            self::badRequest('failed to get $_POST data', $e, ['$_POST' => $_POST]);
+            self::badRequest('failed to get $_POST data', $e, [
+                '$_POST' => $_POST,
+            ]);
         }
     }
 
@@ -151,7 +181,9 @@ class UnityHTTPD
         try {
             $tmpfile_path = \arrayGet($_FILES, $filename, "tmp_name");
         } catch (ArrayKeyException $e) {
-            self::badRequest('no such uploaded file', $e, ['$_FILES' => $_FILES]);
+            self::badRequest("no such uploaded file", $e, [
+                '$_FILES' => $_FILES,
+            ]);
         }
         $contents = file_get_contents($tmpfile_path);
         if ($contents === false) {
@@ -169,6 +201,8 @@ class UnityHTTPD
     public static function alert(string $message)
     {
         // jsonEncode escapes quotes
-        echo "<script type='text/javascript'>alert(" . \jsonEncode($message) . ");</script>";
+        echo "<script type='text/javascript'>alert(" .
+            \jsonEncode($message) .
+            ");</script>";
     }
 }

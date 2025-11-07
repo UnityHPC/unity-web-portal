@@ -22,19 +22,22 @@ class UnityPerms
         $role = $this->SQL->getRole($uid, $group);
 
         if (
-            $this->SQL->hasPerm($role, 'unity.admin')
-            || $this->SQL->hasPerm($role, 'unity.admin_no_grant')
+            $this->SQL->hasPerm($role, "unity.admin") ||
+            $this->SQL->hasPerm($role, "unity.admin_no_grant")
         ) {
             return true;
         }
 
-        if (!$this->SQL->hasPerm($role, 'unity.approve_user')) {
+        if (!$this->SQL->hasPerm($role, "unity.approve_user")) {
             return false;
         }
 
         $operated_on_role = $this->SQL->getRole($operated_on, $group);
 
-        if ($this->SQL->getPriority($operated_on_role) >= $this->SQL->getPriority($role)) {
+        if (
+            $this->SQL->getPriority($operated_on_role) >=
+            $this->SQL->getPriority($role)
+        ) {
             return false;
         }
 
@@ -50,19 +53,22 @@ class UnityPerms
         $role = $this->SQL->getRole($uid, $group);
 
         if (
-            $this->SQL->hasPerm($role, 'unity.admin')
-            || $this->SQL->hasPerm($role, 'unity.admin_no_grant')
+            $this->SQL->hasPerm($role, "unity.admin") ||
+            $this->SQL->hasPerm($role, "unity.admin_no_grant")
         ) {
             return true;
         }
 
-        if (!$this->SQL->hasPerm($role, 'unity.deny_user')) {
+        if (!$this->SQL->hasPerm($role, "unity.deny_user")) {
             return false;
         }
 
         $operated_on_role = $this->SQL->getRole($operated_on, $group);
 
-        if ($this->SQL->getPriority($operated_on_role) >= $this->SQL->getPriority($role)) {
+        if (
+            $this->SQL->getPriority($operated_on_role) >=
+            $this->SQL->getPriority($role)
+        ) {
             return false;
         }
 
@@ -81,24 +87,30 @@ class UnityPerms
 
         $user_role = $this->SQL->getRole($uid, $group);
 
-        if ($this->SQL->hasPerm($user_role, 'unity.admin_no_grant') && $role == 'unity.admin') {
+        if (
+            $this->SQL->hasPerm($user_role, "unity.admin_no_grant") &&
+            $role == "unity.admin"
+        ) {
             return false;
         }
 
         if (
-            $this->SQL->hasPerm($user_role, 'unity.admin')
-            || $this->SQL->hasPerm($user_role, 'unity.admin_no_grant')
+            $this->SQL->hasPerm($user_role, "unity.admin") ||
+            $this->SQL->hasPerm($user_role, "unity.admin_no_grant")
         ) {
             return true;
         }
 
-        if (!$this->SQL->hasPerm($user_role, 'unity.grant_role')) {
+        if (!$this->SQL->hasPerm($user_role, "unity.grant_role")) {
             return false;
         }
 
         $role_to_grant = $this->SQL->getRole($role, $group);
 
-        if ($this->SQL->getPriority($role_to_grant) >= $this->SQL->getPriority($user_role)) {
+        if (
+            $this->SQL->getPriority($role_to_grant) >=
+            $this->SQL->getPriority($user_role)
+        ) {
             return false;
         }
 
@@ -117,24 +129,30 @@ class UnityPerms
 
         $user_role = $this->SQL->getRole($uid, $group);
 
-        if ($this->SQL->hasPerm($user_role, 'unity.admin_no_grant') && $role == 'unity.admin') {
+        if (
+            $this->SQL->hasPerm($user_role, "unity.admin_no_grant") &&
+            $role == "unity.admin"
+        ) {
             return false;
         }
 
         if (
-            $this->SQL->hasPerm($user_role, 'unity.admin')
-            || $this->SQL->hasPerm($user_role, 'unity.admin_no_grant')
+            $this->SQL->hasPerm($user_role, "unity.admin") ||
+            $this->SQL->hasPerm($user_role, "unity.admin_no_grant")
         ) {
             return true;
         }
 
-        if (!$this->SQL->hasPerm($user_role, 'unity.revoke_role')) {
+        if (!$this->SQL->hasPerm($user_role, "unity.revoke_role")) {
             return false;
         }
 
         $role_to_revoke = $this->SQL->getRole($role, $group);
 
-        if ($this->SQL->getPriority($role_to_revoke) >= $this->SQL->getPriority($user_role)) {
+        if (
+            $this->SQL->getPriority($role_to_revoke) >=
+            $this->SQL->getPriority($user_role)
+        ) {
             return false;
         }
 

@@ -69,7 +69,7 @@ class UnityRedis
 
         $cached_val = $this->getCache($object, $key);
         if (is_null($cached_val)) {
-            $this->setCache($object, $key, array($value));
+            $this->setCache($object, $key, [$value]);
         } else {
             if (!is_array($cached_val)) {
                 throw new Exception("This cache value is not an array");
@@ -89,13 +89,13 @@ class UnityRedis
 
         $cached_val = $this->getCache($object, $key);
         if (is_null($cached_val)) {
-            $this->setCache($object, $key, array());
+            $this->setCache($object, $key, []);
         } else {
             if (!is_array($cached_val)) {
                 throw new Exception("This cache value is not an array");
             }
 
-            $cached_val = array_diff($cached_val, array($value));
+            $cached_val = array_diff($cached_val, [$value]);
             $this->setCache($object, $key, $cached_val);
         }
     }

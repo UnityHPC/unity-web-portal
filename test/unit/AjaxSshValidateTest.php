@@ -12,7 +12,10 @@ class AjaxSshValidateTest extends TestCase
         // sanity check only, see UnityHTTPDTest for more comprehensive test cases
         return [
             [false, "foobar"],
-            [true, "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+XqO25MUB9x/pS04I3JQ7rMGboWyGXh0GUzkOrTi7a"],
+            [
+                true,
+                "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+XqO25MUB9x/pS04I3JQ7rMGboWyGXh0GUzkOrTi7a",
+            ],
         ];
     }
 
