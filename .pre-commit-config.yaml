@@ -35,11 +35,12 @@ repos:
         # exclude pure PHP files
         exclude: |
           (?x)^(
+              test/.*|
+              workers/.*|
               node_modules/.*|
               resources/lib/phpopenldaper/.*|
               vendor/.*|
               resources/lib/.*|
-              workers/.*|
           )$
 
   - repo: local
