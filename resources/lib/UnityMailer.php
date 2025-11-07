@@ -10,19 +10,19 @@ use Exception;
  */
 class UnityMailer extends PHPMailer
 {
-    private $template_dir = __DIR__ . "/../mail"; // location of all email templates
-    private $override_template_dir =
+    private string $template_dir = __DIR__ . "/../mail"; // location of all email templates
+    private string $override_template_dir =
         __DIR__ . "/../../deployment/mail_overrides";
 
-    private $MSG_LINKREF;
-    private $MSG_SENDER_EMAIL;
-    private $MSG_SENDER_NAME;
-    private $MSG_SUPPORT_EMAIL;
-    private $MSG_SUPPORT_NAME;
-    private $MSG_ADMIN_EMAIL;
-    private $MSG_ADMIN_NAME;
-    private $MSG_PI_APPROVAL_EMAIL;
-    private $MSG_PI_APPROVAL_NAME;
+    private string $MSG_LINKREF;
+    private string $MSG_SENDER_EMAIL;
+    private string $MSG_SENDER_NAME;
+    private string $MSG_SUPPORT_EMAIL;
+    private string $MSG_SUPPORT_NAME;
+    private string $MSG_ADMIN_EMAIL;
+    private string $MSG_ADMIN_NAME;
+    private string $MSG_PI_APPROVAL_EMAIL;
+    private string $MSG_PI_APPROVAL_NAME;
 
     public function __construct()
     {
@@ -80,8 +80,11 @@ class UnityMailer extends PHPMailer
         }
     }
 
-    public function sendMail($recipients, $template = null, $data = null)
-    {
+    public function sendMail(
+        string $recipients,
+        ?string $template = null,
+        mixed $data = null,
+    ) {
         if (isset($template)) {
             $this->setFrom($this->MSG_SENDER_EMAIL, $this->MSG_SENDER_NAME);
             $this->addReplyTo(

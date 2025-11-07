@@ -7,7 +7,7 @@ use UnityWebPortal\lib\exceptions\ArrayKeyException;
 
 class UnityHTTPD
 {
-    public static function die($x = null, $show_user = false)
+    public static function die(mixed $x = null, bool $show_user = false): never
     {
         if (CONFIG["site"]["allow_die"] == false) {
             if (is_null($x)) {
@@ -24,7 +24,7 @@ class UnityHTTPD
         }
     }
 
-    public static function redirect($dest)
+    public static function redirect($dest): never
     {
         header("Location: $dest");
         self::errorToUser(
@@ -41,7 +41,7 @@ class UnityHTTPD
         ?string $errorid = null,
         ?\Throwable $error = null,
         mixed $data = null,
-    ) {
+    ): void {
         if (!CONFIG["site"]["enable_verbose_error_log"]) {
             error_log("$title: $message");
             return;
@@ -93,7 +93,7 @@ class UnityHTTPD
         string $msg,
         int $http_response_code,
         ?string $errorid = null,
-    ) {
+    ): void {
         if (!CONFIG["site"]["enable_error_to_user"]) {
             return;
         }
@@ -110,8 +110,11 @@ class UnityHTTPD
         echo "<h1>$msg</h1><p>$notes</p>";
     }
 
-    public static function badRequest($message, $error = null, $data = null)
-    {
+    public static function badRequest(
+        string $message,
+        ?\Throwable $error = null,
+        ?array $data = null,
+    ): never {
         $errorid = uniqid();
         self::errorToUser(
             "Invalid requested action or submitted data.",
@@ -122,8 +125,11 @@ class UnityHTTPD
         self::die($message);
     }
 
-    public static function forbidden($message, $error = null, $data = null)
-    {
+    public static function forbidden(
+        string $message,
+        ?\Throwable $error = null,
+        ?array $data = null,
+    ): never {
         $errorid = uniqid();
         self::errorToUser("Permission denied.", 403, $errorid);
         self::errorLog("forbidden", $message, $errorid, $error, $data);
@@ -131,10 +137,10 @@ class UnityHTTPD
     }
 
     public static function internalServerError(
-        $message,
-        $error = null,
-        $data = null,
-    ) {
+        string $message,
+        ?\Throwable $error = null,
+        ?array $data = null,
+    ): never {
         $errorid = uniqid();
         self::errorToUser(
             "An internal server error has occurred.",
@@ -152,7 +158,7 @@ class UnityHTTPD
     }
 
     // https://www.php.net/manual/en/function.set-exception-handler.php
-    public static function exceptionHandler($e)
+    public static function exceptionHandler(\Throwable $e): void
     {
         ini_set("log_errors", true); // in case something goes wrong and error is not logged
         self::internalServerError(
@@ -162,7 +168,7 @@ class UnityHTTPD
         ini_set("log_errors", false); // error logged successfully
     }
 
-    public static function getPostData(...$keys)
+    public static function getPostData(...$keys): mixed
     {
         try {
             return \arrayGet($_POST, ...$keys);
@@ -174,10 +180,10 @@ class UnityHTTPD
     }
 
     public static function getUploadedFileContents(
-        $filename,
-        $do_delete_tmpfile_after_read = true,
-        $encoding = "UTF-8",
-    ) {
+        string $filename,
+        bool $do_delete_tmpfile_after_read = true,
+        string $encoding = "UTF-8",
+    ): string {
         try {
             $tmpfile_path = \arrayGet($_FILES, $filename, "tmp_name");
         } catch (ArrayKeyException $e) {
@@ -198,7 +204,7 @@ class UnityHTTPD
 
     // in firefox, the user can disable alert/confirm/prompt after the 2nd or 3rd popup
     // after I disable alerts, if I quit and reopen my browser, the alerts come back
-    public static function alert(string $message)
+    public static function alert(string $message): void
     {
         // jsonEncode escapes quotes
         echo "<script type='text/javascript'>alert(" .

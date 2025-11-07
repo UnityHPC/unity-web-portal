@@ -4,18 +4,18 @@ namespace UnityWebPortal\lib;
 
 class UnityWebhook
 {
-    private $template_dir = __DIR__ . "/../mail";
-    private $override_template_dir =
+    private string $template_dir = __DIR__ . "/../mail";
+    private string $override_template_dir =
         __DIR__ . "/../../deployment/mail_overrides";
-    private $url = CONFIG["webhook"]["url"];
-    private $MSG_LINKREF;
-    private $Subject; // set by template
+    private string $url = CONFIG["webhook"]["url"];
+    private string $MSG_LINKREF;
+    private string $Subject; // set by template
 
     public function __construct()
     {
         $this->MSG_LINKREF = CONFIG["site"]["url"] . CONFIG["site"]["prefix"];
     }
-    public function htmlToMarkdown($html)
+    public function htmlToMarkdown(string $html): string
     {
         // Define regex patterns for each markdown format
         $bold = "/<(b|strong)\b[^>]*>(.*?)<\/(b|strong)>/s";
@@ -35,8 +35,10 @@ class UnityWebhook
         return $md;
     }
 
-    public function sendWebhook($template = null, $data = null)
-    {
+    public function sendWebhook(
+        ?string $template = null,
+        mixed $data = null,
+    ): bool {
         $template_filename = $template . ".php";
         if (
             file_exists($this->override_template_dir . "/" . $template_filename)

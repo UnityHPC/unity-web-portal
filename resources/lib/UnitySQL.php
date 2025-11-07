@@ -6,13 +6,13 @@ use PDO;
 
 class UnitySQL
 {
-    private const TABLE_REQS = "requests";
-    private const TABLE_NOTICES = "notices";
-    private const TABLE_PAGES = "pages";
-    private const TABLE_AUDIT_LOG = "audit_log";
-    private const TABLE_ACCOUNT_DELETION_REQUESTS = "account_deletion_requests";
+    private const string TABLE_REQS = "requests";
+    private const string TABLE_NOTICES = "notices";
+    private const string TABLE_PAGES = "pages";
+    private const string TABLE_AUDIT_LOG = "audit_log";
+    private const string TABLE_ACCOUNT_DELETION_REQUESTS = "account_deletion_requests";
     // FIXME this string should be changed to something more intuitive, requires production change
-    public const REQUEST_BECOME_PI = "admin";
+    public const string REQUEST_BECOME_PI = "admin";
 
     private $conn;
 
@@ -29,7 +29,7 @@ class UnitySQL
         $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
-    public function getConn()
+    public function getConn(): PDO
     {
         return $this->conn;
     }
@@ -38,13 +38,13 @@ class UnitySQL
     // requests table methods
     //
     public function addRequest(
-        $requestor,
-        $firstname,
-        $lastname,
-        $email,
-        $org,
-        $dest = self::REQUEST_BECOME_PI,
-    ) {
+        string $requestor,
+        string $firstname,
+        string $lastname,
+        string $email,
+        string $org,
+        string $dest = self::REQUEST_BECOME_PI,
+    ): void {
         if ($this->requestExists($requestor, $dest)) {
             return;
         }
@@ -66,8 +66,10 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function removeRequest($requestor, $dest = self::REQUEST_BECOME_PI)
-    {
+    public function removeRequest(
+        $requestor,
+        string $dest = self::REQUEST_BECOME_PI,
+    ): void {
         if (!$this->requestExists($requestor, $dest)) {
             return;
         }
@@ -83,7 +85,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function removeRequests($dest = self::REQUEST_BECOME_PI)
+    public function removeRequests(string $dest = self::REQUEST_BECOME_PI): void
     {
         $stmt = $this->conn->prepare(
             "DELETE FROM " .
@@ -95,7 +97,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function getRequest($user, $dest)
+    public function getRequest(string $user, string $dest): array
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " .
@@ -119,8 +121,10 @@ class UnitySQL
         return $result[0];
     }
 
-    public function requestExists($requestor, $dest = self::REQUEST_BECOME_PI)
-    {
+    public function requestExists(
+        string $requestor,
+        string $dest = self::REQUEST_BECOME_PI,
+    ): bool {
         try {
             $this->getRequest($requestor, $dest);
             return true;
@@ -130,14 +134,14 @@ class UnitySQL
         }
     }
 
-    public function getAllRequests()
+    public function getAllRequests(): array
     {
         $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_REQS);
         $stmt->execute();
         return $stmt->fetchAll();
     }
 
-    public function getRequests($dest = self::REQUEST_BECOME_PI)
+    public function getRequests(string $dest = self::REQUEST_BECOME_PI): array
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " .
@@ -151,7 +155,7 @@ class UnitySQL
         return $stmt->fetchAll();
     }
 
-    public function getRequestsByUser($user)
+    public function getRequestsByUser(string $user): array
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid",
@@ -163,7 +167,7 @@ class UnitySQL
         return $stmt->fetchAll();
     }
 
-    public function deleteRequestsByUser($user)
+    public function deleteRequestsByUser(string $user): void
     {
         $stmt = $this->conn->prepare(
             "DELETE FROM " . self::TABLE_REQS . " WHERE uid=:uid",
@@ -173,8 +177,12 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function addNotice($title, $date, $content, $operator)
-    {
+    public function addNotice(
+        string $title,
+        string $date,
+        string $content,
+        UnityUser $operator,
+    ): void {
         $table = self::TABLE_NOTICES;
         $stmt = $this->conn->prepare(
             "INSERT INTO $table (date, title, message) VALUES (:date, :title, :message)",
@@ -193,8 +201,12 @@ class UnitySQL
         );
     }
 
-    public function editNotice($id, $title, $date, $content)
-    {
+    public function editNotice(
+        string $id,
+        string $title,
+        string $date,
+        string $content,
+    ): void {
         $table = self::TABLE_NOTICES;
         $stmt = $this->conn->prepare(
             "UPDATE $table SET date=:date, title=:title, message=:message WHERE id=:id",
@@ -207,7 +219,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function deleteNotice($id)
+    public function deleteNotice(string $id): void
     {
         $stmt = $this->conn->prepare(
             "DELETE FROM " . self::TABLE_NOTICES . " WHERE id=:id",
@@ -217,7 +229,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function getNotice($id)
+    public function getNotice(string $id): array
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_NOTICES . " WHERE id=:id",
@@ -229,7 +241,7 @@ class UnitySQL
         return $stmt->fetchAll()[0];
     }
 
-    public function getNotices()
+    public function getNotices(): array
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_NOTICES . " ORDER BY date DESC",
@@ -239,7 +251,7 @@ class UnitySQL
         return $stmt->fetchAll();
     }
 
-    public function getPages()
+    public function getPages(): array
     {
         $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_PAGES);
         $stmt->execute();
@@ -247,7 +259,7 @@ class UnitySQL
         return $stmt->fetchAll();
     }
 
-    public function getPage($id)
+    public function getPage(string $id): array
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_PAGES . " WHERE page=:id",
@@ -259,8 +271,11 @@ class UnitySQL
         return $stmt->fetchAll()[0];
     }
 
-    public function editPage($id, $content, $operator)
-    {
+    public function editPage(
+        string $id,
+        string $content,
+        UnityUser $operator,
+    ): void {
         $stmt = $this->conn->prepare(
             "UPDATE " .
                 self::TABLE_PAGES .
@@ -279,8 +294,12 @@ class UnitySQL
         );
     }
 
-    public function addLog($operator, $operator_ip, $action_type, $recipient)
-    {
+    public function addLog(
+        string $operator,
+        string $operator_ip,
+        string $action_type,
+        string $recipient,
+    ): void {
         $table = self::TABLE_AUDIT_LOG;
         $stmt = $this->conn->prepare(
             "INSERT INTO $table (operator, operator_ip, action_type, recipient)
@@ -294,7 +313,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function addAccountDeletionRequest($uid)
+    public function addAccountDeletionRequest(string $uid): void
     {
         $stmt = $this->conn->prepare(
             "INSERT INTO " .
@@ -306,7 +325,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function accDeletionRequestExists($uid)
+    public function accDeletionRequestExists(string $uid): bool
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " .
@@ -320,7 +339,7 @@ class UnitySQL
         return count($stmt->fetchAll()) > 0;
     }
 
-    public function deleteAccountDeletionRequest($uid)
+    public function deleteAccountDeletionRequest(string $uid): void
     {
         if (!$this->accDeletionRequestExists($uid)) {
             return;

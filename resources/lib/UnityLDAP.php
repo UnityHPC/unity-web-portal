@@ -10,32 +10,32 @@ use PHPOpenLDAPer\LDAPEntry;
  */
 class UnityLDAP extends ldapConn
 {
-    private const RDN = "cn"; // The defauls RDN for LDAP entries is set to "common name"
+    private const string RDN = "cn"; // The defauls RDN for LDAP entries is set to "common name"
 
-    public const POSIX_ACCOUNT_CLASS = [
+    public const array POSIX_ACCOUNT_CLASS = [
         "inetorgperson",
         "posixAccount",
         "top",
         "ldapPublicKey",
     ];
 
-    public const POSIX_GROUP_CLASS = ["posixGroup", "top"];
+    public const array POSIX_GROUP_CLASS = ["posixGroup", "top"];
 
-    private $custom_mappings_path =
+    private string $custom_mappings_path =
         __DIR__ . "/../../" . CONFIG["ldap"]["custom_user_mappings_dir"];
-    private $def_user_shell = CONFIG["ldap"]["def_user_shell"];
-    private $offset_UIDGID = CONFIG["ldap"]["offset_UIDGID"];
-    private $offset_PIGID = CONFIG["ldap"]["offset_PIGID"];
-    private $offset_ORGGID = CONFIG["ldap"]["offset_ORGGID"];
+    private string $def_user_shell = CONFIG["ldap"]["def_user_shell"];
+    private int $offset_UIDGID = CONFIG["ldap"]["offset_UIDGID"];
+    private int $offset_PIGID = CONFIG["ldap"]["offset_PIGID"];
+    private int $offset_ORGGID = CONFIG["ldap"]["offset_ORGGID"];
 
     // Instance vars for various ldapEntry objects
-    private $baseOU;
-    private $userOU;
-    private $groupOU;
-    private $pi_groupOU;
-    private $org_groupOU;
-    private $adminGroup;
-    private $userGroup;
+    private LDAPEntry $baseOU;
+    private LDAPEntry $userOU;
+    private LDAPEntry $groupOU;
+    private LDAPEntry $pi_groupOU;
+    private LDAPEntry $org_groupOU;
+    private LDAPEntry $adminGroup;
+    private LDAPEntry $userGroup;
 
     public function __construct()
     {
@@ -53,42 +53,42 @@ class UnityLDAP extends ldapConn
         $this->userGroup = $this->getEntry(CONFIG["ldap"]["user_group"]);
     }
 
-    public function getUserOU()
+    public function getUserOU(): LDAPEntry
     {
         return $this->userOU;
     }
 
-    public function getGroupOU()
+    public function getGroupOU(): LDAPEntry
     {
         return $this->groupOU;
     }
 
-    public function getPIGroupOU()
+    public function getPIGroupOU(): LDAPEntry
     {
         return $this->pi_groupOU;
     }
 
-    public function getOrgGroupOU()
+    public function getOrgGroupOU(): LDAPEntry
     {
         return $this->org_groupOU;
     }
 
-    public function getAdminGroup()
+    public function getAdminGroup(): LDAPEntry
     {
         return $this->adminGroup;
     }
 
-    public function getUserGroup()
+    public function getUserGroup(): LDAPEntry
     {
         return $this->userGroup;
     }
 
-    public function getDefUserShell()
+    public function getDefUserShell(): string
     {
         return $this->def_user_shell;
     }
 
-    public function getNextUIDGIDNumber($uid)
+    public function getNextUIDGIDNumber(string $uid): int
     {
         $IDNumsInUse = array_merge(
             $this->getAllUIDNumbersInUse(),
@@ -120,7 +120,7 @@ class UnityLDAP extends ldapConn
         );
     }
 
-    public function getNextPIGIDNumber()
+    public function getNextPIGIDNumber(): int
     {
         return $this->getNextIDNumber(
             $this->offset_PIGID,
@@ -131,7 +131,7 @@ class UnityLDAP extends ldapConn
         );
     }
 
-    public function getNextOrgGIDNumber()
+    public function getNextOrgGIDNumber(): int
     {
         return $this->getNextIDNumber(
             $this->offset_ORGGID,
@@ -142,14 +142,14 @@ class UnityLDAP extends ldapConn
         );
     }
 
-    private function isIDNumberForbidden($id)
+    private function isIDNumberForbidden($id): bool
     {
         // 0-99 are probably going to be used for local system accounts instead of LDAP accounts
         // 100-999, 60000-64999 are reserved for debian packages
         return $id <= 999 || ($id >= 60000 && $id <= 64999);
     }
 
-    private function getNextIDNumber($start, $IDsToSkip)
+    private function getNextIDNumber($start, $IDsToSkip): int
     {
         $new_id = $start;
         while (
@@ -161,7 +161,7 @@ class UnityLDAP extends ldapConn
         return $new_id;
     }
 
-    private function getCustomIDMappings()
+    private function getCustomIDMappings(): array
     {
         $output = [];
         $dir = new \DirectoryIterator($this->custom_mappings_path);
@@ -189,7 +189,7 @@ class UnityLDAP extends ldapConn
         return $output_map;
     }
 
-    private function getAllUIDNumbersInUse()
+    private function getAllUIDNumbersInUse(): array
     {
         // use baseOU for awareness of externally managed entries
         return array_map(
@@ -202,7 +202,7 @@ class UnityLDAP extends ldapConn
         );
     }
 
-    private function getAllGIDNumbersInUse()
+    private function getAllGIDNumbersInUse(): array
     {
         // use baseOU for awareness of externally managed entries
         return array_map(
@@ -215,7 +215,7 @@ class UnityLDAP extends ldapConn
         );
     }
 
-    public function getAllUsersUIDs()
+    public function getAllUsersUIDs(): array
     {
         // should not use $user_ou->getChildren or $base_ou->getChildren(objectClass=posixAccount)
         // Unity users might be outside user ou, and not all users in LDAP tree are unity users
@@ -228,7 +228,7 @@ class UnityLDAP extends ldapConn
         $UnityRedis,
         $UnityWebhook,
         $ignorecache = false,
-    ) {
+    ): array {
         $out = [];
 
         if (!$ignorecache) {
@@ -267,7 +267,7 @@ class UnityLDAP extends ldapConn
         return $out;
     }
 
-    public function getAllUsersAttributes($attributes)
+    public function getAllUsersAttributes(array $attributes): array
     {
         $include_uids = $this->getAllUsersUIDs();
         $user_attributes = $this->baseOU->getChildrenArray(
@@ -284,11 +284,11 @@ class UnityLDAP extends ldapConn
     }
 
     public function getAllPIGroups(
-        $UnitySQL,
-        $UnityMailer,
-        $UnityRedis,
-        $UnityWebhook,
-        $ignorecache = false,
+        UnitySQL $UnitySQL,
+        UnityMailer $UnityMailer,
+        UnityRedis $UnityRedis,
+        UnityWebhook $UnityWebhook,
+        bool $ignorecache = false,
     ) {
         $out = [];
 
@@ -330,12 +330,12 @@ class UnityLDAP extends ldapConn
         return $out;
     }
 
-    public function getAllPIGroupsAttributes($attributes)
+    public function getAllPIGroupsAttributes(array $attributes): array
     {
         return $this->pi_groupOU->getChildrenArray($attributes);
     }
 
-    public function getPIGroupGIDsWithMemberUID($uid)
+    public function getPIGroupGIDsWithMemberUID(string $uid): array
     {
         return array_map(
             fn($x) => $x["cn"][0],
@@ -347,7 +347,7 @@ class UnityLDAP extends ldapConn
         );
     }
 
-    public function getAllPIGroupOwnerAttributes($attributes)
+    public function getAllPIGroupOwnerAttributes(array $attributes): array
     {
         // get the PI groups, filter for just the GIDs, then map the GIDs to owner UIDs
         $owner_uids = array_map(
@@ -382,7 +382,7 @@ class UnityLDAP extends ldapConn
     /**
      * Returns an associative array where keys are UIDs and values are arrays of PI GIDs
      */
-    public function getAllUID2PIGIDs()
+    public function getAllUID2PIGIDs(): array
     {
         // initialize output so each UID is a key with an empty array as its value
         $uids = $this->getAllUsersUIDs();
@@ -413,7 +413,7 @@ class UnityLDAP extends ldapConn
         $UnityRedis,
         $UnityWebhook,
         $ignorecache = false,
-    ) {
+    ): array {
         $out = [];
 
         if (!$ignorecache) {
@@ -455,12 +455,12 @@ class UnityLDAP extends ldapConn
         return $out;
     }
 
-    public function getAllOrgGroupsAttributes($attributes)
+    public function getAllOrgGroupsAttributes(array $attributes): array
     {
         return $this->org_groupOU->getChildrenArray($attributes);
     }
 
-    public function getUserEntry($uid)
+    public function getUserEntry(string $uid): LDAPEntry
     {
         $uid = ldap_escape($uid, "", LDAP_ESCAPE_DN);
         return $this->getEntry(
@@ -468,7 +468,7 @@ class UnityLDAP extends ldapConn
         );
     }
 
-    public function getGroupEntry($gid)
+    public function getGroupEntry(string $gid): LDAPEntry
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
         return $this->getEntry(
@@ -476,7 +476,7 @@ class UnityLDAP extends ldapConn
         );
     }
 
-    public function getPIGroupEntry($gid)
+    public function getPIGroupEntry(string $gid): LDAPEntry
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
         return $this->getEntry(
@@ -484,7 +484,7 @@ class UnityLDAP extends ldapConn
         );
     }
 
-    public function getOrgGroupEntry($gid)
+    public function getOrgGroupEntry(string $gid): LDAPEntry
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
         return $this->getEntry(

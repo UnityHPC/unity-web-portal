@@ -24,7 +24,7 @@ class UnityRedis
         }
     }
 
-    public function setCache($object, $key, $data)
+    public function setCache(string $object, string $key, mixed $data): void
     {
         if (!$this->enabled) {
             return;
@@ -41,7 +41,7 @@ class UnityRedis
         $this->client->set($keyStr, serialize($data));
     }
 
-    public function getCache($object, $key)
+    public function getCache(string $object, string $key): mixed
     {
         if (!$this->enabled) {
             return null;
@@ -61,8 +61,11 @@ class UnityRedis
         return null;
     }
 
-    public function appendCacheArray($object, $key, $value)
-    {
+    public function appendCacheArray(
+        string $object,
+        string $key,
+        mixed $value,
+    ): void {
         if (!$this->enabled) {
             return;
         }
@@ -81,7 +84,8 @@ class UnityRedis
         }
     }
 
-    public function removeCacheArray($object, $key, $value)
+    // TODO return void
+    public function removeCacheArray(string $object, string $key, mixed $value)
     {
         if (!$this->enabled) {
             return null;
@@ -100,7 +104,7 @@ class UnityRedis
         }
     }
 
-    public function flushAll()
+    public function flushAll(): void
     {
         $this->client->flushAll();
     }
