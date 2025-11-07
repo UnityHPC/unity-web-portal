@@ -11,12 +11,6 @@ class UnitySQL
     private const TABLE_PAGES = "pages";
     private const TABLE_AUDIT_LOG = "audit_log";
     private const TABLE_ACCOUNT_DELETION_REQUESTS = "account_deletion_requests";
-    private const TABLE_GROUP_ROLES = "groupRoles";
-    private const TABLE_GROUP_TYPES = "groupTypes";
-    private const TABLE_GROUP_ROLE_ASSIGNMENTS = "groupRoleAssignments";
-    private const TABLE_GROUP_REQUESTS = "groupRequests";
-    private const TABLE_GROUP_JOIN_REQUESTS = "groupJoinRequests";
-
     // FIXME this string should be changed to something more intuitive, requires production change
     public const REQUEST_BECOME_PI = "admin";
 
@@ -338,73 +332,5 @@ class UnitySQL
         );
         $stmt->bindParam(":uid", $uid);
         $stmt->execute();
-    }
-
-    public function getRole($uid, $group)
-    {
-        $table = self::TABLE_GROUP_ROLE_ASSIGNMENTS;
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM $table WHERE user=:uid AND `group`=:group",
-        );
-        $stmt->bindParam(":uid", $uid);
-        $stmt->bindParam(":group", $group);
-
-        $stmt->execute();
-
-        return $stmt->fetchAll()[0]["role"];
-    }
-
-    public function hasPerm($role, $perm)
-    {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_GROUP_ROLES . " WHERE slug=:role",
-        );
-        $stmt->bindParam(":role", $role);
-
-        $stmt->execute();
-
-        $row = $stmt->fetchAll()[0];
-        $perms = explode(",", $row["perms"]);
-        return in_array($perm, $perms);
-    }
-
-    public function getPriority($role)
-    {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_GROUP_ROLES . " WHERE slug=:role",
-        );
-        $stmt->bindParam(":role", $role);
-
-        $stmt->execute();
-
-        $row = $stmt->fetchAll()[0];
-        return $row["priority"];
-    }
-
-    public function roleAvailableInGroup($uid, $group, $role)
-    {
-        $table = self::TABLE_GROUP_ROLE_ASSIGNMENTS;
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM $table WHERE user=:uid AND `group`=:group",
-        );
-        $stmt->bindParam(":uid", $uid);
-        $stmt->bindParam(":group", $group);
-
-        $stmt->execute();
-        $row = $stmt->fetchAll()[0];
-
-        $group_slug = $row["group"];
-
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_GROUP_TYPES . " WHERE slug=:slug",
-        );
-
-        $stmt->bindParam(":slug", $group_slug);
-        $stmt->execute();
-
-        $row = $stmt->fetchAll()[0];
-        $roles = explode(",", $row["roles"]);
-
-        return in_array($role, $roles);
     }
 }
