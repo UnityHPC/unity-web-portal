@@ -13,11 +13,10 @@ jobs:
         with:
           submodules: true
       - uses: actions/setup-python@v3
-      - name: setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.3"
           tools: composer
-      - name: install composer dependencies
-        run: composer install --dev
+      - run: composer install --dev
+      - uses: actions/setup-node@v6.0.0
       - uses: pre-commit/action@v3.0.1

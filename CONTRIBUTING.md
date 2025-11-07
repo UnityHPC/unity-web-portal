@@ -40,7 +40,8 @@ This repository will automatically check PRs for linting compliance.
 1. Install [pre-commit](https://pre-commit.com/)
 1. setup pre-commit hooks: `pre-commit install`
 1. Install modern implementation of grep (not macOS builtin grep): `brew install grep`
-1. Install `prettier`, `prettier-plugin-php`: `npm install --dev prettier '@prettier/plugin-php'`
+1. Install `npm`
+1. Install nodeJS tools: `npm install`
 
 ### Environment Usage
 

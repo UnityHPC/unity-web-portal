@@ -12,16 +12,12 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: true
-      - name: setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.3"
           tools: composer
-      - name: install composer dependencies
-        run: composer install --dev
-      - name: Run docker compose
-        uses: hoverkraft-tech/compose-action@v2.0.1
+      - run: composer install --dev
+      - uses: hoverkraft-tech/compose-action@v2.0.1
         with:
           compose-file: "./tools/docker-dev/docker-compose.yml"
-      - name: Execute tests in the running services
-        run: docker compose -f ./tools/docker-dev/docker-compose.yml exec -w '/var/www/unity-web-portal' web bash -c 'XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-clover="$(mktemp --suffix=.xml)" -d --min-coverage=./coverage.php'
+      - run: docker compose -f ./tools/docker-dev/docker-compose.yml exec -w '/var/www/unity-web-portal' web bash -c 'XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-clover="$(mktemp --suffix=.xml)" -d --min-coverage=./coverage.php'
