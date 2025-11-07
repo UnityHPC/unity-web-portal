@@ -21,4 +21,6 @@ deployment/**/*
 
 .phpunit.result.cache
 
+package.json
+package-lock.json
 node_modules
