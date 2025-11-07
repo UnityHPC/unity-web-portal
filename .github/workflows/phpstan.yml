@@ -1,0 +1,20 @@
+name: phpstan
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          tools: composer
+      - run: composer install --dev
+      - run: ./vendor/bin/phpstan --memory-limit=-1 analyse ./resources/
