@@ -4,6 +4,7 @@
 
 * PHP version 8.3.
 * All files are required to be linted with PSR-12 standard.
+* All files are required to be formatted with Prettier and then PHPCBF.
 * The maximum line length for any PHP file is 100 characters, instead of PSR-12's 120 characters.
 * Comments should be used sparingly.
 * Empty lines should be used sparingly.
@@ -38,6 +39,7 @@ This repository will automatically check PRs for linting compliance.
 1. Install [pre-commit](https://pre-commit.com/)
 1. setup pre-commit hooks: `pre-commit install`
 1. Install modern implementation of grep (not macOS builtin grep): `brew install grep`
+1. Install `prettier`, `prettier-plugin-php`: `npm install --dev prettier '@prettier/plugin-php'`
 
 ### Environment Usage
 
