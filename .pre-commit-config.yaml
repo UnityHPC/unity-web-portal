@@ -10,9 +10,9 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
-      # prettier should take care of this, but it has this one problem with shebang files
-      # https://github.com/prettier/plugin-php/issues/2430
-      # - id: end-of-file-fixer
+      - id: end-of-file-fixer
+        # https://github.com/prettier/plugin-php/issues/2430
+        exclude: workers/.*
 
   - repo: https://github.com/rbubley/mirrors-prettier
     rev: v3.4.2
