@@ -67,7 +67,7 @@ class UnityHTTPD
             // newlines are bad for error log, but getTrace() is too verbose
             $output["trace"] = explode(
                 "\n",
-                new \Exception()->getTraceAsString(),
+                (new \Exception())->getTraceAsString(),
             );
         }
         error_log("$title: " . \jsonEncode($output));
