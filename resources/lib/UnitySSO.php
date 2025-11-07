@@ -7,14 +7,14 @@ use UnityWebPortal\lib\exceptions\SSOException;
 
 class UnitySSO
 {
-    private static function eppnToUID($eppn)
+    private static function eppnToUID(string $eppn): string
     {
         $eppn_output = str_replace(".", "_", $eppn);
         $eppn_output = str_replace("@", "_", $eppn_output);
         return strtolower($eppn_output);
     }
 
-    private static function eppnToOrg($eppn)
+    private static function eppnToOrg(string $eppn): string
     {
         $parts = explode("@", $eppn);
         if (count($parts) != 2) {
@@ -31,8 +31,8 @@ class UnitySSO
     // https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2065335257/AttributeAccess
     // I have observed attributes to be set to empty strings while shibd complains of bad config
     private static function getAttributeRaw(
-        $attributeName,
-        $fallbackAttributeName = null,
+        string $attributeName,
+        ?string $fallbackAttributeName = null,
     ) {
         if (isset($_SERVER[$attributeName]) && $_SERVER[$attributeName] != "") {
             return $_SERVER[$attributeName];
@@ -55,9 +55,9 @@ class UnitySSO
     }
 
     private static function getAttribute(
-        $attributeName,
-        $fallbackAttributeName = null,
-    ) {
+        string $attributeName,
+        ?string $fallbackAttributeName = null,
+    ): string {
         $attribute_raw = self::getAttributeRaw(
             $attributeName,
             $fallbackAttributeName,
@@ -67,7 +67,7 @@ class UnitySSO
         return explode(";", $attribute_raw)[0];
     }
 
-    public static function getSSO()
+    public static function getSSO(): array
     {
         return [
             "user" => self::eppnToUID(self::getAttribute("REMOTE_USER")),

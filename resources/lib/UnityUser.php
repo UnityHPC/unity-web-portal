@@ -9,17 +9,22 @@ class UnityUser
 {
     private const HOME_DIR = "/home/";
 
-    public $uid;
-    private $entry;
+    public string $uid;
+    private LDAPEntry $entry;
+    private UnityLDAP $LDAP;
+    private UnitySQL $SQL;
+    private UnityMailer $MAILER;
+    private UnityWebhook $WEBHOOK;
+    private UnityRedis $REDIS;
 
-    private $LDAP;
-    private $SQL;
-    private $MAILER;
-    private $REDIS;
-    private $WEBHOOK;
-
-    public function __construct($uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
-    {
+    public function __construct(
+        string $uid,
+        UnityLDAP $LDAP,
+        UnitySQL $SQL,
+        UnityMailer $MAILER,
+        UnityRedis $REDIS,
+        UnityWebhook $WEBHOOK,
+    ) {
         $uid = trim($uid);
         $this->uid = $uid;
         $this->entry = $LDAP->getUserEntry($uid);
@@ -31,7 +36,7 @@ class UnityUser
         $this->WEBHOOK = $WEBHOOK;
     }
 
-    public function equals($other_user)
+    public function equals(UnityUser $other_user)
     {
         if (!is_a($other_user, self::class)) {
             throw new Exception(
@@ -51,16 +56,14 @@ class UnityUser
 
     /**
      * This is the method that is run when a new account is created
-     *
-     * @param  string $firstname First name of new account
-     * @param  string $lastname  Last name of new account
-     * @param  string $email     email of new account
-     * @param  string $org       organization name of new account
-     * @param  bool   $isPI      boolean value for if the user checked the "I am a PI box"
-     * @return void
      */
-    public function init($firstname, $lastname, $email, $org, $send_mail = true)
-    {
+    public function init(
+        string $firstname,
+        string $lastname,
+        string $email,
+        UnityOrg $org,
+        bool $send_mail = true,
+    ) {
         $ldapGroupEntry = $this->getGroupEntry();
         $id = $this->LDAP->getNextUIDGIDNumber($this->uid);
         \ensure(!$ldapGroupEntry->exists());
@@ -160,14 +163,14 @@ class UnityUser
         return $this->entry->exists() && $this->getGroupEntry()->exists();
     }
 
-    public function setOrg($org)
+    public function setOrg(UnityOrg $org)
     {
         $this->entry->setAttribute("o", $org);
         $this->entry->write();
         $this->REDIS->setCache($this->uid, "org", $org);
     }
 
-    public function getOrg($ignorecache = false)
+    public function getOrg(bool $ignorecache = false)
     {
         $this->entry->ensureExists();
         if (!$ignorecache) {
@@ -195,7 +198,7 @@ class UnityUser
      *
      * @param string $firstname
      */
-    public function setFirstname($firstname, $operator = null)
+    public function setFirstname(string $firstname, ?UnityUser $operator = null)
     {
         $this->entry->setAttribute("givenname", $firstname);
         $operator = is_null($operator) ? $this->uid : $operator->uid;
@@ -216,7 +219,7 @@ class UnityUser
      *
      * @return string firstname
      */
-    public function getFirstname($ignorecache = false)
+    public function getFirstname(bool $ignorecache = false)
     {
         $this->entry->ensureExists();
         if (!$ignorecache) {
@@ -244,7 +247,7 @@ class UnityUser
      *
      * @param string $lastname
      */
-    public function setLastname($lastname, $operator = null)
+    public function setLastname(string $lastname, $operator = null)
     {
         $this->entry->setAttribute("sn", $lastname);
         $operator = is_null($operator) ? $this->uid : $operator->uid;
@@ -265,7 +268,7 @@ class UnityUser
      *
      * @return string lastname
      */
-    public function getLastname($ignorecache = false)
+    public function getLastname(bool $ignorecache = false)
     {
         $this->entry->ensureExists();
         if (!$ignorecache) {
@@ -299,7 +302,7 @@ class UnityUser
      *
      * @param string $mail
      */
-    public function setMail($email, $operator = null)
+    public function setMail(string $email, ?UnityUser $operator = null)
     {
         $this->entry->setAttribute("mail", $email);
         $operator = is_null($operator) ? $this->uid : $operator->uid;
@@ -320,7 +323,7 @@ class UnityUser
      *
      * @return string email address
      */
-    public function getMail($ignorecache = false)
+    public function getMail(bool $ignorecache = false)
     {
         $this->entry->ensureExists();
         if (!$ignorecache) {
@@ -348,7 +351,7 @@ class UnityUser
      *
      * @param array $keys String array of openssh-style ssh public keys
      */
-    public function setSSHKeys($keys, $operator = null, $send_mail = true)
+    public function setSSHKeys($keys, $operator = null, bool $send_mail = true)
     {
         $operator = is_null($operator) ? $this->uid : $operator->uid;
         $keys_filt = array_values(array_unique($keys));
@@ -377,7 +380,7 @@ class UnityUser
      *
      * @return array String array of ssh keys
      */
-    public function getSSHKeys($ignorecache = false)
+    public function getSSHKeys(bool $ignorecache = false)
     {
         $this->entry->ensureExists();
         if (!$ignorecache) {
@@ -410,8 +413,11 @@ class UnityUser
      *
      * @param string $shell absolute path to shell
      */
-    public function setLoginShell($shell, $operator = null, $send_mail = true)
-    {
+    public function setLoginShell(
+        string $shell,
+        ?UnityUser $operator = null,
+        bool $send_mail = true,
+    ) {
         // ldap schema syntax is "IA5 String (1.3.6.1.4.1.1466.115.121.1.26)"
         if (!mb_check_encoding($shell, "ASCII")) {
             throw new Exception(
@@ -453,7 +459,7 @@ class UnityUser
      *
      * @return string absolute path to login shell
      */
-    public function getLoginShell($ignorecache = false)
+    public function getLoginShell(bool $ignorecache = false)
     {
         $this->entry->ensureExists();
         if (!$ignorecache) {
@@ -476,7 +482,7 @@ class UnityUser
         return null;
     }
 
-    public function setHomeDir($home, $operator = null)
+    public function setHomeDir(string $home, ?UnityUser $operator = null)
     {
         \ensure($this->entry->exists());
         $this->entry->setAttribute("homedirectory", $home);
@@ -498,7 +504,7 @@ class UnityUser
      *
      * @return string home directory of the user
      */
-    public function getHomeDir($ignorecache = false)
+    public function getHomeDir(bool $ignorecache = false)
     {
         $this->entry->ensureExists();
         if (!$ignorecache) {
@@ -571,7 +577,7 @@ class UnityUser
      *
      * @return string[]
      */
-    public function getPIGroupGIDs($ignorecache = false)
+    public function getPIGroupGIDs(bool $ignorecache = false)
     {
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->uid, "groups");
@@ -617,7 +623,7 @@ class UnityUser
      * @param  string  or object $group group to check
      * @return boolean true if user is in group, false if not
      */
-    public function isInGroup($uid, $group)
+    public function isInGroup(string $uid, UnityGroup $group)
     {
         if (gettype($group) == "string") {
             $group_checked = new UnityGroup(

@@ -4,7 +4,7 @@ namespace UnityWebPortal\lib;
 
 class UnityGithub
 {
-    public function getSshPublicKeys($username)
+    public function getSshPublicKeys(string $username): array
     {
         $url = "https://api.github.com/users/$username/keys";
         $headers = ["User-Agent: Unity Cluster User Portal"];

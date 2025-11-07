@@ -4,8 +4,10 @@ namespace UnityWebPortal\lib;
 
 class UnityConfig
 {
-    public static function getConfig($def_config_loc, $deploy_loc)
-    {
+    public static function getConfig(
+        string $def_config_loc,
+        string $deploy_loc,
+    ): array {
         $CONFIG = parse_ini_file(
             $def_config_loc . "/config.ini.default",
             true,
@@ -22,7 +24,7 @@ class UnityConfig
         return $CONFIG;
     }
 
-    private static function pullConfig($CONFIG, $loc)
+    private static function pullConfig(array $CONFIG, string $loc): array
     {
         $file_loc = $loc . "/config/config.ini";
         if (file_exists($file_loc)) {

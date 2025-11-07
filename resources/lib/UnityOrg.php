@@ -1,22 +1,26 @@
 <?php
 
 namespace UnityWebPortal\lib;
-
-use Exception;
+use PHPOpenLDAPer\LDAPEntry;
 
 class UnityOrg
 {
-    public $gid;
-    private $entry;
+    public string $gid;
+    private LDAPEntry $entry;
+    private UnityLDAP $LDAP;
+    private UnitySQL $SQL;
+    private UnityMailer $MAILER;
+    private UnityWebhook $WEBHOOK;
+    private UnityRedis $REDIS;
 
-    private $MAILER;
-    private $SQL;
-    private $LDAP;
-    private $REDIS;
-    private $WEBHOOK;
-
-    public function __construct($gid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK)
-    {
+    public function __construct(
+        string $gid,
+        UnityLDAP $LDAP,
+        UnitySQL $SQL,
+        UnityMailer $MAILER,
+        UnityRedis $REDIS,
+        UnityWebhook $WEBHOOK,
+    ) {
         $gid = trim($gid);
         $this->gid = $gid;
         $this->entry = $LDAP->getOrgGroupEntry($this->gid);
@@ -28,7 +32,7 @@ class UnityOrg
         $this->REDIS = $REDIS;
     }
 
-    public function init()
+    public function init(): void
     {
         \ensure(!$this->entry->exists());
         $nextGID = $this->LDAP->getNextOrgGIDNumber();
@@ -38,17 +42,17 @@ class UnityOrg
         $this->REDIS->appendCacheArray("sorted_orgs", "", $this->gid);
     }
 
-    public function exists()
+    public function exists(): bool
     {
         return $this->entry->exists();
     }
 
-    public function inOrg($user, $ignorecache = false)
+    public function inOrg(UnityUser $user, bool $ignorecache = false): bool
     {
         return in_array($user->uid, $this->getOrgMemberUIDs($ignorecache));
     }
 
-    public function getOrgMembers($ignorecache = false)
+    public function getOrgMembers(bool $ignorecache = false): array
     {
         $members = $this->getOrgMemberUIDs($ignorecache);
         $out = [];
@@ -66,7 +70,7 @@ class UnityOrg
         return $out;
     }
 
-    public function getOrgMemberUIDs($ignorecache = false)
+    public function getOrgMemberUIDs(bool $ignorecache = false): array
     {
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->gid, "members");
@@ -86,14 +90,14 @@ class UnityOrg
         return $members;
     }
 
-    public function addUser($user)
+    public function addUser(UnityUser $user): void
     {
         $this->entry->appendAttribute("memberuid", $user->uid);
         $this->entry->write();
         $this->REDIS->appendCacheArray($this->gid, "members", $user->uid);
     }
 
-    public function removeUser($user)
+    public function removeUser(UnityUser $user): void
     {
         $this->entry->removeAttributeEntryByValue("memberuid", $user->uid);
         $this->entry->write();
