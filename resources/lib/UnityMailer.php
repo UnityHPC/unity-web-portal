@@ -81,7 +81,7 @@ class UnityMailer extends PHPMailer
     }
 
     public function sendMail(
-        array $recipients,
+        string $recipients,
         ?string $template = null,
         mixed $data = null,
     ) {

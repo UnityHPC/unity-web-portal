@@ -61,7 +61,7 @@ class UnityUser
         string $firstname,
         string $lastname,
         string $email,
-        UnityOrg $org,
+        string $org,
         bool $send_mail = true,
     ) {
         $ldapGroupEntry = $this->getGroupEntry();

@@ -202,7 +202,7 @@ class UnitySQL
     }
 
     public function editNotice(
-        int $id,
+        string $id,
         string $title,
         string $date,
         string $content,
@@ -219,7 +219,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function deleteNotice(int $id): void
+    public function deleteNotice(string $id): void
     {
         $stmt = $this->conn->prepare(
             "DELETE FROM " . self::TABLE_NOTICES . " WHERE id=:id",
@@ -229,7 +229,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function getNotice(int $id): array
+    public function getNotice(string $id): array
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_NOTICES . " WHERE id=:id",
@@ -259,7 +259,7 @@ class UnitySQL
         return $stmt->fetchAll();
     }
 
-    public function getPage(int $id): array
+    public function getPage(string $id): array
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_PAGES . " WHERE page=:id",
@@ -272,7 +272,7 @@ class UnitySQL
     }
 
     public function editPage(
-        int $id,
+        string $id,
         string $content,
         UnityUser $operator,
     ): void {

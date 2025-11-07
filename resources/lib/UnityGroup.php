@@ -69,7 +69,7 @@ class UnityGroup
         string $firstname,
         string $lastname,
         string $email,
-        UnityOrg $org,
+        string $org,
         bool $send_mail_to_admins,
         bool $send_mail = true,
     ): void {
@@ -344,7 +344,7 @@ class UnityGroup
         string $firstname,
         string $lastname,
         string $email,
-        UnityOrg $org,
+        string $org,
         bool $send_mail = true,
     ): void {
         if ($this->memberExists($new_user)) {
@@ -500,7 +500,7 @@ class UnityGroup
         string $firstname,
         string $lastname,
         string $email,
-        UnityOrg $org,
+        string $org,
     ): void {
         $this->SQL->addRequest(
             $uid,
