@@ -10,21 +10,9 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
-      - id: end-of-file-fixer
-
-  - repo: local
-    hooks:
-      - id: phpcbf
-        name: PHP Code Beautifier and Fixer
-        entry: phpcbf
-        language: system
-        files: \.php$
-        args: [--standard=./.phpcs-ruleset.xml, --colors]
-        exclude: |
-          (?x)^(
-              test/.*|
-              workers/.*|
-          )$
+      # prettier should take care of this, but it has this one problem with shebang files
+      # https://github.com/prettier/plugin-php/issues/2430
+      # - id: end-of-file-fixer
 
   - repo: https://github.com/rbubley/mirrors-prettier
     rev: v3.4.2
@@ -71,17 +59,6 @@ repos:
 
   - repo: local
     hooks:
-      - id: phpcs
-        name: PHP CodeSniffer
-        entry: phpcs
-        language: system
-        files: \.php$
-        args: [--standard=./.phpcs-ruleset.xml, --colors]
-        exclude: |
-          (?x)^(
-              test/.*|
-              workers/.*|
-          )$
       - id: php-l
         name: php -l
         entry: php

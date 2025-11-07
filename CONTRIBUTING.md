@@ -3,9 +3,8 @@
 ## Conventions
 
 * PHP version 8.3.
-* All files are required to be linted with PSR-12 standard.
-* All files are required to be formatted with Prettier and then PHPCBF.
-* The maximum line length for any PHP file is 100 characters, instead of PSR-12's 120 characters.
+* All files are required to be formatted with Prettier.
+* The maximum line length for any PHP file is 100 characters.
 * Comments should be used sparingly.
 * Empty lines should be used sparingly.
 * No code should fail quietly, instead exceptions should be thrown.
