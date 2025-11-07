@@ -26,6 +26,24 @@ repos:
 
   - repo: local
     hooks:
+      - id: phpcbf
+        name: PHP Code Beautifier and Fixer
+        entry: ./vendor/bin/phpcbf
+        args: [--standard=./.phpcs-ruleset.xml, --colors]
+        language: system
+        files: \.php$
+        # exclude pure PHP files
+        exclude: |
+          (?x)^(
+              node_modules/.*|
+              resources/lib/phpopenldaper/.*|
+              vendor/.*|
+              resources/lib/.*|
+              workers/.*|
+          )$
+
+  - repo: local
+    hooks:
       - id: prettier (php)
         name: prettier (php)
         entry: npx
@@ -33,7 +51,7 @@ repos:
           [prettier, --plugin=@prettier/plugin-php, --php-version=8.3, --write]
         language: system
         files: \.php$
-        # prettier doesn't do well with the html files with <?php tags mixed in
+        # exclude impure PHP files
         exclude: |
           (?x)^(
               node_modules/.*|
@@ -60,6 +78,22 @@ repos:
 
   - repo: local
     hooks:
+      - id: phpcs
+        name: PHP CodeSniffer
+        entry: ./vendor/bin/phpcs
+        language: system
+        files: \.php$
+        args: [--standard=./.phpcs-ruleset.xml, --colors]
+        # exclude pure PHP files
+        exclude: |
+          (?x)^(
+              test/.*|
+              workers/.*|
+              node_modules/.*|
+              resources/lib/phpopenldaper/.*|
+              vendor/.*|
+              resources/lib/.*|
+          )$
       - id: php-l
         name: php -l
         entry: php

@@ -6,7 +6,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": ">=12",
-        "robiningelbrecht/phpunit-coverage-tools": "<2"
+        "robiningelbrecht/phpunit-coverage-tools": "<2",
+        "squizlabs/php_codesniffer": "*"
     },
     "config": {
         "platform": {
