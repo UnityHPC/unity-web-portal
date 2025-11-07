@@ -3,5 +3,3 @@ parameters:
   paths:
     - resources
     - test
-  bootstrapFiles:
-    - test/phpunit-bootstrap.php
