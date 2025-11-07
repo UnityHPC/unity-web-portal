@@ -18,7 +18,7 @@ jobs:
           php-version: "8.3"
           tools: composer
       - name: install composer dependencies
-        run: composer update
+        run: composer install --dev
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:

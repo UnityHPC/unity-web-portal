@@ -17,5 +17,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.3"
-          tools: composer, phpcs, phpcbf
+          tools: composer
+      - name: install composer dependencies
+        run: composer install --dev
       - uses: pre-commit/action@v3.0.1
