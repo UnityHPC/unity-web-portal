@@ -29,7 +29,8 @@ repos:
       - id: prettier (php)
         name: prettier (php)
         entry: npx
-        args: [prettier, --plugin=@prettier/plugin-php, --write]
+        args:
+          [prettier, --plugin=@prettier/plugin-php, --php-version=8.3, --write]
         language: system
         files: \.php$
         # prettier doesn't do well with the html files with <?php tags mixed in
