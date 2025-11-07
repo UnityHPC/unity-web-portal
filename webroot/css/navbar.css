@@ -1,120 +1,120 @@
 /* Navbar */
 
 hr.navHR {
-    margin-left: 10px;
-    margin-right: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 nav.mainNav {
-    background: var(--accent);
-    position: fixed;
-    left: 0;
-    top: 45px;
-    font-size: 11pt;
-    overflow: hidden;
-    white-space: nowrap;
-    z-index: 100;
+  background: var(--accent);
+  position: fixed;
+  left: 0;
+  top: 45px;
+  font-size: 11pt;
+  overflow: hidden;
+  white-space: nowrap;
+  z-index: 100;
 }
 
 nav.mainNav a {
-    color: var(--accent_foreground);
-    background: var(--accent_1);
-    border-radius: 10px;
-    display: block;
-    margin: 10px 8px 10px 8px;
-    padding: 8px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background 0.1s;
+  color: var(--accent_foreground);
+  background: var(--accent_1);
+  border-radius: 10px;
+  display: block;
+  margin: 10px 8px 10px 8px;
+  padding: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.1s;
 }
 
 nav.mainNav a:hover {
-    text-decoration: none;
-    background: var(--accent_2);
+  text-decoration: none;
+  background: var(--accent_2);
 }
 
 nav.mainNav a.active {
-    background: var(--accent_2);
+  background: var(--accent_2);
 }
 
 header {
-    background: var(--accent);
-    height: 50px;
-    width: 250px;
-    position: fixed;
-    top: 0;
-    left: 0;
+  background: var(--accent);
+  height: 50px;
+  width: 250px;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
-header>#imgLogo {
-    height: 65%;
-    margin-left: 10px;
-    margin-top: 8px;
+header > #imgLogo {
+  height: 65%;
+  margin-left: 10px;
+  margin-top: 8px;
 }
 
-header>a.unity-state {
-    background: var(--accent_foreground);
-    color: var(--accent);
-    display: block;
-    position: absolute;
-    top: 8px;
-    left: 140px;
-    padding: 1px 5px 1px 5px;
-    font-weight: bold;
-    font-size: 10pt;
-    border-radius: 5px;
+header > a.unity-state {
+  background: var(--accent_foreground);
+  color: var(--accent);
+  display: block;
+  position: absolute;
+  top: 8px;
+  left: 140px;
+  padding: 1px 5px 1px 5px;
+  font-weight: bold;
+  font-size: 10pt;
+  border-radius: 5px;
 }
 
-header>a.unity-state:hover {
-    text-decoration: none;
+header > a.unity-state:hover {
+  text-decoration: none;
 }
 
-header>button.hamburger {
-    background: var(--accent);
-    padding: 0;
-    right: 23px;
-    height: 60%;
+header > button.hamburger {
+  background: var(--accent);
+  padding: 0;
+  right: 23px;
+  height: 60%;
 }
 
-header>button.hamburger>img {
-    position: relative;
-    height: 100%;
+header > button.hamburger > img {
+  position: relative;
+  height: 100%;
 }
 
 /* MOBILE VIEW */
 
 @media only screen and (max-width: 1000px) {
-    nav.mainNav {
-        right: 0;
-    }
+  nav.mainNav {
+    right: 0;
+  }
 
-    header {
-        width: 100%;
-    }
+  header {
+    width: 100%;
+  }
 
-    main {
-        /* Header element height + 2*element padding */
-        margin-top: 45px;
-    }
+  main {
+    /* Header element height + 2*element padding */
+    margin-top: 45px;
+  }
 }
 
 /* DESKTOP VIEW */
 
 @media only screen and (min-width: 1001px) {
-    nav.mainNav {
-        bottom: 0;
-        width: 250px;
-    }
+  nav.mainNav {
+    bottom: 0;
+    width: 250px;
+  }
 
-    header>button.hamburger {
-        display: none;
-    }
+  header > button.hamburger {
+    display: none;
+  }
 
-    main {
-        margin-left: 250px;
-    }
+  main {
+    margin-left: 250px;
+  }
 
-    footer {
-        margin-left: 250px;
-    }
+  footer {
+    margin-left: 250px;
+  }
 }

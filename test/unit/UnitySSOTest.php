@@ -65,10 +65,9 @@ class UnitySSOTest extends TestCase
         $this->assertEquals("foobar@baz", $sso["mail"]);
     }
 
-    public static function validEppnProvider() {
-        return [
-            ["foo@bar.edu", "foo_bar_edu", "bar_edu"],
-        ];
+    public static function validEppnProvider()
+    {
+        return [["foo@bar.edu", "foo_bar_edu", "bar_edu"]];
     }
 
     #[DataProvider("validEppnProvider")]
@@ -103,11 +102,12 @@ class UnitySSOTest extends TestCase
         }
     }
 
-    public static function invalidEppnProvider() {
+    public static function invalidEppnProvider()
+    {
         return [
             ["foo"], // missing @
             ["foo@bar@baz"], // too many @
-            [""]
+            [""],
         ];
     }
 

@@ -15,8 +15,11 @@ function arrayGet($array, ...$keys)
         if (!isset($cursor[$key])) {
             throw new ArrayKeyException(
                 "key not found: \$array" .
-                // [1, 2, "foo"] => [1][2]["foo"]
-                implode("", array_map(fn($x) => jsonEncode([$x]), $keysTraversed))
+                    // [1, 2, "foo"] => [1][2]["foo"]
+                    implode(
+                        "",
+                        array_map(fn($x) => jsonEncode([$x]), $keysTraversed),
+                    ),
             );
         }
         $cursor = $cursor[$key];
@@ -67,9 +70,11 @@ function mbConvertEncoding($string, $to_encoding, $from_encoding = null)
     $output = mb_convert_encoding($string, $to_encoding, $from_encoding);
     if ($output === false) {
         throw new EncodingConversionException(
-            jsonEncode(
-                ["to" => $to_encoding, "from" => $from_encoding, "base64" => base64_encode($string)]
-            )
+            jsonEncode([
+                "to" => $to_encoding,
+                "from" => $from_encoding,
+                "base64" => base64_encode($string),
+            ]),
         );
     }
     return $output;

@@ -35,7 +35,9 @@ class UnityUser
     {
         if (!is_a($other_user, self::class)) {
             throw new Exception(
-                "Unable to check equality because the parameter is not a " . self::class . " object"
+                "Unable to check equality because the parameter is not a " .
+                    self::class .
+                    " object",
             );
         }
 
@@ -62,23 +64,38 @@ class UnityUser
         $ldapGroupEntry = $this->getGroupEntry();
         $id = $this->LDAP->getNextUIDGIDNumber($this->uid);
         \ensure(!$ldapGroupEntry->exists());
-        $ldapGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
+        $ldapGroupEntry->setAttribute(
+            "objectclass",
+            UnityLDAP::POSIX_GROUP_CLASS,
+        );
         $ldapGroupEntry->setAttribute("gidnumber", strval($id));
         $ldapGroupEntry->write();
 
         \ensure(!$this->entry->exists());
-        $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_ACCOUNT_CLASS);
+        $this->entry->setAttribute(
+            "objectclass",
+            UnityLDAP::POSIX_ACCOUNT_CLASS,
+        );
         $this->entry->setAttribute("uid", $this->uid);
         $this->entry->setAttribute("givenname", $firstname);
         $this->entry->setAttribute("sn", $lastname);
         $this->entry->setAttribute(
             "gecos",
-            \transliterator_transliterate("Latin-ASCII", "$firstname $lastname")
+            \transliterator_transliterate(
+                "Latin-ASCII",
+                "$firstname $lastname",
+            ),
         );
         $this->entry->setAttribute("mail", $email);
         $this->entry->setAttribute("o", $org);
-        $this->entry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
-        $this->entry->setAttribute("loginshell", $this->LDAP->getDefUserShell());
+        $this->entry->setAttribute(
+            "homedirectory",
+            self::HOME_DIR . $this->uid,
+        );
+        $this->entry->setAttribute(
+            "loginshell",
+            $this->LDAP->getDefUserShell(),
+        );
         $this->entry->setAttribute("uidnumber", strval($id));
         $this->entry->setAttribute("gidnumber", strval($id));
         $this->entry->write();
@@ -87,9 +104,17 @@ class UnityUser
         $this->REDIS->setCache($this->uid, "lastname", $lastname);
         $this->REDIS->setCache($this->uid, "mail", $email);
         $this->REDIS->setCache($this->uid, "org", $org);
-        $this->REDIS->setCache($this->uid, "homedir", self::HOME_DIR . $this->uid);
-        $this->REDIS->setCache($this->uid, "loginshell", $this->LDAP->getDefUserShell());
-        $this->REDIS->setCache($this->uid, "sshkeys", array());
+        $this->REDIS->setCache(
+            $this->uid,
+            "homedir",
+            self::HOME_DIR . $this->uid,
+        );
+        $this->REDIS->setCache(
+            $this->uid,
+            "loginshell",
+            $this->LDAP->getDefUserShell(),
+        );
+        $this->REDIS->setCache($this->uid, "sshkeys", []);
 
         $org = $this->getOrgGroup();
         if (!$org->exists()) {
@@ -107,17 +132,16 @@ class UnityUser
 
         $this->SQL->addLog(
             $this->uid,
-            $_SERVER['REMOTE_ADDR'],
+            $_SERVER["REMOTE_ADDR"],
             "user_added",
-            $this->uid
+            $this->uid,
         );
 
         if ($send_mail) {
-            $this->MAILER->sendMail(
-                $this->getMail(),
-                "user_created",
-                array("user" => $this->uid, "org" => $this->getOrg())
-            );
+            $this->MAILER->sendMail($this->getMail(), "user_created", [
+                "user" => $this->uid,
+                "org" => $this->getOrg(),
+            ]);
         }
     }
 
@@ -178,9 +202,9 @@ class UnityUser
 
         $this->SQL->addLog(
             $operator,
-            $_SERVER['REMOTE_ADDR'],
+            $_SERVER["REMOTE_ADDR"],
             "firstname_changed",
-            $this->uid
+            $this->uid,
         );
 
         $this->entry->write();
@@ -227,9 +251,9 @@ class UnityUser
 
         $this->SQL->addLog(
             $operator,
-            $_SERVER['REMOTE_ADDR'],
+            $_SERVER["REMOTE_ADDR"],
             "lastname_changed",
-            $this->uid
+            $this->uid,
         );
 
         $this->entry->write();
@@ -282,9 +306,9 @@ class UnityUser
 
         $this->SQL->addLog(
             $operator,
-            $_SERVER['REMOTE_ADDR'],
+            $_SERVER["REMOTE_ADDR"],
             "email_changed",
-            $this->uid
+            $this->uid,
         );
 
         $this->entry->write();
@@ -336,17 +360,15 @@ class UnityUser
 
         $this->SQL->addLog(
             $operator,
-            $_SERVER['REMOTE_ADDR'],
+            $_SERVER["REMOTE_ADDR"],
             "sshkey_modify",
-            $this->uid
+            $this->uid,
         );
 
         if ($send_mail) {
-            $this->MAILER->sendMail(
-                $this->getMail(),
-                "user_sshkey",
-                array("keys" => $this->getSSHKeys())
-            );
+            $this->MAILER->sendMail($this->getMail(), "user_sshkey", [
+                "keys" => $this->getSSHKeys(),
+            ]);
         }
     }
 
@@ -368,7 +390,7 @@ class UnityUser
         if ($this->exists()) {
             $result = $this->entry->getAttribute("sshpublickey");
             if (is_null($result)) {
-                $keys = array();
+                $keys = [];
             } else {
                 $keys = $result;
             }
@@ -391,11 +413,15 @@ class UnityUser
     public function setLoginShell($shell, $operator = null, $send_mail = true)
     {
         // ldap schema syntax is "IA5 String (1.3.6.1.4.1.1466.115.121.1.26)"
-        if (!mb_check_encoding($shell, 'ASCII')) {
-            throw new Exception("non ascii characters are not allowed in a login shell!");
+        if (!mb_check_encoding($shell, "ASCII")) {
+            throw new Exception(
+                "non ascii characters are not allowed in a login shell!",
+            );
         }
         if ($shell != trim($shell)) {
-            throw new Exception("leading/trailing whitespace is not allowed in a login shell!");
+            throw new Exception(
+                "leading/trailing whitespace is not allowed in a login shell!",
+            );
         }
         if (empty($shell)) {
             throw new Exception("login shell must not be empty!");
@@ -408,19 +434,17 @@ class UnityUser
 
         $this->SQL->addLog(
             $operator,
-            $_SERVER['REMOTE_ADDR'],
+            $_SERVER["REMOTE_ADDR"],
             "loginshell_changed",
-            $this->uid
+            $this->uid,
         );
 
         $this->REDIS->setCache($this->uid, "loginshell", $shell);
 
         if ($send_mail) {
-            $this->MAILER->sendMail(
-                $this->getMail(),
-                "user_loginshell",
-                array("new_shell" => $this->getLoginShell())
-            );
+            $this->MAILER->sendMail($this->getMail(), "user_loginshell", [
+                "new_shell" => $this->getLoginShell(),
+            ]);
         }
     }
 
@@ -461,9 +485,9 @@ class UnityUser
 
         $this->SQL->addLog(
             $operator,
-            $_SERVER['REMOTE_ADDR'],
+            $_SERVER["REMOTE_ADDR"],
             "homedir_changed",
-            $this->uid
+            $this->uid,
         );
 
         $this->REDIS->setCache($this->uid, "homedir", $home);
@@ -526,7 +550,7 @@ class UnityUser
             $this->SQL,
             $this->MAILER,
             $this->REDIS,
-            $this->WEBHOOK
+            $this->WEBHOOK,
         );
     }
 
@@ -538,7 +562,7 @@ class UnityUser
             $this->SQL,
             $this->MAILER,
             $this->REDIS,
-            $this->WEBHOOK
+            $this->WEBHOOK,
         );
     }
 
@@ -569,15 +593,11 @@ class UnityUser
     public function requestAccountDeletion()
     {
         $this->SQL->addAccountDeletionRequest($this->uid);
-        $this->MAILER->sendMail(
-            "admin",
-            "account_deletion_request_admin",
-            array(
-                "user" => $this->uid,
-                "name" => $this->getFullname(),
-                "email" => $this->getMail()
-            )
-        );
+        $this->MAILER->sendMail("admin", "account_deletion_request_admin", [
+            "user" => $this->uid,
+            "name" => $this->getFullname(),
+            "email" => $this->getMail(),
+        ]);
     }
 
     /**
@@ -606,7 +626,7 @@ class UnityUser
                 $this->SQL,
                 $this->MAILER,
                 $this->REDIS,
-                $this->WEBHOOK
+                $this->WEBHOOK,
             );
         } else {
             $group_checked = $group;

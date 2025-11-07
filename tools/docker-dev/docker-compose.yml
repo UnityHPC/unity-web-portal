@@ -9,7 +9,11 @@ services:
       - "8010:80"
       - "389:389"
     healthcheck:
-      test: ["CMD-SHELL", "if [ -f /tmp/up ]; then (nc -z localhost 389 && touch /tmp/up); else true; fi"]
+      test:
+        [
+          "CMD-SHELL",
+          "if [ -f /tmp/up ]; then (nc -z localhost 389 && touch /tmp/up); else true; fi",
+        ]
       interval: 1s
   sql:
     hostname: sql
@@ -18,7 +22,11 @@ services:
       - "8020:80"
       - "3306:3306"
     healthcheck:
-      test: ["CMD-SHELL", "if [ -f /tmp/up ]; then (nc -z localhost 3306 && touch /tmp/up); else true; fi"]
+      test:
+        [
+          "CMD-SHELL",
+          "if [ -f /tmp/up ]; then (nc -z localhost 3306 && touch /tmp/up); else true; fi",
+        ]
       interval: 1s
   smtp:
     hostname: smtp
@@ -31,7 +39,11 @@ services:
     ports:
       - "6379:6379"
     healthcheck:
-      test: ["CMD-SHELL", "if [ -f /tmp/up ]; then (nc -z localhost 6379 && touch /tmp/up); else true; fi"]
+      test:
+        [
+          "CMD-SHELL",
+          "if [ -f /tmp/up ]; then (nc -z localhost 6379 && touch /tmp/up); else true; fi",
+        ]
       interval: 1s
   web:
     hostname: web

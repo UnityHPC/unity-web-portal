@@ -2,6 +2,4 @@
 
 namespace UnityWebPortal\lib\exceptions;
 
-class EnsureException extends \Exception
-{
-}
+class EnsureException extends \Exception {}

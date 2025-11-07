@@ -4,10 +4,12 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\UnityUser;
 
-class PiMemberDenyTest extends TestCase {
+class PiMemberDenyTest extends TestCase
+{
     static $requestUid;
 
-    public static function setUpBeforeClass(): void{
+    public static function setUpBeforeClass(): void
+    {
         global $USER;
         switchUser(...getNormalUser());
         self::$requestUid = $USER->uid;
@@ -15,10 +17,11 @@ class PiMemberDenyTest extends TestCase {
 
     private function denyUser(string $uid)
     {
-        post(
-            __DIR__ . "/../../webroot/panel/pi.php",
-            ["form_type" => "userReq", "action" => "approve", "uid" => $uid]
-        );
+        post(__DIR__ . "/../../webroot/panel/pi.php", [
+            "form_type" => "userReq",
+            "action" => "approve",
+            "uid" => $uid,
+        ]);
     }
 
     public function testDenyRequest()
@@ -29,13 +32,17 @@ class PiMemberDenyTest extends TestCase {
         $piGroup = $USER->getPIGroup();
         $this->assertTrue($piGroup->exists());
         $this->assertTrue(
-            arraysAreEqualUnOrdered(
-                [$pi->uid],
-                $piGroup->getGroupMemberUIDs()
-            )
+            arraysAreEqualUnOrdered([$pi->uid], $piGroup->getGroupMemberUIDs()),
         );
         $this->assertEmpty($piGroup->getRequests());
-        $requestedUser = new UnityUser(self::$requestUid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $requestedUser = new UnityUser(
+            self::$requestUid,
+            $LDAP,
+            $SQL,
+            $MAILER,
+            $REDIS,
+            $WEBHOOK,
+        );
         try {
             $piGroup->newUserRequest(
                 $requestedUser,
@@ -51,8 +58,8 @@ class PiMemberDenyTest extends TestCase {
             $this->assertTrue(
                 arraysAreEqualUnOrdered(
                     [$pi->uid],
-                    $piGroup->getGroupMemberUIDs()
-                )
+                    $piGroup->getGroupMemberUIDs(),
+                ),
             );
             $this->assertFalse($piGroup->memberExists($requestedUser));
         } finally {

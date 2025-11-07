@@ -1,67 +1,66 @@
 div.modalWrapper {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 100;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
 }
 
 div.modalContent {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--light_background);
-    padding: 15px;
-    width: calc(100% - 30px);
-    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.4);
-    border-radius: 5px;
-    max-width: 600px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--light_background);
+  padding: 15px;
+  width: calc(100% - 30px);
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+  max-width: 600px;
 }
 
 div.modalTitleWrapper {
-    overflow: hidden;
-    display: inline-block;
+  overflow: hidden;
+  display: inline-block;
 }
 
 span.modalTitle {
-    font-size: 13pt;
+  font-size: 13pt;
 }
 
 div.modalMessages {
-    color: var(--color-text-failure);
-    font-size: 11pt;
+  color: var(--color-text-failure);
+  font-size: 11pt;
 }
 
-div.modalMessages>* {
-    margin-top: 7px;
-    display: block;
+div.modalMessages > * {
+  margin-top: 7px;
+  display: block;
 }
 
-div.modalBody>* {
-    margin: 0;
+div.modalBody > * {
+  margin: 0;
 }
 
 .btnClose {
-    width: 30px;
-    height: 30px;
-    padding: 0;
-    text-align: center;
-    font-size: 20pt;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  text-align: center;
+  font-size: 20pt;
 }
 
-
 .btnClose::before {
-    content: "\00d7";
+  content: "\00d7";
 }
 
 .buttonList {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
-.buttonList>* {
-    display: inline-block;
-    margin-right: 10px;
+.buttonList > * {
+  display: inline-block;
+  margin-right: 10px;
 }

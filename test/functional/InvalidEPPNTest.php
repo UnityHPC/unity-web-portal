@@ -8,12 +8,7 @@ class InvalidEPPNTest extends TestCase
 {
     public static function provider()
     {
-        return [
-            ["",      false],
-            ["a",     false],
-            ["a@b",   true],
-            ["a@b@c", false],
-        ];
+        return [["", false], ["a", false], ["a@b", true], ["a@b@c", false]];
     }
 
     #[DataProvider("provider")]

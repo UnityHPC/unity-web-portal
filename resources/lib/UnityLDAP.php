@@ -10,25 +10,19 @@ use PHPOpenLDAPer\LDAPEntry;
  */
 class UnityLDAP extends ldapConn
 {
-    private const RDN = "cn";  // The defauls RDN for LDAP entries is set to "common name"
+    private const RDN = "cn"; // The defauls RDN for LDAP entries is set to "common name"
 
-    public const POSIX_ACCOUNT_CLASS = array(
-    "inetorgperson",
-    "posixAccount",
-    "top",
-    "ldapPublicKey"
-    );
+    public const POSIX_ACCOUNT_CLASS = [
+        "inetorgperson",
+        "posixAccount",
+        "top",
+        "ldapPublicKey",
+    ];
 
-    public const POSIX_GROUP_CLASS = array(
-    "posixGroup",
-    "top"
-    );
+    public const POSIX_GROUP_CLASS = ["posixGroup", "top"];
 
-    private $custom_mappings_path = (
-        __DIR__
-        . "/../../"
-        . CONFIG["ldap"]["custom_user_mappings_dir"]
-    );
+    private $custom_mappings_path =
+        __DIR__ . "/../../" . CONFIG["ldap"]["custom_user_mappings_dir"];
     private $def_user_shell = CONFIG["ldap"]["def_user_shell"];
     private $offset_UIDGID = CONFIG["ldap"]["offset_UIDGID"];
     private $offset_PIGID = CONFIG["ldap"]["offset_PIGID"];
@@ -45,7 +39,11 @@ class UnityLDAP extends ldapConn
 
     public function __construct()
     {
-        parent::__construct(CONFIG["ldap"]["uri"], CONFIG["ldap"]["user"], CONFIG["ldap"]["pass"]);
+        parent::__construct(
+            CONFIG["ldap"]["uri"],
+            CONFIG["ldap"]["user"],
+            CONFIG["ldap"]["pass"],
+        );
         $this->baseOU = $this->getEntry(CONFIG["ldap"]["basedn"]);
         $this->userOU = $this->getEntry(CONFIG["ldap"]["user_ou"]);
         $this->groupOU = $this->getEntry(CONFIG["ldap"]["group_ou"]);
@@ -92,13 +90,22 @@ class UnityLDAP extends ldapConn
 
     public function getNextUIDGIDNumber($uid)
     {
-        $IDNumsInUse = array_merge($this->getAllUIDNumbersInUse(), $this->getAllGIDNumbersInUse());
+        $IDNumsInUse = array_merge(
+            $this->getAllUIDNumbersInUse(),
+            $this->getAllGIDNumbersInUse(),
+        );
         $customIDMappings = $this->getCustomIDMappings();
         $customMappedID = $customIDMappings[$uid] ?? null;
-        if (!is_null($customMappedID) && !in_array($customMappedID, $IDNumsInUse)) {
+        if (
+            !is_null($customMappedID) &&
+            !in_array($customMappedID, $IDNumsInUse)
+        ) {
             return $customMappedID;
         }
-        if (!is_null($customMappedID) && in_array($customMappedID, $IDNumsInUse)) {
+        if (
+            !is_null($customMappedID) &&
+            in_array($customMappedID, $IDNumsInUse)
+        ) {
             UnityHTTPD::errorLog(
                 "warning",
                 "user '$uid' has a custom mapped IDNumber $customMappedID but it's already in use!",
@@ -106,7 +113,10 @@ class UnityLDAP extends ldapConn
         }
         return $this->getNextIDNumber(
             $this->offset_UIDGID,
-            array_merge($IDNumsInUse, array_values($this->getCustomIDMappings()))
+            array_merge(
+                $IDNumsInUse,
+                array_values($this->getCustomIDMappings()),
+            ),
         );
     }
 
@@ -114,7 +124,10 @@ class UnityLDAP extends ldapConn
     {
         return $this->getNextIDNumber(
             $this->offset_PIGID,
-            array_merge($this->getAllGIDNumbersInUse(), array_values($this->getCustomIDMappings()))
+            array_merge(
+                $this->getAllGIDNumbersInUse(),
+                array_values($this->getCustomIDMappings()),
+            ),
         );
     }
 
@@ -122,7 +135,10 @@ class UnityLDAP extends ldapConn
     {
         return $this->getNextIDNumber(
             $this->offset_ORGGID,
-            array_merge($this->getAllGIDNumbersInUse(), array_values($this->getCustomIDMappings()))
+            array_merge(
+                $this->getAllGIDNumbersInUse(),
+                array_values($this->getCustomIDMappings()),
+            ),
         );
     }
 
@@ -130,13 +146,16 @@ class UnityLDAP extends ldapConn
     {
         // 0-99 are probably going to be used for local system accounts instead of LDAP accounts
         // 100-999, 60000-64999 are reserved for debian packages
-        return (($id <= 999) || ($id >= 60000 && $id <= 64999));
+        return $id <= 999 || ($id >= 60000 && $id <= 64999);
     }
 
     private function getNextIDNumber($start, $IDsToSkip)
     {
         $new_id = $start;
-        while ($this->isIDNumberForbidden($new_id) || in_array($new_id, $IDsToSkip)) {
+        while (
+            $this->isIDNumberForbidden($new_id) ||
+            in_array($new_id, $IDsToSkip)
+        ) {
             $new_id++;
         }
         return $new_id;
@@ -148,7 +167,7 @@ class UnityLDAP extends ldapConn
         $dir = new \DirectoryIterator($this->custom_mappings_path);
         foreach ($dir as $fileinfo) {
             $filename = $fileinfo->getFilename();
-            if ($fileinfo->isDot() || ($filename == "README.md")) {
+            if ($fileinfo->isDot() || $filename == "README.md") {
                 continue;
             }
             if ($fileinfo->getExtension() == "csv") {
@@ -175,7 +194,11 @@ class UnityLDAP extends ldapConn
         // use baseOU for awareness of externally managed entries
         return array_map(
             fn($x) => $x["uidnumber"][0],
-            $this->baseOU->getChildrenArray(["uidNumber"], true, "(objectClass=posixAccount)"),
+            $this->baseOU->getChildrenArray(
+                ["uidNumber"],
+                true,
+                "(objectClass=posixAccount)",
+            ),
         );
     }
 
@@ -184,7 +207,11 @@ class UnityLDAP extends ldapConn
         // use baseOU for awareness of externally managed entries
         return array_map(
             fn($x) => $x["gidnumber"][0],
-            $this->baseOU->getChildrenArray(["gidNumber"], true, "(objectClass=posixGroup)"),
+            $this->baseOU->getChildrenArray(
+                ["gidNumber"],
+                true,
+                "(objectClass=posixGroup)",
+            ),
         );
     }
 
@@ -200,9 +227,9 @@ class UnityLDAP extends ldapConn
         $UnityMailer,
         $UnityRedis,
         $UnityWebhook,
-        $ignorecache = false
+        $ignorecache = false,
     ) {
-        $out = array();
+        $out = [];
 
         if (!$ignorecache) {
             $users = $UnityRedis->getCache("sorted_users", "");
@@ -216,8 +243,8 @@ class UnityLDAP extends ldapConn
                             $UnitySQL,
                             $UnityMailer,
                             $UnityRedis,
-                            $UnityWebhook
-                        )
+                            $UnityWebhook,
+                        ),
                     );
                 }
                 return $out;
@@ -227,7 +254,14 @@ class UnityLDAP extends ldapConn
         $users = $this->getAllUsersUIDs();
         sort($users);
         foreach ($users as $user) {
-            $params = array($user, $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook);
+            $params = [
+                $user,
+                $this,
+                $UnitySQL,
+                $UnityMailer,
+                $UnityRedis,
+                $UnityWebhook,
+            ];
             array_push($out, new UnityUser(...$params));
         }
         return $out;
@@ -239,7 +273,7 @@ class UnityLDAP extends ldapConn
         $user_attributes = $this->baseOU->getChildrenArray(
             $attributes,
             true, // recursive
-            "(objectClass=posixAccount)"
+            "(objectClass=posixAccount)",
         );
         foreach ($user_attributes as $i => $attributes) {
             if (!in_array($attributes["uid"][0], $include_uids)) {
@@ -254,17 +288,22 @@ class UnityLDAP extends ldapConn
         $UnityMailer,
         $UnityRedis,
         $UnityWebhook,
-        $ignorecache = false
+        $ignorecache = false,
     ) {
-        $out = array();
+        $out = [];
 
         if (!$ignorecache) {
             $groups = $UnityRedis->getCache("sorted_groups", "");
             if (!is_null($groups)) {
                 foreach ($groups as $group) {
-                    $params = array(
-                        $group, $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook
-                    );
+                    $params = [
+                        $group,
+                        $this,
+                        $UnitySQL,
+                        $UnityMailer,
+                        $UnityRedis,
+                        $UnityWebhook,
+                    ];
                     array_push($out, new UnityGroup(...$params));
                 }
 
@@ -283,8 +322,8 @@ class UnityLDAP extends ldapConn
                     $UnitySQL,
                     $UnityMailer,
                     $UnityRedis,
-                    $UnityWebhook
-                )
+                    $UnityWebhook,
+                ),
             );
         }
 
@@ -304,7 +343,7 @@ class UnityLDAP extends ldapConn
                 ["cn"],
                 false,
                 "(memberuid=" . ldap_escape($uid, LDAP_ESCAPE_FILTER) . ")",
-            )
+            ),
         );
     }
 
@@ -327,12 +366,14 @@ class UnityLDAP extends ldapConn
         $owner_attributes = array_values($owner_attributes); // reindex
         $owners_not_found = array_diff(
             $owner_uids,
-            array_map(fn($x) => $x["uid"][0], $owner_attributes)
+            array_map(fn($x) => $x["uid"][0], $owner_attributes),
         );
         if (count($owners_not_found) > 0) {
             UnityHTTPD::errorLog(
                 "warning",
-                "PI group owners not found: " . \jsonEncode($owners_not_found) . "\n"
+                "PI group owners not found: " .
+                    \jsonEncode($owners_not_found) .
+                    "\n",
             );
         }
         return $owner_attributes;
@@ -347,7 +388,10 @@ class UnityLDAP extends ldapConn
         $uids = $this->getAllUsersUIDs();
         $uid2pigids = array_combine($uids, array_fill(0, count($uids), []));
         // for each PI group, append that GID to the member list for each of its member UIDs
-        foreach ($this->getAllPIGroupsAttributes(["cn", "memberuid"]) as $array) {
+        foreach (
+            $this->getAllPIGroupsAttributes(["cn", "memberuid"])
+            as $array
+        ) {
             $gid = $array["cn"][0];
             foreach ($array["memberuid"] as $uid) {
                 if (array_key_exists($uid, $uid2pigids)) {
@@ -355,7 +399,7 @@ class UnityLDAP extends ldapConn
                 } else {
                     UnityHTTPD::errorLog(
                         "warning",
-                        "user '$uid' is a member of a PI group but is not a Unity user!"
+                        "user '$uid' is a member of a PI group but is not a Unity user!",
                     );
                 }
             }
@@ -368,9 +412,9 @@ class UnityLDAP extends ldapConn
         $UnityMailer,
         $UnityRedis,
         $UnityWebhook,
-        $ignorecache = false
+        $ignorecache = false,
     ) {
-        $out = array();
+        $out = [];
 
         if (!$ignorecache) {
             $orgs = $UnityRedis->getCache("sorted_orgs", "");
@@ -384,8 +428,8 @@ class UnityLDAP extends ldapConn
                             $UnitySQL,
                             $UnityMailer,
                             $UnityRedis,
-                            $UnityWebhook
-                        )
+                            $UnityWebhook,
+                        ),
                     );
                 }
                 return $out;
@@ -403,8 +447,8 @@ class UnityLDAP extends ldapConn
                     $UnitySQL,
                     $UnityMailer,
                     $UnityRedis,
-                    $UnityWebhook
-                )
+                    $UnityWebhook,
+                ),
             );
         }
 
@@ -419,24 +463,32 @@ class UnityLDAP extends ldapConn
     public function getUserEntry($uid)
     {
         $uid = ldap_escape($uid, "", LDAP_ESCAPE_DN);
-        return $this->getEntry(unityLDAP::RDN . "=$uid," . CONFIG["ldap"]["user_ou"]);
+        return $this->getEntry(
+            unityLDAP::RDN . "=$uid," . CONFIG["ldap"]["user_ou"],
+        );
     }
 
     public function getGroupEntry($gid)
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
-        return $this->getEntry(unityLDAP::RDN . "=$gid," . CONFIG["ldap"]["group_ou"]);
+        return $this->getEntry(
+            unityLDAP::RDN . "=$gid," . CONFIG["ldap"]["group_ou"],
+        );
     }
 
     public function getPIGroupEntry($gid)
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
-        return $this->getEntry(unityLDAP::RDN . "=$gid," . CONFIG["ldap"]["pigroup_ou"]);
+        return $this->getEntry(
+            unityLDAP::RDN . "=$gid," . CONFIG["ldap"]["pigroup_ou"],
+        );
     }
 
     public function getOrgGroupEntry($gid)
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
-        return $this->getEntry(unityLDAP::RDN . "=$gid," . CONFIG["ldap"]["orggroup_ou"]);
+        return $this->getEntry(
+            unityLDAP::RDN . "=$gid," . CONFIG["ldap"]["orggroup_ou"],
+        );
     }
 }

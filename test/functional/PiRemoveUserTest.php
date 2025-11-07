@@ -4,13 +4,14 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\UnityUser;
 
-class PiRemoveUserTest extends TestCase {
+class PiRemoveUserTest extends TestCase
+{
     private function removeUser(string $uid)
     {
-        http_post(
-            __DIR__ . "/../../webroot/panel/pi.php",
-            ["form_type" => "remUser", "uid" => $uid]
-        );
+        http_post(__DIR__ . "/../../webroot/panel/pi.php", [
+            "form_type" => "remUser",
+            "uid" => $uid,
+        ]);
     }
 
     public function testRemoveUser()
@@ -29,7 +30,14 @@ class PiRemoveUserTest extends TestCase {
         $memberToDelete = null;
         foreach ($memberUIDs as $uid) {
             if ($uid != $piUid) {
-                $memberToDelete = new UnityUser($uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+                $memberToDelete = new UnityUser(
+                    $uid,
+                    $LDAP,
+                    $SQL,
+                    $MAILER,
+                    $REDIS,
+                    $WEBHOOK,
+                );
                 if ($memberToDelete->hasRequestedAccountDeletion()) {
                     continue;
                 }
@@ -78,6 +86,6 @@ class PiRemoveUserTest extends TestCase {
                 );
                 $piGroup->approveUser($pi);
             }
-       }
+        }
     }
 }

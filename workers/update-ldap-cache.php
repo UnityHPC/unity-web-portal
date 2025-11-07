@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-
 $_SERVER["HTTP_HOST"] = "worker"; // see deployment/overrides/worker
 
 require_once __DIR__ . "/../resources/autoload.php";
@@ -29,7 +28,10 @@ if (array_key_exists("f", $options)) {
     $REDIS->flushAll();
 }
 
-if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $options)))) {
+if (
+    !is_null($REDIS->getCache("initialized", "")) and
+    !array_key_exists("u", $options)
+) {
     echo "cache is already initialized, nothing doing.";
     echo " use -f argument to flush cache, or -u argument to update without flush.\n";
 } else {
@@ -37,7 +39,11 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
 
     // search entire tree, some users created for admin purposes might not be in the normal OU
     echo "waiting for LDAP search (users)...\n";
-    $users = $LDAP->search("objectClass=posixAccount", CONFIG["ldap"]["basedn"], []);
+    $users = $LDAP->search(
+        "objectClass=posixAccount",
+        CONFIG["ldap"]["basedn"],
+        [],
+    );
     echo "response received.\n";
     $user_CNs = $LDAP->getUserGroup()->getAttribute("memberuid");
     sort($user_CNs);
@@ -47,35 +53,57 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
         if (!in_array($uid, $user_CNs)) {
             continue;
         }
-        $REDIS->setCache($uid, "firstname", $user->getAttribute("givenname")[0]);
+        $REDIS->setCache(
+            $uid,
+            "firstname",
+            $user->getAttribute("givenname")[0],
+        );
         $REDIS->setCache($uid, "lastname", $user->getAttribute("sn")[0]);
         $REDIS->setCache($uid, "org", $user->getAttribute("o")[0]);
         $REDIS->setCache($uid, "mail", $user->getAttribute("mail")[0]);
         $REDIS->setCache($uid, "sshkeys", $user->getAttribute("sshpublickey"));
-        $REDIS->setCache($uid, "loginshell", $user->getAttribute("loginshell")[0]);
-        $REDIS->setCache($uid, "homedir", $user->getAttribute("homedirectory")[0]);
+        $REDIS->setCache(
+            $uid,
+            "loginshell",
+            $user->getAttribute("loginshell")[0],
+        );
+        $REDIS->setCache(
+            $uid,
+            "homedir",
+            $user->getAttribute("homedirectory")[0],
+        );
     }
 
-    $org_group_ou = new LDAPEntry($LDAP->getConn(), CONFIG["ldap"]["orggroup_ou"]);
+    $org_group_ou = new LDAPEntry(
+        $LDAP->getConn(),
+        CONFIG["ldap"]["orggroup_ou"],
+    );
     echo "waiting for LDAP search (org groups)...\n";
     $org_groups = $org_group_ou->getChildrenArray(["cn", "memberuid"], true);
     echo "response received.\n";
     // phpcs:disable
-    $org_group_CNs = array_map(function($x){return $x["cn"][0];}, $org_groups);
+    $org_group_CNs = array_map(function ($x) {
+        return $x["cn"][0];
+    }, $org_groups);
     // phpcs:enable
     sort($org_group_CNs);
     $REDIS->setCache("sorted_orgs", "", $org_group_CNs);
     foreach ($org_groups as $org_group) {
         $gid = $org_group["cn"][0];
-        $REDIS->setCache($gid, "members", ($org_group["memberuid"] ?? []));
+        $REDIS->setCache($gid, "members", $org_group["memberuid"] ?? []);
     }
 
-    $pi_group_ou = new LDAPEntry($LDAP->getConn(), CONFIG["ldap"]["pigroup_ou"]);
+    $pi_group_ou = new LDAPEntry(
+        $LDAP->getConn(),
+        CONFIG["ldap"]["pigroup_ou"],
+    );
     echo "waiting for LDAP search (pi groups)...\n";
     $pi_groups = $pi_group_ou->getChildrenArray(["cn", "memberuid"], true);
     echo "response received.\n";
     // phpcs:disable
-    $pi_group_CNs = array_map(function($x){return $x["cn"][0];}, $pi_groups);
+    $pi_group_CNs = array_map(function ($x) {
+        return $x["cn"][0];
+    }, $pi_groups);
     // phpcs:enable
     sort($pi_group_CNs);
     // FIXME should be sorted_pi_groups
@@ -87,7 +115,7 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     }
     foreach ($pi_groups as $pi_group) {
         $gid = $pi_group["cn"][0];
-        $members = ($pi_group["memberuid"] ?? []);
+        $members = $pi_group["memberuid"] ?? [];
         foreach ($members as $uid) {
             if (in_array($uid, $user_CNs)) {
                 array_push($user_pi_group_member_of[$uid], $gid);
@@ -95,7 +123,7 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
                 echo "warning: group '$gid' has member '$uid' who is not in the users group!\n";
             }
         }
-        $REDIS->setCache($gid, "members", ($pi_group["memberuid"] ?? []));
+        $REDIS->setCache($gid, "members", $pi_group["memberuid"] ?? []);
     }
     foreach ($user_pi_group_member_of as $uid => $pi_groups) {
         // FIXME should be pi_groups
@@ -105,3 +133,4 @@ if ((!is_null($REDIS->getCache("initialized", "")) and (!array_key_exists("u", $
     $REDIS->setCache("initialized", "", true);
     echo "done!\n";
 }
+

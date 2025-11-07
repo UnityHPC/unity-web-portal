@@ -7,30 +7,29 @@ use PHPUnit\Framework\MockObject\MockBuilder;
 
 class SSHKeyAddTest extends TestCase
 {
-    private function addSshKeysPaste(array $keys): void {
+    private function addSshKeysPaste(array $keys): void
+    {
         foreach ($keys as $key) {
-            http_post(
-                __DIR__ . "/../../webroot/panel/account.php",
-                [
-                    "form_type" => "addKey",
-                    "add_type" => "paste",
-                    "key" => $key
-                ]
-            );
+            http_post(__DIR__ . "/../../webroot/panel/account.php", [
+                "form_type" => "addKey",
+                "add_type" => "paste",
+                "key" => $key,
+            ]);
         }
     }
 
-    private function addSshKeysImport(array $keys): void {
+    private function addSshKeysImport(array $keys): void
+    {
         foreach ($keys as $key) {
             $tmp = tmpfile();
             $tmp_path = stream_get_meta_data($tmp)["uri"];
             fwrite($tmp, $key);
             $_FILES["keyfile"] = ["tmp_name" => $tmp_path];
             try {
-                http_post(
-                    __DIR__ . "/../../webroot/panel/account.php",
-                    ["form_type" => "addKey", "add_type" => "import"]
-                );
+                http_post(__DIR__ . "/../../webroot/panel/account.php", [
+                    "form_type" => "addKey",
+                    "add_type" => "import",
+                ]);
                 $this->assertFalse(file_exists($tmp_path));
             } finally {
                 unset($_FILES["keyfile"]);
@@ -38,46 +37,44 @@ class SSHKeyAddTest extends TestCase
         }
     }
 
-    private function addSshKeysGenerate(array $keys): void {
+    private function addSshKeysGenerate(array $keys): void
+    {
         foreach ($keys as $key) {
-            http_post(
-                __DIR__ . "/../../webroot/panel/account.php",
-                [
-                    "form_type" => "addKey",
-                    "add_type" => "generate",
-                    "gen_key" => $key
-                ]
-            );
+            http_post(__DIR__ . "/../../webroot/panel/account.php", [
+                "form_type" => "addKey",
+                "add_type" => "generate",
+                "gen_key" => $key,
+            ]);
         }
     }
 
-    private function addSshKeysGithub(array $keys): void {
+    private function addSshKeysGithub(array $keys): void
+    {
         global $GITHUB;
         $oldGithub = $GITHUB;
         $GITHUB = $this->createMock(UnityGithub::class);
         $GITHUB->method("getSshPublicKeys")->willReturn($keys);
         try {
-            http_post(
-                __DIR__ . "/../../webroot/panel/account.php",
-                [
-                    "form_type" => "addKey",
-                    "add_type" => "github",
-                    "gh_user" => "foobar"
-                ]
-            );
+            http_post(__DIR__ . "/../../webroot/panel/account.php", [
+                "form_type" => "addKey",
+                "add_type" => "github",
+                "gh_user" => "foobar",
+            ]);
         } finally {
             $GITHUB = $oldGithub;
         }
     }
 
-    public static function provider() {
-        $validKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+XqO25MUB9x/pS04I3JQ7rMGboWyGXh0GUzkOrTi7a foobar";
+    public static function provider()
+    {
+        $validKey =
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+XqO25MUB9x/pS04I3JQ7rMGboWyGXh0GUzkOrTi7a foobar";
         $invalidKey = "foobar";
         $methods = [
             "addSshKeysPaste",
             "addSshKeysImport",
             "addSshKeysGenerate",
-            "addSshKeysGithub"
+            "addSshKeysGithub",
         ];
         $output = [];
         foreach ($methods as $method) {
@@ -99,8 +96,11 @@ class SSHKeyAddTest extends TestCase
     }
 
     #[DataProvider("provider")]
-    public function testAddSshKeys(string $methodName, int $expectedKeysAdded, array $keys)
-    {
+    public function testAddSshKeys(
+        string $methodName,
+        int $expectedKeysAdded,
+        array $keys,
+    ) {
         global $USER;
         switchUser(...getUserHasNoSshKeys());
         $numKeysBefore = $this->getKeyCount($USER);
@@ -109,7 +109,10 @@ class SSHKeyAddTest extends TestCase
             call_user_func([SSHKeyAddTest::class, $methodName], $keys);
             // $method($keys);
             $numKeysAfter = $this->getKeyCount($USER);
-            $this->assertEquals($expectedKeysAdded, ($numKeysAfter - $numKeysBefore));
+            $this->assertEquals(
+                $expectedKeysAdded,
+                $numKeysAfter - $numKeysBefore,
+            );
         } finally {
             $USER->setSSHKeys([]);
         }

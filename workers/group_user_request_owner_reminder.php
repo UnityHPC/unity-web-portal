@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-
 /**
 Emails PIs that have oustanding member requests once a week for 4 weeks.
 Removes the request after 34 days have passed.
@@ -25,17 +24,14 @@ foreach ($accounts as $pi_group) {
         } elseif ($daysDifference > 1 && $daysDifference % 7 == 0) {
             $new_user = $request[0];
             // send email to PI
-            $MAILER->sendMail(
-                $pi_user->getMail(),
-                "group_user_request_owner",
-                array(
-                    "group" => $pi_group->gid,
-                    "user" => $new_user->uid,
-                    "name" => $new_user->getFullName(),
-                    "email" => $new_user->getMail(),
-                    "org" => $new_user->getOrg()
-                )
-            );
+            $MAILER->sendMail($pi_user->getMail(), "group_user_request_owner", [
+                "group" => $pi_group->gid,
+                "user" => $new_user->uid,
+                "name" => $new_user->getFullName(),
+                "email" => $new_user->getMail(),
+                "org" => $new_user->getOrg(),
+            ]);
         }
     }
 }
+

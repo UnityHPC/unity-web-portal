@@ -6,42 +6,41 @@ use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnitySSO;
 
-class PiMemberApproveTest extends TestCase {
-        static $userWithRequestSwitchArgs;
-        static $userWithoutRequestSwitchArgs;
-        static $piSwitchArgs;
-        static $pi;
-        static $userWithRequestUID;
-        static $userWithoutRequestUID;
-        static $piUID;
-        static $userWithRequest;
-        static $userWithoutRequest;
-        static $piGroup;
-        static $piGroupGID;
+class PiMemberApproveTest extends TestCase
+{
+    static $userWithRequestSwitchArgs;
+    static $userWithoutRequestSwitchArgs;
+    static $piSwitchArgs;
+    static $pi;
+    static $userWithRequestUID;
+    static $userWithoutRequestUID;
+    static $piUID;
+    static $userWithRequest;
+    static $userWithoutRequest;
+    static $piGroup;
+    static $piGroupGID;
 
     private function approveUser(string $uid)
     {
-        http_post(
-            __DIR__ . "/../../webroot/panel/pi.php",
-            ["form_type" => "userReq", "action" => "Approve", "uid" => $uid]
-        );
+        http_post(__DIR__ . "/../../webroot/panel/pi.php", [
+            "form_type" => "userReq",
+            "action" => "Approve",
+            "uid" => $uid,
+        ]);
     }
 
     private function requestJoinPI(string $gid)
     {
-        http_post(
-            __DIR__ . "/../../webroot/panel/groups.php",
-            ["form_type" => "addPIform", "pi" => $gid]
-        );
+        http_post(__DIR__ . "/../../webroot/panel/groups.php", [
+            "form_type" => "addPIform",
+            "pi" => $gid,
+        ]);
     }
 
     private function assertGroupMembers(UnityGroup $group, array $members)
     {
         $this->assertTrue(
-            arraysAreEqualUnOrdered(
-                $members,
-                $group->getGroupMemberUIDs()
-            )
+            arraysAreEqualUnOrdered($members, $group->getGroupMemberUIDs()),
         );
     }
 

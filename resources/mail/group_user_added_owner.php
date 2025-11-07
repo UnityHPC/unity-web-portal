@@ -1,14 +1,13 @@
 <?php
 
 // This template is sent to all users of a group when that group is disbanded (deleted)
-$this->Subject = "Group Member Approved";
-?>
+$this->Subject = "Group Member Approved"; ?>
 
 <p>Hello,</p>
 
 <p>
 A new user has been added to your PI group,
-'<?php echo $data["group"] ?>'.
+'<?php echo $data["group"]; ?>'.
 The details of the new user are below:
 </p>
 

@@ -3,26 +3,31 @@
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class SSHKeyDeleteTest extends TestCase {
+class SSHKeyDeleteTest extends TestCase
+{
     static $initialKeys;
 
-    public static function setUpBeforeClass(): void{
+    public static function setUpBeforeClass(): void
+    {
         global $USER;
         switchUser(...getUserWithOneKey());
         self::$initialKeys = $USER->getSSHKeys(true);
     }
 
-    private function deleteKey(string $index): void {
-        http_post(
-            __DIR__ . "/../../webroot/panel/account.php",
-            ["form_type" => "delKey", "delIndex" => $index]
-        );
+    private function deleteKey(string $index): void
+    {
+        http_post(__DIR__ . "/../../webroot/panel/account.php", [
+            "form_type" => "delKey",
+            "delIndex" => $index,
+        ]);
     }
 
     public static function getGarbageIndexArgs()
     {
         global $HTTP_HEADER_TEST_INPUTS;
-        return array_map(function($x){return [$x];}, $HTTP_HEADER_TEST_INPUTS);
+        return array_map(function ($x) {
+            return [$x];
+        }, $HTTP_HEADER_TEST_INPUTS);
     }
 
     #[DataProvider("getGarbageIndexArgs")]

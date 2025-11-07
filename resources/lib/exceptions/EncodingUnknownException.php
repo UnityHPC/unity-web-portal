@@ -2,6 +2,4 @@
 
 namespace UnityWebPortal\lib\exceptions;
 
-class EncodingUnknownException extends \Exception
-{
-}
+class EncodingUnknownException extends \Exception {}

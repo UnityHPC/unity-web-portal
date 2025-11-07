@@ -9,13 +9,13 @@ jobs:
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: true
-    - uses: actions/setup-python@v3
-    - name: setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: "8.3"
-        tools: composer, phpcs, phpcbf
-    - uses: pre-commit/action@v3.0.1
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - uses: actions/setup-python@v3
+      - name: setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          tools: composer, phpcs, phpcbf
+      - uses: pre-commit/action@v3.0.1

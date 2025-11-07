@@ -2,24 +2,24 @@
 
 ## Conventions
 
-* PHP version 8.3.
-* All files are required to be formatted with Prettier.
-* The maximum line length for any PHP file is 100 characters.
-* Comments should be used sparingly.
-* Empty lines should be used sparingly.
-* No code should fail quietly, instead exceptions should be thrown.
+- PHP version 8.3.
+- All files are required to be formatted with Prettier.
+- The maximum line length for any PHP file is 100 characters.
+- Comments should be used sparingly.
+- Empty lines should be used sparingly.
+- No code should fail quietly, instead exceptions should be thrown.
   PHP builtin functions that fail quietly (ex: `json_encode`) should be replaced with a wrapper in `resources/utils.php`.
-* No code should call `die()` or `exit()`, instead `UnityHTTPD::die()`.
+- No code should call `die()` or `exit()`, instead `UnityHTTPD::die()`.
   This will avoid the premature death of our automated testing processes.
-* No code should call `assert()`, instead `\ensure()`.
+- No code should call `assert()`, instead `\ensure()`.
   This will enforce conditions even in production.
-* No code should call `json_encode()`, instead `\jsonEncode()`.
+- No code should call `json_encode()`, instead `\jsonEncode()`.
   This will throw errors and escape slashes by default.
-* No code should call `mb_convert_encoding()`, instead `\mbConvertEncoding()`.
+- No code should call `mb_convert_encoding()`, instead `\mbConvertEncoding()`.
   This will throw an exception rather than returning `false`.
-* No code should call `mb_detect_encoding()`, instead `\mbDetectEncoding()`.
+- No code should call `mb_detect_encoding()`, instead `\mbDetectEncoding()`.
   This will enable strict mode and throw an exception rather than returning `false`.
-* `UnityHTTPD`'s user-facing error functionality (ex: `badRequest`) should only be called from `webroot/**/*.php`.
+- `UnityHTTPD`'s user-facing error functionality (ex: `badRequest`) should only be called from `webroot/**/*.php`.
   `resources/**/*.php` should throw exceptions instead.
 
 This repository will automatically check PRs for linting compliance.
@@ -44,10 +44,10 @@ This repository will automatically check PRs for linting compliance.
 
 While the environment is running, the following is accessible:
 
-* http://127.0.0.1:8000 - Web Portal
-* http://127.0.0.1:8010 - PHPLDAPAdmin Portal
-* http://127.0.0.1:8020 - PHPMyAdmin Portal
-* http://127.0.0.1:8030 - Mailcatcher Portal
+- http://127.0.0.1:8000 - Web Portal
+- http://127.0.0.1:8010 - PHPLDAPAdmin Portal
+- http://127.0.0.1:8020 - PHPMyAdmin Portal
+- http://127.0.0.1:8030 - Mailcatcher Portal
 
 ### Test Users
 
@@ -56,9 +56,10 @@ When accessing locked down portions of the portal, you will be asked for a usern
 The password is always `password`. `tools/docker-dev/web/htpasswd` contains all valid usernames.
 
 Notable users:
-* `user1@org1.test` - admin, PI
-* `user2@org1.test` - not admin, not PI
-* `user2000@org2.test` - does not yet have an account
+
+- `user1@org1.test` - admin, PI
+- `user2@org1.test` - not admin, not PI
+- `user2000@org2.test` - does not yet have an account
 
 ### Changes to Dev Environment
 
@@ -87,6 +88,7 @@ Once a user action has been taken, internal interfaces are used to verify the re
 To run `phpunit`, spawn 2 shells in differnt tabs:
 
 tab 1:
+
 ```shell
 cd ./tools/docker-dev
 ./build.sh
@@ -94,6 +96,7 @@ cd ./tools/docker-dev
 ```
 
 tab 2:
+
 ```
 $ container="$(docker container ls | grep web | awk '{print $1}')"
 $ docker exec -it "$container" bash
@@ -139,6 +142,7 @@ When writing a test, it may be tempting to use the PHP API directly, but the HTT
 Example:
 
 using the PHP API:
+
 ```php
 private function requestGroupCreation()
 {
@@ -147,6 +151,7 @@ private function requestGroupCreation()
 ```
 
 using the HTTP API:
+
 ```php
 private function requestGroupCreation()
 {

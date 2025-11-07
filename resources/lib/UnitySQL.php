@@ -17,7 +17,6 @@ class UnitySQL
     private const TABLE_GROUP_REQUESTS = "groupRequests";
     private const TABLE_GROUP_JOIN_REQUESTS = "groupJoinRequests";
 
-
     // FIXME this string should be changed to something more intuitive, requires production change
     public const REQUEST_BECOME_PI = "admin";
 
@@ -26,9 +25,12 @@ class UnitySQL
     public function __construct()
     {
         $this->conn = new PDO(
-            "mysql:host=" . CONFIG["sql"]["host"] . ";dbname=" . CONFIG["sql"]["dbname"],
+            "mysql:host=" .
+                CONFIG["sql"]["host"] .
+                ";dbname=" .
+                CONFIG["sql"]["dbname"],
             CONFIG["sql"]["user"],
-            CONFIG["sql"]["pass"]
+            CONFIG["sql"]["pass"],
         );
         $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
@@ -47,16 +49,18 @@ class UnitySQL
         $lastname,
         $email,
         $org,
-        $dest = self::REQUEST_BECOME_PI
+        $dest = self::REQUEST_BECOME_PI,
     ) {
         if ($this->requestExists($requestor, $dest)) {
             return;
         }
 
         $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_REQS . " " .
-            "(uid, firstname, lastname, email, org, request_for) VALUES " .
-            "(:uid, :firstname, :lastname, :email, :org, :request_for)"
+            "INSERT INTO " .
+                self::TABLE_REQS .
+                " " .
+                "(uid, firstname, lastname, email, org, request_for) VALUES " .
+                "(:uid, :firstname, :lastname, :email, :org, :request_for)",
         );
         $stmt->bindParam(":uid", $requestor);
         $stmt->bindParam(":request_for", $dest);
@@ -75,7 +79,9 @@ class UnitySQL
         }
 
         $stmt = $this->conn->prepare(
-            "DELETE FROM " . self::TABLE_REQS . " WHERE uid=:uid and request_for=:request_for"
+            "DELETE FROM " .
+                self::TABLE_REQS .
+                " WHERE uid=:uid and request_for=:request_for",
         );
         $stmt->bindParam(":uid", $requestor);
         $stmt->bindParam(":request_for", $dest);
@@ -86,7 +92,9 @@ class UnitySQL
     public function removeRequests($dest = self::REQUEST_BECOME_PI)
     {
         $stmt = $this->conn->prepare(
-            "DELETE FROM " . self::TABLE_REQS . " WHERE request_for=:request_for"
+            "DELETE FROM " .
+                self::TABLE_REQS .
+                " WHERE request_for=:request_for",
         );
         $stmt->bindParam(":request_for", $dest);
 
@@ -96,17 +104,23 @@ class UnitySQL
     public function getRequest($user, $dest)
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid and request_for=:request_for"
+            "SELECT * FROM " .
+                self::TABLE_REQS .
+                " WHERE uid=:uid and request_for=:request_for",
         );
         $stmt->bindParam(":uid", $user);
         $stmt->bindParam(":request_for", $dest);
         $stmt->execute();
         $result = $stmt->fetchAll();
         if (count($result) == 0) {
-            throw new \Exception("no such request: uid='$user' request_for='$dest'");
+            throw new \Exception(
+                "no such request: uid='$user' request_for='$dest'",
+            );
         }
         if (count($result) > 1) {
-            throw new \Exception("multiple requests for uid='$user' request_for='$dest'");
+            throw new \Exception(
+                "multiple requests for uid='$user' request_for='$dest'",
+            );
         }
         return $result[0];
     }
@@ -132,7 +146,9 @@ class UnitySQL
     public function getRequests($dest = self::REQUEST_BECOME_PI)
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_REQS . " WHERE request_for=:request_for"
+            "SELECT * FROM " .
+                self::TABLE_REQS .
+                " WHERE request_for=:request_for",
         );
         $stmt->bindParam(":request_for", $dest);
 
@@ -144,7 +160,7 @@ class UnitySQL
     public function getRequestsByUser($user)
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid"
+            "SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid",
         );
         $stmt->bindParam(":uid", $user);
 
@@ -156,7 +172,7 @@ class UnitySQL
     public function deleteRequestsByUser($user)
     {
         $stmt = $this->conn->prepare(
-            "DELETE FROM " . self::TABLE_REQS . " WHERE uid=:uid"
+            "DELETE FROM " . self::TABLE_REQS . " WHERE uid=:uid",
         );
         $stmt->bindParam(":uid", $user);
 
@@ -167,7 +183,7 @@ class UnitySQL
     {
         $table = self::TABLE_NOTICES;
         $stmt = $this->conn->prepare(
-            "INSERT INTO $table (date, title, message) VALUES (:date, :title, :message)"
+            "INSERT INTO $table (date, title, message) VALUES (:date, :title, :message)",
         );
         $stmt->bindParam(":date", $date);
         $stmt->bindParam(":title", $title);
@@ -177,9 +193,9 @@ class UnitySQL
 
         $this->addLog(
             $operator->uid,
-            $_SERVER['REMOTE_ADDR'],
+            $_SERVER["REMOTE_ADDR"],
             "added_cluster_notice",
-            $operator
+            $operator,
         );
     }
 
@@ -187,7 +203,7 @@ class UnitySQL
     {
         $table = self::TABLE_NOTICES;
         $stmt = $this->conn->prepare(
-            "UPDATE $table SET date=:date, title=:title, message=:message WHERE id=:id"
+            "UPDATE $table SET date=:date, title=:title, message=:message WHERE id=:id",
         );
         $stmt->bindParam(":date", $date);
         $stmt->bindParam(":title", $title);
@@ -200,7 +216,7 @@ class UnitySQL
     public function deleteNotice($id)
     {
         $stmt = $this->conn->prepare(
-            "DELETE FROM " . self::TABLE_NOTICES . " WHERE id=:id"
+            "DELETE FROM " . self::TABLE_NOTICES . " WHERE id=:id",
         );
         $stmt->bindParam(":id", $id);
 
@@ -210,7 +226,7 @@ class UnitySQL
     public function getNotice($id)
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_NOTICES . " WHERE id=:id"
+            "SELECT * FROM " . self::TABLE_NOTICES . " WHERE id=:id",
         );
         $stmt->bindParam(":id", $id);
 
@@ -222,7 +238,7 @@ class UnitySQL
     public function getNotices()
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_NOTICES . " ORDER BY date DESC"
+            "SELECT * FROM " . self::TABLE_NOTICES . " ORDER BY date DESC",
         );
         $stmt->execute();
 
@@ -231,9 +247,7 @@ class UnitySQL
 
     public function getPages()
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_PAGES
-        );
+        $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_PAGES);
         $stmt->execute();
 
         return $stmt->fetchAll();
@@ -242,7 +256,7 @@ class UnitySQL
     public function getPage($id)
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_PAGES . " WHERE page=:id"
+            "SELECT * FROM " . self::TABLE_PAGES . " WHERE page=:id",
         );
         $stmt->bindParam(":id", $id);
 
@@ -254,7 +268,9 @@ class UnitySQL
     public function editPage($id, $content, $operator)
     {
         $stmt = $this->conn->prepare(
-            "UPDATE " . self::TABLE_PAGES . " SET content=:content WHERE page=:id"
+            "UPDATE " .
+                self::TABLE_PAGES .
+                " SET content=:content WHERE page=:id",
         );
         $stmt->bindParam(":id", $id);
         $stmt->bindParam(":content", $content);
@@ -263,9 +279,9 @@ class UnitySQL
 
         $this->addLog(
             $operator->uid,
-            $_SERVER['REMOTE_ADDR'],
+            $_SERVER["REMOTE_ADDR"],
             "edited_page",
-            $operator
+            $operator,
         );
     }
 
@@ -274,7 +290,7 @@ class UnitySQL
         $table = self::TABLE_AUDIT_LOG;
         $stmt = $this->conn->prepare(
             "INSERT INTO $table (operator, operator_ip, action_type, recipient)
-            VALUE (:operator, :operator_ip, :action_type, :recipient)"
+            VALUE (:operator, :operator_ip, :action_type, :recipient)",
         );
         $stmt->bindParam(":operator", $operator);
         $stmt->bindParam(":operator_ip", $operator_ip);
@@ -287,7 +303,9 @@ class UnitySQL
     public function addAccountDeletionRequest($uid)
     {
         $stmt = $this->conn->prepare(
-            "INSERT INTO " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " (uid) VALUE (:uid)"
+            "INSERT INTO " .
+                self::TABLE_ACCOUNT_DELETION_REQUESTS .
+                " (uid) VALUE (:uid)",
         );
         $stmt->bindParam(":uid", $uid);
 
@@ -297,7 +315,9 @@ class UnitySQL
     public function accDeletionRequestExists($uid)
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " WHERE uid=:uid"
+            "SELECT * FROM " .
+                self::TABLE_ACCOUNT_DELETION_REQUESTS .
+                " WHERE uid=:uid",
         );
         $stmt->bindParam(":uid", $uid);
 
@@ -312,7 +332,9 @@ class UnitySQL
             return;
         }
         $stmt = $this->conn->prepare(
-            "DELETE FROM " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " WHERE uid=:uid"
+            "DELETE FROM " .
+                self::TABLE_ACCOUNT_DELETION_REQUESTS .
+                " WHERE uid=:uid",
         );
         $stmt->bindParam(":uid", $uid);
         $stmt->execute();
@@ -321,63 +343,67 @@ class UnitySQL
     public function getRole($uid, $group)
     {
         $table = self::TABLE_GROUP_ROLE_ASSIGNMENTS;
-        $stmt = $this->conn->prepare("SELECT * FROM $table WHERE user=:uid AND `group`=:group");
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM $table WHERE user=:uid AND `group`=:group",
+        );
         $stmt->bindParam(":uid", $uid);
         $stmt->bindParam(":group", $group);
 
         $stmt->execute();
 
-        return $stmt->fetchAll()[0]['role'];
+        return $stmt->fetchAll()[0]["role"];
     }
 
     public function hasPerm($role, $perm)
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_GROUP_ROLES . " WHERE slug=:role"
+            "SELECT * FROM " . self::TABLE_GROUP_ROLES . " WHERE slug=:role",
         );
         $stmt->bindParam(":role", $role);
 
         $stmt->execute();
 
         $row = $stmt->fetchAll()[0];
-        $perms = explode(",", $row['perms']);
+        $perms = explode(",", $row["perms"]);
         return in_array($perm, $perms);
     }
 
     public function getPriority($role)
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_GROUP_ROLES . " WHERE slug=:role"
+            "SELECT * FROM " . self::TABLE_GROUP_ROLES . " WHERE slug=:role",
         );
         $stmt->bindParam(":role", $role);
 
         $stmt->execute();
 
         $row = $stmt->fetchAll()[0];
-        return $row['priority'];
+        return $row["priority"];
     }
 
     public function roleAvailableInGroup($uid, $group, $role)
     {
         $table = self::TABLE_GROUP_ROLE_ASSIGNMENTS;
-        $stmt = $this->conn->prepare("SELECT * FROM $table WHERE user=:uid AND `group`=:group");
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM $table WHERE user=:uid AND `group`=:group",
+        );
         $stmt->bindParam(":uid", $uid);
         $stmt->bindParam(":group", $group);
 
         $stmt->execute();
         $row = $stmt->fetchAll()[0];
 
-        $group_slug = $row['group'];
+        $group_slug = $row["group"];
 
         $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_GROUP_TYPES . " WHERE slug=:slug"
+            "SELECT * FROM " . self::TABLE_GROUP_TYPES . " WHERE slug=:slug",
         );
 
         $stmt->bindParam(":slug", $group_slug);
         $stmt->execute();
 
         $row = $stmt->fetchAll()[0];
-        $roles = explode(",", $row['roles']);
+        $roles = explode(",", $row["roles"]);
 
         return in_array($role, $roles);
     }
