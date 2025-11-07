@@ -464,7 +464,7 @@ class UnityLDAP extends ldapConn
     {
         $uid = ldap_escape($uid, "", LDAP_ESCAPE_DN);
         return $this->getEntry(
-            unityLDAP::RDN . "=$uid," . CONFIG["ldap"]["user_ou"],
+            UnityLDAP::RDN . "=$uid," . CONFIG["ldap"]["user_ou"],
         );
     }
 
@@ -472,7 +472,7 @@ class UnityLDAP extends ldapConn
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
         return $this->getEntry(
-            unityLDAP::RDN . "=$gid," . CONFIG["ldap"]["group_ou"],
+            UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["group_ou"],
         );
     }
 
@@ -480,7 +480,7 @@ class UnityLDAP extends ldapConn
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
         return $this->getEntry(
-            unityLDAP::RDN . "=$gid," . CONFIG["ldap"]["pigroup_ou"],
+            UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["pigroup_ou"],
         );
     }
 
@@ -488,7 +488,7 @@ class UnityLDAP extends ldapConn
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
         return $this->getEntry(
-            unityLDAP::RDN . "=$gid," . CONFIG["ldap"]["orggroup_ou"],
+            UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["orggroup_ou"],
         );
     }
 }
