@@ -14,7 +14,7 @@ class AccountDeletionRequestTest extends TestCase
             $this->assertTrue($USER->hasRequestedAccountDeletion());
             $this->assertTrue($SQL->accDeletionRequestExists($USER->uid));
         } else {
-            throw new RuntimeError("x must not be negative");
+            throw new \RuntimeError("x must not be negative");
         }
         $this->assertEquals($x, $this->getNumberAccountDeletionRequests());
     }

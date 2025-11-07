@@ -17,7 +17,7 @@ class PiMemberDenyTest extends TestCase
 
     private function denyUser(string $uid)
     {
-        post(__DIR__ . "/../../webroot/panel/pi.php", [
+        http_post(__DIR__ . "/../../webroot/panel/pi.php", [
             "form_type" => "userReq",
             "action" => "approve",
             "uid" => $uid,
