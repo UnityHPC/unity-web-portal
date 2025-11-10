@@ -2,3 +2,5 @@ overrides:
   - files: ["*.php"]
     options:
       printWidth: 100
+plugins:
+  - "@prettier/plugin-php"
