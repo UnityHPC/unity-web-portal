@@ -25,7 +25,7 @@ pass = "password"  ; Admin bind password
 custom_user_mappings_dir = "deployment/custom_user_mappings" ; for internal use only
 basedn = "dc=unityhpc,dc=test"  ; Base search DN
 user_ou = "ou=users,dc=unityhpc,dc=test"  ; User organizational unit (may contain more than user group)
-qualified_user_group = "cn=unityusers,dc=unityhpc,dc=test" ; User group
+qualified_user_group = "cn=unityusers,dc=unityhpc,dc=test" ; Qualified user group (in at least one PI group)
 group_ou = "ou=groups,dc=unityhpc,dc=test"  ; Group organizational unit
 pigroup_ou = "ou=pi_groups,dc=unityhpc,dc=test"  ; PI Group organizational unit
 orggroup_ou = "ou=org_groups,dc=unityhpc,dc=test"  ; ORG group organizational unit
