@@ -477,4 +477,11 @@ class UnityGroup
         }
         return substr($gid, strlen(self::PI_PREFIX));
     }
+
+    public static function mailToPIGID($email)
+    {
+        global $LDAP;
+        $ownerUid = $LDAP->getPIOwnerFromEmail($email)->getAttribute("cn")[0];
+        return self::PI_PREFIX . $ownerUid;
+    }
 }
