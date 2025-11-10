@@ -481,7 +481,7 @@ class UnityGroup
     public static function mailToPIGID($email)
     {
         global $LDAP;
-        $entry = $LDAP->getPIOwnerFromEmail($email);
+        $entry = $LDAP->getUidFromEmail($email);
         if ($entry !== null) {
             $ownerUid = $entry->getAttribute("cn")[0];
             return self::PI_PREFIX . $ownerUid;

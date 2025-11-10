@@ -429,7 +429,7 @@ class UnityLDAP extends LDAPConn
         return $this->getEntry(UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["orggroup_ou"]);
     }
 
-    public function getPIOwnerFromEmail($email)
+    public function getUidFromEmail($email)
     {
         $email = ldap_escape($email, "", LDAP_ESCAPE_FILTER);
         $cn = $this->search("mail=$email", CONFIG["ldap"]["user_ou"], ["cn"]);
