@@ -28,10 +28,7 @@ if (array_key_exists("f", $options)) {
     $REDIS->flushAll();
 }
 
-if (
-    !is_null($REDIS->getCache("initialized", "")) and
-    !array_key_exists("u", $options)
-) {
+if (!is_null($REDIS->getCache("initialized", "")) and !array_key_exists("u", $options)) {
     echo "cache is already initialized, nothing doing.";
     echo " use -f argument to flush cache, or -u argument to update without flush.\n";
 } else {
@@ -39,11 +36,7 @@ if (
 
     // search entire tree, some users created for admin purposes might not be in the normal OU
     echo "waiting for LDAP search (users)...\n";
-    $users = $LDAP->search(
-        "objectClass=posixAccount",
-        CONFIG["ldap"]["basedn"],
-        [],
-    );
+    $users = $LDAP->search("objectClass=posixAccount", CONFIG["ldap"]["basedn"], []);
     echo "response received.\n";
     $user_CNs = $LDAP->getUserGroup()->getAttribute("memberuid");
     sort($user_CNs);
@@ -53,31 +46,16 @@ if (
         if (!in_array($uid, $user_CNs)) {
             continue;
         }
-        $REDIS->setCache(
-            $uid,
-            "firstname",
-            $user->getAttribute("givenname")[0],
-        );
+        $REDIS->setCache($uid, "firstname", $user->getAttribute("givenname")[0]);
         $REDIS->setCache($uid, "lastname", $user->getAttribute("sn")[0]);
         $REDIS->setCache($uid, "org", $user->getAttribute("o")[0]);
         $REDIS->setCache($uid, "mail", $user->getAttribute("mail")[0]);
         $REDIS->setCache($uid, "sshkeys", $user->getAttribute("sshpublickey"));
-        $REDIS->setCache(
-            $uid,
-            "loginshell",
-            $user->getAttribute("loginshell")[0],
-        );
-        $REDIS->setCache(
-            $uid,
-            "homedir",
-            $user->getAttribute("homedirectory")[0],
-        );
+        $REDIS->setCache($uid, "loginshell", $user->getAttribute("loginshell")[0]);
+        $REDIS->setCache($uid, "homedir", $user->getAttribute("homedirectory")[0]);
     }
 
-    $org_group_ou = new LDAPEntry(
-        $LDAP->getConn(),
-        CONFIG["ldap"]["orggroup_ou"],
-    );
+    $org_group_ou = new LDAPEntry($LDAP->getConn(), CONFIG["ldap"]["orggroup_ou"]);
     echo "waiting for LDAP search (org groups)...\n";
     $org_groups = $org_group_ou->getChildrenArray(["cn", "memberuid"], true);
     echo "response received.\n";
@@ -93,10 +71,7 @@ if (
         $REDIS->setCache($gid, "members", $org_group["memberuid"] ?? []);
     }
 
-    $pi_group_ou = new LDAPEntry(
-        $LDAP->getConn(),
-        CONFIG["ldap"]["pigroup_ou"],
-    );
+    $pi_group_ou = new LDAPEntry($LDAP->getConn(), CONFIG["ldap"]["pigroup_ou"]);
     echo "waiting for LDAP search (pi groups)...\n";
     $pi_groups = $pi_group_ou->getChildrenArray(["cn", "memberuid"], true);
     echo "response received.\n";

@@ -38,14 +38,9 @@ class UnitySSO
             return $_SERVER[$attributeName];
         }
         if (is_null($fallbackAttributeName)) {
-            throw new SSOException(
-                "\$_SERVER[\"$attributeName\"] is unset or empty!",
-            );
+            throw new SSOException("\$_SERVER[\"$attributeName\"] is unset or empty!");
         }
-        if (
-            isset($_SERVER[$fallbackAttributeName]) &&
-            $_SERVER[$fallbackAttributeName] != ""
-        ) {
+        if (isset($_SERVER[$fallbackAttributeName]) && $_SERVER[$fallbackAttributeName] != "") {
             return $_SERVER[$fallbackAttributeName];
         }
         throw new SSOException(
@@ -58,10 +53,7 @@ class UnitySSO
         string $attributeName,
         ?string $fallbackAttributeName = null,
     ): string {
-        $attribute_raw = self::getAttributeRaw(
-            $attributeName,
-            $fallbackAttributeName,
-        );
+        $attribute_raw = self::getAttributeRaw($attributeName, $fallbackAttributeName);
         // attributes may have multiple values, by default they are split by ';'
         // see SPConfig setting attributeValueDelimiter
         return explode(";", $attribute_raw)[0];
@@ -74,10 +66,7 @@ class UnitySSO
             "org" => self::eppnToOrg(self::getAttribute("REMOTE_USER")),
             "firstname" => self::getAttribute("givenName"),
             "lastname" => self::getAttribute("sn"),
-            "name" =>
-                self::getAttribute("givenName") .
-                " " .
-                self::getAttribute("sn"),
+            "name" => self::getAttribute("givenName") . " " . self::getAttribute("sn"),
             "mail" => self::getAttribute("mail", "eppn"),
         ];
     }

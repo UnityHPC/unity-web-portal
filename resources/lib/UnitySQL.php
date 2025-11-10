@@ -19,10 +19,7 @@ class UnitySQL
     public function __construct()
     {
         $this->conn = new PDO(
-            "mysql:host=" .
-                CONFIG["sql"]["host"] .
-                ";dbname=" .
-                CONFIG["sql"]["dbname"],
+            "mysql:host=" . CONFIG["sql"]["host"] . ";dbname=" . CONFIG["sql"]["dbname"],
             CONFIG["sql"]["user"],
             CONFIG["sql"]["pass"],
         );
@@ -66,18 +63,14 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function removeRequest(
-        $requestor,
-        string $dest = self::REQUEST_BECOME_PI,
-    ): void {
+    public function removeRequest($requestor, string $dest = self::REQUEST_BECOME_PI): void
+    {
         if (!$this->requestExists($requestor, $dest)) {
             return;
         }
 
         $stmt = $this->conn->prepare(
-            "DELETE FROM " .
-                self::TABLE_REQS .
-                " WHERE uid=:uid and request_for=:request_for",
+            "DELETE FROM " . self::TABLE_REQS . " WHERE uid=:uid and request_for=:request_for",
         );
         $stmt->bindParam(":uid", $requestor);
         $stmt->bindParam(":request_for", $dest);
@@ -88,9 +81,7 @@ class UnitySQL
     public function removeRequests(string $dest = self::REQUEST_BECOME_PI): void
     {
         $stmt = $this->conn->prepare(
-            "DELETE FROM " .
-                self::TABLE_REQS .
-                " WHERE request_for=:request_for",
+            "DELETE FROM " . self::TABLE_REQS . " WHERE request_for=:request_for",
         );
         $stmt->bindParam(":request_for", $dest);
 
@@ -100,31 +91,23 @@ class UnitySQL
     public function getRequest(string $user, string $dest): array
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM " .
-                self::TABLE_REQS .
-                " WHERE uid=:uid and request_for=:request_for",
+            "SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid and request_for=:request_for",
         );
         $stmt->bindParam(":uid", $user);
         $stmt->bindParam(":request_for", $dest);
         $stmt->execute();
         $result = $stmt->fetchAll();
         if (count($result) == 0) {
-            throw new \Exception(
-                "no such request: uid='$user' request_for='$dest'",
-            );
+            throw new \Exception("no such request: uid='$user' request_for='$dest'");
         }
         if (count($result) > 1) {
-            throw new \Exception(
-                "multiple requests for uid='$user' request_for='$dest'",
-            );
+            throw new \Exception("multiple requests for uid='$user' request_for='$dest'");
         }
         return $result[0];
     }
 
-    public function requestExists(
-        string $requestor,
-        string $dest = self::REQUEST_BECOME_PI,
-    ): bool {
+    public function requestExists(string $requestor, string $dest = self::REQUEST_BECOME_PI): bool
+    {
         try {
             $this->getRequest($requestor, $dest);
             return true;
@@ -144,9 +127,7 @@ class UnitySQL
     public function getRequests(string $dest = self::REQUEST_BECOME_PI): array
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM " .
-                self::TABLE_REQS .
-                " WHERE request_for=:request_for",
+            "SELECT * FROM " . self::TABLE_REQS . " WHERE request_for=:request_for",
         );
         $stmt->bindParam(":request_for", $dest);
 
@@ -157,9 +138,7 @@ class UnitySQL
 
     public function getRequestsByUser(string $user): array
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid",
-        );
+        $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid");
         $stmt->bindParam(":uid", $user);
 
         $stmt->execute();
@@ -169,9 +148,7 @@ class UnitySQL
 
     public function deleteRequestsByUser(string $user): void
     {
-        $stmt = $this->conn->prepare(
-            "DELETE FROM " . self::TABLE_REQS . " WHERE uid=:uid",
-        );
+        $stmt = $this->conn->prepare("DELETE FROM " . self::TABLE_REQS . " WHERE uid=:uid");
         $stmt->bindParam(":uid", $user);
 
         $stmt->execute();
@@ -193,20 +170,11 @@ class UnitySQL
 
         $stmt->execute();
 
-        $this->addLog(
-            $operator->uid,
-            $_SERVER["REMOTE_ADDR"],
-            "added_cluster_notice",
-            $operator,
-        );
+        $this->addLog($operator->uid, $_SERVER["REMOTE_ADDR"], "added_cluster_notice", $operator);
     }
 
-    public function editNotice(
-        string $id,
-        string $title,
-        string $date,
-        string $content,
-    ): void {
+    public function editNotice(string $id, string $title, string $date, string $content): void
+    {
         $table = self::TABLE_NOTICES;
         $stmt = $this->conn->prepare(
             "UPDATE $table SET date=:date, title=:title, message=:message WHERE id=:id",
@@ -221,9 +189,7 @@ class UnitySQL
 
     public function deleteNotice(string $id): void
     {
-        $stmt = $this->conn->prepare(
-            "DELETE FROM " . self::TABLE_NOTICES . " WHERE id=:id",
-        );
+        $stmt = $this->conn->prepare("DELETE FROM " . self::TABLE_NOTICES . " WHERE id=:id");
         $stmt->bindParam(":id", $id);
 
         $stmt->execute();
@@ -231,9 +197,7 @@ class UnitySQL
 
     public function getNotice(string $id): array
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_NOTICES . " WHERE id=:id",
-        );
+        $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_NOTICES . " WHERE id=:id");
         $stmt->bindParam(":id", $id);
 
         $stmt->execute();
@@ -261,9 +225,7 @@ class UnitySQL
 
     public function getPage(string $id): array
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_PAGES . " WHERE page=:id",
-        );
+        $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_PAGES . " WHERE page=:id");
         $stmt->bindParam(":id", $id);
 
         $stmt->execute();
@@ -271,27 +233,17 @@ class UnitySQL
         return $stmt->fetchAll()[0];
     }
 
-    public function editPage(
-        string $id,
-        string $content,
-        UnityUser $operator,
-    ): void {
+    public function editPage(string $id, string $content, UnityUser $operator): void
+    {
         $stmt = $this->conn->prepare(
-            "UPDATE " .
-                self::TABLE_PAGES .
-                " SET content=:content WHERE page=:id",
+            "UPDATE " . self::TABLE_PAGES . " SET content=:content WHERE page=:id",
         );
         $stmt->bindParam(":id", $id);
         $stmt->bindParam(":content", $content);
 
         $stmt->execute();
 
-        $this->addLog(
-            $operator->uid,
-            $_SERVER["REMOTE_ADDR"],
-            "edited_page",
-            $operator,
-        );
+        $this->addLog($operator->uid, $_SERVER["REMOTE_ADDR"], "edited_page", $operator);
     }
 
     public function addLog(
@@ -316,9 +268,7 @@ class UnitySQL
     public function addAccountDeletionRequest(string $uid): void
     {
         $stmt = $this->conn->prepare(
-            "INSERT INTO " .
-                self::TABLE_ACCOUNT_DELETION_REQUESTS .
-                " (uid) VALUE (:uid)",
+            "INSERT INTO " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " (uid) VALUE (:uid)",
         );
         $stmt->bindParam(":uid", $uid);
 
@@ -328,9 +278,7 @@ class UnitySQL
     public function accDeletionRequestExists(string $uid): bool
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM " .
-                self::TABLE_ACCOUNT_DELETION_REQUESTS .
-                " WHERE uid=:uid",
+            "SELECT * FROM " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " WHERE uid=:uid",
         );
         $stmt->bindParam(":uid", $uid);
 
@@ -345,9 +293,7 @@ class UnitySQL
             return;
         }
         $stmt = $this->conn->prepare(
-            "DELETE FROM " .
-                self::TABLE_ACCOUNT_DELETION_REQUESTS .
-                " WHERE uid=:uid",
+            "DELETE FROM " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " WHERE uid=:uid",
         );
         $stmt->bindParam(":uid", $uid);
         $stmt->execute();

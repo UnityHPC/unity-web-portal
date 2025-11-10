@@ -31,9 +31,7 @@ class LoginShellSetTest extends TestCase
 
     private function isShellValid(string $shell)
     {
-        return mb_check_encoding($shell, "ASCII") &&
-            $shell == trim($shell) &&
-            !empty($shell);
+        return mb_check_encoding($shell, "ASCII") && $shell == trim($shell) && !empty($shell);
     }
 
     #[DataProvider("getShells")]

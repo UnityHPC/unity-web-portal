@@ -30,16 +30,12 @@ class PiMemberRequestTest extends TestCase
         $gid = $pi_group->gid;
         $this->assertTrue($USER->isPI());
         $this->assertTrue($pi_group->exists());
-        $this->assertTrue(
-            arraysAreEqualUnOrdered([$pi], $pi_group->getGroupMembers()),
-        );
+        $this->assertTrue(arraysAreEqualUnOrdered([$pi], $pi_group->getGroupMembers()));
         $this->assertEquals([], $SQL->getRequests($gid));
         switchUser(...getUserNotPiNotRequestedBecomePi());
         $uid = $USER->uid;
         $this->assertFalse($USER->isPI());
-        $this->assertFalse(
-            $SQL->requestExists($uid, UnitySQL::REQUEST_BECOME_PI),
-        );
+        $this->assertFalse($SQL->requestExists($uid, UnitySQL::REQUEST_BECOME_PI));
         $this->assertFalse($pi_group->memberExists($USER));
         try {
             $this->requestMembership($gid);

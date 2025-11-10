@@ -96,11 +96,8 @@ class SSHKeyAddTest extends TestCase
     }
 
     #[DataProvider("provider")]
-    public function testAddSshKeys(
-        string $methodName,
-        int $expectedKeysAdded,
-        array $keys,
-    ) {
+    public function testAddSshKeys(string $methodName, int $expectedKeysAdded, array $keys)
+    {
         global $USER;
         switchUser(...getUserHasNoSshKeys());
         $numKeysBefore = $this->getKeyCount($USER);
@@ -109,10 +106,7 @@ class SSHKeyAddTest extends TestCase
             call_user_func([SSHKeyAddTest::class, $methodName], $keys);
             // $method($keys);
             $numKeysAfter = $this->getKeyCount($USER);
-            $this->assertEquals(
-                $expectedKeysAdded,
-                $numKeysAfter - $numKeysBefore,
-            );
+            $this->assertEquals($expectedKeysAdded, $numKeysAfter - $numKeysBefore);
         } finally {
             $USER->setSSHKeys([]);
         }

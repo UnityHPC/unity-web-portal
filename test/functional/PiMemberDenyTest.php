@@ -31,18 +31,9 @@ class PiMemberDenyTest extends TestCase
         $pi = $USER;
         $piGroup = $USER->getPIGroup();
         $this->assertTrue($piGroup->exists());
-        $this->assertTrue(
-            arraysAreEqualUnOrdered([$pi->uid], $piGroup->getGroupMemberUIDs()),
-        );
+        $this->assertTrue(arraysAreEqualUnOrdered([$pi->uid], $piGroup->getGroupMemberUIDs()));
         $this->assertEmpty($piGroup->getRequests());
-        $requestedUser = new UnityUser(
-            self::$requestUid,
-            $LDAP,
-            $SQL,
-            $MAILER,
-            $REDIS,
-            $WEBHOOK,
-        );
+        $requestedUser = new UnityUser(self::$requestUid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
         try {
             $piGroup->newUserRequest(
                 $requestedUser,
@@ -55,12 +46,7 @@ class PiMemberDenyTest extends TestCase
 
             $piGroup->denyUser($requestedUser);
             $this->assertEmpty($piGroup->getRequests());
-            $this->assertTrue(
-                arraysAreEqualUnOrdered(
-                    [$pi->uid],
-                    $piGroup->getGroupMemberUIDs(),
-                ),
-            );
+            $this->assertTrue(arraysAreEqualUnOrdered([$pi->uid], $piGroup->getGroupMemberUIDs()));
             $this->assertFalse($piGroup->memberExists($requestedUser));
         } finally {
             $SQL->removeRequest(self::$requestUid, $piGroup->gid);

@@ -16,10 +16,7 @@ class PageLoadTest extends TestCase
             [$admin, __DIR__ . "/../../webroot/admin/user-mgmt.php"],
             [$admin, __DIR__ . "/../../webroot/admin/content.php"],
             [$admin, __DIR__ . "/../../webroot/admin/notices.php"],
-            [
-                $nonexistent_user,
-                __DIR__ . "/../../webroot/panel/new_account.php",
-            ],
+            [$nonexistent_user, __DIR__ . "/../../webroot/panel/new_account.php"],
             [$normal_user, __DIR__ . "/../../webroot/panel/account.php"],
             [$normal_user, __DIR__ . "/../../webroot/panel/groups.php"],
             [$normal_user, __DIR__ . "/../../webroot/panel/support.php"],

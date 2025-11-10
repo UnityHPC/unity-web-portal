@@ -27,10 +27,7 @@ class UnityHTTPD
     public static function redirect($dest): never
     {
         header("Location: $dest");
-        self::errorToUser(
-            "Redirect failed, click <a href='$dest'>here</a> to continue.",
-            302,
-        );
+        self::errorToUser("Redirect failed, click <a href='$dest'>here</a> to continue.", 302);
         self::die();
     }
 
@@ -52,8 +49,7 @@ class UnityHTTPD
                 \jsonEncode($data);
                 $output["data"] = $data;
             } catch (\JsonException $e) {
-                $output["data"] =
-                    "data could not be JSON encoded: " . $e->getMessage();
+                $output["data"] = "data could not be JSON encoded: " . $e->getMessage();
             }
         }
         $output["REMOTE_USER"] = $_SERVER["REMOTE_USER"] ?? null;
@@ -65,10 +61,7 @@ class UnityHTTPD
             $output["error"] = self::throwableToArray($error);
         } else {
             // newlines are bad for error log, but getTrace() is too verbose
-            $output["trace"] = explode(
-                "\n",
-                (new \Exception())->getTraceAsString(),
-            );
+            $output["trace"] = explode("\n", (new \Exception())->getTraceAsString());
         }
         error_log("$title: " . \jsonEncode($output));
     }
@@ -97,8 +90,7 @@ class UnityHTTPD
         if (!CONFIG["site"]["enable_error_to_user"]) {
             return;
         }
-        $notes =
-            "Please notify a Unity admin at " . CONFIG["mail"]["support"] . ".";
+        $notes = "Please notify a Unity admin at " . CONFIG["mail"]["support"] . ".";
         if (!is_null($errorid)) {
             $notes = $notes . " Error ID: $errorid.";
         }
@@ -116,11 +108,7 @@ class UnityHTTPD
         ?array $data = null,
     ): never {
         $errorid = uniqid();
-        self::errorToUser(
-            "Invalid requested action or submitted data.",
-            400,
-            $errorid,
-        );
+        self::errorToUser("Invalid requested action or submitted data.", 400, $errorid);
         self::errorLog("bad request", $message, $errorid, $error, $data);
         self::die($message);
     }
@@ -142,18 +130,8 @@ class UnityHTTPD
         ?array $data = null,
     ): never {
         $errorid = uniqid();
-        self::errorToUser(
-            "An internal server error has occurred.",
-            500,
-            $errorid,
-        );
-        self::errorLog(
-            "internal server error",
-            $message,
-            $errorid,
-            $error,
-            $data,
-        );
+        self::errorToUser("An internal server error has occurred.", 500, $errorid);
+        self::errorLog("internal server error", $message, $errorid, $error, $data);
         self::die($message);
     }
 
@@ -161,10 +139,7 @@ class UnityHTTPD
     public static function exceptionHandler(\Throwable $e): void
     {
         ini_set("log_errors", true); // in case something goes wrong and error is not logged
-        self::internalServerError(
-            "An internal server error has occurred.",
-            error: $e,
-        );
+        self::internalServerError("An internal server error has occurred.", error: $e);
         ini_set("log_errors", false); // error logged successfully
     }
 
@@ -207,8 +182,6 @@ class UnityHTTPD
     public static function alert(string $message): void
     {
         // jsonEncode escapes quotes
-        echo "<script type='text/javascript'>alert(" .
-            \jsonEncode($message) .
-            ");</script>";
+        echo "<script type='text/javascript'>alert(" . \jsonEncode($message) . ");</script>";
     }
 }
