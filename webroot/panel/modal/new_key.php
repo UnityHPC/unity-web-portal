@@ -31,13 +31,19 @@ action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/account.php">
 
     <div id="key_paste">
         <textarea placeholder="ssh-rsa AAARs1..." form="newKeyform" name="key"></textarea>
-        <input type="submit" value="Add Key" id="add-key" disabled />
+        <input
+          type="submit" value="Add Key" id="add-key" disabled
+          onclick="this.form.submit(); this.disabled=true;"
+        />
     </div>
 
     <div style="display: none;" id="key_import">
         <label for="keyfile">Select local file:</label>
         <input type="file" name="keyfile" />
-        <input type="submit" value="Import Key" disabled />
+        <input
+          type="submit" value="Import Key" disabled
+          onclick="this.form.submit(); this.disabled=true;"
+        />
     </div>
 
     <div style="display: none;" id="key_generate">
@@ -49,7 +55,10 @@ action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/account.php">
     <div style="display: none;" id="key_github">
         <div class='inline'>
             <input type="text" name="gh_user" placeholder="GitHub Username" />
-            <input type="submit" value="Import Key(s)" disabled />
+            <input
+              type="submit" value="Import Key(s)" disabled
+              onclick="this.form.submit(); this.disabled=true;"
+            />
         </div>
     </div>
 </form>
