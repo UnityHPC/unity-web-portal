@@ -5,11 +5,11 @@ use UnityWebPortal\lib\UnitySQL;
 
 class PiMemberRequestTest extends TestCase
 {
-    private function requestMembership(string $gid)
+    private function requestMembership(string $gid_or_mail)
     {
         http_post(__DIR__ . "/../../webroot/panel/groups.php", [
             "form_type" => "addPIform",
-            "pi" => $gid,
+            "pi" => $gid_or_mail,
         ]);
     }
 
@@ -42,7 +42,7 @@ class PiMemberRequestTest extends TestCase
             $this->assertTrue($SQL->requestExists($uid, $gid));
             $this->cancelRequest($gid);
             $this->assertFalse($SQL->requestExists($uid, $gid));
-            $this->requestMembership($gid);
+            $this->requestMembership($pi_group->getOwner()->getMail());
             $this->assertTrue($SQL->requestExists($uid, $gid));
         } finally {
             if ($SQL->requestExists($uid, $gid)) {
