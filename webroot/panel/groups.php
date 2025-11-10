@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST["pi"])) {
             $pi_groupname = $_POST["pi"];
             if (substr($pi_groupname, 0, 3) !== "pi_" && str_contains($pi_groupname, "@")) {
-                $pi_groupname = UnityGroup::mailToPIGID($pi_groupname);
+                $pi_groupname = UnityGroup::ownerMail2GID($pi_groupname);
             }
             $pi_account = new UnityGroup($pi_groupname, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             if (!$pi_account->exists()) {

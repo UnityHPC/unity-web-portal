@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($_POST["new_user_sel"] == "not_pi") {
             $pi_groupname = $_POST["pi"];
             if (substr($pi_groupname, 0, 3) !== "pi_" && str_contains($pi_groupname, "@")) {
-                $pi_groupname = UnityGroup::mailToPIGID($pi_groupname);
+                $pi_groupname = UnityGroup::ownerMail2GID($pi_groupname);
             }
             $form_group = new UnityGroup($pi_groupname, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             if (!$form_group->exists()) {

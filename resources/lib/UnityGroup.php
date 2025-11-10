@@ -478,7 +478,7 @@ class UnityGroup
         return substr($gid, strlen(self::PI_PREFIX));
     }
 
-    public static function mailToPIGID($email)
+    public static function ownerMail2GID($email)
     {
         global $LDAP;
         $entry = $LDAP->getUidFromEmail($email);
