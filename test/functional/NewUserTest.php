@@ -40,12 +40,12 @@ class NewUserTest extends TestCase
         ]);
     }
 
-    private function requestGroupMembership(string $gid)
+    private function requestGroupMembership(string $gid_or_mail)
     {
         http_post(__DIR__ . "/../../webroot/panel/new_account.php", [
             "new_user_sel" => "not_pi",
             "eula" => "agree",
-            "pi" => $gid,
+            "pi" => $gid_or_mail,
         ]);
     }
 
@@ -294,7 +294,7 @@ class NewUserTest extends TestCase
             $this->cancelAllRequests();
             $this->assertRequestedMembership(false, $gid);
 
-            $this->requestGroupMembership($pi_group->gid);
+            $this->requestGroupMembership($pi_group->getOwner()->getMail());
             $this->assertTrue($pi_group->requestExists($USER));
             $this->assertRequestedMembership(true, $gid);
 
