@@ -429,12 +429,16 @@ class UnityLDAP extends LDAPConn
         return $this->getEntry(UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["orggroup_ou"]);
     }
 
-    public function getUidFromEmail($email)
+    /**
+     * @throws \UnityWebPortal\lib\exceptions\EntryNotFoundException
+     */
+    public function getUidFromEmail(string $email): LDAPEntry
     {
         $email = ldap_escape($email, "", LDAP_ESCAPE_FILTER);
         $cn = $this->search("mail=$email", CONFIG["ldap"]["user_ou"], ["cn"]);
         if ($cn && count($cn) == 1) {
             return $cn[0];
         }
+        throw new exceptions\EntryNotFoundException($email);
     }
 }
