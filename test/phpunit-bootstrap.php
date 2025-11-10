@@ -19,6 +19,7 @@ require_once __DIR__ . "/../resources/lib/utils.php";
 require_once __DIR__ . "/../resources/lib/exceptions/NoDieException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/SSOException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/ArrayKeyException.php";
+require_once __DIR__ . "/../resources/lib/exceptions/EntryNotFoundException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/EnsureException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/EncodingUnknownException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/EncodingConversionException.php";

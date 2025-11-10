@@ -42,6 +42,8 @@ class PiMemberRequestTest extends TestCase
             $this->assertTrue($SQL->requestExists($uid, $gid));
             $this->cancelRequest($gid);
             $this->assertFalse($SQL->requestExists($uid, $gid));
+            $this->requestMembership("asdlkjasldkj");
+            $this->assertContains("This PI doesn't exist", $_SESSION["MODAL_ERRORS"]);
             $this->requestMembership($pi_group->getOwner()->getMail());
             $this->assertTrue($SQL->requestExists($uid, $gid));
         } finally {
