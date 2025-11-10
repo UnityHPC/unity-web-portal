@@ -57,8 +57,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $_SESSION['MODAL_ERRORS'] = $modalErrors;
 } else {
-    $modalErrors = $_SESSION['MODAL_ERRORS'];
-    $_SESSION['MODAL_ERRORS'] = array();  // Forget after shown
+    if (isset($_SESSION['MODAL_ERRORS'])) {
+        $modalErrors = $_SESSION['MODAL_ERRORS'];
+        $_SESSION['MODAL_ERRORS'] = array();  // Forget after shown
+    }
 }
 
 
