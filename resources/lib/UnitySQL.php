@@ -34,32 +34,17 @@ class UnitySQL
     //
     // requests table methods
     //
-    public function addRequest(
-        string $requestor,
-        string $firstname,
-        string $lastname,
-        string $email,
-        string $org,
-        string $dest = self::REQUEST_BECOME_PI,
-    ): void {
+    public function addRequest(string $requestor, string $dest = self::REQUEST_BECOME_PI): void
+    {
         if ($this->requestExists($requestor, $dest)) {
             return;
         }
 
         $stmt = $this->conn->prepare(
-            "INSERT INTO " .
-                self::TABLE_REQS .
-                " " .
-                "(uid, firstname, lastname, email, org, request_for) VALUES " .
-                "(:uid, :firstname, :lastname, :email, :org, :request_for)",
+            "INSERT INTO " . self::TABLE_REQS . " (uid, request_for) VALUES (:uid, :request_for)",
         );
         $stmt->bindParam(":uid", $requestor);
         $stmt->bindParam(":request_for", $dest);
-        $stmt->bindParam(":firstname", $firstname);
-        $stmt->bindParam(":lastname", $lastname);
-        $stmt->bindParam(":email", $email);
-        $stmt->bindParam(":org", $org);
-
         $stmt->execute();
     }
 

@@ -54,23 +54,24 @@ foreach ($members as $member) {
     $i++;
 }
 
-foreach ($requests as $i => [$user, $timestamp, $firstname, $lastname, $email, $org]) {
+foreach ($requests as $i => [$user, $timestamp]) {
     if ($i >= $count - 1) {
         echo "<tr class='expanded $i last'>";
     } else {
         echo "<tr class='expanded $i'>";
     }
-    $uid = $user->uid;
-    echo "<td>" . $firstname . " " . $lastname . "</td>";
-    echo "<td>" . $uid . "</td>";
-    echo "<td><a href='mailto:" . $email . "'>" . $email . "</a></td>";
+    $name = $user->getFullName();
+    $email = $user->getMail();
+    echo "<td>$name</td>";
+    echo "<td>$user->uid</td>";
+    echo "<td><a href='mailto:$email'>$email</a></td>";
     echo "<td>";
     echo
         "<form action='' method='POST'
-    onsubmit='return confirm(\"Are you sure you want to approve " . $uid . "?\");'>
+    onsubmit='return confirm(\"Are you sure you want to approve $user->uid ?\");'>
     <input type='hidden' name='form_type' value='reqChild'>
-    <input type='hidden' name='uid' value='" . $uid . "'>
-    <input type='hidden' name='pi' value='" . $group->gid . "'>
+    <input type='hidden' name='uid' value='$user->uid'>
+    <input type='hidden' name='pi' value='$group->gid'>
     <input type='submit' name='action' value='Approve'>
     <input type='submit' name='action' value='Deny'></form>";
     echo "</td>";
