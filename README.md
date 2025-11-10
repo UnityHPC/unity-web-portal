@@ -53,11 +53,12 @@ See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for prod
    - `httpd` `DocumentRoot` set to `webroot/`
    - `httpd` Authentication
      - Any authentication will do as long as it defines `REMOTE_USER`, `givenName`, `sn`, and `mail`
-       - `REMOTE_USER` must also be unique, non-reassignable, and persistent
+       - `REMOTE_USER` must take the form `username@org`
+       - `givenName` is first name, `sn` is last name
      - Unity uses Shibboleth SP and the Apache Shibboleth module (`apt install shibboleth-sp-utils libapache2-mod-shib` on Ubuntu)
    - `httpd` Authorization
-     - Global access to `webroot/panel/`
      - Restricted access to `webroot/admin/`
+     - Global access (with valid authentication) to `webroot/`
      - No access anywhere else
 
 ## Configuration
