@@ -79,13 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     "USER='{$USER->uid}' SSO[user]='{$SSO["user"]}'"
                 );
             }
-            $USER->getPIGroup()->requestGroup(
-                $SSO["firstname"],
-                $SSO["lastname"],
-                $SSO["mail"],
-                $SSO["org"],
-                $SEND_PIMESG_TO_ADMINS
-            );
+            $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
             break;
         case "cancel_pi_request":
             $USER->getPIGroup()->cancelGroupRequest();
