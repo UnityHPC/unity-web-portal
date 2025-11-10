@@ -6,9 +6,9 @@ use PHPOpenLDAPer\LDAPConn;
 use PHPOpenLDAPer\LDAPEntry;
 
 /**
- * An LDAP connection class which extends ldapConn tailored for the Unity Cluster
+ * An LDAP connection class which extends LDAPConn tailored for the Unity Cluster
  */
-class UnityLDAP extends ldapConn
+class UnityLDAP extends LDAPConn
 {
     private const string RDN = "cn"; // The defauls RDN for LDAP entries is set to "common name"
 
@@ -427,5 +427,14 @@ class UnityLDAP extends ldapConn
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
         return $this->getEntry(UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["orggroup_ou"]);
+    }
+
+    public function getUidFromEmail($email)
+    {
+        $email = ldap_escape($email, "", LDAP_ESCAPE_FILTER);
+        $cn = $this->search("mail=$email", CONFIG["ldap"]["user_ou"], ["cn"]);
+        if ($cn && count($cn) == 1) {
+            return $cn[0];
+        }
     }
 }
