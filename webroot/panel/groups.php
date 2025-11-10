@@ -10,20 +10,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST["form_type"])) {
         if (isset($_POST["pi"])) {
-            $pi_account = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+            $pi_groupname = $_POST["pi"];
+            if (substr($pi_groupname, 0, 3) !== "pi_" && str_contains($pi_groupname, "@")) {
+                $pi_groupname = UnityGroup::mailToPIGID($pi_groupname);
+            }
+            $pi_account = new UnityGroup($pi_groupname, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
             if (!$pi_account->exists()) {
-                // "\'"  instead of "'", otherwise it will close a single quote from HTML
-                array_push($modalErrors, "This PI doesn\'t exist");
+                array_push($modalErrors, "This PI doesn't exist");
             }
         }
 
         switch ($_POST["form_type"]) {
             case "addPIform":
-                if ($pi_account->requestExists($USER)) {
-                    array_push($modalErrors, "You\'ve already requested this");
-                }
-                if ($pi_account->memberExists($USER)) {
-                    array_push($modalErrors, "You\'re already in this PI group");
+                if ($pi_account->exists()) {
+                    if ($pi_account->requestExists($USER)) {
+                        array_push($modalErrors, "You've already requested this");
+                    }
+                    if ($pi_account->memberExists($USER)) {
+                        array_push($modalErrors, "You're already in this PI group");
+                    }
                 }
                 if ($USER->uid != $SSO["user"]) {
                     $sso_user = $SSO["user"];
@@ -50,7 +55,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 break;
         }
     }
+    $_SESSION['MODAL_ERRORS'] = $modalErrors;
+} else {
+    $modalErrors = $_SESSION['MODAL_ERRORS'];
+    $_SESSION['MODAL_ERRORS'] = array();  // Forget after shown
 }
+
 
 require $LOC_HEADER;
 ?>
@@ -178,7 +188,7 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
     if (isset($modalErrors) && is_array($modalErrors) && count($modalErrors) > 0) {
         $errorHTML = "";
         foreach ($modalErrors as $error) {
-            $errorHTML .= "<span>$error</span>";
+            $errorHTML .= "<span>" . htmlentities($error) . "</span>";
         }
 
         echo "openModal('Add New PI', '" .
