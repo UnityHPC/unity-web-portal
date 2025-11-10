@@ -38,9 +38,9 @@ if (!is_null($REDIS->getCache("initialized", "")) and !array_key_exists("u", $op
     echo "waiting for LDAP search (users)...\n";
     $users = $LDAP->search("objectClass=posixAccount", CONFIG["ldap"]["basedn"], []);
     echo "response received.\n";
-    $user_CNs = $LDAP->getUserGroup()->getAttribute("memberuid");
+    $user_CNs = $LDAP->getQualifiedUserGroup()->getAttribute("memberuid");
     sort($user_CNs);
-    $REDIS->setCache("sorted_users", "", $user_CNs);
+    $REDIS->setCache("sorted_qualified_users", "", $user_CNs);
     foreach ($users as $user) {
         $uid = $user->getAttribute("cn")[0];
         if (!in_array($uid, $user_CNs)) {

@@ -35,7 +35,7 @@ class UnityLDAP extends ldapConn
     private LDAPEntry $pi_groupOU;
     private LDAPEntry $org_groupOU;
     private LDAPEntry $adminGroup;
-    private LDAPEntry $userGroup;
+    private LDAPEntry $qualifiedUserGroup;
 
     public function __construct()
     {
@@ -46,7 +46,7 @@ class UnityLDAP extends ldapConn
         $this->pi_groupOU = $this->getEntry(CONFIG["ldap"]["pigroup_ou"]);
         $this->org_groupOU = $this->getEntry(CONFIG["ldap"]["orggroup_ou"]);
         $this->adminGroup = $this->getEntry(CONFIG["ldap"]["admin_group"]);
-        $this->userGroup = $this->getEntry(CONFIG["ldap"]["user_group"]);
+        $this->qualifiedUserGroup = $this->getEntry(CONFIG["ldap"]["qualified_user_group"]);
     }
 
     public function getUserOU(): LDAPEntry
@@ -74,9 +74,9 @@ class UnityLDAP extends ldapConn
         return $this->adminGroup;
     }
 
-    public function getUserGroup(): LDAPEntry
+    public function getQualifiedUserGroup(): LDAPEntry
     {
-        return $this->userGroup;
+        return $this->qualifiedUserGroup;
     }
 
     public function getDefUserShell(): string
@@ -182,11 +182,11 @@ class UnityLDAP extends ldapConn
         );
     }
 
-    public function getAllUsersUIDs(): array
+    public function getQualifiedUsersUIDs(): array
     {
         // should not use $user_ou->getChildren or $base_ou->getChildren(objectClass=posixAccount)
-        // Unity users might be outside user ou, and not all users in LDAP tree are unity users
-        return $this->userGroup->getAttribute("memberuid");
+        // qualified users might be outside user ou, and not all users in LDAP tree are qualified users
+        return $this->qualifiedUserGroup->getAttribute("memberuid");
     }
 
     public function getAllUsers(
@@ -199,9 +199,9 @@ class UnityLDAP extends ldapConn
         $out = [];
 
         if (!$ignorecache) {
-            $users = $UnityRedis->getCache("sorted_users", "");
-            if (!is_null($users)) {
-                foreach ($users as $user) {
+            $qualifiedUsers = $UnityRedis->getCache("sorted_qualified_users", "");
+            if (!is_null($qualifiedUsers)) {
+                foreach ($qualifiedUsers as $user) {
                     array_push(
                         $out,
                         new UnityUser(
@@ -218,18 +218,18 @@ class UnityLDAP extends ldapConn
             }
         }
 
-        $users = $this->getAllUsersUIDs();
-        sort($users);
-        foreach ($users as $user) {
+        $qualifiedUsers = $this->getQualifiedUsersUIDs();
+        sort($qualifiedUsers);
+        foreach ($qualifiedUsers as $user) {
             $params = [$user, $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook];
             array_push($out, new UnityUser(...$params));
         }
         return $out;
     }
 
-    public function getAllUsersAttributes(array $attributes): array
+    public function getQualifiedUsersAttributes(array $attributes): array
     {
-        $include_uids = $this->getAllUsersUIDs();
+        $include_uids = $this->getQualifiedUsersUIDs();
         $user_attributes = $this->baseOU->getChildrenArray(
             $attributes,
             true, // recursive
@@ -307,7 +307,7 @@ class UnityLDAP extends ldapConn
             fn($x) => UnityGroup::GID2OwnerUID($x),
             array_map(fn($x) => $x["cn"][0], $this->pi_groupOU->getChildrenArray(["cn"])),
         );
-        $owner_attributes = $this->getAllUsersAttributes($attributes);
+        $owner_attributes = $this->getQualifiedUsersAttributes($attributes);
         foreach ($owner_attributes as $i => $attributes) {
             if (!in_array($attributes["uid"][0], $owner_uids)) {
                 unset($owner_attributes[$i]);
@@ -333,7 +333,7 @@ class UnityLDAP extends ldapConn
     public function getAllUID2PIGIDs(): array
     {
         // initialize output so each UID is a key with an empty array as its value
-        $uids = $this->getAllUsersUIDs();
+        $uids = $this->getQualifiedUsersUIDs();
         $uid2pigids = array_combine($uids, array_fill(0, count($uids), []));
         // for each PI group, append that GID to the member list for each of its member UIDs
         foreach ($this->getAllPIGroupsAttributes(["cn", "memberuid"]) as $array) {
