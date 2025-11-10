@@ -16,10 +16,7 @@ function arrayGet(array $array, mixed ...$keys): mixed
             throw new ArrayKeyException(
                 "key not found: \$array" .
                     // [1, 2, "foo"] => [1][2]["foo"]
-                    implode(
-                        "",
-                        array_map(fn($x) => jsonEncode([$x]), $keysTraversed),
-                    ),
+                    implode("", array_map(fn($x) => jsonEncode([$x]), $keysTraversed)),
             );
         }
         $cursor = $cursor[$key];
@@ -83,11 +80,8 @@ function mbConvertEncoding(
     return $output;
 }
 
-function mbDetectEncoding(
-    string $string,
-    ?array $encodings = null,
-    mixed $_ = null,
-): string {
+function mbDetectEncoding(string $string, ?array $encodings = null, mixed $_ = null): string
+{
     $output = mb_detect_encoding($string, $encodings, strict: true);
     if ($output === false) {
         throw new EncodingUnknownException(base64_encode($string));

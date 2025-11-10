@@ -1,9 +1,7 @@
 <?php
 // submodule
-require_once __DIR__ .
-    "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPEntry.php";
-require_once __DIR__ .
-    "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPConn.php";
+require_once __DIR__ . "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPEntry.php";
+require_once __DIR__ . "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPConn.php";
 
 require_once __DIR__ . "/../resources/lib/UnityLDAP.php";
 require_once __DIR__ . "/../resources/lib/UnityUser.php";
@@ -22,10 +20,8 @@ require_once __DIR__ . "/../resources/lib/exceptions/NoDieException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/SSOException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/ArrayKeyException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/EnsureException.php";
-require_once __DIR__ .
-    "/../resources/lib/exceptions/EncodingUnknownException.php";
-require_once __DIR__ .
-    "/../resources/lib/exceptions/EncodingConversionException.php";
+require_once __DIR__ . "/../resources/lib/exceptions/EncodingUnknownException.php";
+require_once __DIR__ . "/../resources/lib/exceptions/EncodingConversionException.php";
 
 $_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
 require_once __DIR__ . "/../resources/config.php";
@@ -231,19 +227,13 @@ function getNonExistentUserAndExpectedUIDGIDNoCustomMapping()
 {
     // defaults/config.ini.default: ldap.offset_UIDGID=1000000
     // test/custom_user_mappings/test.csv has reservations for 1000000-1000004
-    return [
-        ["user2002@org998.test", "foo", "bar", "user2002@org998.test"],
-        1000005,
-    ];
+    return [["user2002@org998.test", "foo", "bar", "user2002@org998.test"], 1000005];
 }
 
 function getNonExistentUserAndExpectedUIDGIDWithCustomMapping()
 {
     // test/custom_user_mappings/test.csv: {user2001: 555}
-    return [
-        ["user2001@org998.test", "foo", "bar", "user2001@org998.test"],
-        555,
-    ];
+    return [["user2001@org998.test", "foo", "bar", "user2001@org998.test"], 555];
 }
 
 function getMultipleValueAttributesAndExpectedSSO()

@@ -5,8 +5,7 @@ namespace UnityWebPortal\lib;
 class UnityWebhook
 {
     private string $template_dir = __DIR__ . "/../mail";
-    private string $override_template_dir =
-        __DIR__ . "/../../deployment/mail_overrides";
+    private string $override_template_dir = __DIR__ . "/../../deployment/mail_overrides";
     private string $url = CONFIG["webhook"]["url"];
     private string $MSG_LINKREF;
     private string $Subject; // set by template
@@ -35,16 +34,11 @@ class UnityWebhook
         return $md;
     }
 
-    public function sendWebhook(
-        ?string $template = null,
-        mixed $data = null,
-    ): bool {
+    public function sendWebhook(?string $template = null, mixed $data = null): bool
+    {
         $template_filename = $template . ".php";
-        if (
-            file_exists($this->override_template_dir . "/" . $template_filename)
-        ) {
-            $template_path =
-                $this->override_template_dir . "/" . $template_filename;
+        if (file_exists($this->override_template_dir . "/" . $template_filename)) {
+            $template_path = $this->override_template_dir . "/" . $template_filename;
         } else {
             $template_path = $this->template_dir . "/" . $template_filename;
         }
@@ -58,9 +52,7 @@ class UnityWebhook
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->url);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "Content-Type: application/json",
-        ]);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, \jsonEncode(["text" => $message]));
         $result = curl_exec($ch);

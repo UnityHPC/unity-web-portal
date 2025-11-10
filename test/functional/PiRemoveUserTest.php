@@ -30,14 +30,7 @@ class PiRemoveUserTest extends TestCase
         $memberToDelete = null;
         foreach ($memberUIDs as $uid) {
             if ($uid != $piUid) {
-                $memberToDelete = new UnityUser(
-                    $uid,
-                    $LDAP,
-                    $SQL,
-                    $MAILER,
-                    $REDIS,
-                    $WEBHOOK,
-                );
+                $memberToDelete = new UnityUser($uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
                 if ($memberToDelete->hasRequestedAccountDeletion()) {
                     continue;
                 }

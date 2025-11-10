@@ -61,11 +61,8 @@ class UnityRedis
         return null;
     }
 
-    public function appendCacheArray(
-        string $object,
-        string $key,
-        mixed $value,
-    ): void {
+    public function appendCacheArray(string $object, string $key, mixed $value): void
+    {
         if (!$this->enabled) {
             return;
         }

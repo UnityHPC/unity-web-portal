@@ -22,9 +22,7 @@ class AccountDeletionRequestTest extends TestCase
     private function getNumberAccountDeletionRequests()
     {
         global $USER, $SQL;
-        $stmt = $SQL
-            ->getConn()
-            ->prepare("SELECT * FROM account_deletion_requests WHERE uid=:uid");
+        $stmt = $SQL->getConn()->prepare("SELECT * FROM account_deletion_requests WHERE uid=:uid");
         $uid = $USER->uid;
         $stmt->bindParam(":uid", $uid);
         $stmt->execute();

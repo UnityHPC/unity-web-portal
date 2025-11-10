@@ -15,10 +15,7 @@ use UnityWebPortal\lib\UnityGithub;
 use UnityWebPortal\lib\UnityHTTPD;
 
 if (CONFIG["site"]["enable_exception_handler"]) {
-    set_exception_handler([
-        "UnityWebPortal\lib\UnityHTTPD",
-        "exceptionHandler",
-    ]);
+    set_exception_handler(["UnityWebPortal\lib\UnityHTTPD", "exceptionHandler"]);
 }
 
 session_start();
@@ -40,25 +37,11 @@ if (isset($_SERVER["REMOTE_USER"])) {
     $SSO = UnitySSO::getSSO();
     $_SESSION["SSO"] = $SSO;
 
-    $OPERATOR = new UnityUser(
-        $SSO["user"],
-        $LDAP,
-        $SQL,
-        $MAILER,
-        $REDIS,
-        $WEBHOOK,
-    );
+    $OPERATOR = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
     $_SESSION["is_admin"] = $OPERATOR->isAdmin();
 
     if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
-        $USER = new UnityUser(
-            $_SESSION["viewUser"],
-            $LDAP,
-            $SQL,
-            $MAILER,
-            $REDIS,
-            $WEBHOOK,
-        );
+        $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
     } else {
         $USER = $OPERATOR;
     }
@@ -67,12 +50,7 @@ if (isset($_SERVER["REMOTE_USER"])) {
     $_SESSION["is_pi"] = $USER->isPI();
     $SEND_PIMESG_TO_ADMINS = CONFIG["mail"]["send_pimesg_to_admins"];
 
-    $SQL->addLog(
-        $OPERATOR->uid,
-        $_SERVER["REMOTE_ADDR"],
-        "user_login",
-        $OPERATOR->uid,
-    );
+    $SQL->addLog($OPERATOR->uid, $_SERVER["REMOTE_ADDR"], "user_login", $OPERATOR->uid);
 
     if (!$_SESSION["user_exists"]) {
         // populate cache

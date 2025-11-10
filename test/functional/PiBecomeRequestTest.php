@@ -25,9 +25,7 @@ class PiBecomeRequestTest extends TestCase
         // FIXME "admin" should be something else
         $stmt = $SQL
             ->getConn()
-            ->prepare(
-                "SELECT * FROM requests WHERE uid=:uid and request_for='admin'",
-            );
+            ->prepare("SELECT * FROM requests WHERE uid=:uid and request_for='admin'");
         $uid = $USER->uid;
         $stmt->bindParam(":uid", $uid);
         $stmt->execute();
@@ -67,9 +65,7 @@ class PiBecomeRequestTest extends TestCase
     public function testRequestBecomePiUserRequestedAccountDeletion()
     {
         global $USER, $SQL;
-        switchUser(
-            ...getUserNotPiNotRequestedBecomePiRequestedAccountDeletion(),
-        );
+        switchUser(...getUserNotPiNotRequestedBecomePiRequestedAccountDeletion());
         $this->assertFalse($USER->isPI());
         $this->assertNumberPiBecomeRequests(0);
         $this->assertTrue($SQL->accDeletionRequestExists($USER->uid));

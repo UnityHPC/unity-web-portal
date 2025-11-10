@@ -14,16 +14,6 @@ repos:
         # https://github.com/prettier/plugin-php/issues/2430
         exclude: workers/.*
 
-  - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.4.2
-    hooks:
-      - id: prettier
-        exclude: |
-          (?x)^(
-              composer\.json|
-              composer\.lock|
-          )$
-
   - repo: local
     hooks:
       - id: phpcbf
@@ -43,27 +33,15 @@ repos:
               resources/lib/.*|
           )$
 
-  - repo: local
+  - repo: https://github.com/rbubley/mirrors-prettier
+    rev: v3.4.2
     hooks:
-      - id: prettier (php)
-        name: prettier (php)
-        entry: npx
-        args:
-          [
-            -p,
-            prettier,
-            -p,
-            "@prettier/plugin-php",
-            prettier,
-            --plugin=@prettier/plugin-php,
-            --php-version=8.3,
-            --write,
-          ]
-        language: system
-        files: \.php$
+      - id: prettier
         # exclude impure PHP files
         exclude: |
           (?x)^(
+              composer\.json|
+              composer\.lock|
               node_modules/.*|
               resources/lib/phpopenldaper/.*|
               vendor/.*|
