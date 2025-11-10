@@ -108,7 +108,7 @@ class NewUserTest extends TestCase
             $USER->getGroupEntry()->delete();
             ensure(!$USER->getGroupEntry()->exists());
         }
-        $all_users_group = $LDAP->getUserGroup();
+        $all_users_group = $LDAP->getQualifiedUserGroup();
         $all_member_uids = $all_users_group->getAttribute("memberuid");
         if (in_array($USER->uid, $all_member_uids)) {
             $all_users_group->setAttribute(
@@ -120,7 +120,7 @@ class NewUserTest extends TestCase
             $all_users_group->write();
             ensure(!in_array($USER->uid, $all_users_group->getAttribute("memberuid")));
         }
-        $REDIS->removeCacheArray("sorted_users", "", $USER->uid);
+        $REDIS->removeCacheArray("sorted_qualified_users", "", $USER->uid);
     }
 
     private function ensureOrgGroupDoesNotExist()
@@ -204,9 +204,12 @@ class NewUserTest extends TestCase
             $this->assertTrue($newOrg->exists());
 
             $user_entry = $LDAP->getUserEntry($approve_uid);
-            $user_group_entry = $LDAP->getGroupEntry($approve_uid);
+            $qualified_user_group_entry = $LDAP->getGroupEntry($approve_uid);
             $this->assertEquals($expected_uid_gid, $user_entry->getAttribute("uidnumber")[0]);
-            $this->assertEquals($expected_uid_gid, $user_group_entry->getAttribute("gidnumber")[0]);
+            $this->assertEquals(
+                $expected_uid_gid,
+                $qualified_user_group_entry->getAttribute("gidnumber")[0],
+            );
 
             // $third_request_failed = false;
             // try {
@@ -309,9 +312,12 @@ class NewUserTest extends TestCase
             $this->assertTrue($newOrg->exists());
 
             $user_entry = $LDAP->getUserEntry($approve_uid);
-            $user_group_entry = $LDAP->getGroupEntry($approve_uid);
+            $qualified_user_group_entry = $LDAP->getGroupEntry($approve_uid);
             $this->assertEquals($expected_uid_gid, $user_entry->getAttribute("uidnumber")[0]);
-            $this->assertEquals($expected_uid_gid, $user_group_entry->getAttribute("gidnumber")[0]);
+            $this->assertEquals(
+                $expected_uid_gid,
+                $qualified_user_group_entry->getAttribute("gidnumber")[0],
+            );
 
             // $third_request_failed = false;
             // try {
@@ -372,9 +378,12 @@ class NewUserTest extends TestCase
             $this->assertTrue($newOrg->exists());
 
             $user_entry = $LDAP->getUserEntry($approve_uid);
-            $user_group_entry = $LDAP->getGroupEntry($approve_uid);
+            $qualified_user_group_entry = $LDAP->getGroupEntry($approve_uid);
             $this->assertEquals($expected_uid_gid, $user_entry->getAttribute("uidnumber")[0]);
-            $this->assertEquals($expected_uid_gid, $user_group_entry->getAttribute("gidnumber")[0]);
+            $this->assertEquals(
+                $expected_uid_gid,
+                $qualified_user_group_entry->getAttribute("gidnumber")[0],
+            );
 
             // $third_request_failed = false;
             // try {

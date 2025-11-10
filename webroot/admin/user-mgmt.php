@@ -44,7 +44,7 @@ require $LOC_HEADER;
 
     <?php
     $UID2PIGIDs = $LDAP->getAllUID2PIGIDs();
-    $user_attributes = $LDAP->getAllUsersAttributes(["uid", "gecos", "o", "mail"]);
+    $user_attributes = $LDAP->getQualifiedUsersAttributes(["uid", "gecos", "o", "mail"]);
     usort($user_attributes, fn ($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
     foreach ($user_attributes as $attributes) {
         $uid = $attributes["uid"][0];

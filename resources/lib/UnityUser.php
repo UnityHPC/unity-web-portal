@@ -105,10 +105,10 @@ class UnityUser
             $org->addUser($this);
         }
 
-        $this->LDAP->getUserGroup()->appendAttribute("memberuid", $this->uid);
-        $this->LDAP->getUserGroup()->write();
+        $this->LDAP->getQualifiedUserGroup()->appendAttribute("memberuid", $this->uid);
+        $this->LDAP->getQualifiedUserGroup()->write();
 
-        $this->REDIS->appendCacheArray("sorted_users", "", $this->uid);
+        $this->REDIS->appendCacheArray("sorted_qualified_users", "", $this->uid);
 
         $this->SQL->addLog($this->uid, $_SERVER["REMOTE_ADDR"], "user_added", $this->uid);
 
