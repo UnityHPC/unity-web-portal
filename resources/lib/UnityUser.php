@@ -36,7 +36,7 @@ class UnityUser
         $this->WEBHOOK = $WEBHOOK;
     }
 
-    public function equals(UnityUser $other_user)
+    public function equals(UnityUser $other_user): bool
     {
         if (!is_a($other_user, self::class)) {
             throw new Exception(
@@ -49,7 +49,7 @@ class UnityUser
         return $this->uid == $other_user->uid;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->uid;
     }
@@ -63,7 +63,7 @@ class UnityUser
         string $email,
         string $org,
         bool $send_mail = true,
-    ) {
+    ): void {
         $ldapGroupEntry = $this->getGroupEntry();
         $id = $this->LDAP->getNextUIDGIDNumber($this->uid);
         \ensure(!$ldapGroupEntry->exists());
@@ -122,27 +122,25 @@ class UnityUser
 
     /**
      * Returns the ldap group entry corresponding to the user
-     *
-     * @return ldapEntry posix group
      */
-    public function getGroupEntry()
+    public function getGroupEntry(): LDAPEntry
     {
         return $this->LDAP->getGroupEntry($this->uid);
     }
 
-    public function exists()
+    public function exists(): bool
     {
         return $this->entry->exists() && $this->getGroupEntry()->exists();
     }
 
-    public function setOrg(UnityOrg $org)
+    public function setOrg(UnityOrg $org): void
     {
         $this->entry->setAttribute("o", $org);
         $this->entry->write();
         $this->REDIS->setCache($this->uid, "org", $org);
     }
 
-    public function getOrg(bool $ignorecache = false)
+    public function getOrg(bool $ignorecache = false): string
     {
         $this->entry->ensureExists();
         if (!$ignorecache) {
@@ -151,26 +149,17 @@ class UnityUser
                 return $cached_val;
             }
         }
-
-        if ($this->exists()) {
-            $org = $this->entry->getAttribute("o")[0];
-
-            if (!$ignorecache) {
-                $this->REDIS->setCache($this->uid, "org", $org);
-            }
-
-            return $this->entry->getAttribute("o")[0];
+        $org = $this->entry->getAttribute("o")[0];
+        if (!$ignorecache) {
+            $this->REDIS->setCache($this->uid, "org", $org);
         }
-
-        return null;
+        return $this->entry->getAttribute("o")[0];
     }
 
     /**
      * Sets the firstname of the account and the corresponding ldap entry if it exists
-     *
-     * @param string $firstname
      */
-    public function setFirstname(string $firstname, ?UnityUser $operator = null)
+    public function setFirstname(string $firstname, ?UnityUser $operator = null): void
     {
         $this->entry->setAttribute("givenname", $firstname);
         $operator = is_null($operator) ? $this->uid : $operator->uid;
@@ -183,10 +172,8 @@ class UnityUser
 
     /**
      * Gets the firstname of the account
-     *
-     * @return string firstname
      */
-    public function getFirstname(bool $ignorecache = false)
+    public function getFirstname(bool $ignorecache = false): string
     {
         $this->entry->ensureExists();
         if (!$ignorecache) {
@@ -195,26 +182,17 @@ class UnityUser
                 return $cached_val;
             }
         }
-
-        if ($this->exists()) {
-            $firstname = $this->entry->getAttribute("givenname")[0];
-
-            if (!$ignorecache) {
-                $this->REDIS->setCache($this->uid, "firstname", $firstname);
-            }
-
-            return $firstname;
+        $firstname = $this->entry->getAttribute("givenname")[0];
+        if (!$ignorecache) {
+            $this->REDIS->setCache($this->uid, "firstname", $firstname);
         }
-
-        return null;
+        return $firstname;
     }
 
     /**
      * Sets the lastname of the account and the corresponding ldap entry if it exists
-     *
-     * @param string $lastname
      */
-    public function setLastname(string $lastname, $operator = null)
+    public function setLastname(string $lastname, $operator = null): void
     {
         $this->entry->setAttribute("sn", $lastname);
         $operator = is_null($operator) ? $this->uid : $operator->uid;
@@ -227,10 +205,8 @@ class UnityUser
 
     /**
      * Get method for the lastname on the account
-     *
-     * @return string lastname
      */
-    public function getLastname(bool $ignorecache = false)
+    public function getLastname(bool $ignorecache = false): string
     {
         $this->entry->ensureExists();
         if (!$ignorecache) {
@@ -239,21 +215,14 @@ class UnityUser
                 return $cached_val;
             }
         }
-
-        if ($this->exists()) {
-            $lastname = $this->entry->getAttribute("sn")[0];
-
-            if (!$ignorecache) {
-                $this->REDIS->setCache($this->uid, "lastname", $lastname);
-            }
-
-            return $lastname;
+        $lastname = $this->entry->getAttribute("sn")[0];
+        if (!$ignorecache) {
+            $this->REDIS->setCache($this->uid, "lastname", $lastname);
         }
-
-        return null;
+        return $lastname;
     }
 
-    public function getFullname()
+    public function getFullname(): string
     {
         $this->entry->ensureExists();
         return $this->getFirstname() . " " . $this->getLastname();
@@ -261,10 +230,8 @@ class UnityUser
 
     /**
      * Sets the mail in the account and the ldap entry
-     *
-     * @param string $mail
      */
-    public function setMail(string $email, ?UnityUser $operator = null)
+    public function setMail(string $email, ?UnityUser $operator = null): void
     {
         $this->entry->setAttribute("mail", $email);
         $operator = is_null($operator) ? $this->uid : $operator->uid;
@@ -277,10 +244,8 @@ class UnityUser
 
     /**
      * Method to get the mail instance var
-     *
-     * @return string email address
      */
-    public function getMail(bool $ignorecache = false)
+    public function getMail(bool $ignorecache = false): string
     {
         $this->entry->ensureExists();
         if (!$ignorecache) {
@@ -289,26 +254,17 @@ class UnityUser
                 return $cached_val;
             }
         }
-
-        if ($this->exists()) {
-            $mail = $this->entry->getAttribute("mail")[0];
-
-            if (!$ignorecache) {
-                $this->REDIS->setCache($this->uid, "mail", $mail);
-            }
-
-            return $mail;
+        $mail = $this->entry->getAttribute("mail")[0];
+        if (!$ignorecache) {
+            $this->REDIS->setCache($this->uid, "mail", $mail);
         }
-
-        return null;
+        return $mail;
     }
 
     /**
      * Sets the SSH keys on the account and the corresponding entry
-     *
-     * @param array $keys String array of openssh-style ssh public keys
      */
-    public function setSSHKeys($keys, $operator = null, bool $send_mail = true)
+    public function setSSHKeys($keys, $operator = null, bool $send_mail = true): void
     {
         $operator = is_null($operator) ? $this->uid : $operator->uid;
         $keys_filt = array_values(array_unique($keys));
@@ -329,10 +285,8 @@ class UnityUser
 
     /**
      * Returns the SSH keys attached to the account
-     *
-     * @return array String array of ssh keys
      */
-    public function getSSHKeys(bool $ignorecache = false)
+    public function getSSHKeys(bool $ignorecache = false): array
     {
         $this->entry->ensureExists();
         if (!$ignorecache) {
@@ -341,35 +295,26 @@ class UnityUser
                 return $cached_val;
             }
         }
-
-        if ($this->exists()) {
-            $result = $this->entry->getAttribute("sshpublickey");
-            if (is_null($result)) {
-                $keys = [];
-            } else {
-                $keys = $result;
-            }
-
-            if (!$ignorecache) {
-                $this->REDIS->setCache($this->uid, "sshkeys", $keys);
-            }
-
-            return $keys;
+        $result = $this->entry->getAttribute("sshpublickey");
+        if (is_null($result)) {
+            $keys = [];
+        } else {
+            $keys = $result;
         }
-
-        return null;
+        if (!$ignorecache) {
+            $this->REDIS->setCache($this->uid, "sshkeys", $keys);
+        }
+        return $keys;
     }
 
     /**
      * Sets the login shell for the account
-     *
-     * @param string $shell absolute path to shell
      */
     public function setLoginShell(
         string $shell,
         ?UnityUser $operator = null,
         bool $send_mail = true,
-    ) {
+    ): void {
         // ldap schema syntax is "IA5 String (1.3.6.1.4.1.1466.115.121.1.26)"
         if (!mb_check_encoding($shell, "ASCII")) {
             throw new Exception("non ascii characters are not allowed in a login shell!");
@@ -399,10 +344,8 @@ class UnityUser
 
     /**
      * Gets the login shell of the account
-     *
-     * @return string absolute path to login shell
      */
-    public function getLoginShell(bool $ignorecache = false)
+    public function getLoginShell(bool $ignorecache = false): string
     {
         $this->entry->ensureExists();
         if (!$ignorecache) {
@@ -411,21 +354,14 @@ class UnityUser
                 return $cached_val;
             }
         }
-
-        if ($this->exists()) {
-            $loginshell = $this->entry->getAttribute("loginshell")[0];
-
-            if (!$ignorecache) {
-                $this->REDIS->setCache($this->uid, "loginshell", $loginshell);
-            }
-
-            return $loginshell;
+        $loginshell = $this->entry->getAttribute("loginshell")[0];
+        if (!$ignorecache) {
+            $this->REDIS->setCache($this->uid, "loginshell", $loginshell);
         }
-
-        return null;
+        return $loginshell;
     }
 
-    public function setHomeDir(string $home, ?UnityUser $operator = null)
+    public function setHomeDir(string $home, ?UnityUser $operator = null): void
     {
         \ensure($this->entry->exists());
         $this->entry->setAttribute("homedirectory", $home);
@@ -439,10 +375,8 @@ class UnityUser
 
     /**
      * Gets the home directory of the user
-     *
-     * @return string home directory of the user
      */
-    public function getHomeDir(bool $ignorecache = false)
+    public function getHomeDir(bool $ignorecache = false): string
     {
         $this->entry->ensureExists();
         if (!$ignorecache) {
@@ -451,26 +385,17 @@ class UnityUser
                 return $cached_val;
             }
         }
-
-        if ($this->exists()) {
-            $homedir = $this->entry->getAttribute("homedirectory");
-
-            if (!$ignorecache) {
-                $this->REDIS->setCache($this->uid, "homedir", $homedir);
-            }
-
-            return $homedir;
+        $homedir = $this->entry->getAttribute("homedirectory");
+        if (!$ignorecache) {
+            $this->REDIS->setCache($this->uid, "homedir", $homedir);
         }
-
-        return null;
+        return $homedir;
     }
 
     /**
      * Checks if the current account is an admin
-     *
-     * @return boolean true if admin, false if not
      */
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         $admins = $this->LDAP->getAdminGroup()->getAttribute("memberuid");
         return in_array($this->uid, $admins);
@@ -478,15 +403,13 @@ class UnityUser
 
     /**
      * Checks if current user is a PI
-     *
-     * @return boolean true is PI, false if not
      */
-    public function isPI()
+    public function isPI(): bool
     {
         return $this->getPIGroup()->exists();
     }
 
-    public function getPIGroup()
+    public function getPIGroup(): UnityGroup
     {
         return new UnityGroup(
             UnityGroup::ownerUID2GID($this->uid),
@@ -498,7 +421,7 @@ class UnityUser
         );
     }
 
-    public function getOrgGroup()
+    public function getOrgGroup(): UnityOrg
     {
         return new UnityOrg(
             $this->getOrg(),
@@ -512,10 +435,8 @@ class UnityUser
 
     /**
      * Gets the groups this user is assigned to, can be more than one
-     *
-     * @return string[]
      */
-    public function getPIGroupGIDs(bool $ignorecache = false)
+    public function getPIGroupGIDs(bool $ignorecache = false): array
     {
         if (!$ignorecache) {
             $cached_val = $this->REDIS->getCache($this->uid, "groups");
@@ -534,7 +455,7 @@ class UnityUser
      * Sends an email to admins about account deletion request
      * and also adds it to a table in the database
      */
-    public function requestAccountDeletion()
+    public function requestAccountDeletion(): void
     {
         $this->SQL->addAccountDeletionRequest($this->uid);
         $this->MAILER->sendMail("admin", "account_deletion_request_admin", [
@@ -546,22 +467,16 @@ class UnityUser
 
     /**
      * Checks if the user has requested account deletion
-     *
-     * @return boolean true if account deletion has been requested, false if not
      */
-    public function hasRequestedAccountDeletion()
+    public function hasRequestedAccountDeletion(): bool
     {
         return $this->SQL->accDeletionRequestExists($this->uid);
     }
 
     /**
      * Checks whether a user is in a group or not
-     *
-     * @param  string            $uid   uid of the user
-     * @param  string  or object $group group to check
-     * @return boolean true if user is in group, false if not
      */
-    public function isInGroup(string $uid, UnityGroup $group)
+    public function isInGroup(string $uid, UnityGroup $group): bool
     {
         if (gettype($group) == "string") {
             $group_checked = new UnityGroup(
