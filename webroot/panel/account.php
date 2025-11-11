@@ -125,7 +125,7 @@ echo "
         </tr>
     </table>
     <hr>
-    <h5>AccountStatus</h5>
+    <h5>Account Status</h5>
 ";
 
 $isPI = $USER->isPI();
@@ -142,8 +142,8 @@ if ($isPI) {
             Go to the
             <a href='groups.php'>My PIs</a>
             page to join a PI, or click on the button below if you are a PI.
+            Do not click the button below if you are a student.
         </p>
-        <p>Students should not request a PI account.</p>
     ";
 }
 
