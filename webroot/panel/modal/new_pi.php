@@ -16,7 +16,9 @@ require_once __DIR__ . "/../../../resources/autoload.php";
     <label>
         <input type='checkbox' name='tos' value='agree' required>
         I have read and accept the
-        <a href='<?php echo CONFIG["site"]["terms_of_service_url"]; ?>' target='_blank'>Terms of Service</a>.
+        <a href='<?php echo CONFIG["site"]["terms_of_service_url"]; ?>' target='_blank'>
+            Terms of Service
+        </a>.
     </label>
     <input type="submit" value="Send Request">
 </form>
