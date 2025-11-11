@@ -10,6 +10,7 @@ class PiMemberRequestTest extends TestCase
         http_post(__DIR__ . "/../../webroot/panel/groups.php", [
             "form_type" => "addPIform",
             "pi" => $gid_or_mail,
+            "tos" => "agree",
         ]);
     }
 

@@ -26,6 +26,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         switch ($_POST["form_type"]) {
             case "addPIform":
+                if (!isset($_POST["tos"]) || $_POST["tos"] != "agree") {
+                    UnityHTTPD::badRequest("user did not agree to terms of service");
+                }
                 if ($pi_account->exists()) {
                     if ($pi_account->requestExists($USER)) {
                         array_push($modalErrors, "You've already requested this");

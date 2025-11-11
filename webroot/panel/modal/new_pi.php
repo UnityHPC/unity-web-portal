@@ -13,6 +13,11 @@ require_once __DIR__ . "/../../../resources/autoload.php";
         <input type="text" id="pi_search" name="pi" placeholder="Search PI by NetID" required>
         <div class="searchWrapper" style="display: none;"></div>
     </div>
+    <label>
+        <input type='checkbox' name='tos' value='agree' required>
+        I have read and accept the
+        <a href='<?php echo CONFIG["site"]["terms_of_service_url"]; ?>'>Terms of Service</a>.
+    </label>
     <input type="submit" value="Send Request">
 </form>
 
