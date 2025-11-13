@@ -110,3 +110,8 @@ repos:
         language: system
         files: ^resources/.*\.php$
         exclude: ^resources/lib/UnityHTTPD\.php$
+      - id: assert-no-assertTrue
+        name: Assert `assertTrue` is not used
+        entry: bash ./test/assert-no-assertTrue.bash
+        language: system
+        files: ^test/.*\.php$

@@ -22,6 +22,8 @@
   This will enable strict mode and throw an exception rather than returning `false`.
 - `UnityHTTPD`'s user-facing error functionality (ex: `badRequest`) should only be called from `webroot/**/*.php`.
   `resources/**/*.php` should throw exceptions instead.
+- No code should call `PHPUnit\Framework\TestCase::assertTrue`, instead `assert`.
+  `assert` is better because it doesn't just say "something is false", it actually shows what is false.
 
 This repository will automatically check PRs for linting compliance.
 
