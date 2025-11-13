@@ -189,7 +189,7 @@ class UnityLDAP extends LDAPConn
         return $this->qualifiedUserGroup->getAttribute("memberuid");
     }
 
-    public function getAllUsers(
+    public function getQualifiedUsers(
         $UnitySQL,
         $UnityMailer,
         $UnityRedis,
@@ -330,7 +330,7 @@ class UnityLDAP extends LDAPConn
     /**
      * Returns an associative array where keys are UIDs and values are arrays of PI GIDs
      */
-    public function getAllUID2PIGIDs(): array
+    public function getQualifiedUID2PIGIDs(): array
     {
         // initialize output so each UID is a key with an empty array as its value
         $uids = $this->getQualifiedUsersUIDs();
@@ -344,7 +344,7 @@ class UnityLDAP extends LDAPConn
                 } else {
                     UnityHTTPD::errorLog(
                         "warning",
-                        "user '$uid' is a member of a PI group but is not a Unity user!",
+                        "user '$uid' is a member of a PI group but is not a qualified user!",
                     );
                 }
             }
