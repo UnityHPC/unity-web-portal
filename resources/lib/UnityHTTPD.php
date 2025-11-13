@@ -143,6 +143,14 @@ class UnityHTTPD
         ini_set("log_errors", false); // error logged successfully
     }
 
+    public static function errorHandler(int $severity, string $message, string $file, int $line)
+    {
+        if (str_contains($message, "Undefined array key")) {
+            throw new ArrayKeyException($message);
+        }
+        return false;
+    }
+
     public static function getPostData(...$keys): mixed
     {
         try {
