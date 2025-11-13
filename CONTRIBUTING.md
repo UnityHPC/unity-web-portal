@@ -109,6 +109,8 @@ $ docker exec -it "$container" bash
 
 For `/path/to/tests/`, you usually want `./test/functional/` but you can select a specific file to save time when troubleshooting specific tests.
 
+Note: To enhance the stack traces in `phpunit`'s output, pipe the output to `./test/phpunit-markup.php`.
+
 ### code coverage
 
 `phpunit` has code coverage built in.
