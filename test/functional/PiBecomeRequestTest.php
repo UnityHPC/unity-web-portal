@@ -11,7 +11,7 @@ class PiBecomeRequestTest extends TestCase
         if ($x == 0) {
             $this->assertFalse($SQL->requestExists($USER->uid));
         } elseif ($x > 0) {
-            $this->assertTrue($SQL->requestExists($USER->uid));
+            assert($SQL->requestExists($USER->uid));
         } else {
             throw new RuntimeException("x must not be negative");
         }
@@ -68,7 +68,7 @@ class PiBecomeRequestTest extends TestCase
         switchUser(...getUserNotPiNotRequestedBecomePiRequestedAccountDeletion());
         $this->assertFalse($USER->isPI());
         $this->assertNumberPiBecomeRequests(0);
-        $this->assertTrue($SQL->accDeletionRequestExists($USER->uid));
+        assert($SQL->accDeletionRequestExists($USER->uid));
         try {
             http_post(__DIR__ . "/../../webroot/panel/account.php", [
                 "form_type" => "pi_request",

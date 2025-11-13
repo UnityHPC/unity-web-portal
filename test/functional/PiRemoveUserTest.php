@@ -21,7 +21,7 @@ class PiRemoveUserTest extends TestCase
         $pi = $USER;
         $piUid = $USER->uid;
         $piGroup = $USER->getPIGroup();
-        $this->assertTrue($piGroup->exists());
+        assert($piGroup->exists());
         $memberUIDs = $piGroup->getGroupMemberUIDs();
         // the 0th member of the PI group is the PI
         $this->assertGreaterThan(1, count($memberUIDs));
@@ -38,7 +38,7 @@ class PiRemoveUserTest extends TestCase
             }
         }
         $this->assertNotEquals($pi->uid, $memberToDelete->uid);
-        $this->assertTrue($piGroup->memberExists($memberToDelete));
+        assert($piGroup->memberExists($memberToDelete));
         try {
             $this->removeUser($memberToDelete->uid);
             $this->assertFalse($piGroup->memberExists($memberToDelete));
@@ -62,12 +62,12 @@ class PiRemoveUserTest extends TestCase
         switchUser(...getUserIsPIHasAtLeastOneMember());
         $pi = $USER;
         $piGroup = $USER->getPIGroup();
-        $this->assertTrue($piGroup->exists());
-        $this->assertTrue($piGroup->memberExists($pi));
+        assert($piGroup->exists());
+        assert($piGroup->memberExists($pi));
         $this->expectException(Exception::class);
         try {
             $this->removeUser($pi->uid);
-            $this->assertTrue($piGroup->memberExists($pi));
+            assert($piGroup->memberExists($pi));
         } finally {
             if (!$piGroup->memberExists($pi)) {
                 $piGroup->newUserRequest(

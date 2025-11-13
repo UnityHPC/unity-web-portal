@@ -15,6 +15,7 @@ class InvalidEPPNTest extends TestCase
     public function testInitGetSSO(string $eppn, bool $is_valid): void
     {
         global $SSO;
+        self::expectNotToPerformAssertions();
         $original_server = $_SERVER;
         $original_sso = $SSO;
         if (session_status() == PHP_SESSION_ACTIVE) {
@@ -37,6 +38,5 @@ class InvalidEPPNTest extends TestCase
             $_SERVER = $original_server;
             $SSO = $original_sso;
         }
-        $this->assertTrue(true); // if $is_valid, there are no other assertions
     }
 }

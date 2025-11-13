@@ -40,7 +40,7 @@ class PiMemberApproveTest extends TestCase
 
     private function assertGroupMembers(UnityGroup $group, array $members)
     {
-        $this->assertTrue(arraysAreEqualUnOrdered($members, $group->getGroupMemberUIDs()));
+        assert(arraysAreEqualUnOrdered($members, $group->getGroupMemberUIDs()));
     }
 
     public function testApproveRequest()
@@ -55,7 +55,7 @@ class PiMemberApproveTest extends TestCase
         $piUID = $USER->uid;
         $piGroup = $USER->getPIGroup();
 
-        $this->assertTrue($piGroup->exists());
+        assert($piGroup->exists());
         $this->assertGroupMembers($piGroup, [$piUID]);
         $this->assertEmpty($piGroup->getRequests());
         try {
@@ -65,10 +65,10 @@ class PiMemberApproveTest extends TestCase
 
             switchUser(...$piSwitchArgs);
             $this->approveUser($uid);
-            $this->assertTrue(!$piGroup->requestExists($user));
+            assert(!$piGroup->requestExists($user));
             $this->assertEmpty($piGroup->getRequests());
             $this->assertGroupMembers($piGroup, [$piUID, $uid]);
-            $this->assertTrue($piGroup->memberExists($user));
+            assert($piGroup->memberExists($user));
         } finally {
             if ($piGroup->memberExists($user)) {
                 $piGroup->removeUser($user);
@@ -89,7 +89,7 @@ class PiMemberApproveTest extends TestCase
         $piUID = $USER->uid;
         $piGroup = $USER->getPIGroup();
 
-        $this->assertTrue($piGroup->exists());
+        assert($piGroup->exists());
         $this->assertGroupMembers($piGroup, [$piUID]);
         $this->assertEmpty($piGroup->getRequests());
         $this->assertFalse($piGroup->memberExists($user));

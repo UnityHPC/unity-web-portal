@@ -28,8 +28,8 @@ class PageLoadTest extends TestCase
     public function testLoadPage($user, $path)
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+        self::expectNotToPerformAssertions();
         switchuser(...$user);
         http_get($path);
-        $this->assertTrue(true); // assert there were no errors
     }
 }
