@@ -103,7 +103,11 @@ repos:
         entry: bash ./test/assert-utils-used.bash
         language: system
         files: \.php$
-        exclude: ^resources/lib/utils\.php$
+        exclude: |
+          (?x)^(
+              test/.*|
+              resources/lib/utils\.php|
+          )$
       - id: assert-exceptions-used
         name: Assert exceptions are used
         entry: bash ./test/assert-exceptions-used.bash
