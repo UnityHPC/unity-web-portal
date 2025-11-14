@@ -193,7 +193,8 @@ function ensureUserDoesNotExist()
         $all_users_group->write();
         ensure(!in_array($USER->uid, $all_users_group->getAttribute("memberuid")));
     }
-    $REDIS->removeCacheArray("sorted_qualified_users", "", $USER->uid);
+    $default_value_getter = [$LDAP, "getSortedQualifiedUsersForRedis"];
+    $REDIS->removeCacheArray("sorted_qualified_users", "", $USER->uid, $default_value_getter);
 }
 
 function ensureOrgGroupDoesNotExist()
@@ -204,7 +205,8 @@ function ensureOrgGroupDoesNotExist()
         $org_group->delete();
         ensure(!$org_group->exists());
     }
-    $REDIS->removeCacheArray("sorted_orgs", "", $SSO["org"]);
+    $default_value_getter = [$LDAP, "getSortedOrgsForRedis"];
+    $REDIS->removeCacheArray("sorted_orgs", "", $SSO["org"], $default_value_getter);
 }
 
 function ensureUserNotInPIGroup(UnityGroup $pi_group)
@@ -214,7 +216,12 @@ function ensureUserNotInPIGroup(UnityGroup $pi_group)
         $pi_group->removeUser($USER);
         ensure(!$pi_group->memberExists($USER));
     }
-    $REDIS->removeCacheArray($pi_group->gid, "members", $USER->uid);
+    $REDIS->removeCacheArray(
+        $pi_group->gid,
+        "members",
+        $USER->uid,
+        fn() => $pi_group->getGroupMemberUIDs(true),
+    );
 }
 
 function ensurePIGroupDoesNotExist()
@@ -225,7 +232,8 @@ function ensurePIGroupDoesNotExist()
         $LDAP->getPIGroupEntry($gid)->delete();
         ensure(!$USER->getPIGroup()->exists());
     }
-    $REDIS->removeCacheArray("sorted_groups", "", $gid);
+    $default_value_getter = [$LDAP, "getSortedGroupsForRedis"];
+    $REDIS->removeCacheArray("sorted_groups", "", $gid, $default_value_getter);
 }
 
 function getNormalUser()

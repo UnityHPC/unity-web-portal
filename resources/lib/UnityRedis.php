@@ -61,15 +61,19 @@ class UnityRedis
         return null;
     }
 
-    public function appendCacheArray(string $object, string $key, mixed $value): void
-    {
+    public function appendCacheArray(
+        string $object,
+        string $key,
+        mixed $value,
+        callable $default_value_getter,
+    ): void {
         if (!$this->enabled) {
             return;
         }
 
         $cached_val = $this->getCache($object, $key);
         if (is_null($cached_val)) {
-            $this->setCache($object, $key, [$value]);
+            $this->setCache($object, $key, $default_value_getter());
         } else {
             if (!is_array($cached_val)) {
                 throw new Exception("This cache value is not an array");
@@ -82,15 +86,19 @@ class UnityRedis
     }
 
     // TODO return void
-    public function removeCacheArray(string $object, string $key, mixed $value)
-    {
+    public function removeCacheArray(
+        string $object,
+        string $key,
+        mixed $value,
+        callable $default_value_getter,
+    ) {
         if (!$this->enabled) {
             return null;
         }
 
         $cached_val = $this->getCache($object, $key);
         if (is_null($cached_val)) {
-            $this->setCache($object, $key, []);
+            $this->setCache($object, $key, $default_value_getter());
         } else {
             if (!is_array($cached_val)) {
                 throw new Exception("This cache value is not an array");

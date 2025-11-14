@@ -206,10 +206,17 @@ class UnityGroup
     //     // now we delete the ldap entry
     //     $this->entry->ensureExists();
     //     $this->entry->delete();
-    //     $this->REDIS->removeCacheArray("sorted_groups", "", $this->gid);
+    //     $default_value_getter = [$this->LDAP, "getSortedGroupsForRedis"];
+    //     $this->REDIS->removeCacheArray("sorted_groups", "", $this->gid, $default_value_getter);
     //     foreach ($users as $user) {
-    //         $this->REDIS->removeCacheArray($user->uid, "groups", $this->gid);
+    //         $this->REDIS->removeCacheArray(
+    //             $user->uid,
+    //             "groups",
+    //             $this->gid,
+    //             fn() => $this->getGroupMemberUIDs(true),
+    //         );
     //     }
+    //     // FIXME group not removed from user's groups array
 
     //     // send email to every user of the now deleted PI group
     //     if ($send_mail) {
@@ -417,7 +424,8 @@ class UnityGroup
         $this->entry->setAttribute("gidnumber", strval($nextGID));
         $this->entry->setAttribute("memberuid", [$owner->uid]);
         $this->entry->write();
-        $this->REDIS->appendCacheArray("sorted_groups", "", $this->gid);
+        $default_value_getter = [$this->LDAP, "getSortedGroupsForRedis"];
+        $this->REDIS->appendCacheArray("sorted_groups", "", $this->gid, $default_value_getter);
         // TODO if we ever make this project based,
         // we need to update the cache here with the memberuid
     }
@@ -426,16 +434,36 @@ class UnityGroup
     {
         $this->entry->appendAttribute("memberuid", $new_user->uid);
         $this->entry->write();
-        $this->REDIS->appendCacheArray($this->gid, "members", $new_user->uid);
-        $this->REDIS->appendCacheArray($new_user->uid, "groups", $this->gid);
+        $this->REDIS->appendCacheArray(
+            $this->gid,
+            "members",
+            $new_user->uid,
+            fn() => $this->getGroupMemberUIDs(true),
+        );
+        $this->REDIS->appendCacheArray(
+            $new_user->uid,
+            "groups",
+            $this->gid,
+            fn() => $this->LDAP->getPIGroupGIDsWithMemberUID($new_user->uid),
+        );
     }
 
     private function removeUserFromGroup(UnityUser $old_user): void
     {
         $this->entry->removeAttributeEntryByValue("memberuid", $old_user->uid);
         $this->entry->write();
-        $this->REDIS->removeCacheArray($this->gid, "members", $old_user->uid);
-        $this->REDIS->removeCacheArray($old_user->uid, "groups", $this->gid);
+        $this->REDIS->removeCacheArray(
+            $this->gid,
+            "members",
+            $old_user->uid,
+            fn() => $this->getGroupMemberUIDs(true),
+        );
+        $this->REDIS->removeCacheArray(
+            $old_user->uid,
+            "groups",
+            $this->gid,
+            fn() => $this->LDAP->getPIGroupGIDsWithMemberUID($old_user->uid),
+        );
     }
 
     public function memberExists(UnityUser $user): bool
