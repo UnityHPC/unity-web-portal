@@ -31,7 +31,7 @@ class PiMemberRequestTest extends TestCase
         $gid = $pi_group->gid;
         $this->assertTrue($USER->isPI());
         $this->assertTrue($pi_group->exists());
-        $this->assertTrue(arraysAreEqualUnOrdered([$pi], $pi_group->getGroupMembers()));
+        $this->assertEqualsCanonicalizing([$pi], $pi_group->getGroupMembers());
         $this->assertEquals([], $SQL->getRequests($gid));
         switchUser(...getUserNotPiNotRequestedBecomePi());
         $uid = $USER->uid;
