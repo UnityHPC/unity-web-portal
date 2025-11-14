@@ -28,6 +28,8 @@ RUN sed -i '/display_errors/c\display_errors = on' /etc/php/8.3/apache2/php.ini
 RUN sed -i '/zend.assertions/c\zend.assertions = 1' /etc/php/8.3/apache2/php.ini
 RUN sed -i '/zend.assertions/c\zend.assertions = 1' /etc/php/8.3/cli/php.ini
 RUN sed -i '/memory_limit/c\memory_limit = -1' /etc/php/8.3/apache2/php.ini
+RUN sed -i '/zend.exception_ignore_args/c\zend.exception_ignore_args = 0' /etc/php/8.3/apache2/php.ini
+RUN sed -i '/zend.exception_ignore_args/c\zend.exception_ignore_args = 0' /etc/php/8.3/cli/php.ini
 RUN echo 'xdebug.mode=coverage' >> /etc/php/8.3/cli/php.ini
 
 # Start apache2 server

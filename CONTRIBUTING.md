@@ -63,6 +63,7 @@ Notable users:
 - `user1@org1.test` - admin, PI
 - `user2@org1.test` - not admin, not PI
 - `user2000@org2.test` - does not yet have an account
+- `user2005@org1.test` - regsitered but not qualified (not a PI or in a PI group)
 
 ### Changes to Dev Environment
 

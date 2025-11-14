@@ -181,17 +181,17 @@ function ensureUserDoesNotExist()
         $USER->getGroupEntry()->delete();
         ensure(!$USER->getGroupEntry()->exists());
     }
-    $all_users_group = $LDAP->getQualifiedUserGroup();
-    $all_member_uids = $all_users_group->getAttribute("memberuid");
+    $qualified_users_group = $LDAP->getQualifiedUserGroup();
+    $all_member_uids = $qualified_users_group->getAttribute("memberuid");
     if (in_array($USER->uid, $all_member_uids)) {
-        $all_users_group->setAttribute(
+        $qualified_users_group->setAttribute(
             "memberuid",
             // array_diff will break the contiguity of the array indexes
             // ldap_mod_replace requires contiguity, array_values restores contiguity
             array_values(array_diff($all_member_uids, [$USER->uid])),
         );
-        $all_users_group->write();
-        ensure(!in_array($USER->uid, $all_users_group->getAttribute("memberuid")));
+        $qualified_users_group->write();
+        ensure(!in_array($USER->uid, $qualified_users_group->getAttribute("memberuid")));
     }
     $default_value_getter = [$LDAP, "getSortedQualifiedUsersForRedis"];
     $REDIS->removeCacheArray("sorted_qualified_users", "", $USER->uid, $default_value_getter);
@@ -291,6 +291,11 @@ function getNonExistentUser()
     return ["user2001@org998.test", "foo", "bar", "user2001@org998.test"];
 }
 
+function getUnqualifiedUser()
+{
+    return ["user2005@org1.test", "foo", "bar", "user2005@org1.test"];
+}
+
 function getNonexistentUsersWithExistentOrg()
 {
     return [
@@ -316,15 +321,15 @@ function getMultipleValueAttributesAndExpectedSSO()
 {
     return [
         [
-            "REMOTE_USER" => "user2003@org998.test",
+            "REMOTE_USER" => "user2003@org1.test",
             "givenName" => "foo;foo",
             "sn" => "bar;bar",
-            "mail" => "user2003@org998.test;user2003@org998.test",
+            "mail" => "user2003@org1.test;user2003@org1.test",
         ],
         [
             "firstname" => "foo",
             "lastname" => "bar",
-            "mail" => "user2003@org998.test",
+            "mail" => "user2003@org1.test",
         ],
     ];
 }

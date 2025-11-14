@@ -105,24 +105,54 @@ class UnityUser
             $org->addUser($this);
         }
 
-        $this->LDAP->getQualifiedUserGroup()->appendAttribute("memberuid", $this->uid);
-        $this->LDAP->getQualifiedUserGroup()->write();
-
-        $default_value_getter = [$this->LDAP, "getSortedQualifiedUsersForRedis"];
-        $this->REDIS->appendCacheArray(
-            "sorted_qualified_users",
-            "",
-            $this->uid,
-            $default_value_getter,
-        );
-
         $this->SQL->addLog($this->uid, $_SERVER["REMOTE_ADDR"], "user_added", $this->uid);
+    }
 
-        if ($send_mail) {
-            $this->MAILER->sendMail($this->getMail(), "user_created", [
-                "user" => $this->uid,
-                "org" => $this->getOrg(),
-            ]);
+    public function isQualified(): bool
+    {
+        return $this->LDAP->getQualifiedUserGroup()->attributeValueExists("memberUid", $this->uid);
+    }
+
+    public function setIsQualified(bool $newIsQualified, bool $doSendMail = true): void
+    {
+        $oldIsQualified = $this->isQualified();
+        if ($oldIsQualified == $newIsQualified) {
+            return;
+        }
+        if ($newIsQualified) {
+            $this->LDAP->getQualifiedUserGroup()->appendAttribute("memberuid", $this->uid);
+            $this->LDAP->getQualifiedUserGroup()->write();
+            $default_value_getter = [$this->LDAP, "getSortedQualifiedUsersForRedis"];
+            $this->REDIS->appendCacheArray(
+                "sorted_qualified_users",
+                "",
+                $this->uid,
+                $default_value_getter,
+            );
+            if ($doSendMail) {
+                $this->MAILER->sendMail($this->getMail(), "user_qualified", [
+                    "user" => $this->uid,
+                    "org" => $this->getOrg(),
+                ]);
+            }
+        } else {
+            $this->LDAP
+                ->getQualifiedUserGroup()
+                ->removeAttributeEntryByValue("memberuid", $this->uid);
+            $this->LDAP->getQualifiedUserGroup()->write();
+            $default_value_getter = [$this->LDAP, "getSortedQualifiedUsersForRedis"];
+            $this->REDIS->removeCacheArray(
+                "sorted_qualified_users",
+                "",
+                $this->uid,
+                $default_value_getter,
+            );
+            if ($doSendMail) {
+                $this->MAILER->sendMail($this->getMail(), "user_dequalified", [
+                    "user" => $this->uid,
+                    "org" => $this->getOrg(),
+                ]);
+            }
         }
     }
 

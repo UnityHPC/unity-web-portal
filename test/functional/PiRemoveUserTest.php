@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\UnityUser;
 
-class PiRemoveUserTest extends TestCase
+class PIRemoveUserTest extends TestCase
 {
     private function removeUser(string $uid)
     {
@@ -44,13 +44,7 @@ class PiRemoveUserTest extends TestCase
             $this->assertFalse($piGroup->memberExists($memberToDelete));
         } finally {
             if (!$piGroup->memberExists($memberToDelete)) {
-                $piGroup->newUserRequest(
-                    $memberToDelete,
-                    $memberToDelete->getFirstname(),
-                    $memberToDelete->getLastname(),
-                    $memberToDelete->getMail(),
-                    $memberToDelete->getOrg(),
-                );
+                $piGroup->newUserRequest($memberToDelete);
                 $piGroup->approveUser($memberToDelete);
             }
         }
@@ -70,13 +64,7 @@ class PiRemoveUserTest extends TestCase
             $this->assertTrue($piGroup->memberExists($pi));
         } finally {
             if (!$piGroup->memberExists($pi)) {
-                $piGroup->newUserRequest(
-                    $pi,
-                    $pi->getFirstname(),
-                    $pi->getLastname(),
-                    $pi->getMail(),
-                    $pi->getOrg(),
-                );
+                $piGroup->newUserRequest($pi);
                 $piGroup->approveUser($pi);
             }
         }

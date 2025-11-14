@@ -100,7 +100,7 @@ class UnityGroup
         if ($this->exists()) {
             return;
         }
-        \ensure(!$this->getOwner()->exists());
+        \ensure($this->getOwner()->exists());
         $this->init();
         $this->SQL->removeRequest($this->getOwner()->uid);
         $operator = is_null($operator) ? $this->getOwner()->uid : $operator->uid;
@@ -113,6 +113,7 @@ class UnityGroup
         if ($send_mail) {
             $this->MAILER->sendMail($this->getOwner()->getMail(), "group_created");
         }
+        $this->getOwner()->setIsQualified(true); // having your own group makes you qualified
     }
 
     /**
@@ -214,7 +215,7 @@ class UnityGroup
     public function approveUser(UnityUser $new_user, bool $send_mail = true): void
     {
         $request = $this->SQL->getRequest($new_user->uid, $this->gid);
-        \ensure(!$new_user->exists());
+        \ensure($new_user->exists());
         $this->addUserToGroup($new_user);
         $this->SQL->removeRequest($new_user->uid, $this->gid);
         if ($send_mail) {
@@ -229,6 +230,7 @@ class UnityGroup
                 "org" => $new_user->getOrg(),
             ]);
         }
+        $new_user->setIsQualified(true); // being in a group makes you qualified
     }
 
     public function denyUser(UnityUser $new_user, bool $send_mail = true): void
