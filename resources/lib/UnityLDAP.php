@@ -169,7 +169,11 @@ class UnityLDAP extends LDAPConn
         // use baseOU for awareness of externally managed entries
         return array_map(
             fn($x) => $x["uidnumber"][0],
-            $this->baseOU->getChildrenArray(["uidNumber"], true, "(objectClass=posixAccount)"),
+            $this->baseOU->getChildrenArrayStrict(
+                ["uidNumber"],
+                true,
+                "(objectClass=posixAccount)",
+            ),
         );
     }
 
@@ -178,7 +182,7 @@ class UnityLDAP extends LDAPConn
         // use baseOU for awareness of externally managed entries
         return array_map(
             fn($x) => $x["gidnumber"][0],
-            $this->baseOU->getChildrenArray(["gidNumber"], true, "(objectClass=posixGroup)"),
+            $this->baseOU->getChildrenArrayStrict(["gidNumber"], true, "(objectClass=posixGroup)"),
         );
     }
 
@@ -227,13 +231,16 @@ class UnityLDAP extends LDAPConn
         return $out;
     }
 
-    public function getQualifiedUsersAttributes(array $attributes): array
-    {
+    public function getQualifiedUsersAttributes(
+        array $attributes,
+        array $default_values = [],
+    ): array {
         $include_uids = $this->getQualifiedUsersUIDs();
-        $user_attributes = $this->baseOU->getChildrenArray(
+        $user_attributes = $this->baseOU->getChildrenArrayStrict(
             $attributes,
             true, // recursive
             "(objectClass=posixAccount)",
+            $default_values,
         );
         foreach ($user_attributes as $i => $attributes) {
             if (!in_array($attributes["uid"][0], $include_uids)) {
@@ -283,16 +290,21 @@ class UnityLDAP extends LDAPConn
         return $out;
     }
 
-    public function getAllPIGroupsAttributes(array $attributes): array
+    public function getAllPIGroupsAttributes(array $attributes, array $default_values = []): array
     {
-        return $this->pi_groupOU->getChildrenArray($attributes);
+        return $this->pi_groupOU->getChildrenArrayStrict(
+            $attributes,
+            false, // non-recursive
+            "objectClass=posixGroup",
+            $default_values,
+        );
     }
 
     public function getPIGroupGIDsWithMemberUID(string $uid): array
     {
         return array_map(
             fn($x) => $x["cn"][0],
-            $this->pi_groupOU->getChildrenArray(
+            $this->pi_groupOU->getChildrenArrayStrict(
                 ["cn"],
                 false,
                 "(memberuid=" . ldap_escape($uid, LDAP_ESCAPE_FILTER) . ")",
@@ -300,14 +312,16 @@ class UnityLDAP extends LDAPConn
         );
     }
 
-    public function getAllPIGroupOwnerAttributes(array $attributes): array
-    {
+    public function getAllPIGroupOwnerAttributes(
+        array $attributes,
+        array $default_values = [],
+    ): array {
         // get the PI groups, filter for just the GIDs, then map the GIDs to owner UIDs
         $owner_uids = array_map(
             fn($x) => UnityGroup::GID2OwnerUID($x),
-            array_map(fn($x) => $x["cn"][0], $this->pi_groupOU->getChildrenArray(["cn"])),
+            array_map(fn($x) => $x["cn"][0], $this->pi_groupOU->getChildrenArrayStrict(["cn"])),
         );
-        $owner_attributes = $this->getQualifiedUsersAttributes($attributes);
+        $owner_attributes = $this->getQualifiedUsersAttributes($attributes, $default_values);
         foreach ($owner_attributes as $i => $attributes) {
             if (!in_array($attributes["uid"][0], $owner_uids)) {
                 unset($owner_attributes[$i]);
@@ -400,9 +414,12 @@ class UnityLDAP extends LDAPConn
         return $out;
     }
 
-    public function getAllOrgGroupsAttributes(array $attributes): array
+    public function getAllOrgGroupsAttributes(array $attributes, array $default_values = []): array
     {
-        return $this->org_groupOU->getChildrenArray($attributes);
+        return $this->org_groupOU->getChildrenArrayStrict(
+            $attributes,
+            default_values: $default_values,
+        );
     }
 
     public function getUserEntry(string $uid): LDAPEntry
