@@ -74,7 +74,8 @@ class UnityRedis
         if (!is_array($old_val)) {
             throw new TypeError("redis[$object][$key] is not an array!");
         }
-        $new_val = $old_val + [$value];
+        $new_val = $old_val;
+        array_push($new_val, $value);
         sort($new_val);
         $this->setCache($object, $key, $new_val);
     }
