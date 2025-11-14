@@ -40,7 +40,7 @@ class PiMemberApproveTest extends TestCase
 
     private function assertGroupMembers(UnityGroup $group, array $members)
     {
-        $this->assertTrue(arraysAreEqualUnOrdered($members, $group->getGroupMemberUIDs()));
+        $this->assertEqualsCanonicalizing($members, $group->getGroupMemberUIDs());
     }
 
     public function testApproveRequest()
