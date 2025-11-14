@@ -3,8 +3,9 @@
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\UnityUser;
+use function PHPUnit\Framework\assertEquals;
 
-class PiMemberDenyTest extends TestCase
+class PIMemberDenyTest extends TestCase
 {
     static $requestUid;
 
@@ -35,13 +36,7 @@ class PiMemberDenyTest extends TestCase
         $this->assertEmpty($piGroup->getRequests());
         $requestedUser = new UnityUser(self::$requestUid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
         try {
-            $piGroup->newUserRequest(
-                $requestedUser,
-                $requestedUser->getFirstname(),
-                $requestedUser->getLastname(),
-                $requestedUser->getMail(),
-                $requestedUser->getOrg(),
-            );
+            $piGroup->newUserRequest($requestedUser);
             $this->assertFalse($piGroup->memberExists($requestedUser));
 
             $piGroup->denyUser($requestedUser);

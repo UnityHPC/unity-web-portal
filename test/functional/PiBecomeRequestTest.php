@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\UnitySQL;
 
-class PiBecomeRequestTest extends TestCase
+class PIBecomeRequestTest extends TestCase
 {
     private function assertNumberPiBecomeRequests(int $x)
     {
@@ -41,6 +41,8 @@ class PiBecomeRequestTest extends TestCase
         try {
             http_post(__DIR__ . "/../../webroot/panel/account.php", [
                 "form_type" => "pi_request",
+                "tos" => "agree",
+                "account_policy" => "agree",
             ]);
             $this->assertNumberPiBecomeRequests(1);
             http_post(__DIR__ . "/../../webroot/panel/account.php", [
@@ -49,10 +51,14 @@ class PiBecomeRequestTest extends TestCase
             $this->assertNumberPiBecomeRequests(0);
             http_post(__DIR__ . "/../../webroot/panel/account.php", [
                 "form_type" => "pi_request",
+                "tos" => "agree",
+                "account_policy" => "agree",
             ]);
             $this->assertNumberPiBecomeRequests(1);
             http_post(__DIR__ . "/../../webroot/panel/account.php", [
                 "form_type" => "pi_request",
+                "tos" => "agree",
+                "account_policy" => "agree",
             ]);
             $this->assertNumberPiBecomeRequests(1);
         } finally {
@@ -72,6 +78,8 @@ class PiBecomeRequestTest extends TestCase
         try {
             http_post(__DIR__ . "/../../webroot/panel/account.php", [
                 "form_type" => "pi_request",
+                "tos" => "agree",
+                "account_policy" => "agree",
             ]);
             $this->assertNumberPiBecomeRequests(0);
         } finally {

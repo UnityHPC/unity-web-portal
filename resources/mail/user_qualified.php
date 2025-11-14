@@ -1,7 +1,7 @@
 <?php
 
-// this template is sent when a user account gets created
-$this->Subject = "User Created"; ?>
+// this template is sent when a user account becomes qualified
+$this->Subject = "User Activated"; ?>
 
 <p>Hello,</p>
 

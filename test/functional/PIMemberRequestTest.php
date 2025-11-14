@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\UnitySQL;
 
-class PiMemberRequestTest extends TestCase
+class PIMemberRequestTest extends TestCase
 {
     private function requestMembership(string $gid_or_mail)
     {
@@ -32,7 +32,7 @@ class PiMemberRequestTest extends TestCase
         $this->assertTrue($USER->isPI());
         $this->assertTrue($pi_group->exists());
         $this->assertEqualsCanonicalizing([$pi], $pi_group->getGroupMembers());
-        $this->assertEquals([], $SQL->getRequests($gid));
+        $this->assertEqualsCanonicalizing([], $SQL->getRequests($gid));
         switchUser(...getUserNotPiNotRequestedBecomePi());
         $uid = $USER->uid;
         $this->assertFalse($USER->isPI());
