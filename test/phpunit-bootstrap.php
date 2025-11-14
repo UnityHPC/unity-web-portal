@@ -24,6 +24,8 @@ require_once __DIR__ . "/../resources/lib/exceptions/EnsureException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/EncodingUnknownException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/EncodingConversionException.php";
 
+use UnityWebPortal\lib\UnityGroup;
+
 $_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
 require_once __DIR__ . "/../resources/config.php";
 
@@ -159,6 +161,76 @@ function http_get(string $phpfile, array $get_data = []): void
         unset($_GET);
         $_PREVIOUS_SERVER = $_SERVER;
     }
+}
+
+// delete requests made by that user
+// delete user entry
+// delete user group entry
+// remove user from org group
+// remove user from "all users" group
+// does not remove user from PI groups
+function ensureUserDoesNotExist()
+{
+    global $USER, $SQL, $LDAP, $REDIS;
+    $SQL->deleteRequestsByUser($USER->uid);
+    if ($USER->exists()) {
+        $org = $USER->getOrgGroup();
+        if ($org->exists() and $org->inOrg($USER)) {
+            $org->removeUser($USER);
+            ensure(!$org->inOrg($USER));
+        }
+        $LDAP->getUserEntry($USER->uid)->delete();
+        ensure(!$USER->exists());
+    }
+    if ($USER->getGroupEntry()->exists()) {
+        $USER->getGroupEntry()->delete();
+        ensure(!$USER->getGroupEntry()->exists());
+    }
+    $all_users_group = $LDAP->getQualifiedUserGroup();
+    $all_member_uids = $all_users_group->getAttribute("memberuid");
+    if (in_array($USER->uid, $all_member_uids)) {
+        $all_users_group->setAttribute(
+            "memberuid",
+            // array_diff will break the contiguity of the array indexes
+            // ldap_mod_replace requires contiguity, array_values restores contiguity
+            array_values(array_diff($all_member_uids, [$USER->uid])),
+        );
+        $all_users_group->write();
+        ensure(!in_array($USER->uid, $all_users_group->getAttribute("memberuid")));
+    }
+    $REDIS->removeCacheArray("sorted_qualified_users", "", $USER->uid);
+}
+
+function ensureOrgGroupDoesNotExist()
+{
+    global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+    $org_group = $LDAP->getOrgGroupEntry($SSO["org"]);
+    if ($org_group->exists()) {
+        $org_group->delete();
+        ensure(!$org_group->exists());
+    }
+    $REDIS->removeCacheArray("sorted_orgs", "", $SSO["org"]);
+}
+
+function ensureUserNotInPIGroup(UnityGroup $pi_group)
+{
+    global $USER, $REDIS;
+    if ($pi_group->memberExists($USER)) {
+        $pi_group->removeUser($USER);
+        ensure(!$pi_group->memberExists($USER));
+    }
+    $REDIS->removeCacheArray($pi_group->gid, "members", $USER->uid);
+}
+
+function ensurePIGroupDoesNotExist()
+{
+    global $USER, $LDAP, $REDIS;
+    $gid = $USER->getPIGroup()->gid;
+    if ($USER->getPIGroup()->exists()) {
+        $LDAP->getPIGroupEntry($gid)->delete();
+        ensure(!$USER->getPIGroup()->exists());
+    }
+    $REDIS->removeCacheArray("sorted_groups", "", $gid);
 }
 
 function getNormalUser()
