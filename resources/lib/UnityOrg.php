@@ -39,7 +39,8 @@ class UnityOrg
         $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
         $this->entry->setAttribute("gidnumber", strval($nextGID));
         $this->entry->write();
-        $this->REDIS->appendCacheArray("sorted_orgs", "", $this->gid);
+        $default_value_getter = [$this->LDAP, "getSortedOrgsForRedis"];
+        $this->REDIS->appendCacheArray("sorted_orgs", "", $this->gid, $default_value_getter);
     }
 
     public function exists(): bool
@@ -94,13 +95,23 @@ class UnityOrg
     {
         $this->entry->appendAttribute("memberuid", $user->uid);
         $this->entry->write();
-        $this->REDIS->appendCacheArray($this->gid, "members", $user->uid);
+        $this->REDIS->appendCacheArray(
+            $this->gid,
+            "members",
+            $user->uid,
+            fn() => $this->getOrgMemberUIDs(true),
+        );
     }
 
     public function removeUser(UnityUser $user): void
     {
         $this->entry->removeAttributeEntryByValue("memberuid", $user->uid);
         $this->entry->write();
-        $this->REDIS->removeCacheArray($this->gid, "members", $user->uid);
+        $this->REDIS->removeCacheArray(
+            $this->gid,
+            "members",
+            $user->uid,
+            fn() => $this->getOrgMemberUIDs(true),
+        );
     }
 }

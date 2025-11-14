@@ -38,12 +38,11 @@ if (!is_null($REDIS->getCache("initialized", "")) and !array_key_exists("u", $op
     echo "waiting for LDAP search (users)...\n";
     $users = $LDAP->search("objectClass=posixAccount", CONFIG["ldap"]["basedn"], []);
     echo "response received.\n";
-    $user_CNs = $LDAP->getQualifiedUserGroup()->getAttribute("memberuid");
-    sort($user_CNs);
-    $REDIS->setCache("sorted_qualified_users", "", $user_CNs);
+    $sorted_qualified_users_UIDs = $LDAP->getSortedQualifiedUsersForRedis();
+    $REDIS->setCache("sorted_qualified_users", "", $sorted_qualified_users_UIDs);
     foreach ($users as $user) {
         $uid = $user->getAttribute("cn")[0];
-        if (!in_array($uid, $user_CNs)) {
+        if (!in_array($uid, $sorted_qualified_users_UIDs)) {
             continue;
         }
         $REDIS->setCache($uid, "firstname", $user->getAttribute("givenname")[0]);
@@ -59,13 +58,7 @@ if (!is_null($REDIS->getCache("initialized", "")) and !array_key_exists("u", $op
     echo "waiting for LDAP search (org groups)...\n";
     $org_groups = $org_group_ou->getChildrenArrayStrict(["cn", "memberuid"], true);
     echo "response received.\n";
-    // phpcs:disable
-    $org_group_CNs = array_map(function ($x) {
-        return $x["cn"][0];
-    }, $org_groups);
-    // phpcs:enable
-    sort($org_group_CNs);
-    $REDIS->setCache("sorted_orgs", "", $org_group_CNs);
+    $REDIS->setCache("sorted_orgs", "", $LDAP->getSortedOrgsForRedis());
     foreach ($org_groups as $org_group) {
         $gid = $org_group["cn"][0];
         $REDIS->setCache($gid, "members", $org_group["memberuid"] ?? []);
@@ -75,27 +68,20 @@ if (!is_null($REDIS->getCache("initialized", "")) and !array_key_exists("u", $op
     echo "waiting for LDAP search (pi groups)...\n";
     $pi_groups = $pi_group_ou->getChildrenArrayStrict(["cn", "memberuid"], true);
     echo "response received.\n";
-    // phpcs:disable
-    $pi_group_CNs = array_map(function ($x) {
-        return $x["cn"][0];
-    }, $pi_groups);
-    // phpcs:enable
-    sort($pi_group_CNs);
-    // FIXME should be sorted_pi_groups
-    $REDIS->setCache("sorted_groups", "", $pi_group_CNs);
+    $REDIS->setCache("sorted_groups", "", $LDAP->getSortedGroupsForRedis());
 
     $user_pi_group_member_of = [];
-    foreach ($user_CNs as $uid) {
+    foreach ($sorted_qualified_users_UIDs as $uid) {
         $user_pi_group_member_of[$uid] = [];
     }
     foreach ($pi_groups as $pi_group) {
         $gid = $pi_group["cn"][0];
         $members = $pi_group["memberuid"] ?? [];
         foreach ($members as $uid) {
-            if (in_array($uid, $user_CNs)) {
+            if (in_array($uid, $sorted_qualified_users_UIDs)) {
                 array_push($user_pi_group_member_of[$uid], $gid);
             } else {
-                echo "warning: group '$gid' has member '$uid' who is not in the users group!\n";
+                echo "warning: group '$gid' has member '$uid' who is not qualfied!\n";
             }
         }
         $REDIS->setCache($gid, "members", $pi_group["memberuid"] ?? []);
