@@ -414,7 +414,7 @@ class UnityLDAP extends LDAPConn
         return $out;
     }
 
-    public function getAllOrgGroupsAttributes(array $attributes, array $default_values): array
+    public function getAllOrgGroupsAttributes(array $attributes, array $default_values = []): array
     {
         return $this->org_groupOU->getChildrenArrayStrict(
             $attributes,
