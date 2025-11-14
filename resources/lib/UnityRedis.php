@@ -3,7 +3,7 @@
 namespace UnityWebPortal\lib;
 
 use Redis;
-use Exception;
+use TypeError;
 
 class UnityRedis
 {
@@ -70,22 +70,15 @@ class UnityRedis
         if (!$this->enabled) {
             return;
         }
-
-        $cached_val = $this->getCache($object, $key);
-        if (is_null($cached_val)) {
-            $this->setCache($object, $key, $default_value_getter());
-        } else {
-            if (!is_array($cached_val)) {
-                throw new Exception("This cache value is not an array");
-            }
-
-            array_push($cached_val, $value);
-            sort($cached_val);
-            $this->setCache($object, $key, $cached_val);
+        $old_val = $this->getCache($object, $key) ?? $default_value_getter();
+        if (!is_array($old_val)) {
+            throw new TypeError("redis[$object][$key] is not an array!");
         }
+        $new_val = $old_val + [$value];
+        sort($new_val);
+        $this->setCache($object, $key, $new_val);
     }
 
-    // TODO return void
     public function removeCacheArray(
         string $object,
         string $key,
@@ -93,20 +86,15 @@ class UnityRedis
         callable $default_value_getter,
     ) {
         if (!$this->enabled) {
-            return null;
+            return;
         }
-
-        $cached_val = $this->getCache($object, $key);
-        if (is_null($cached_val)) {
-            $this->setCache($object, $key, $default_value_getter());
-        } else {
-            if (!is_array($cached_val)) {
-                throw new Exception("This cache value is not an array");
-            }
-
-            $cached_val = array_diff($cached_val, [$value]);
-            $this->setCache($object, $key, $cached_val);
+        $old_val = $this->getCache($object, $key) ?? $default_value_getter();
+        if (!is_array($old_val)) {
+            throw new TypeError("redis[$object][$key] is not an array!");
         }
+        $new_val = array_diff($old_val, [$value]);
+        sort($new_val);
+        $this->setCache($object, $key, $new_val);
     }
 
     public function flushAll(): void
