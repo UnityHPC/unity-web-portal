@@ -294,7 +294,9 @@ class UnityLDAP extends LDAPConn
     {
         return $this->pi_groupOU->getChildrenArrayStrict(
             $attributes,
-            default_values: $default_values,
+            false, // non-recursive
+            "objectClass=posixGroup",
+            $default_values,
         );
     }
 
@@ -412,9 +414,12 @@ class UnityLDAP extends LDAPConn
         return $out;
     }
 
-    public function getAllOrgGroupsAttributes(array $attributes): array
+    public function getAllOrgGroupsAttributes(array $attributes, array $default_values): array
     {
-        return $this->org_groupOU->getChildrenArrayStrict($attributes);
+        return $this->org_groupOU->getChildrenArrayStrict(
+            $attributes,
+            default_values: $default_values,
+        );
     }
 
     public function getUserEntry(string $uid): LDAPEntry
