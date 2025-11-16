@@ -53,23 +53,25 @@ if (count($requests) > 0) {
     echo "<h5>Pending Requests</h5>";
     echo "<table>";
 
-    foreach ($requests as [$user, $timestamp, $firstname, $lastname, $email, $org]) {
+    foreach ($requests as [$user, $timestamp]) {
         $uid = $user->uid;
+        $name = $user->getFullName();
+        $email = $user->getMail();
         $date = date("jS F, Y", strtotime($timestamp));
         echo "<tr>";
-        echo "<td>" . $firstname . " " . $lastname . "</td>";
-        echo "<td>" . $uid . "</td>";
-        echo "<td><a href='mailto:" . $email . "'>" . $email . "</a></td>";
-        echo "<td>" . $date . "</td>";
+        echo "<td>$name</td>";
+        echo "<td>$uid</td>";
+        echo "<td><a href='mailto:$email'>$email</a></td>";
+        echo "<td>$date</td>";
         echo "<td>";
         echo
             "<form action='' method='POST'>
         <input type='hidden' name='form_type' value='userReq'>
-        <input type='hidden' name='uid' value='" . $uid . "'>
+        <input type='hidden' name='uid' value='$uid'>
         <input type='submit' name='action' value='Approve'
-        onclick='return confirm(\"Are you sure you want to approve " . $uid . "?\")'>
+        onclick='return confirm(\"Are you sure you want to approve $uid?\")'>
         <input type='submit' name='action' value='Deny'
-        onclick='return confirm(\"Are you sure you want to deny " . $uid . "?\")'>
+        onclick='return confirm(\"Are you sure you want to deny $uid?\")'>
         </form>";
         echo "</td>";
         echo "</tr>";
