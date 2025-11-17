@@ -37,21 +37,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         array_push($modalErrors, "You're already in this PI group");
                     }
                 }
-                if ($USER->uid != $SSO["user"]) {
-                    $sso_user = $SSO["user"];
-                    UnityHTTPD::badRequest(
-                        "cannot request due to uid mismatch: " .
-                        "USER='{$USER->uid}' SSO[user]='$sso_user'"
-                    );
-                }
                 if (empty($modalErrors)) {
-                    $pi_account->newUserRequest(
-                        $USER,
-                        $SSO["firstname"],
-                        $SSO["lastname"],
-                        $SSO["mail"],
-                        $SSO["org"]
-                    );
+                    $pi_account->newUserRequest($USER);
                 }
                 break;
             case "removePIForm":

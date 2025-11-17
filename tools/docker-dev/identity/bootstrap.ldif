@@ -9178,6 +9178,12 @@ gidnumber: 1956
 objectclass: posixGroup
 objectclass: top
 
+dn: cn=user2005_org1_test,ou=groups,dc=unityhpc,dc=test
+cn: user2005_org1_test
+gidnumber: 33130
+objectclass: posixGroup
+objectclass: top
+
 dn: ou=org_groups,dc=unityhpc,dc=test
 objectclass: organizationalUnit
 objectclass: top
@@ -37206,3 +37212,20 @@ sshpublickey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6DRkoDjDgI39kKmuUAgMC18+O3o
 sshpublickey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLCxBujVxoB5T95BAQfwlG0cQSGldVap3w/cNAHobgaa9rOcino2Dw5EHXQl+O0yrDGRRQ1sEIZrTLhHNcWLUZ1d6exSRfg8AvjghAczKNi7H8oLMCp4hMVz3RzqozZaxhXDYQb1n4igf8jtX/VBvixEgSkDrRxPCFFkr14CT0xXhR02fnoFSMbedtXphClTiF6ry94mzl91CkdWP9JHY1w8LCJh6wlXCyiIorydoADPAjFIw766TRe2eUNHn0gDPVrF8KUhaYDW8wKG6u8PORotNBr3zw/QRCjpgbwh1w6xNZti/N+rEjczFTnECmlcOkDrkw5j4OqiLEIBw3j9vF
 uid: user1304_org1_test
 uidnumber: 1956
+
+dn: cn=user2005_org1_test,ou=users,dc=unityhpc,dc=test
+cn: user2005_org1_test
+gidnumber: 33130
+givenname: Givenname
+homedirectory: /home/user2005_org1_test
+loginshell: /bin/bash
+mail: user2005@org1.test
+o: org1_test
+objectclass: inetOrgPerson
+objectclass: posixAccount
+objectclass: top
+objectclass: ldapPublicKey
+sn: Surname
+gecos: Givenname Surname
+uid: user2005_org1_test
+uidnumber: 33130

@@ -73,19 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($SQL->requestExists($USER->uid)) {
                 UnityHTTPD::badRequest("already requested to be PI");
             }
-            if ($USER->uid != $SSO["user"]) {
-                UnityHTTPD::badRequest(
-                    "cannot request due to uid mismatch: " .
-                    "USER='{$USER->uid}' SSO[user]='{$SSO["user"]}'"
-                );
+            if (!isset($_POST["tos"]) || $_POST["tos"] != "agree") {
+                UnityHTTPD::badRequest("user did not agree to terms of service");
             }
-            $USER->getPIGroup()->requestGroup(
-                $SSO["firstname"],
-                $SSO["lastname"],
-                $SSO["mail"],
-                $SSO["org"],
-                $SEND_PIMESG_TO_ADMINS
-            );
+            $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
             break;
         case "cancel_pi_request":
             $USER->getPIGroup()->cancelGroupRequest();
@@ -132,14 +123,14 @@ $isPI = $USER->isPI();
 
 if ($isPI) {
     echo "<p>You are curently a <strong>principal investigator</strong> on the Unity Cluster</p>";
-} elseif ($hasGroups) {
-    echo "<p>You are curently a <strong>user</strong> on the Unity Cluster</p>";
+} elseif ($USER->isQualified()) {
+    echo "<p>You are curently a <strong>qualified user</strong> on the Unity Cluster</p>";
 } else {
     echo "
         <p>
-            You are currently not assigned to any PI, and will be
+            You are currently an <strong>unqualified user</strong>, and will be
             <strong>unable to use the cluster</strong>.
-            Go to the
+            To become qualified, go to the
             <a href='groups.php'>My PIs</a>
             page to join a PI, or click on the button below if you are a PI.
             Do not click the button below if you are a student.
@@ -173,9 +164,24 @@ if (!$isPI) {
                <input type='hidden' name='form_type' value='cancel_pi_request'/>
             ";
         } else {
-            echo "<input type='hidden' name='form_type' value='pi_request'/>";
             $onclick = "return confirm(\"Are you sure you want to request a PI account?\")";
-            echo "<input type='submit' value='Request PI Account' onclick='$onclick'/>";
+            $tos_url = CONFIG["site"]["terms_of_service_url"];
+            $account_policy_url = CONFIG["site"]["account_policy_url"];
+            echo "
+                <label>
+                    <input type='checkbox' name='confirm_pi' value='agree' required>
+                    I have read the PI
+                    <a target='_blank' href='$account_policy_url'> account policy</a> guidelines.
+                </label>
+                <br>
+                <label><input type='checkbox' name='tos' value='agree' required>
+                    I have read and accept the
+                    <a target='_blank' href='$tos_url'>Terms of Service</a>.
+                </label>
+                <br>
+                <input type='hidden' name='form_type' value='pi_request'/>
+                <input type='submit' value='Request PI Account' onclick='$onclick'/>
+            ";
         }
     }
     echo "</form>";

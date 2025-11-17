@@ -117,6 +117,8 @@ rm "$prod" && ln -s "$old" "$prod"
 ### 1.3 -> 1.4
 
 - the `[ldap]user_group` option has been renamed to `[ldap]qualified_user_group`
+- the `user_created ` mail template has been renamed to `user_qualified`
+- the `user_dequalified` mail template has been added
 
 ### 1.2 -> 1.3
 
