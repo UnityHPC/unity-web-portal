@@ -120,6 +120,55 @@ rm "$prod" && ln -s "$old" "$prod"
 - the `user_created ` mail template has been renamed to `user_qualified`
 - the `user_dequalified` mail template has been added
 
+In v1.2.1, we extended PI group requests and PI group join requests to store user info like name and email.
+This was necessary because LDAP entries were not created for users until they became "qualified" (become a PI or joined a PI group).
+While a user was unqualified, if the Redis cache was cleared, the user info would be lost.
+Now, LDAP entries are created immediately for every user, so this is no longer necessary.
+
+- Shut down the web portal
+  ```shell
+  systemctl stop apache2
+  ```
+- Create LDAP entries for all existing requests
+  ```php
+  use UnityWebPortal\lib\UnityUser;
+  $_SERVER["HTTP_HOST"] = "worker"; // see deployment/overrides/worker/
+  $_SERVER["REMOTE_ADDR"] = "127.0.0.1";
+  require_once __DIR__ . "/../resources/autoload.php";
+  foreach ($SQL->getAllRequests() as $request) {
+    $user = new UnityUser(
+      $request["uid"],
+      $LDAP,
+      $SQL,
+      $MAILER,
+      $REDIS,
+      $WEBHOOK,
+    );
+    if (!$user->exists()) {
+      echo "creating user: " . jsonEncode($request) . "\n";
+      $user->init(
+        $request["firstname"],
+        $request["lastname"],
+        $request["email"],
+        $request["org"],
+      );
+    }
+  }
+  ```
+- Remove columns from the `requests` table:
+  ```sql
+  ALTER TABLE `requests`
+  DROP COLUMN `firstname`,
+  DROP COLUMN `lastname`,
+  DROP COLUMN `email`,
+  DROP COLUMN `org`;
+  ```
+- Update the portal PHP code following the normal procedure
+- Start the portal again
+  ```shell
+  systemctl start apache2
+  ```
+
 ### 1.2 -> 1.3
 
 - SQL:
