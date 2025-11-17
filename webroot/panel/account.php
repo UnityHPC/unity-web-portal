@@ -126,15 +126,26 @@ if ($isPI) {
 } elseif ($USER->isQualified()) {
     echo "<p>You are curently a <strong>qualified user</strong> on the Unity Cluster</p>";
 } else {
+    $tos_url = CONFIG["site"]["terms_of_service_url"];
+    $sitePrefix = CONFIG["site"]["prefix"];
     echo "
         <p>
             You are currently an <strong>unqualified user</strong>, and will be
             <strong>unable to use the cluster</strong>.
-            To become qualified, go to the
-            <a href='groups.php'>My PIs</a>
-            page to join a PI, or click on the button below if you are a PI.
-            Do not click the button below if you are a student.
+            To become qualified, request to join a PI group, or if you are a PI, request a PI group.
+            Do not request a PI group if you are a student.
         </p>
+        <br>
+        <form action='$sitePrefix/panel/groups.php' method='GET'>
+            <label>
+                <input type='checkbox' name='tos' value='agree' required />
+                I have read and accept the
+                <a target='_blank' href='$tos_url'>Terms of Service</a>.
+            </label>
+            <br>
+            <input type='submit' value='Request to Join a PI Group' />
+        </form>
+        <br>
     ";
 }
 
@@ -180,7 +191,7 @@ if (!$isPI) {
                 </label>
                 <br>
                 <input type='hidden' name='form_type' value='pi_request'/>
-                <input type='submit' value='Request PI Account' onclick='$onclick'/>
+                <input type='submit' value='Request a PI Group' onclick='$onclick'/>
             ";
         }
     }
