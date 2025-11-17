@@ -4,19 +4,22 @@
 
 Unity Web Portal is a PHP application built in top of MariaDB and LDAP which acts as a central user portal for high-performance-computing clusters.
 
-Basic Features:
+Typical Usage:
 
-- User signs up
-  - PIs require admin approval, users require PI approval
+- User registers an account
+  - LDAP entries are created
 - User manages SSH public keys
-  - no passwords
+  - No passwords
   - Github import, upload file, paste, generate and download private key
 - User changes login shell
+- User requests to join a PI group
+  - Requires PI approval
 - User requests their own PI group
+  - Requires admin approval
 - PI approves/denies requests to join their PI group
 - PI removes members from their group
 
-Admin features:
+Admin Features:
 
 - Automatic updating of LDAP to reflect current state of users, groups, organizations, PI groups
 - Cluster notices
