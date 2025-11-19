@@ -2,11 +2,11 @@
 
 require "../../../resources/autoload.php";
 
-use phpseclib3\Crypt\RSA;
+use phpseclib3\Crypt\EC;
 
 echo "<pre>";
 
-$private = RSA::createKey(2048);
+$private = EC::createKey('Ed25519');
 $public = $private->getPublicKey();
 
 echo "<section class='pubKey'>";
@@ -16,7 +16,7 @@ echo "<section class='privKey'>";
 if (isset($_GET["type"]) && $_GET["type"] == "ppk") {
     echo $private->toString('PuTTY');
 } else {
-    echo $private;
+    echo $private->toString('OpenSSH');
 }
 echo "</section>";
 
