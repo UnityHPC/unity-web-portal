@@ -1,6 +1,7 @@
 <?php
 
 namespace UnityWebPortal\lib;
+use UnityWebPortal\lib\exceptions\CurlException;
 
 class UnityGithub
 {
@@ -13,7 +14,11 @@ class UnityGithub
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        $keys = json_decode(curl_exec($curl), false);
+        $curl_output = curl_exec($curl);
+        if ($curl_output === false) {
+            throw new CurlException(curl_error($curl));
+        }
+        $keys = json_decode($curl_output, false);
         curl_close($curl);
 
         // normally returns array of objects each with a ->key attribute
