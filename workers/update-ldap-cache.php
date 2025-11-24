@@ -56,7 +56,11 @@ if (!is_null($REDIS->getCache("initialized", "")) and !array_key_exists("u", $op
 
     $org_group_ou = new LDAPEntry($LDAP->getConn(), CONFIG["ldap"]["orggroup_ou"]);
     echo "waiting for LDAP search (org groups)...\n";
-    $org_groups = $org_group_ou->getChildrenArrayStrict(["cn", "memberuid"], true);
+    $org_groups = $org_group_ou->getChildrenArrayStrict(
+        ["cn", "memberuid"],
+        true,
+        default_values: ["memberuid" => []],
+    );
     echo "response received.\n";
     $REDIS->setCache("sorted_orgs", "", $LDAP->getSortedOrgsForRedis());
     foreach ($org_groups as $org_group) {
@@ -66,7 +70,11 @@ if (!is_null($REDIS->getCache("initialized", "")) and !array_key_exists("u", $op
 
     $pi_group_ou = new LDAPEntry($LDAP->getConn(), CONFIG["ldap"]["pigroup_ou"]);
     echo "waiting for LDAP search (pi groups)...\n";
-    $pi_groups = $pi_group_ou->getChildrenArrayStrict(["cn", "memberuid"], true);
+    $pi_groups = $pi_group_ou->getChildrenArrayStrict(
+        ["cn", "memberuid"],
+        true,
+        default_values: ["memberuid" => []],
+    );
     echo "response received.\n";
     $REDIS->setCache("sorted_groups", "", $LDAP->getSortedGroupsForRedis());
 
