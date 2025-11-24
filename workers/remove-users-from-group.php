@@ -5,7 +5,7 @@ use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityGroup;
 
 if (sizeof($argv) != 3 or in_array($argv, ["-h", "--help"])) {
-    _die("Usage: $argv[0] group_name filename_of_users_to_remove\n", 0);
+    _die("Usage: {$argv[0]} group_name filename_of_users_to_remove\n", 1);
 }
 
 $gid = $argv[1];
