@@ -350,7 +350,13 @@ class UnityLDAP extends LDAPConn
         $uids = $this->getQualifiedUsersUIDs();
         $uid2pigids = array_combine($uids, array_fill(0, count($uids), []));
         // for each PI group, append that GID to the member list for each of its member UIDs
-        foreach ($this->getAllPIGroupsAttributes(["cn", "memberuid"]) as $array) {
+        foreach (
+            $this->getAllPIGroupsAttributes(
+                ["cn", "memberuid"],
+                default_values: ["memberuid" => []],
+            )
+            as $array
+        ) {
             $gid = $array["cn"][0];
             foreach ($array["memberuid"] as $uid) {
                 if (array_key_exists($uid, $uid2pigids)) {
