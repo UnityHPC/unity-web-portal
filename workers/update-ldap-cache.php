@@ -21,7 +21,7 @@ if (array_key_exists("h", $options) or array_key_exists("help", $options)) {
     f: flush cache and then update
     u: update cache even if already initialized
     h --help: display this message\n";
-    UnityHTTPD::die();
+    die();
 }
 if (array_key_exists("f", $options)) {
     echo "flushing cache...\n";
