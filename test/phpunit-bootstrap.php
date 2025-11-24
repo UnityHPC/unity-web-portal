@@ -117,6 +117,30 @@ function http_get(string $phpfile, array $get_data = []): string
     }
 }
 
+/**
+ * runs a worker script
+ * @throws RuntimeException
+ * @return [return code, output lines]
+ */
+function executeWorker(string $basename, string $args = "", bool $doThrowIfNonzero = true): array
+{
+    $command = sprintf("%s %s/../workers/%s %s 2>&1", PHP_BINARY, __DIR__, $basename, $args);
+    $output = [];
+    $rc = null;
+    exec($command, $output, $rc);
+    if ($doThrowIfNonzero && $rc !== 0) {
+        throw new RuntimeException(
+            sprintf(
+                "command failed! command='%s' rc=%d output=%s",
+                $command,
+                $rc,
+                jsonEncode($output),
+            ),
+        );
+    }
+    return [$rc, $output];
+}
+
 // delete requests made by that user
 // delete user entry
 // delete user group entry
@@ -453,4 +477,18 @@ class UnityWebPortalTestCase extends TestCase
     {
         $this->switchUser($this->last_user_nickname, validate: $validate);
     }
+}
+
+function getSomeUIDsOfQualifiedUsersNotRequestedAccountDeletion()
+{
+    return [
+        "user1_org1_test",
+        "user3_org1_test",
+        "user6_org1_test",
+        "user7_org1_test",
+        "user8_org1_test",
+        "user9_org3_test",
+        "user10_org1_test",
+        "user11_org1_test",
+    ];
 }
