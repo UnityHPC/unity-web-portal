@@ -67,8 +67,6 @@ class PIBecomeApproveTest extends TestCase
             $this->requestGroupCreation();
             $this->assertRequestedPIGroup(true);
 
-            $REDIS->flushAll(); // regression test: flush used to break requests
-
             $approve_uid = $SSO["user"];
             switchUser(...getAdminUser());
             $this->approveGroup($approve_uid);
