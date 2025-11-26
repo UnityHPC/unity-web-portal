@@ -13,10 +13,10 @@ $group = new UnityGroup($_GET["gid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
 if (!$group->memberExists($USER)) {
     UnityHTTPD::forbidden("not a group member");
 }
-$members = $group->getGroupMembers();
+$members = $group->getGroupMembersAttributes(["gecos", "mail"]);
 $count = count($members);
-foreach ($members as $key => $member) {
-    if ($member->uid == $group->getOwner()->uid) {
+foreach ($members as $uid => $attributes) {
+    if ($uid == $group->getOwner()->uid) {
         continue;
     }
 
@@ -25,10 +25,11 @@ foreach ($members as $key => $member) {
     } else {
         echo "<tr class='expanded $key'>";
     }
-
-    echo "<td>" . $member->getFullname() . "</td>";
-    echo "<td>" . $member->uid . "</td>";
-    echo "<td><a href='mailto:" . $member->getMail() . "'>" . $member->getMail() . "</a></td>";
-    echo "<td><input type='hidden' name='uid' value='" . $member->uid . "'></td>";
+    $fullname = $attributes["gecos"][0];
+    $mail = $attributes["mail"][0];
+    echo "<td>$fullname</td>";
+    echo "<td>$uid</td>";
+    echo "<td><a href='mailto:$mail'>$mail</a></td>";
+    echo "<td><input type='hidden' name='uid' value='$uid'></td>";
     echo "</tr>";
 }

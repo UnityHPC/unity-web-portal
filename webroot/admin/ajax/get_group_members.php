@@ -14,13 +14,13 @@ if (!isset($_GET["gid"])) {
 }
 
 $group = new UnityGroup($_GET["gid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
-$members = $group->getGroupMembers();
+$members = $group->getGroupMembersAttributes(["gecos", "mail"]);
 $requests = $group->getRequests();
 
 $i = 0;
 $count = count($members) + count($requests);
-foreach ($members as $member) {
-    if ($member->uid == $group->getOwner()->uid) {
+foreach ($members as $uid => $attributes) {
+    if ($uid == $group->getOwner()->uid) {
         continue;
     }
 
@@ -29,22 +29,23 @@ foreach ($members as $member) {
     } else {
         echo "<tr class='expanded $i'>";
     }
-
-    echo "<td>" . $member->getFullname() . "</td>";
-    echo "<td>" . $member->uid . "</td>";
-    echo "<td><a href='mailto:" . $member->getMail() . "'>" . $member->getMail() . "</a></td>";
+    $fullname = $attributes["gecos"][0];
+    $mail = $attributes["mail"][0];
+    echo "<td>$fullname</td>";
+    echo "<td>$uid</td>";
+    echo "<td><a href='mailto:$mail'>$mail</a></td>";
     echo "<td>";
     echo "
         <form
             action=''
             method='POST'
             onsubmit='
-                return confirm(\"Are you sure you want to remove $member->uid from this group?\");
+                return confirm(\"Are you sure you want to remove $uid from this group?\");
             '
         >
         <input type='hidden' name='form_type' value='remUserChild'>
-        <input type='hidden' name='uid' value='" . $member->uid . "'>
-        <input type='hidden' name='pi' value='" . $group->gid . "'>
+        <input type='hidden' name='uid' value='$uid'>
+        <input type='hidden' name='pi' value='$group->gid'>
         <input type='submit' value='Remove'>
         </form>
     ";
