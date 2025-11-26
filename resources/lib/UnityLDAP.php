@@ -3,7 +3,6 @@
 namespace UnityWebPortal\lib;
 
 use UnityWebPortal\lib\exceptions\EntryNotFoundException;
-use ValueError;
 use PHPOpenLDAPer\LDAPConn;
 use PHPOpenLDAPer\LDAPEntry;
 
@@ -500,7 +499,7 @@ class UnityLDAP extends LDAPConn
         array $default_values = [],
     ): array {
         if (count($uids) === 0) {
-            throw new ValueError("uids cannot be empty");
+            return [];
         }
         $attributes = array_map("strtolower", $attributes);
         if (in_array("uid", $attributes)) {
