@@ -509,10 +509,10 @@ class UnityLDAP extends LDAPConn
             $asked_for_uid_attribute = false;
             array_push($attributes, "uid");
         }
-        $uids = array_map(fn($x) => ldap_escape($x, "", LDAP_ESCAPE_FILTER), $uids);
+        $uids_escaped = array_map(fn($x) => ldap_escape($x, "", LDAP_ESCAPE_FILTER), $uids);
         $filter =
             "(&(objectClass=posixAccount)(|" .
-            implode("", array_map(fn($x) => "(uid=$x)", $uids)) .
+            implode("", array_map(fn($x) => "(uid=$x)", $uids_escaped)) .
             "))";
         $entries = $this->baseOU->getChildrenArrayStrict(
             $attributes,
