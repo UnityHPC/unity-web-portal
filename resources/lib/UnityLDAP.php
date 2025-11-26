@@ -208,14 +208,7 @@ class UnityLDAP extends LDAPConn
                 foreach ($qualifiedUsers as $user) {
                     array_push(
                         $out,
-                        new UnityUser(
-                            $user,
-                            $this,
-                            $UnitySQL,
-                            $UnityMailer,
-                            $UnityRedis,
-                            $UnityWebhook,
-                        ),
+                        new UnityUser($user, $this, $UnitySQL, $UnityMailer, $UnityWebhook),
                     );
                 }
                 return $out;
@@ -253,7 +246,6 @@ class UnityLDAP extends LDAPConn
     public function getAllPIGroups(
         UnitySQL $UnitySQL,
         UnityMailer $UnityMailer,
-        UnityRedis $UnityRedis,
         UnityWebhook $UnityWebhook,
         bool $ignorecache = false,
     ) {
@@ -281,7 +273,6 @@ class UnityLDAP extends LDAPConn
                     $this,
                     $UnitySQL,
                     $UnityMailer,
-                    $UnityRedis,
                     $UnityWebhook,
                 ),
             );
@@ -375,7 +366,6 @@ class UnityLDAP extends LDAPConn
     public function getAllOrgGroups(
         $UnitySQL,
         $UnityMailer,
-        $UnityRedis,
         $UnityWebhook,
         $ignorecache = false,
     ): array {
@@ -387,14 +377,7 @@ class UnityLDAP extends LDAPConn
                 foreach ($orgs as $org) {
                     array_push(
                         $out,
-                        new UnityOrg(
-                            $org,
-                            $this,
-                            $UnitySQL,
-                            $UnityMailer,
-                            $UnityRedis,
-                            $UnityWebhook,
-                        ),
+                        new UnityOrg($org, $this, $UnitySQL, $UnityMailer, $UnityWebhook),
                     );
                 }
                 return $out;
@@ -411,7 +394,6 @@ class UnityLDAP extends LDAPConn
                     $this,
                     $UnitySQL,
                     $UnityMailer,
-                    $UnityRedis,
                     $UnityWebhook,
                 ),
             );
