@@ -34,4 +34,4 @@ RUN echo 'xdebug.mode=coverage' >> /etc/php/8.3/cli/php.ini
 # Start apache2 server
 EXPOSE 80
 
-CMD ["bash", "-c", "cd /var/www/unity-web-portal/workers && apache2ctl -D FOREGROUND"]
+CMD ["apache2ctl", "-D", "FOREGROUND"]
