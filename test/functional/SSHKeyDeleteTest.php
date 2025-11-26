@@ -11,7 +11,7 @@ class SSHKeyDeleteTest extends TestCase
     {
         global $USER;
         switchUser(...getUserWithOneKey());
-        self::$initialKeys = $USER->getSSHKeys(true);
+        self::$initialKeys = $USER->getSSHKeys();
     }
 
     private function deleteKey(string $index): void
@@ -36,7 +36,7 @@ class SSHKeyDeleteTest extends TestCase
         global $USER;
         try {
             $this->deleteKey($index);
-            $this->assertEquals(self::$initialKeys, $USER->getSSHKeys(true));
+            $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
         } finally {
             $USER->setSSHKeys(self::$initialKeys);
         }
@@ -47,7 +47,7 @@ class SSHKeyDeleteTest extends TestCase
         global $USER;
         try {
             $this->deleteKey("-1");
-            $this->assertEquals(self::$initialKeys, $USER->getSSHKeys(true));
+            $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
         } finally {
             $USER->setSSHKeys(self::$initialKeys);
         }
@@ -58,7 +58,7 @@ class SSHKeyDeleteTest extends TestCase
         global $USER;
         try {
             $this->deleteKey("99");
-            $this->assertEquals(self::$initialKeys, $USER->getSSHKeys(true));
+            $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
         } finally {
             $USER->setSSHKeys(self::$initialKeys);
         }
@@ -69,7 +69,7 @@ class SSHKeyDeleteTest extends TestCase
         global $USER;
         try {
             $this->deleteKey("0.5");
-            $this->assertEquals(self::$initialKeys, $USER->getSSHKeys(true));
+            $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
         } finally {
             $USER->setSSHKeys(self::$initialKeys);
         }
@@ -80,7 +80,7 @@ class SSHKeyDeleteTest extends TestCase
         global $USER;
         try {
             $this->deleteKey("0");
-            $this->assertEquals([], $USER->getSSHKeys(true));
+            $this->assertEquals([], $USER->getSSHKeys());
         } finally {
             $USER->setSSHKeys(self::$initialKeys);
         }
