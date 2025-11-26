@@ -114,8 +114,6 @@ class PIMemberApproveTest extends TestCase
             $this->assertTrue($pi_group->requestExists($USER));
             $this->assertRequestedMembership(true, $gid);
 
-            $REDIS->flushAll(); // regression test: flush used to break requests
-
             $approve_uid = $SSO["user"];
             switchUser(...$pi_user_args);
             $this->approveUserByPI($approve_uid);
@@ -175,8 +173,6 @@ class PIMemberApproveTest extends TestCase
             $this->requestGroupMembership($pi_group->getOwner()->getMail());
             $this->assertTrue($pi_group->requestExists($USER));
             $this->assertRequestedMembership(true, $gid);
-
-            $REDIS->flushAll(); // regression test: flush used to break requests
 
             $approve_uid = $SSO["user"];
             switchUser(...getAdminUser());
