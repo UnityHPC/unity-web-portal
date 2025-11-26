@@ -163,7 +163,7 @@ function http_get(string $phpfile, array $get_data = []): void
  * @throws RuntimeException
  * @return [return code, output lines]
  */
-function executeWorker(string $basename, string $args, bool $doThrowIfNonzero = true): array
+function executeWorker(string $basename, string $args = "", bool $doThrowIfNonzero = true): array
 {
     $command = sprintf("%s %s/../workers/%s %s 2>&1", PHP_BINARY, __DIR__, $basename, $args);
     $output = [];
