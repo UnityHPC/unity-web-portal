@@ -23,7 +23,6 @@ foreach ($members as $uid => $attributes) {
     if ($uid == $group->getOwner()->uid) {
         continue;
     }
-
     if ($i >= $count - 1) {
         echo "<tr class='expanded $i last'>";
     } else {
@@ -51,7 +50,6 @@ foreach ($members as $uid => $attributes) {
     ";
     echo "</td>";
     echo "</tr>";
-
     $i++;
 }
 
@@ -77,6 +75,5 @@ foreach ($requests as $i => [$user, $timestamp]) {
     <input type='submit' name='action' value='Deny'></form>";
     echo "</td>";
     echo "</tr>";
-
     $i++;
 }

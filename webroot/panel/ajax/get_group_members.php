@@ -15,15 +15,15 @@ if (!$group->memberExists($USER)) {
 }
 $members = $group->getGroupMembersAttributes(["gecos", "mail"]);
 $count = count($members);
+$i = 0;
 foreach ($members as $uid => $attributes) {
     if ($uid == $group->getOwner()->uid) {
         continue;
     }
-
-    if ($key >= $count - 1) {
-        echo "<tr class='expanded $key last'>";
+    if ($i >= $count - 1) {
+        echo "<tr class='expanded $i last'>";
     } else {
-        echo "<tr class='expanded $key'>";
+        echo "<tr class='expanded $i'>";
     }
     $fullname = $attributes["gecos"][0];
     $mail = $attributes["mail"][0];
@@ -32,4 +32,5 @@ foreach ($members as $uid => $attributes) {
     echo "<td><a href='mailto:$mail'>$mail</a></td>";
     echo "<td><input type='hidden' name='uid' value='$uid'></td>";
     echo "</tr>";
+    $i++;
 }
