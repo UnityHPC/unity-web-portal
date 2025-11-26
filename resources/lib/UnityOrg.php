@@ -43,14 +43,14 @@ class UnityOrg
         return $this->entry->exists();
     }
 
-    public function inOrg(UnityUser $user, bool $ignorecache = false): bool
+    public function inOrg(UnityUser $user): bool
     {
-        return in_array($user->uid, $this->getOrgMemberUIDs($ignorecache));
+        return in_array($user->uid, $this->getOrgMemberUIDs());
     }
 
-    public function getOrgMembers(bool $ignorecache = false): array
+    public function getOrgMembers(): array
     {
-        $members = $this->getOrgMemberUIDs($ignorecache);
+        $members = $this->getOrgMemberUIDs();
         $out = [];
         foreach ($members as $member) {
             $user_obj = new UnityUser(
@@ -65,23 +65,10 @@ class UnityOrg
         return $out;
     }
 
-    public function getOrgMemberUIDs(bool $ignorecache = false): array
+    public function getOrgMemberUIDs(): array
     {
-        if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->gid, "members");
-            if (!is_null($cached_val)) {
-                $members = $cached_val;
-            }
-        }
-        $updatecache = false;
-        if (!isset($members)) {
-            $members = $this->entry->getAttribute("memberuid");
-            $updatecache = true;
-        }
-        if (!$ignorecache && $updatecache) {
-            sort($members);
-            $this->REDIS->setCache($this->gid, "members", $members);
-        }
+        $members = $this->entry->getAttribute("memberuid");
+        sort($members);
         return $members;
     }
 

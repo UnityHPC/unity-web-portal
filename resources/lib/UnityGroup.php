@@ -308,9 +308,9 @@ class UnityGroup
         return $out;
     }
 
-    public function getGroupMembers(bool $ignorecache = false): array
+    public function getGroupMembers(): array
     {
-        $members = $this->getGroupMemberUIDs($ignorecache);
+        $members = $this->getGroupMemberUIDs();
         $out = [];
         foreach ($members as $member) {
             $user_obj = new UnityUser(
@@ -325,23 +325,10 @@ class UnityGroup
         return $out;
     }
 
-    public function getGroupMemberUIDs(bool $ignorecache = false): array
+    public function getGroupMemberUIDs(): array
     {
-        if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->gid, "members");
-            if (!is_null($cached_val)) {
-                $members = $cached_val;
-            }
-        }
-        $updatecache = false;
-        if (!isset($members)) {
-            $members = $this->entry->getAttribute("memberuid");
-            $updatecache = true;
-        }
-        if (!$ignorecache && $updatecache) {
-            sort($members);
-            $this->REDIS->setCache($this->gid, "members", $members);
-        }
+        $members = $this->entry->getAttribute("memberuid");
+        sort($members);
         return $members;
     }
 

@@ -150,19 +150,9 @@ class UnityUser
         $this->entry->write();
     }
 
-    public function getOrg(bool $ignorecache = false): string
+    public function getOrg(): string
     {
         $this->entry->ensureExists();
-        if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->uid, "org");
-            if (!is_null($cached_val)) {
-                return $cached_val;
-            }
-        }
-        $org = $this->entry->getAttribute("o")[0];
-        if (!$ignorecache) {
-            $this->REDIS->setCache($this->uid, "org", $org);
-        }
         return $this->entry->getAttribute("o")[0];
     }
 
@@ -177,26 +167,15 @@ class UnityUser
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "firstname_changed", $this->uid);
 
         $this->entry->write();
-        $this->REDIS->setCache($this->uid, "firstname", $firstname);
     }
 
     /**
      * Gets the firstname of the account
      */
-    public function getFirstname(bool $ignorecache = false): string
+    public function getFirstname(): string
     {
         $this->entry->ensureExists();
-        if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->uid, "firstname");
-            if (!is_null($cached_val)) {
-                return $cached_val;
-            }
-        }
-        $firstname = $this->entry->getAttribute("givenname")[0];
-        if (!$ignorecache) {
-            $this->REDIS->setCache($this->uid, "firstname", $firstname);
-        }
-        return $firstname;
+        return $this->entry->getAttribute("givenname")[0];
     }
 
     /**
@@ -210,26 +189,15 @@ class UnityUser
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "lastname_changed", $this->uid);
 
         $this->entry->write();
-        $this->REDIS->setCache($this->uid, "lastname", $lastname);
     }
 
     /**
      * Get method for the lastname on the account
      */
-    public function getLastname(bool $ignorecache = false): string
+    public function getLastname(): string
     {
         $this->entry->ensureExists();
-        if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->uid, "lastname");
-            if (!is_null($cached_val)) {
-                return $cached_val;
-            }
-        }
-        $lastname = $this->entry->getAttribute("sn")[0];
-        if (!$ignorecache) {
-            $this->REDIS->setCache($this->uid, "lastname", $lastname);
-        }
-        return $lastname;
+        return $this->entry->getAttribute("sn")[0];
     }
 
     public function getFullname(): string
@@ -249,26 +217,15 @@ class UnityUser
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "email_changed", $this->uid);
 
         $this->entry->write();
-        $this->REDIS->setCache($this->uid, "mail", $email);
     }
 
     /**
      * Method to get the mail instance var
      */
-    public function getMail(bool $ignorecache = false): string
+    public function getMail(): string
     {
         $this->entry->ensureExists();
-        if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->uid, "mail");
-            if (!is_null($cached_val)) {
-                return $cached_val;
-            }
-        }
-        $mail = $this->entry->getAttribute("mail")[0];
-        if (!$ignorecache) {
-            $this->REDIS->setCache($this->uid, "mail", $mail);
-        }
-        return $mail;
+        return $this->entry->getAttribute("mail")[0];
     }
 
     /**
@@ -282,8 +239,6 @@ class UnityUser
         $this->entry->setAttribute("sshpublickey", $keys_filt);
         $this->entry->write();
 
-        $this->REDIS->setCache($this->uid, "sshkeys", $keys_filt);
-
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "sshkey_modify", $this->uid);
 
         if ($send_mail) {
@@ -296,25 +251,11 @@ class UnityUser
     /**
      * Returns the SSH keys attached to the account
      */
-    public function getSSHKeys(bool $ignorecache = false): array
+    public function getSSHKeys(): array
     {
         $this->entry->ensureExists();
-        if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->uid, "sshkeys");
-            if (!is_null($cached_val)) {
-                return $cached_val;
-            }
-        }
         $result = $this->entry->getAttribute("sshpublickey");
-        if (is_null($result)) {
-            $keys = [];
-        } else {
-            $keys = $result;
-        }
-        if (!$ignorecache) {
-            $this->REDIS->setCache($this->uid, "sshkeys", $keys);
-        }
-        return $keys;
+        return $result;
     }
 
     /**
@@ -343,8 +284,6 @@ class UnityUser
 
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "loginshell_changed", $this->uid);
 
-        $this->REDIS->setCache($this->uid, "loginshell", $shell);
-
         if ($send_mail) {
             $this->MAILER->sendMail($this->getMail(), "user_loginshell", [
                 "new_shell" => $this->getLoginShell(),
@@ -355,20 +294,10 @@ class UnityUser
     /**
      * Gets the login shell of the account
      */
-    public function getLoginShell(bool $ignorecache = false): string
+    public function getLoginShell(): string
     {
         $this->entry->ensureExists();
-        if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->uid, "loginshell");
-            if (!is_null($cached_val)) {
-                return $cached_val;
-            }
-        }
-        $loginshell = $this->entry->getAttribute("loginshell")[0];
-        if (!$ignorecache) {
-            $this->REDIS->setCache($this->uid, "loginshell", $loginshell);
-        }
-        return $loginshell;
+        return $this->entry->getAttribute("loginshell")[0];
     }
 
     public function setHomeDir(string $home, ?UnityUser $operator = null): void
@@ -379,27 +308,15 @@ class UnityUser
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "homedir_changed", $this->uid);
-
-        $this->REDIS->setCache($this->uid, "homedir", $home);
     }
 
     /**
      * Gets the home directory of the user
      */
-    public function getHomeDir(bool $ignorecache = false): string
+    public function getHomeDir(): string
     {
         $this->entry->ensureExists();
-        if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->uid, "homedir");
-            if (!is_null($cached_val)) {
-                return $cached_val;
-            }
-        }
-        $homedir = $this->entry->getAttribute("homedirectory");
-        if (!$ignorecache) {
-            $this->REDIS->setCache($this->uid, "homedir", $homedir);
-        }
-        return $homedir;
+        return $this->entry->getAttribute("homedirectory");
     }
 
     /**
@@ -444,19 +361,9 @@ class UnityUser
     /**
      * Gets the groups this user is assigned to, can be more than one
      */
-    public function getPIGroupGIDs(bool $ignorecache = false): array
+    public function getPIGroupGIDs(): array
     {
-        if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->uid, "groups");
-            if (!is_null($cached_val)) {
-                return $cached_val;
-            }
-        }
-        $gids = $this->LDAP->getPIGroupGIDsWithMemberUID($this->uid);
-        if (!$ignorecache) {
-            $this->REDIS->setCache($this->uid, "groups", $gids);
-        }
-        return $gids;
+        return $this->LDAP->getPIGroupGIDsWithMemberUID($this->uid);
     }
 
     /**
