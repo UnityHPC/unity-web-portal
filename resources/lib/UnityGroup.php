@@ -18,14 +18,12 @@ class UnityGroup
     private UnitySQL $SQL;
     private UnityMailer $MAILER;
     private UnityWebhook $WEBHOOK;
-    private UnityRedis $REDIS;
 
     public function __construct(
         string $gid,
         UnityLDAP $LDAP,
         UnitySQL $SQL,
         UnityMailer $MAILER,
-        UnityRedis $REDIS,
         UnityWebhook $WEBHOOK,
     ) {
         $gid = trim($gid);
@@ -35,7 +33,6 @@ class UnityGroup
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
-        $this->REDIS = $REDIS;
         $this->WEBHOOK = $WEBHOOK;
     }
 
@@ -184,17 +181,6 @@ class UnityGroup
     //     // now we delete the ldap entry
     //     $this->entry->ensureExists();
     //     $this->entry->delete();
-    //     $default_value_getter = [$this->LDAP, "getSortedGroupsForRedis"];
-    //     $this->REDIS->removeCacheArray("sorted_groups", "", $this->gid, $default_value_getter);
-    //     foreach ($users as $user) {
-    //         $this->REDIS->removeCacheArray(
-    //             $user->uid,
-    //             "groups",
-    //             $this->gid,
-    //             fn() => $this->getGroupMemberUIDs(true),
-    //         );
-    //     }
-    //     // FIXME group not removed from user's groups array
 
     //     // send email to every user of the now deleted PI group
     //     if ($send_mail) {
@@ -315,7 +301,6 @@ class UnityGroup
                 $this->LDAP,
                 $this->SQL,
                 $this->MAILER,
-                $this->REDIS,
                 $this->WEBHOOK,
             );
             array_push($out, [$user, $request["timestamp"]]);
@@ -323,9 +308,9 @@ class UnityGroup
         return $out;
     }
 
-    public function getGroupMembers(bool $ignorecache = false): array
+    public function getGroupMembers(): array
     {
-        $members = $this->getGroupMemberUIDs($ignorecache);
+        $members = $this->getGroupMemberUIDs();
         $out = [];
         foreach ($members as $member) {
             $user_obj = new UnityUser(
@@ -333,7 +318,6 @@ class UnityGroup
                 $this->LDAP,
                 $this->SQL,
                 $this->MAILER,
-                $this->REDIS,
                 $this->WEBHOOK,
             );
             array_push($out, $user_obj);
@@ -341,23 +325,10 @@ class UnityGroup
         return $out;
     }
 
-    public function getGroupMemberUIDs(bool $ignorecache = false): array
+    public function getGroupMemberUIDs(): array
     {
-        if (!$ignorecache) {
-            $cached_val = $this->REDIS->getCache($this->gid, "members");
-            if (!is_null($cached_val)) {
-                $members = $cached_val;
-            }
-        }
-        $updatecache = false;
-        if (!isset($members)) {
-            $members = $this->entry->getAttribute("memberuid");
-            $updatecache = true;
-        }
-        if (!$ignorecache && $updatecache) {
-            sort($members);
-            $this->REDIS->setCache($this->gid, "members", $members);
-        }
+        $members = $this->entry->getAttribute("memberuid");
+        sort($members);
         return $members;
     }
 
@@ -383,8 +354,6 @@ class UnityGroup
         $this->entry->setAttribute("gidnumber", strval($nextGID));
         $this->entry->setAttribute("memberuid", [$owner->uid]);
         $this->entry->write();
-        $default_value_getter = [$this->LDAP, "getSortedGroupsForRedis"];
-        $this->REDIS->appendCacheArray("sorted_groups", "", $this->gid, $default_value_getter);
         // TODO if we ever make this project based,
         // we need to update the cache here with the memberuid
     }
@@ -393,36 +362,12 @@ class UnityGroup
     {
         $this->entry->appendAttribute("memberuid", $new_user->uid);
         $this->entry->write();
-        $this->REDIS->appendCacheArray(
-            $this->gid,
-            "members",
-            $new_user->uid,
-            fn() => $this->getGroupMemberUIDs(true),
-        );
-        $this->REDIS->appendCacheArray(
-            $new_user->uid,
-            "groups",
-            $this->gid,
-            fn() => $this->LDAP->getPIGroupGIDsWithMemberUID($new_user->uid),
-        );
     }
 
     private function removeUserFromGroup(UnityUser $old_user): void
     {
         $this->entry->removeAttributeEntryByValue("memberuid", $old_user->uid);
         $this->entry->write();
-        $this->REDIS->removeCacheArray(
-            $this->gid,
-            "members",
-            $old_user->uid,
-            fn() => $this->getGroupMemberUIDs(true),
-        );
-        $this->REDIS->removeCacheArray(
-            $old_user->uid,
-            "groups",
-            $this->gid,
-            fn() => $this->LDAP->getPIGroupGIDsWithMemberUID($old_user->uid),
-        );
     }
 
     public function memberExists(UnityUser $user): bool
@@ -442,7 +387,6 @@ class UnityGroup
             $this->LDAP,
             $this->SQL,
             $this->MAILER,
-            $this->REDIS,
             $this->WEBHOOK,
         );
     }

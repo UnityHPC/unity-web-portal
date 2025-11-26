@@ -13,7 +13,7 @@ if (!$USER->isPI()) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["uid"])) {
-        $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     }
 
     switch ($_POST["form_type"]) {

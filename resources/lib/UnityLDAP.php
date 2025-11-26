@@ -194,39 +194,14 @@ class UnityLDAP extends LDAPConn
         return $this->qualifiedUserGroup->getAttribute("memberuid");
     }
 
-    public function getQualifiedUsers(
-        $UnitySQL,
-        $UnityMailer,
-        $UnityRedis,
-        $UnityWebhook,
-        $ignorecache = false,
-    ): array {
+    public function getQualifiedUsers($UnitySQL, $UnityMailer, $UnityWebhook): array
+    {
         $out = [];
-
-        if (!$ignorecache) {
-            $qualifiedUsers = $UnityRedis->getCache("sorted_qualified_users", "");
-            if (!is_null($qualifiedUsers)) {
-                foreach ($qualifiedUsers as $user) {
-                    array_push(
-                        $out,
-                        new UnityUser(
-                            $user,
-                            $this,
-                            $UnitySQL,
-                            $UnityMailer,
-                            $UnityRedis,
-                            $UnityWebhook,
-                        ),
-                    );
-                }
-                return $out;
-            }
-        }
 
         $qualifiedUsers = $this->getQualifiedUsersUIDs();
         sort($qualifiedUsers);
         foreach ($qualifiedUsers as $user) {
-            $params = [$user, $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook];
+            $params = [$user, $this, $UnitySQL, $UnityMailer, $UnityWebhook];
             array_push($out, new UnityUser(...$params));
         }
         return $out;
@@ -254,23 +229,9 @@ class UnityLDAP extends LDAPConn
     public function getAllPIGroups(
         UnitySQL $UnitySQL,
         UnityMailer $UnityMailer,
-        UnityRedis $UnityRedis,
         UnityWebhook $UnityWebhook,
-        bool $ignorecache = false,
     ) {
         $out = [];
-
-        if (!$ignorecache) {
-            $groups = $UnityRedis->getCache("sorted_groups", "");
-            if (!is_null($groups)) {
-                foreach ($groups as $group) {
-                    $params = [$group, $this, $UnitySQL, $UnityMailer, $UnityRedis, $UnityWebhook];
-                    array_push($out, new UnityGroup(...$params));
-                }
-
-                return $out;
-            }
-        }
 
         $pi_groups = $this->pi_groupOU->getChildren(true);
 
@@ -282,7 +243,6 @@ class UnityLDAP extends LDAPConn
                     $this,
                     $UnitySQL,
                     $UnityMailer,
-                    $UnityRedis,
                     $UnityWebhook,
                 ),
             );
@@ -373,34 +333,9 @@ class UnityLDAP extends LDAPConn
         return $uid2pigids;
     }
 
-    public function getAllOrgGroups(
-        $UnitySQL,
-        $UnityMailer,
-        $UnityRedis,
-        $UnityWebhook,
-        $ignorecache = false,
-    ): array {
+    public function getAllOrgGroups($UnitySQL, $UnityMailer, $UnityWebhook): array
+    {
         $out = [];
-
-        if (!$ignorecache) {
-            $orgs = $UnityRedis->getCache("sorted_orgs", "");
-            if (!is_null($orgs)) {
-                foreach ($orgs as $org) {
-                    array_push(
-                        $out,
-                        new UnityOrg(
-                            $org,
-                            $this,
-                            $UnitySQL,
-                            $UnityMailer,
-                            $UnityRedis,
-                            $UnityWebhook,
-                        ),
-                    );
-                }
-                return $out;
-            }
-        }
 
         $org_groups = $this->org_groupOU->getChildren(true);
 
@@ -412,7 +347,6 @@ class UnityLDAP extends LDAPConn
                     $this,
                     $UnitySQL,
                     $UnityMailer,
-                    $UnityRedis,
                     $UnityWebhook,
                 ),
             );
@@ -464,29 +398,6 @@ class UnityLDAP extends LDAPConn
             return $cn[0];
         }
         throw new exceptions\EntryNotFoundException($email);
-    }
-
-    public function getSortedQualifiedUsersForRedis(): array
-    {
-        $qualified_users = $this->getQualifiedUsersUIDs();
-        sort($qualified_users);
-        return $qualified_users;
-    }
-
-    public function getSortedOrgsForRedis(): array
-    {
-        $attributes = $this->getAllOrgGroupsAttributes(["cn"]);
-        $groups = array_map(fn($x) => $x["cn"][0], $attributes);
-        sort($groups);
-        return $groups;
-    }
-
-    public function getSortedGroupsForRedis(): array
-    {
-        $attributes = $this->getAllPIGroupsAttributes(["cn"]);
-        $groups = array_map(fn($x) => $x["cn"][0], $attributes);
-        sort($groups);
-        return $groups;
     }
 
     /**

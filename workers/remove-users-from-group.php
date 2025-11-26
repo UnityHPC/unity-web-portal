@@ -19,14 +19,14 @@ if (sizeof($argv) != 3 or in_array($argv, ["-h", "--help"])) {
 
 $gid = $argv[1];
 $filename = $argv[2];
-$group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+$group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
 if (!$group->exists()) {
     _die("No such group '$gid'\n");
 }
 ($handle = fopen($filename, "r")) or _die("Can't open '$filename'\n");
 while (($line = fgets($handle)) !== false) {
     $uid = trim($line);
-    $user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+    $user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
     if (!$group->memberExists($user)) {
         print "Skipping '$uid' who doesn't appear to be in '$gid'\n";
         continue;

@@ -13,7 +13,6 @@ require_once __DIR__ . "/../resources/lib/UnitySSO.php";
 require_once __DIR__ . "/../resources/lib/UnityHTTPD.php";
 require_once __DIR__ . "/../resources/lib/UnityConfig.php";
 require_once __DIR__ . "/../resources/lib/UnityWebhook.php";
-require_once __DIR__ . "/../resources/lib/UnityRedis.php";
 require_once __DIR__ . "/../resources/lib/UnityGithub.php";
 require_once __DIR__ . "/../resources/lib/utils.php";
 require_once __DIR__ . "/../resources/lib/exceptions/NoDieException.php";
@@ -64,8 +63,7 @@ function switchUser(
     string $mail,
     ?string $session_id = null,
 ): void {
-    global $REDIS,
-        $LDAP,
+    global $LDAP,
         $SQL,
         $MAILER,
         $WEBHOOK,
@@ -96,8 +94,7 @@ function switchUser(
 
 function http_post(string $phpfile, array $post_data): void
 {
-    global $REDIS,
-        $LDAP,
+    global $LDAP,
         $SQL,
         $MAILER,
         $WEBHOOK,
@@ -131,8 +128,7 @@ function http_post(string $phpfile, array $post_data): void
 
 function http_get(string $phpfile, array $get_data = []): void
 {
-    global $REDIS,
-        $LDAP,
+    global $LDAP,
         $SQL,
         $MAILER,
         $WEBHOOK,
@@ -167,7 +163,7 @@ function http_get(string $phpfile, array $get_data = []): void
 // does not remove user from PI groups
 function ensureUserDoesNotExist()
 {
-    global $USER, $SQL, $LDAP, $REDIS;
+    global $USER, $SQL, $LDAP;
     $SQL->deleteRequestsByUser($USER->uid);
     if ($USER->exists()) {
         $org = $USER->getOrgGroup();
@@ -194,47 +190,35 @@ function ensureUserDoesNotExist()
         $qualified_users_group->write();
         ensure(!in_array($USER->uid, $qualified_users_group->getAttribute("memberuid")));
     }
-    $default_value_getter = [$LDAP, "getSortedQualifiedUsersForRedis"];
-    $REDIS->removeCacheArray("sorted_qualified_users", "", $USER->uid, $default_value_getter);
 }
 
 function ensureOrgGroupDoesNotExist()
 {
-    global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+    global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
     $org_group = $LDAP->getOrgGroupEntry($SSO["org"]);
     if ($org_group->exists()) {
         $org_group->delete();
         ensure(!$org_group->exists());
     }
-    $default_value_getter = [$LDAP, "getSortedOrgsForRedis"];
-    $REDIS->removeCacheArray("sorted_orgs", "", $SSO["org"], $default_value_getter);
 }
 
 function ensureUserNotInPIGroup(UnityGroup $pi_group)
 {
-    global $USER, $REDIS;
+    global $USER;
     if ($pi_group->memberExists($USER)) {
         $pi_group->removeUser($USER);
         ensure(!$pi_group->memberExists($USER));
     }
-    $REDIS->removeCacheArray(
-        $pi_group->gid,
-        "members",
-        $USER->uid,
-        fn() => $pi_group->getGroupMemberUIDs(true),
-    );
 }
 
 function ensurePIGroupDoesNotExist()
 {
-    global $USER, $LDAP, $REDIS;
+    global $USER, $LDAP;
     $gid = $USER->getPIGroup()->gid;
     if ($USER->getPIGroup()->exists()) {
         $LDAP->getPIGroupEntry($gid)->delete();
         ensure(!$USER->getPIGroup()->exists());
     }
-    $default_value_getter = [$LDAP, "getSortedGroupsForRedis"];
-    $REDIS->removeCacheArray("sorted_groups", "", $gid, $default_value_getter);
 }
 
 function getNormalUser()

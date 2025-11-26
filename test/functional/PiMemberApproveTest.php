@@ -81,7 +81,7 @@ class PIMemberApproveTest extends TestCase
     }
     public function testApproveMemberByPI()
     {
-        global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+        global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
         $user_to_approve_args = getUnqualifiedUser();
         $pi_user_args = getUserIsPIHasNoMembersNoMemberRequests();
         switchUser(...$pi_user_args);
@@ -142,7 +142,7 @@ class PIMemberApproveTest extends TestCase
 
     public function testApproveMemberByAdmin()
     {
-        global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+        global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
         $user_to_approve_args = getUnqualifiedUser();
         switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
         $pi_group = $USER->getPIGroup();
