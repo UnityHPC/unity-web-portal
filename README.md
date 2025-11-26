@@ -117,6 +117,10 @@ rm "$prod" && ln -s "$old" "$prod"
 
 ### Version-specific update instructions:
 
+### 1.4 -> 1.5
+
+- Redis can be shut down
+
 ### 1.3 -> 1.4
 
 - the `[ldap]user_group` option has been renamed to `[ldap]qualified_user_group`
