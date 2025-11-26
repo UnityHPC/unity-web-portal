@@ -1,8 +1,6 @@
 #!/usr/bin/env php
 <?php
-$_SERVER["HTTP_HOST"] = "worker"; // see deployment/overrides/worker
-
-require_once __DIR__ . "/../resources/autoload.php";
+include __DIR__ . "/init.php";
 
 use UnityWebPortal\lib\UnityConfig;
 use UnityWebPortal\lib\UnityLDAP;
@@ -17,11 +15,13 @@ use PHPOpenLDAPer\LDAPEntry;
 
 $options = getopt("fuh", ["help"]);
 if (array_key_exists("h", $options) or array_key_exists("help", $options)) {
-    echo "arguments:
+    _die(
+        "arguments:
     f: flush cache and then update
     u: update cache even if already initialized
-    h --help: display this message\n";
-    die();
+    h --help: display this message\n",
+        0,
+    );
 }
 if (array_key_exists("f", $options)) {
     echo "flushing cache...\n";
