@@ -2,6 +2,7 @@
 
 namespace UnityWebPortal\lib;
 
+use UnityWebPortal\lib\exceptions\EntryNotFoundException;
 use PHPOpenLDAPer\LDAPConn;
 use PHPOpenLDAPer\LDAPEntry;
 
@@ -486,5 +487,51 @@ class UnityLDAP extends LDAPConn
         $groups = array_map(fn($x) => $x["cn"][0], $attributes);
         sort($groups);
         return $groups;
+    }
+
+    /**
+     * returns an array with each UID as an array key
+     * @throws \UnityWebPortal\lib\exceptions\EntryNotFoundException
+     */
+    public function getUsersAttributes(
+        array $uids,
+        array $attributes,
+        array $default_values = [],
+    ): array {
+        if (count($uids) === 0) {
+            return [];
+        }
+        $attributes = array_map("strtolower", $attributes);
+        if (in_array("uid", $attributes)) {
+            $asked_for_uid_attribute = true;
+        } else {
+            $asked_for_uid_attribute = false;
+            array_push($attributes, "uid");
+        }
+        $uids_escaped = array_map(fn($x) => ldap_escape($x, "", LDAP_ESCAPE_FILTER), $uids);
+        $filter =
+            "(&(objectClass=posixAccount)(|" .
+            implode("", array_map(fn($x) => "(uid=$x)", $uids_escaped)) .
+            "))";
+        $entries = $this->baseOU->getChildrenArrayStrict(
+            $attributes,
+            true,
+            $filter,
+            $default_values,
+        );
+        $output = [];
+        foreach ($entries as $entry) {
+            $uid = $entry["uid"][0];
+            if (!$asked_for_uid_attribute) {
+                unset($entry["uid"]);
+            }
+            $output[$uid] = $entry;
+        }
+        $uids_not_found = array_diff($uids, array_keys($output));
+        if (count($uids_not_found) > 0) {
+            throw new EntryNotFoundException(jsonEncode($uids_not_found));
+        }
+        ksort($output);
+        return $output;
     }
 }

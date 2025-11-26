@@ -470,4 +470,13 @@ class UnityGroup
         $ownerUid = $entry->getAttribute("cn")[0];
         return self::PI_PREFIX . $ownerUid;
     }
+
+    public function getGroupMembersAttributes(array $attributes, array $default_values = []): array
+    {
+        return $this->LDAP->getUsersAttributes(
+            $this->getGroupMemberUIDs(),
+            $attributes,
+            $default_values,
+        );
+    }
 }
