@@ -120,6 +120,7 @@ rm "$prod" && ln -s "$old" "$prod"
 ### 1.4 -> 1.5
 
 - Redis can be shut down
+- the `[redis]` portion of your config file should be removed
 
 ### 1.3 -> 1.4
 
