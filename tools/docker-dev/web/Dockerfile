@@ -11,7 +11,6 @@ RUN apt-get update && apt-get install -y \
     php-mysql \
     php-ldap \
     php-pdo \
-    php-redis \
     php-cli \
     php-mbstring \
     php-xml \

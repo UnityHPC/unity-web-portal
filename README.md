@@ -50,7 +50,7 @@ See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for prod
    - Composer (`apt install composer` on Ubuntu)
    - Dependencies:
      - PHP extensions
-       - curl, intl, ldap, mbstring, mysql, pdo, redis, xml (`apt install php-<extension>` on Ubuntu)
+       - curl, intl, ldap, mbstring, mysql, pdo, xml (`apt install php-<extension>` on Ubuntu)
      - Libraries
        - `COMPOSER_ALLOW_SUPERUSER=1 composer --no-dev --no-scripts --no-plugins install`
    - `httpd` `DocumentRoot` set to `webroot/`
@@ -139,14 +139,7 @@ Now, LDAP entries are created immediately for every user, so this is no longer n
   $_SERVER["REMOTE_ADDR"] = "127.0.0.1";
   require_once __DIR__ . "/../resources/autoload.php";
   foreach ($SQL->getAllRequests() as $request) {
-    $user = new UnityUser(
-      $request["uid"],
-      $LDAP,
-      $SQL,
-      $MAILER,
-      $REDIS,
-      $WEBHOOK,
-    );
+    $user = new UnityUser($request["uid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     if (!$user->exists()) {
       echo "creating user: " . jsonEncode($request) . "\n";
       $user->init(

@@ -16,7 +16,7 @@ class PIRemoveUserTest extends TestCase
 
     public function testRemoveUser()
     {
-        global $USER, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+        global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
         switchUser(...getUserIsPIHasAtLeastOneMember());
         $pi = $USER;
         $piUid = $USER->uid;
@@ -30,7 +30,7 @@ class PIRemoveUserTest extends TestCase
         $memberToDelete = null;
         foreach ($memberUIDs as $uid) {
             if ($uid != $piUid) {
-                $memberToDelete = new UnityUser($uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+                $memberToDelete = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
                 if ($memberToDelete->hasRequestedAccountDeletion()) {
                     continue;
                 }
@@ -52,7 +52,7 @@ class PIRemoveUserTest extends TestCase
 
     public function testRemovePIFromTheirOwnGroup()
     {
-        global $USER, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+        global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
         switchUser(...getUserIsPIHasAtLeastOneMember());
         $pi = $USER;
         $piGroup = $USER->getPIGroup();

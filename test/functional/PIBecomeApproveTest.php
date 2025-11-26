@@ -42,7 +42,7 @@ class PIBecomeApproveTest extends TestCase
 
     public function testApprovePI()
     {
-        global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+        global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
         $user_to_qualify_args = getUnqualifiedUser();
         switchuser(...$user_to_qualify_args);
         $pi_group = $USER->getPIGroup();

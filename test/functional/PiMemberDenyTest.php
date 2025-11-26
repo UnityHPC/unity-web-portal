@@ -27,14 +27,14 @@ class PIMemberDenyTest extends TestCase
 
     public function testDenyRequest()
     {
-        global $USER, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+        global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
         switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
         $pi = $USER;
         $piGroup = $USER->getPIGroup();
         $this->assertTrue($piGroup->exists());
         $this->assertEqualsCanonicalizing([$pi->uid], $piGroup->getGroupMemberUIDs());
         $this->assertEmpty($piGroup->getRequests());
-        $requestedUser = new UnityUser(self::$requestUid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $requestedUser = new UnityUser(self::$requestUid, $LDAP, $SQL, $MAILER, $WEBHOOK);
         try {
             $piGroup->newUserRequest($requestedUser);
             $this->assertFalse($piGroup->memberExists($requestedUser));

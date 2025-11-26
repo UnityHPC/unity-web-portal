@@ -13,7 +13,7 @@ if (!isset($_GET["gid"])) {
     UnityHTTPD::badRequest("PI UID not set");
 }
 
-$group = new UnityGroup($_GET["gid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+$group = new UnityGroup($_GET["gid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
 $members = $group->getGroupMembersAttributes(["gecos", "mail"]);
 $requests = $group->getRequests();
 

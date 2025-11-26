@@ -12,7 +12,7 @@ if (!$USER->isAdmin()) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["uid"])) {
-        $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     }
 
     switch ($_POST["form_type"]) {
@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             break;
         case "reqChild":
-            $parent_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+            $parent_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $WEBHOOK);
             if ($_POST["action"] == "Approve") {
                 $parent_group->approveUser($form_user);
             } elseif ($_POST["action"] == "Deny") {
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             break;
         case "remUserChild":
-            $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+            $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $WEBHOOK);
             $parent->removeUser($form_user);
 
             break;
@@ -66,7 +66,7 @@ require $LOC_HEADER;
 
     foreach ($requests as $request) {
         $uid = $request["uid"];
-        $request_user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $request_user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
         $name = $request_user->getFullname();
         $email = $request_user->getMail();
         echo "<tr>";

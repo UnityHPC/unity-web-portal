@@ -11,14 +11,12 @@ class UnityOrg
     private UnitySQL $SQL;
     private UnityMailer $MAILER;
     private UnityWebhook $WEBHOOK;
-    private UnityRedis $REDIS;
 
     public function __construct(
         string $gid,
         UnityLDAP $LDAP,
         UnitySQL $SQL,
         UnityMailer $MAILER,
-        UnityRedis $REDIS,
         UnityWebhook $WEBHOOK,
     ) {
         $gid = trim($gid);
@@ -29,7 +27,6 @@ class UnityOrg
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
         $this->WEBHOOK = $WEBHOOK;
-        $this->REDIS = $REDIS;
     }
 
     public function init(): void
@@ -39,8 +36,6 @@ class UnityOrg
         $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
         $this->entry->setAttribute("gidnumber", strval($nextGID));
         $this->entry->write();
-        $default_value_getter = [$this->LDAP, "getSortedOrgsForRedis"];
-        $this->REDIS->appendCacheArray("sorted_orgs", "", $this->gid, $default_value_getter);
     }
 
     public function exists(): bool
@@ -63,7 +58,6 @@ class UnityOrg
                 $this->LDAP,
                 $this->SQL,
                 $this->MAILER,
-                $this->REDIS,
                 $this->WEBHOOK,
             );
             array_push($out, $user_obj);
@@ -95,23 +89,11 @@ class UnityOrg
     {
         $this->entry->appendAttribute("memberuid", $user->uid);
         $this->entry->write();
-        $this->REDIS->appendCacheArray(
-            $this->gid,
-            "members",
-            $user->uid,
-            fn() => $this->getOrgMemberUIDs(true),
-        );
     }
 
     public function removeUser(UnityUser $user): void
     {
         $this->entry->removeAttributeEntryByValue("memberuid", $user->uid);
         $this->entry->write();
-        $this->REDIS->removeCacheArray(
-            $this->gid,
-            "members",
-            $user->uid,
-            fn() => $this->getOrgMemberUIDs(true),
-        );
     }
 }

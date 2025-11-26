@@ -197,7 +197,6 @@ class UnityLDAP extends LDAPConn
     public function getQualifiedUsers(
         $UnitySQL,
         $UnityMailer,
-        $UnityRedis,
         $UnityWebhook,
         $ignorecache = false,
     ): array {
@@ -464,29 +463,6 @@ class UnityLDAP extends LDAPConn
             return $cn[0];
         }
         throw new exceptions\EntryNotFoundException($email);
-    }
-
-    public function getSortedQualifiedUsersForRedis(): array
-    {
-        $qualified_users = $this->getQualifiedUsersUIDs();
-        sort($qualified_users);
-        return $qualified_users;
-    }
-
-    public function getSortedOrgsForRedis(): array
-    {
-        $attributes = $this->getAllOrgGroupsAttributes(["cn"]);
-        $groups = array_map(fn($x) => $x["cn"][0], $attributes);
-        sort($groups);
-        return $groups;
-    }
-
-    public function getSortedGroupsForRedis(): array
-    {
-        $attributes = $this->getAllPIGroupsAttributes(["cn"]);
-        $groups = array_map(fn($x) => $x["cn"][0], $attributes);
-        sort($groups);
-        return $groups;
     }
 
     /**

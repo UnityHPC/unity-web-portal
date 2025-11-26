@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 } catch (EntryNotFoundException) {
                 }
             }
-            $pi_account = new UnityGroup($pi_groupname, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+            $pi_account = new UnityGroup($pi_groupname, $LDAP, $SQL, $MAILER, $WEBHOOK);
             if (!$pi_account->exists()) {
                 array_push($modalErrors, "This PI doesn't exist");
             }
@@ -86,7 +86,6 @@ if (count($req_filtered) > 0) {
             $LDAP,
             $SQL,
             $MAILER,
-            $REDIS,
             $WEBHOOK
         );
         $requested_owner = $requested_account->getOwner();
@@ -133,7 +132,7 @@ if (count($PIGroupGIDs) == 0) {
 echo "<table>";
 
 foreach ($PIGroupGIDs as $gid) {
-    $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+    $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
     $owner = $group->getOwner();
     $full_name = $owner->getFirstname() . " " . $owner->getLastname();
     if ($USER->uid == $owner->uid) {

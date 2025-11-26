@@ -9,7 +9,6 @@ use UnityWebPortal\lib\UnityMailer;
 use UnityWebPortal\lib\UnitySQL;
 use UnityWebPortal\lib\UnitySSO;
 use UnityWebPortal\lib\UnityUser;
-use UnityWebPortal\lib\UnityRedis;
 use UnityWebPortal\lib\UnityWebhook;
 use UnityWebPortal\lib\UnityGithub;
 use UnityWebPortal\lib\UnityHTTPD;
@@ -20,7 +19,6 @@ if (CONFIG["site"]["enable_exception_handler"]) {
 
 session_start();
 
-$REDIS = new UnityRedis();
 if (isset($GLOBALS["ldapconn"])) {
     $LDAP = $GLOBALS["ldapconn"];
 } else {
@@ -37,11 +35,11 @@ if (isset($_SERVER["REMOTE_USER"])) {
     $SSO = UnitySSO::getSSO();
     $_SESSION["SSO"] = $SSO;
 
-    $OPERATOR = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+    $OPERATOR = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     $_SESSION["is_admin"] = $OPERATOR->isAdmin();
 
     if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
-        $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK);
+        $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     } else {
         $USER = $OPERATOR;
     }
@@ -51,14 +49,6 @@ if (isset($_SERVER["REMOTE_USER"])) {
     $SEND_PIMESG_TO_ADMINS = CONFIG["mail"]["send_pimesg_to_admins"];
 
     $SQL->addLog($OPERATOR->uid, $_SERVER["REMOTE_ADDR"], "user_login", $OPERATOR->uid);
-
-    if (!$_SESSION["user_exists"]) {
-        // populate cache
-        $REDIS->setCache($SSO["user"], "org", $SSO["org"]);
-        $REDIS->setCache($SSO["user"], "firstname", $SSO["firstname"]);
-        $REDIS->setCache($SSO["user"], "lastname", $SSO["lastname"]);
-        $REDIS->setCache($SSO["user"], "mail", $SSO["mail"]);
-    }
 }
 
 $LOC_HEADER = __DIR__ . "/templates/header.php";

@@ -27,7 +27,7 @@ class PageLoadTest extends TestCase
     #[DataProvider("provider")]
     public function testLoadPage($user, $path)
     {
-        global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+        global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
         switchuser(...$user);
         http_get($path);
         $this->assertTrue(true); // assert there were no errors

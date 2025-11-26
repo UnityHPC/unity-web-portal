@@ -15,14 +15,12 @@ class UnityUser
     private UnitySQL $SQL;
     private UnityMailer $MAILER;
     private UnityWebhook $WEBHOOK;
-    private UnityRedis $REDIS;
 
     public function __construct(
         string $uid,
         UnityLDAP $LDAP,
         UnitySQL $SQL,
         UnityMailer $MAILER,
-        UnityRedis $REDIS,
         UnityWebhook $WEBHOOK,
     ) {
         $uid = trim($uid);
@@ -32,7 +30,6 @@ class UnityUser
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
-        $this->REDIS = $REDIS;
         $this->WEBHOOK = $WEBHOOK;
     }
 
@@ -88,14 +85,6 @@ class UnityUser
         $this->entry->setAttribute("gidnumber", strval($id));
         $this->entry->write();
 
-        $this->REDIS->setCache($this->uid, "firstname", $firstname);
-        $this->REDIS->setCache($this->uid, "lastname", $lastname);
-        $this->REDIS->setCache($this->uid, "mail", $email);
-        $this->REDIS->setCache($this->uid, "org", $org);
-        $this->REDIS->setCache($this->uid, "homedir", self::HOME_DIR . $this->uid);
-        $this->REDIS->setCache($this->uid, "loginshell", $this->LDAP->getDefUserShell());
-        $this->REDIS->setCache($this->uid, "sshkeys", []);
-
         $org = $this->getOrgGroup();
         if (!$org->exists()) {
             $org->init();
@@ -122,13 +111,6 @@ class UnityUser
         if ($newIsQualified) {
             $this->LDAP->getQualifiedUserGroup()->appendAttribute("memberuid", $this->uid);
             $this->LDAP->getQualifiedUserGroup()->write();
-            $default_value_getter = [$this->LDAP, "getSortedQualifiedUsersForRedis"];
-            $this->REDIS->appendCacheArray(
-                "sorted_qualified_users",
-                "",
-                $this->uid,
-                $default_value_getter,
-            );
             if ($doSendMail) {
                 $this->MAILER->sendMail($this->getMail(), "user_qualified", [
                     "user" => $this->uid,
@@ -140,13 +122,6 @@ class UnityUser
                 ->getQualifiedUserGroup()
                 ->removeAttributeEntryByValue("memberuid", $this->uid);
             $this->LDAP->getQualifiedUserGroup()->write();
-            $default_value_getter = [$this->LDAP, "getSortedQualifiedUsersForRedis"];
-            $this->REDIS->removeCacheArray(
-                "sorted_qualified_users",
-                "",
-                $this->uid,
-                $default_value_getter,
-            );
             if ($doSendMail) {
                 $this->MAILER->sendMail($this->getMail(), "user_dequalified", [
                     "user" => $this->uid,
@@ -173,7 +148,6 @@ class UnityUser
     {
         $this->entry->setAttribute("o", $org);
         $this->entry->write();
-        $this->REDIS->setCache($this->uid, "org", $org);
     }
 
     public function getOrg(bool $ignorecache = false): string
@@ -452,7 +426,6 @@ class UnityUser
             $this->LDAP,
             $this->SQL,
             $this->MAILER,
-            $this->REDIS,
             $this->WEBHOOK,
         );
     }
@@ -464,7 +437,6 @@ class UnityUser
             $this->LDAP,
             $this->SQL,
             $this->MAILER,
-            $this->REDIS,
             $this->WEBHOOK,
         );
     }
@@ -520,7 +492,6 @@ class UnityUser
                 $this->LDAP,
                 $this->SQL,
                 $this->MAILER,
-                $this->REDIS,
                 $this->WEBHOOK,
             );
         } else {

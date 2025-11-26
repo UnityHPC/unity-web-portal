@@ -22,7 +22,7 @@ class RegisterUserTest extends TestCase
     #[DataProvider("provider")]
     public function testRegisterUserAndCreateOrg($user_to_register_args, $expected_uid_gid)
     {
-        global $USER, $SSO, $LDAP, $SQL, $MAILER, $REDIS, $WEBHOOK;
+        global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
         switchuser(...$user_to_register_args);
         $user_entry = $LDAP->getUserEntry($USER->uid);
         $user_group_entry = $LDAP->getGroupEntry($USER->uid);
