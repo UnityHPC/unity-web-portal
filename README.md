@@ -50,7 +50,7 @@ See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for prod
    - Composer (`apt install composer` on Ubuntu)
    - Dependencies:
      - PHP extensions
-       - curl, intl, ldap, mbstring, mysql, pdo, xml (`apt install php-<extension>` on Ubuntu)
+       - curl, intl, ldap, mbstring, mysql, pdo, xml (`apt install php-curl php-intl php-ldap php-mbstring php-mysql php-pdo php-xml` on Ubuntu)
      - Libraries
        - `COMPOSER_ALLOW_SUPERUSER=1 composer --no-dev --no-scripts --no-plugins install`
    - `httpd` `DocumentRoot` set to `webroot/`
