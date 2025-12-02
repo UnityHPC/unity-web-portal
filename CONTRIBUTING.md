@@ -32,7 +32,7 @@ This repository will automatically check PRs for linting compliance.
 1. Clone this repo (including submodules): `git clone <this-repo> --recurse-submodules`
 1. Install php v8.3
 1. install [composer](https://getcomposer.org/)
-1. install PHP dependencies: `composer update`
+1. install PHP dependencies: `composer install`
 1. If you're on Windows, use [WSL](https://learn.microsoft.com/en-us/windows/wsl/)
 1. Download and install [docker desktop](https://www.docker.com/products/docker-desktop/)
 1. In `tools/docker-dev` Run the build script: `./build.sh`
