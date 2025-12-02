@@ -132,7 +132,7 @@ class UnityHTTPD
         $errorid = uniqid();
         self::errorToUser("An internal server error has occurred.", 500, $errorid);
         self::errorLog("internal server error", $message, $errorid, $error, $data);
-        if (ini_get("display_errors") && ini_get("html_errors")) {
+        if (!is_null($error) && ini_get("display_errors") && ini_get("html_errors")) {
             echo "<table>";
             echo $error->xdebug_message;
             echo "</table>";
