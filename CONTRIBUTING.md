@@ -31,6 +31,7 @@ This repository will automatically check PRs for linting compliance.
 
 1. Clone this repo (including submodules): `git clone <this-repo> --recurse-submodules`
 1. Install php v8.3
+1. Install PHP extensions (`apt install php-curl php-intl php-ldap php-mbstring php-mysql php-pdo php-xml` on Ubuntu)
 1. install [composer](https://getcomposer.org/)
 1. install PHP dependencies: `composer install`
 1. If you're on Windows, use [WSL](https://learn.microsoft.com/en-us/windows/wsl/)
