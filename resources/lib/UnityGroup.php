@@ -118,7 +118,7 @@ class UnityGroup
      */
     public function denyGroup(?UnityUser $operator = null, bool $send_mail = true): void
     {
-        $request = $this->SQL->getRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
+        $request = $this->SQL->getRequest($this->getOwner()->uid, "admin");
         $this->SQL->removeRequest($this->getOwner()->uid);
         if ($this->exists()) {
             return;
