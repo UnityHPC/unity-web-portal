@@ -62,7 +62,7 @@ require $LOC_HEADER;
     </tr>
 
     <?php
-    $requests = $SQL->getRequests();
+    $requests = $SQL->getRequests("admin");
 
     foreach ($requests as $request) {
         $uid = $request["uid"];
