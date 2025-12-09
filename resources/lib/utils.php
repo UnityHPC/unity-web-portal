@@ -6,24 +6,6 @@ use UnityWebPortal\lib\exceptions\EncodingUnknownException;
 use UnityWebPortal\lib\exceptions\EncodingConversionException;
 use phpseclib3\Crypt\PublicKeyLoader;
 
-function arrayGet(array $array, mixed ...$keys): mixed
-{
-    $cursor = $array;
-    $keysTraversed = [];
-    foreach ($keys as $key) {
-        array_push($keysTraversed, $key);
-        if (!isset($cursor[$key])) {
-            throw new ArrayKeyException(
-                "key not found: \$array" .
-                    // [1, 2, "foo"] => [1][2]["foo"]
-                    implode("", array_map(fn($x) => jsonEncode([$x]), $keysTraversed)),
-            );
-        }
-        $cursor = $cursor[$key];
-    }
-    return $cursor;
-}
-
 // like assert() but not subject to zend.assertions config
 function ensure(bool $condition, ?string $message = null): void
 {

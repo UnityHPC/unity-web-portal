@@ -155,10 +155,10 @@ class UnityHTTPD
         return false;
     }
 
-    public static function getPostData(...$keys): mixed
+    public static function getPostData(string $key): mixed
     {
         try {
-            return \arrayGet($_POST, ...$keys);
+            return $_POST[$key];
         } catch (ArrayKeyException $e) {
             self::badRequest('failed to get $_POST data', $e, [
                 '$_POST' => $_POST,
@@ -172,7 +172,7 @@ class UnityHTTPD
         string $encoding = "UTF-8",
     ): string {
         try {
-            $tmpfile_path = \arrayGet($_FILES, $filename, "tmp_name");
+            $tmpfile_path = $_FILES[$filename]["tmp_name"];
         } catch (ArrayKeyException $e) {
             self::badRequest("no such uploaded file", $e, [
                 '$_FILES' => $_FILES,
