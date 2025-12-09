@@ -5,6 +5,22 @@ namespace UnityWebPortal\lib;
 use UnityWebPortal\lib\exceptions\NoDieException;
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
 
+enum UnityHTTPDMessageSeverity
+{
+    case INFO;
+    case GOOD;
+    case BAD;
+
+    public function toCSSClass(): string
+    {
+        return match ($this) {
+            self::INFO => "info",
+            self::GOOD => "good",
+            self::BAD => "bad",
+        };
+    }
+}
+
 class UnityHTTPD
 {
     public static function die(mixed $x = null, bool $show_user = false): never
@@ -195,5 +211,43 @@ class UnityHTTPD
     {
         // jsonEncode escapes quotes
         echo "<script type='text/javascript'>alert(" . \jsonEncode($message) . ");</script>";
+    }
+
+    public static function message(string $title, string $body, UnityHTTPDMessageSeverity $severity)
+    {
+        if (!array_key_exists("messages", $_SESSION)) {
+            $_SESSION["messages"] = [];
+        }
+        array_push($_SESSION["messages"], [$title, $body, $severity]);
+    }
+
+    public static function messageGood(string $title, string $body)
+    {
+        return self::message($title, $body, UnityHTTPDMessageSeverity::GOOD);
+    }
+    public static function messageBad(string $title, string $body)
+    {
+        return self::message($title, $body, UnityHTTPDMessageSeverity::BAD);
+    }
+    public static function messageInfo(string $title, string $body)
+    {
+        return self::message($title, $body, UnityHTTPDMessageSeverity::INFO);
+    }
+
+    public static function dumpMessages()
+    {
+        $output = "";
+        try {
+            $messages = $_SESSION["messages"];
+        } catch (ArrayKeyException) {
+            return $output;
+        }
+        foreach ($messages as [$title, $body, $severity]) {
+            $title_stripped = strip_tags($title);
+            $body_stripped = strip_tags($body);
+            $severityCSSClass = $severity->toCSSClass();
+            $output .= "<div class='message $severityCSSClass'><h2>$title_stripped</h2><p>$body_stripped</p></div>\n";
+        }
+        return $output;
     }
 }
