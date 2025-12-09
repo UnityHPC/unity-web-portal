@@ -5,6 +5,7 @@ require_once __DIR__ . "/../../resources/autoload.php";
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
+use UnityWebPortal\lib\UnitySQL;
 
 if (!$USER->isAdmin()) {
     UnityHTTPD::forbidden("not an admin");
@@ -62,7 +63,7 @@ require $LOC_HEADER;
     </tr>
 
     <?php
-    $requests = $SQL->getRequests();
+    $requests = $SQL->getRequests(UnitySQL::REQUEST_BECOME_PI);
 
     foreach ($requests as $request) {
         $uid = $request["uid"];

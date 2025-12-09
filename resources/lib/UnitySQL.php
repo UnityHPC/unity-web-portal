@@ -34,7 +34,7 @@ class UnitySQL
     //
     // requests table methods
     //
-    public function addRequest(string $requestor, string $dest = self::REQUEST_BECOME_PI): void
+    public function addRequest(string $requestor, string $dest): void
     {
         if ($this->requestExists($requestor, $dest)) {
             return;
@@ -48,7 +48,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function removeRequest($requestor, string $dest = self::REQUEST_BECOME_PI): void
+    public function removeRequest($requestor, string $dest): void
     {
         if (!$this->requestExists($requestor, $dest)) {
             return;
@@ -63,7 +63,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function removeRequests(string $dest = self::REQUEST_BECOME_PI): void
+    public function removeRequests(string $dest): void
     {
         $stmt = $this->conn->prepare(
             "DELETE FROM " . self::TABLE_REQS . " WHERE request_for=:request_for",
@@ -91,7 +91,7 @@ class UnitySQL
         return $result[0];
     }
 
-    public function requestExists(string $requestor, string $dest = self::REQUEST_BECOME_PI): bool
+    public function requestExists(string $requestor, string $dest): bool
     {
         try {
             $this->getRequest($requestor, $dest);
@@ -109,7 +109,7 @@ class UnitySQL
         return $stmt->fetchAll();
     }
 
-    public function getRequests(string $dest = self::REQUEST_BECOME_PI): array
+    public function getRequests(string $dest): array
     {
         $stmt = $this->conn->prepare(
             "SELECT * FROM " . self::TABLE_REQS . " WHERE request_for=:request_for",

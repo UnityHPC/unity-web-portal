@@ -9,9 +9,9 @@ class PIBecomeRequestTest extends TestCase
     {
         global $USER, $SQL;
         if ($x == 0) {
-            $this->assertFalse($SQL->requestExists($USER->uid));
+            $this->assertFalse($SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI));
         } elseif ($x > 0) {
-            $this->assertTrue($SQL->requestExists($USER->uid));
+            $this->assertTrue($SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI));
         } else {
             throw new RuntimeException("x must not be negative");
         }

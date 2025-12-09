@@ -5,6 +5,7 @@ require_once __DIR__ . "/../../resources/autoload.php";
 use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\exceptions\EncodingUnknownException;
 use UnityWebPortal\lib\exceptions\EncodingConversionException;
+use UnityWebPortal\lib\UnitySQL;
 
 $hasGroups = count($USER->getPIGroupGIDs()) > 0;
 
@@ -70,13 +71,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($USER->isPI()) {
                 UnityHTTPD::badRequest("already a PI");
             }
-            if ($SQL->requestExists($USER->uid)) {
+            if ($SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI)) {
                 UnityHTTPD::badRequest("already requested to be PI");
             }
             if (!isset($_POST["tos"]) || $_POST["tos"] != "agree") {
                 UnityHTTPD::badRequest("user did not agree to terms of service");
             }
-            $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
+            $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS, UnitySQL::REQUEST_BECOME_PI);
             break;
         case "cancel_pi_request":
             $USER->getPIGroup()->cancelGroupRequest();
@@ -165,7 +166,7 @@ if (!$isPI) {
             </label>
         ";
     } else {
-        if ($SQL->requestExists($USER->uid)) {
+        if ($SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI)) {
             $onclick = "return confirm(\"Are you sure you want to cancel this request?\")";
             echo "<input type='submit' value='Cancel PI Account Request' onclick='$onclick'/>";
             echo "

@@ -76,7 +76,7 @@ class UnityGroup
             "name" => $this->getOwner()->getFullName(),
             "email" => $this->getOwner()->getMail(),
         ];
-        $this->SQL->addRequest($this->getOwner()->uid);
+        $this->SQL->addRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         if ($send_mail) {
             $this->MAILER->sendMail($this->getOwner()->getMail(), "group_request");
             $this->WEBHOOK->sendWebhook("group_request_admin", $context);
@@ -99,7 +99,7 @@ class UnityGroup
         }
         \ensure($this->getOwner()->exists());
         $this->init();
-        $this->SQL->removeRequest($this->getOwner()->uid);
+        $this->SQL->removeRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         $operator = is_null($operator) ? $this->getOwner()->uid : $operator->uid;
         $this->SQL->addLog(
             $operator,
@@ -137,10 +137,10 @@ class UnityGroup
 
     public function cancelGroupRequest(bool $send_mail = true): void
     {
-        if (!$this->SQL->requestExists($this->getOwner()->uid)) {
+        if (!$this->SQL->requestExists($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI)) {
             return;
         }
-        $this->SQL->removeRequest($this->getOwner()->uid);
+        $this->SQL->removeRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         if ($send_mail) {
             $this->MAILER->sendMail("admin", "group_request_cancelled", [
                 "uid" => $this->getOwner()->uid,
