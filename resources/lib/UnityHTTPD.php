@@ -52,16 +52,16 @@ class UnityHTTPD
                 $output["data"] = "data could not be JSON encoded: " . $e->getMessage();
             }
         }
-        $output["REMOTE_USER"] = $_SERVER["REMOTE_USER"] ?? null;
-        $output["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"] ?? null;
-        if (!is_null($errorid)) {
-            $output["errorid"] = $errorid;
-        }
         if (!is_null($error)) {
             $output["error"] = self::throwableToArray($error);
         } else {
             // newlines are bad for error log, but getTrace() is too verbose
             $output["trace"] = explode("\n", (new \Exception())->getTraceAsString());
+        }
+        $output["REMOTE_USER"] = $_SERVER["REMOTE_USER"] ?? null;
+        $output["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"] ?? null;
+        if (!is_null($errorid)) {
+            $output["errorid"] = $errorid;
         }
         error_log("$title: " . \jsonEncode($output));
     }
@@ -132,6 +132,11 @@ class UnityHTTPD
         $errorid = uniqid();
         self::errorToUser("An internal server error has occurred.", 500, $errorid);
         self::errorLog("internal server error", $message, $errorid, $error, $data);
+        if (!is_null($error) && ini_get("display_errors") && ini_get("html_errors")) {
+            echo "<table>";
+            echo $error->xdebug_message;
+            echo "</table>";
+        }
         self::die($message);
     }
 
@@ -140,13 +145,20 @@ class UnityHTTPD
     {
         ini_set("log_errors", true); // in case something goes wrong and error is not logged
         self::internalServerError("An internal server error has occurred.", error: $e);
-        ini_set("log_errors", false); // error logged successfully
     }
 
-    public static function getPostData(...$keys): mixed
+    public static function errorHandler(int $severity, string $message, string $file, int $line)
+    {
+        if (str_contains($message, "Undefined array key")) {
+            throw new ArrayKeyException($message);
+        }
+        return false;
+    }
+
+    public static function getPostData(string $key): mixed
     {
         try {
-            return \arrayGet($_POST, ...$keys);
+            return $_POST[$key];
         } catch (ArrayKeyException $e) {
             self::badRequest('failed to get $_POST data', $e, [
                 '$_POST' => $_POST,
@@ -160,7 +172,7 @@ class UnityHTTPD
         string $encoding = "UTF-8",
     ): string {
         try {
-            $tmpfile_path = \arrayGet($_FILES, $filename, "tmp_name");
+            $tmpfile_path = $_FILES[$filename]["tmp_name"];
         } catch (ArrayKeyException $e) {
             self::badRequest("no such uploaded file", $e, [
                 '$_FILES' => $_FILES,

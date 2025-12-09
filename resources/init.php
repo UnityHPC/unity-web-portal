@@ -17,6 +17,10 @@ if (CONFIG["site"]["enable_exception_handler"]) {
     set_exception_handler(["UnityWebPortal\lib\UnityHTTPD", "exceptionHandler"]);
 }
 
+if (CONFIG["site"]["enable_error_handler"]) {
+    set_error_handler(["UnityWebPortal\lib\UnityHTTPD", "errorHandler"]);
+}
+
 session_start();
 
 if (isset($GLOBALS["ldapconn"])) {
