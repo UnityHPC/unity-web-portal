@@ -36,7 +36,7 @@ class PIMemberRequestTest extends TestCase
         switchUser(...getUserNotPiNotRequestedBecomePi());
         $uid = $USER->uid;
         $this->assertFalse($USER->isPI());
-        $this->assertFalse($SQL->requestExists($uid, "admin"));
+        $this->assertFalse($SQL->requestExists($uid, UnitySQL::REQUEST_BECOME_PI));
         $this->assertFalse($pi_group->memberExists($USER));
         try {
             $this->requestMembership($gid);

@@ -70,13 +70,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($USER->isPI()) {
                 UnityHTTPD::badRequest("already a PI");
             }
-            if ($SQL->requestExists($USER->uid, "admin")) {
+            if ($SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI)) {
                 UnityHTTPD::badRequest("already requested to be PI");
             }
             if (!isset($_POST["tos"]) || $_POST["tos"] != "agree") {
                 UnityHTTPD::badRequest("user did not agree to terms of service");
             }
-            $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS, "admin");
+            $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS, UnitySQL::REQUEST_BECOME_PI);
             break;
         case "cancel_pi_request":
             $USER->getPIGroup()->cancelGroupRequest();
@@ -165,7 +165,7 @@ if (!$isPI) {
             </label>
         ";
     } else {
-        if ($SQL->requestExists($USER->uid, "admin")) {
+        if ($SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI)) {
             $onclick = "return confirm(\"Are you sure you want to cancel this request?\")";
             echo "<input type='submit' value='Cancel PI Account Request' onclick='$onclick'/>";
             echo "

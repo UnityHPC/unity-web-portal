@@ -9,9 +9,9 @@ class PIBecomeRequestTest extends TestCase
     {
         global $USER, $SQL;
         if ($x == 0) {
-            $this->assertFalse($SQL->requestExists($USER->uid, "admin"));
+            $this->assertFalse($SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI));
         } elseif ($x > 0) {
-            $this->assertTrue($SQL->requestExists($USER->uid, "admin"));
+            $this->assertTrue($SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI));
         } else {
             throw new RuntimeException("x must not be negative");
         }
@@ -62,8 +62,8 @@ class PIBecomeRequestTest extends TestCase
             ]);
             $this->assertNumberPiBecomeRequests(1);
         } finally {
-            if ($SQL->requestExists($USER, "admin")) {
-                $SQL->removeRequest($USER->uid, "admin");
+            if ($SQL->requestExists($USER, UnitySQL::REQUEST_BECOME_PI)) {
+                $SQL->removeRequest($USER->uid, UnitySQL::REQUEST_BECOME_PI);
             }
         }
     }
@@ -83,8 +83,8 @@ class PIBecomeRequestTest extends TestCase
             ]);
             $this->assertNumberPiBecomeRequests(0);
         } finally {
-            if ($SQL->requestExists($USER, "admin")) {
-                $SQL->removeRequest($USER->uid, "admin");
+            if ($SQL->requestExists($USER, UnitySQL::REQUEST_BECOME_PI)) {
+                $SQL->removeRequest($USER->uid, UnitySQL::REQUEST_BECOME_PI);
             }
         }
     }

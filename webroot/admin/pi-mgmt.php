@@ -62,7 +62,7 @@ require $LOC_HEADER;
     </tr>
 
     <?php
-    $requests = $SQL->getRequests("admin");
+    $requests = $SQL->getRequests(UnitySQL::REQUEST_BECOME_PI);
 
     foreach ($requests as $request) {
         $uid = $request["uid"];
