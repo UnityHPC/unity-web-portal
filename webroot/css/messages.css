@@ -1,7 +1,7 @@
 .message {
     border-radius: 10px;
     /* extra padding on right to make room for button */
-    padding: 10px 80px 10px 40px;
+    padding: 10px 40px 10px 40px;
     /* needed for button position: absolute */
     position: relative;
     text-align: center;
