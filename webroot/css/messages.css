@@ -1,6 +1,9 @@
 .message {
     border-radius: 10px;
-    padding: 10px 40px 10px 40px;
+    /* extra padding on right to make room for button */
+    padding: 10px 80px 10px 40px;
+    /* needed for button position: absolute */
+    position: relative;
     text-align: center;
     width: fit-content;
     margin-left: auto;
@@ -35,4 +38,13 @@
 .message.error {
     color: #721c24;
     background-color: #f8d7da;
+}
+
+.message button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: inherit;
+    color: inherit;
+    font-size: 2rem;
 }

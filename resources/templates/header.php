@@ -147,8 +147,8 @@ if (isset($SSO)) {
               <div class='message %s'>
                 <h3>%s</h3>
                 <p>%s</p>
-                <button onclick=\"this.parentElement.style.display='none';\">X</button>
-              </div>\n
+                <button onclick=\"this.parentElement.style.display='none';\">×</button>
+              </div>
             ",
             $level->value,
             strip_tags($title),
