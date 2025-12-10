@@ -209,8 +209,33 @@ class UnityHTTPD
         echo "<script type='text/javascript'>alert(" . \jsonEncode($message) . ");</script>";
     }
 
+    private static function ensureSessionMessagesSanity()
+    {
+        if (!isset($_SESSION)) {
+            throw new RuntimeException('$_SESSION is unset');
+        }
+        if (!array_key_exists("messages", $_SESSION)) {
+            self::errorLog(
+                "invalid session messages",
+                'array key "messages" does not exist for $_SESSION',
+                data: ['$_SESSION' => $_SESSION],
+            );
+            $_SESSION["messages"] = [];
+        }
+        if (!is_array($_SESSION["messages"])) {
+            $type = gettype($_SESSION["messages"]);
+            self::errorLog(
+                "invalid session messages",
+                "\$_SESSION['messages'] is type '$type', not an array",
+                data: ['$_SESSION' => $_SESSION],
+            );
+            $_SESSION["messages"] = [];
+        }
+    }
+
     public static function message(string $title, string $body, UnityHTTPDMessageLevel $level)
     {
+        self::ensureSessionMessagesSanity();
         array_push($_SESSION["messages"], [$title, $body, $level]);
     }
 
@@ -237,18 +262,8 @@ class UnityHTTPD
 
     public static function getMessages()
     {
-        if (!isset($_SESSION)) {
-            throw new RuntimeException('$_SESSION is unset');
-        }
-        if (!array_key_exists("messages", $_SESSION)) {
-            throw new RuntimeException('array key "messages" does not exist for $_SESSION');
-        }
-        $messages = $_SESSION["messages"];
-        if (!is_array($messages)) {
-            $type = gettype($messages);
-            throw new RuntimeException("\$_SESSION['messages'] is type '$type', not an array");
-        }
-        return $messages;
+        self::ensureSessionMessagesSanity();
+        return $_SESSION["messages"];
     }
 
     public static function clearMessages()
