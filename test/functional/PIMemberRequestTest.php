@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use UnityWebPortal\lib\UnityHTTPDMessageSeverity;
 use UnityWebPortal\lib\UnitySQL;
 
 class PIMemberRequestTest extends TestCase
@@ -44,7 +45,12 @@ class PIMemberRequestTest extends TestCase
             $this->cancelRequest($gid);
             $this->assertFalse($SQL->requestExists($uid, $gid));
             $this->requestMembership("asdlkjasldkj");
-            $this->assertContains("This PI doesn't exist", $_SESSION["MODAL_ERRORS"]);
+            assertMessageExists(
+                $this,
+                UnityHTTPDMessageSeverity::BAD,
+                ".*",
+                "This PI doesn't exist",
+            );
             $this->requestMembership($pi_group->getOwner()->getMail());
             $this->assertTrue($SQL->requestExists($uid, $gid));
         } finally {
