@@ -126,11 +126,6 @@ if (isset($SSO)) {
     ?>
   </nav>
 
-  <?php
-    echo UnityHTTPD::exportMessagesHTML();
-    UnityHTTPD::clearMessages();
-    ?>
-
   <div class="modalWrapper" style="display: none;">
     <div class="modalContent">
       <div class="modalTitleWrapper">
@@ -145,6 +140,8 @@ if (isset($SSO)) {
   <main>
 
   <?php
+    echo UnityHTTPD::exportMessagesHTML();
+    UnityHTTPD::clearMessages();
     if (
         isset($_SESSION["is_admin"])
         && $_SESSION["is_admin"]
