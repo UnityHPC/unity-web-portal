@@ -86,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($hasGroups) {
                 break;
             }
+            $SQL->deleteRequestsByUser($USER->uid);
             if (!$SQL->accDeletionRequestExists($USER->uid)) {
                 $USER->requestAccountDeletion();
             }
