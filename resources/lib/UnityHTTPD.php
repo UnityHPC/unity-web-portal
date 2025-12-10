@@ -4,21 +4,13 @@ namespace UnityWebPortal\lib;
 
 use UnityWebPortal\lib\exceptions\NoDieException;
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
+use RuntimeException;
 
-enum UnityHTTPDMessageSeverity
+enum UnityHTTPDMessageSeverity: string
 {
-    case INFO;
-    case GOOD;
-    case BAD;
-
-    public function toCSSClass(): string
-    {
-        return match ($this) {
-            self::INFO => "info",
-            self::GOOD => "good",
-            self::BAD => "bad",
-        };
-    }
+    case INFO = "info";
+    case GOOD = "good";
+    case BAD = "bad";
 }
 
 class UnityHTTPD
@@ -234,19 +226,30 @@ class UnityHTTPD
         return self::message($title, $body, UnityHTTPDMessageSeverity::INFO);
     }
 
-    public static function dumpMessages()
+    public static function getMessages()
+    {
+        if (!isset($_SESSION)) {
+            throw new RuntimeException('$_SESSION is unset');
+        }
+        if (!array_key_exists("messages", $_SESSION)) {
+            throw new RuntimeException('array key "messages" does not exist for $_SESSION');
+        }
+        $messages = $_SESSION["messages"];
+        if (!is_array($messages)) {
+            $type = gettype($messages);
+            throw new RuntimeException("\$_SESSION['messages'] is type '$type', not an array");
+        }
+        return $messages;
+    }
+
+    public static function exportMessagesHTML()
     {
         $output = "";
-        try {
-            $messages = $_SESSION["messages"];
-        } catch (ArrayKeyException) {
-            return $output;
-        }
-        foreach ($messages as [$title, $body, $severity]) {
+        foreach (self::getMessages() as [$title, $body, $severity]) {
             $title_stripped = strip_tags($title);
             $body_stripped = strip_tags($body);
-            $severityCSSClass = $severity->toCSSClass();
-            $output .= "<div class='message $severityCSSClass'><h2>$title_stripped</h2><p>$body_stripped</p></div>\n";
+            $severity_str = $severity->value;
+            $output .= "<div class='message $severity_str'><h2>$title_stripped</h2><p>$body_stripped</p></div>\n";
         }
         return $output;
     }
