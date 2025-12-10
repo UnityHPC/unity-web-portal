@@ -262,7 +262,7 @@ class UnityHTTPD
             $title_stripped = strip_tags($title);
             $body_stripped = strip_tags($body);
             $level_str = $level->value;
-            $output .= "<div class='message $level_str'><h2>$title_stripped</h2><p>$body_stripped</p></div>\n";
+            $output .= "<div class='message $level_str'><h3>$title_stripped</h3><p>$body_stripped</p></div>\n";
         }
         return $output;
     }
