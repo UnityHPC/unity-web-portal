@@ -1,0 +1,9 @@
+.message {
+    background: green;
+    border-radius: 10px;
+    padding: 5px 40px 5px 40px;
+    text-align: center;
+    width: fit-content;
+    margin: auto;
+    opacity: 90%;
+}

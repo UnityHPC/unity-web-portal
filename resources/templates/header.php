@@ -56,6 +56,7 @@ if (isset($SSO)) {
         <link rel='stylesheet' type='text/css' href='$prefix/css/modal.css'>
         <link rel='stylesheet' type='text/css' href='$prefix/css/tables.css'>
         <link rel='stylesheet' type='text/css' href='$prefix/css/filters.css'>
+        <link rel='stylesheet' type='text/css' href='$prefix/css/messages.css'>
     ";
     ?>
 
