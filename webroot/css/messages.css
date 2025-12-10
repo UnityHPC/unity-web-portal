@@ -1,11 +1,17 @@
 .message {
     background: green;
     border-radius: 10px;
-    padding: 5px 40px 5px 40px;
+    padding: 10px 40px 10px 40px;
     text-align: center;
     width: fit-content;
-    margin: auto;
-    color: #494949
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    color: #676767
+}
+
+.message h3 {
+    margin: 0;
 }
 
 .message.debug {
@@ -25,5 +31,5 @@
 }
 
 .message.error {
-    background-color: rgb(255, 104, 104);
+    background-color: rgb(255, 182, 182);
 }
