@@ -48,17 +48,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
                 }
                 $pi_account->newUserRequest($USER);
-                UnityHTTPD::messageSuccess("Group Membership Request Submitted", "");
                 UnityHTTPD::redirect();
                 break;
             case "removePIForm":
                 $pi_account->removeUser($USER);
-                UnityHTTPD::messageSuccess("Group Membership Removed", "");
                 UnityHTTPD::redirect();
                 break;
             case "cancelPIForm":
                 $pi_account->cancelGroupJoinRequest($USER);
-                UnityHTTPD::messageSuccess("Group Membership Request Cancelled", "");
                 UnityHTTPD::redirect();
                 break;
         }
