@@ -207,9 +207,6 @@ class UnityHTTPD
 
     public static function message(string $title, string $body, UnityHTTPDMessageSeverity $severity)
     {
-        if (!array_key_exists("messages", $_SESSION)) {
-            $_SESSION["messages"] = [];
-        }
         array_push($_SESSION["messages"], [$title, $body, $severity]);
     }
 

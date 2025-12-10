@@ -34,6 +34,8 @@ $MAILER = new UnityMailer();
 $WEBHOOK = new UnityWebhook();
 $GITHUB = new UnityGithub();
 
+$_SESSION["messages"] = [];
+
 if (isset($_SERVER["REMOTE_USER"])) {
     // Check if SSO is enabled on this page
     $SSO = UnitySSO::getSSO();
