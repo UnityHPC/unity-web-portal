@@ -5,24 +5,25 @@
     text-align: center;
     width: fit-content;
     margin: auto;
+    color: #494949
 }
 
 .message.debug {
-    background-color: yellow;
+    background-color: rgb(255, 255, 128);
 }
 
 .message.success {
-    background-color: green;
+    background-color: rgb(146, 192, 146);
 }
 
 .message.info {
-    background-color: gray;
+    background-color: rgb(173, 173, 173);
 }
 
 .message.warning {
-    background-color: yellow;
+    background-color: rgb(255, 199, 77);
 }
 
 .message.error {
-    background-color: red;
+    background-color: rgb(255, 104, 104);
 }
