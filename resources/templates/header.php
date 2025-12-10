@@ -133,7 +133,6 @@ if (isset($SSO)) {
         <button style="position: absolute; right: 10px; top: 10px;" class="btnClose"></button>
       </div>
       <div class="modalBody"></div>
-      <div class="modalMessages"></div>
       <div class="modalButtons">
         <div class='buttonList messageButtons' style='display: none;'>
             <button class='btnOkay'>Okay</button>

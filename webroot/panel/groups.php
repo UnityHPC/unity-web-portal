@@ -186,8 +186,7 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
             $errorHTML .= "<span>" . htmlentities($error) . "</span>";
         }
 
-        echo "openModal('Add New PI', '" .
-            CONFIG["site"]["prefix"] . "/panel/modal/new_pi.php', '" . $errorHTML . "');";
+        echo "openModal('Add New PI', '" . CONFIG["site"]["prefix"] . "/panel/modal/new_pi.php');";
     }
     ?>
 

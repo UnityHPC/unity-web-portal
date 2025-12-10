@@ -30,17 +30,7 @@ span.modalTitle {
   font-size: 13pt;
 }
 
-div.modalMessages {
-  color: var(--color-text-failure);
-  font-size: 11pt;
-}
-
-div.modalMessages > * {
-  margin-top: 7px;
-  display: block;
-}
-
-div.modalBody > * {
+div.modalBody>* {
   margin: 0;
 }
 
