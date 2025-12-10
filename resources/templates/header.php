@@ -150,9 +150,9 @@ if (isset($SSO)) {
                 <button onclick=\"this.parentElement.style.display='none';\">×</button>
               </div>
             ",
-            $level->value,
-            strip_tags($title),
-            strip_tags($body)
+            htmlspecialchars($level->value),
+            htmlspecialchars($title),
+            htmlspecialchars($body)
         );
     }
     UnityHTTPD::clearMessages();
