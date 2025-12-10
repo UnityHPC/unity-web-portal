@@ -6,11 +6,13 @@ use UnityWebPortal\lib\exceptions\NoDieException;
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use RuntimeException;
 
-enum UnityHTTPDMessageSeverity: string
+enum UnityHTTPDMessageLevel: string
 {
+    case DEBUG = "debug";
     case INFO = "info";
-    case GOOD = "good";
-    case BAD = "bad";
+    case SUCCESS = "success";
+    case WARNING = "warning";
+    case ERROR = "error";
 }
 
 class UnityHTTPD
@@ -206,22 +208,30 @@ class UnityHTTPD
         echo "<script type='text/javascript'>alert(" . \jsonEncode($message) . ");</script>";
     }
 
-    public static function message(string $title, string $body, UnityHTTPDMessageSeverity $severity)
+    public static function message(string $title, string $body, UnityHTTPDMessageLevel $level)
     {
-        array_push($_SESSION["messages"], [$title, $body, $severity]);
+        array_push($_SESSION["messages"], [$title, $body, $level]);
     }
 
-    public static function messageGood(string $title, string $body)
+    public static function messageDebug(string $title, string $body)
     {
-        return self::message($title, $body, UnityHTTPDMessageSeverity::GOOD);
-    }
-    public static function messageBad(string $title, string $body)
-    {
-        return self::message($title, $body, UnityHTTPDMessageSeverity::BAD);
+        return self::message($title, $body, UnityHTTPDMessageLevel::DEBUG);
     }
     public static function messageInfo(string $title, string $body)
     {
-        return self::message($title, $body, UnityHTTPDMessageSeverity::INFO);
+        return self::message($title, $body, UnityHTTPDMessageLevel::INFO);
+    }
+    public static function messageSuccess(string $title, string $body)
+    {
+        return self::message($title, $body, UnityHTTPDMessageLevel::SUCCESS);
+    }
+    public static function messageWarning(string $title, string $body)
+    {
+        return self::message($title, $body, UnityHTTPDMessageLevel::WARNING);
+    }
+    public static function messageError(string $title, string $body)
+    {
+        return self::message($title, $body, UnityHTTPDMessageLevel::ERROR);
     }
 
     public static function getMessages()
@@ -248,11 +258,11 @@ class UnityHTTPD
     public static function exportMessagesHTML()
     {
         $output = "";
-        foreach (self::getMessages() as [$title, $body, $severity]) {
+        foreach (self::getMessages() as [$title, $body, $level]) {
             $title_stripped = strip_tags($title);
             $body_stripped = strip_tags($body);
-            $severity_str = $severity->value;
-            $output .= "<div class='message $severity_str'><h2>$title_stripped</h2><p>$body_stripped</p></div>\n";
+            $level_str = $level->value;
+            $output .= "<div class='message $level_str'><h2>$title_stripped</h2><p>$body_stripped</p></div>\n";
         }
         return $output;
     }

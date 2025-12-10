@@ -18,7 +18,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             $pi_account = new UnityGroup($pi_groupname, $LDAP, $SQL, $MAILER, $WEBHOOK);
             if (!$pi_account->exists()) {
-                UnityHTTPD::messageBad("Invalid Group Membership Request", "This PI doesn't exist");
+                UnityHTTPD::messageError(
+                    "Invalid Group Membership Request",
+                    "This PI doesn't exist"
+                );
                 UnityHTTPD::redirect();
             }
         }
@@ -30,14 +33,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 if ($pi_account->exists()) {
                     if ($pi_account->requestExists($USER)) {
-                        UnityHTTPD::messageBad(
+                        UnityHTTPD::messageError(
                             "Invalid Group Membership Request",
                             "You've already requested this"
                         );
                         UnityHTTPD::redirect();
                     }
                     if ($pi_account->memberExists($USER)) {
-                        UnityHTTPD::messageBad(
+                        UnityHTTPD::messageError(
                             "Invalid Group Membership Request",
                             "You're already in this PI group"
                         );
@@ -45,17 +48,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
                 }
                 $pi_account->newUserRequest($USER);
-                UnityHTTPD::messageGood("Group Membership Request Submitted", "");
+                UnityHTTPD::messageSuccess("Group Membership Request Submitted", "");
                 UnityHTTPD::redirect();
                 break;
             case "removePIForm":
                 $pi_account->removeUser($USER);
-                UnityHTTPD::messageGood("Group Membership Removed", "");
+                UnityHTTPD::messageSuccess("Group Membership Removed", "");
                 UnityHTTPD::redirect();
                 break;
             case "cancelPIForm":
                 $pi_account->cancelGroupJoinRequest($USER);
-                UnityHTTPD::messageGood("Group Membership Request Cancelled", "");
+                UnityHTTPD::messageSuccess("Group Membership Request Cancelled", "");
                 UnityHTTPD::redirect();
                 break;
         }

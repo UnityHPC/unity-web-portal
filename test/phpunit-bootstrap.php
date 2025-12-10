@@ -26,7 +26,7 @@ require_once __DIR__ . "/../resources/lib/exceptions/EncodingConversionException
 
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
-use UnityWebPortal\lib\UnityHTTPDMessageSeverity;
+use UnityWebPortal\lib\UnityHTTPDMessageLevel;
 use PHPUnit\Framework\TestCase;
 
 $_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
@@ -329,14 +329,14 @@ function getAdminUser()
 
 function assertMessageExists(
     TestCase $test_case,
-    UnityHTTPDMessageSeverity $severity,
+    UnityHTTPDMessageLevel $level,
     string $title_regex,
     string $body_regex,
 ) {
     $messages = UnityHTTPD::getMessages();
     $error_msg = sprintf(
-        "message(severity='%s' title_regex='%s' body_regex='%s'), not found. found messages: %s",
-        $severity->value,
+        "message(level='%s' title_regex='%s' body_regex='%s'), not found. found messages: %s",
+        $level->value,
         $title_regex,
         $body_regex,
         jsonEncode($messages),
@@ -346,9 +346,9 @@ function assertMessageExists(
         $messages_with_title,
         fn($x) => preg_match($body_regex, $x[1]),
     );
-    $messages_with_title_and_body_and_severity = array_filter(
+    $messages_with_title_and_body_and_level = array_filter(
         $messages_with_title_and_body,
-        fn($x) => $x[2] == $severity,
+        fn($x) => $x[2] == $level,
     );
-    $test_case->assertNotEmpty($messages_with_title_and_body_and_severity, $error_msg);
+    $test_case->assertNotEmpty($messages_with_title_and_body_and_level, $error_msg);
 }

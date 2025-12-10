@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use UnityWebPortal\lib\UnityHTTPDMessageSeverity;
+use UnityWebPortal\lib\UnityHTTPDMessageLevel;
 use UnityWebPortal\lib\UnitySQL;
 use UnityWebPortal\lib\UnityHTTPD;
 
@@ -49,7 +49,7 @@ class PIMemberRequestTest extends TestCase
             $this->requestMembership("asdlkjasldkj");
             assertMessageExists(
                 $this,
-                UnityHTTPDMessageSeverity::BAD,
+                UnityHTTPDMessageLevel::ERROR,
                 "/.*/",
                 "/^This PI doesn't exist$/",
             );
