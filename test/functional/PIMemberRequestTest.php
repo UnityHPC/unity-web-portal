@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\UnityHTTPDMessageSeverity;
 use UnityWebPortal\lib\UnitySQL;
+use UnityWebPortal\lib\UnityHTTPD;
 
 class PIMemberRequestTest extends TestCase
 {
@@ -44,6 +45,7 @@ class PIMemberRequestTest extends TestCase
             $this->assertTrue($SQL->requestExists($uid, $gid));
             $this->cancelRequest($gid);
             $this->assertFalse($SQL->requestExists($uid, $gid));
+            UnityHTTPD::clearMessages();
             $this->requestMembership("asdlkjasldkj");
             assertMessageExists(
                 $this,

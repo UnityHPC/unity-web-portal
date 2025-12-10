@@ -240,6 +240,11 @@ class UnityHTTPD
         return $messages;
     }
 
+    public static function clearMessages()
+    {
+        $_SESSION["messages"] = [];
+    }
+
     public static function exportMessagesHTML()
     {
         $output = "";

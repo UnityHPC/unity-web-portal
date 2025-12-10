@@ -126,6 +126,11 @@ if (isset($SSO)) {
     ?>
   </nav>
 
+  <?php
+    echo UnityHTTPD::exportMessagesHTML();
+    UnityHTTPD::clearMessages();
+    ?>
+
   <div class="modalWrapper" style="display: none;">
     <div class="modalContent">
       <div class="modalTitleWrapper">
