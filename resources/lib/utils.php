@@ -70,3 +70,15 @@ function mbDetectEncoding(string $string, ?array $encodings = null, mixed $_ = n
     }
     return $output;
 }
+
+/* https://stackoverflow.com/a/15575293/18696276 */
+function pathJoin()
+{
+    $paths = [];
+    foreach (func_get_args() as $arg) {
+        if ($arg !== "") {
+            $paths[] = $arg;
+        }
+    }
+    return preg_replace("#/+#", "/", join("/", $paths));
+}

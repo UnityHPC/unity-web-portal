@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // header also needs to handle POST data. So this header does the PRG redirect
     // for all pages.
     unset($_POST); // unset ensures that header must not come before POST handling
-    UnityHTTPD::redirect(CONFIG["site"]["prefix"] . $_SERVER['REQUEST_URI']);
+    UnityHTTPD::redirect();
 }
 
 if (isset($SSO)) {

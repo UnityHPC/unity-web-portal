@@ -32,8 +32,9 @@ class UnityHTTPD
         }
     }
 
-    public static function redirect($dest): never
+    public static function redirect(?string $dest = null): never
     {
+        $dest ??= pathJoin(CONFIG["site"]["prefix"], $_SERVER["REQUEST_URI"]);
         header("Location: $dest");
         self::errorToUser("Redirect failed, click <a href='$dest'>here</a> to continue.", 302);
         self::die();
