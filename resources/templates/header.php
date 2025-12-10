@@ -143,7 +143,13 @@ if (isset($SSO)) {
   <?php
     foreach (UnityHTTPD::getMessages() as [$title, $body, $level]) {
         echo sprintf(
-            "<div class='message %s'><h3>%s</h3><p>%s</p></div>\n",
+            "
+              <div class='message %s'>
+                <h3>%s</h3>
+                <p>%s</p>
+                <button onclick=\"this.parentElement.style.display='none';\">X</button>
+              </div>\n
+            ",
             $level->value,
             strip_tags($title),
             strip_tags($body)
