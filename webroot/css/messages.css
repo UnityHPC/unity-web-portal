@@ -5,5 +5,24 @@
     text-align: center;
     width: fit-content;
     margin: auto;
-    opacity: 90%;
+}
+
+.message.debug {
+    background-color: yellow;
+}
+
+.message.success {
+    background-color: green;
+}
+
+.message.info {
+    background-color: gray;
+}
+
+.message.warning {
+    background-color: yellow;
+}
+
+.message.error {
+    background-color: red;
 }
