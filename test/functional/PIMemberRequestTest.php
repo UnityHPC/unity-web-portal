@@ -50,8 +50,8 @@ class PIMemberRequestTest extends TestCase
             assertMessageExists(
                 $this,
                 UnityHTTPDMessageSeverity::BAD,
-                ".*",
-                "This PI doesn't exist",
+                "/.*/",
+                "/^This PI doesn't exist$/",
             );
             $this->requestMembership($pi_group->getOwner()->getMail());
             $this->assertTrue($SQL->requestExists($uid, $gid));
