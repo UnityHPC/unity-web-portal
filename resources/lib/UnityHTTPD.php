@@ -254,16 +254,4 @@ class UnityHTTPD
     {
         $_SESSION["messages"] = [];
     }
-
-    public static function exportMessagesHTML()
-    {
-        $output = "";
-        foreach (self::getMessages() as [$title, $body, $level]) {
-            $title_stripped = strip_tags($title);
-            $body_stripped = strip_tags($body);
-            $level_str = $level->value;
-            $output .= "<div class='message $level_str'><h3>$title_stripped</h3><p>$body_stripped</p></div>\n";
-        }
-        return $output;
-    }
 }

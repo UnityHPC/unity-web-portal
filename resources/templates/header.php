@@ -140,7 +140,14 @@ if (isset($SSO)) {
   <main>
 
   <?php
-    echo UnityHTTPD::exportMessagesHTML();
+    foreach (UnityHTTPD::getMessages() as [$title, $body, $level]) {
+        echo sprintf(
+            "<div class='message %s'><h3>%s</h3><p>%s</p></div>\n",
+            $level->value,
+            strip_tags($title),
+            strip_tags($body)
+        );
+    }
     UnityHTTPD::clearMessages();
     if (
         isset($_SESSION["is_admin"])
