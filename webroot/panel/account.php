@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 $USER->requestAccountDeletion();
             }
             break;
-        case "account_deletion_request_cancel":
+        case "cancel_account_deletion_request":
             $USER->cancelRequestAccountDeletion();
             break;
     }
@@ -260,7 +260,7 @@ if ($hasGroups) {
                     )
                 '
             >
-                <input type='hidden' name='form_type' value='account_deletion_request_cancel' />
+                <input type='hidden' name='form_type' value='cancel_account_deletion_request' />
                 <input type='submit' value='Cancel Account Deletion Request' />
             </form>
         ";
