@@ -138,9 +138,6 @@ if (isset($SSO)) {
         <div class='buttonList messageButtons' style='display: none;'>
             <button class='btnOkay'>Okay</button>
         </div>
-        <div class='buttonList yesnoButtons' style='display: none;'>
-        <button class='btnYes'>Yes</button>
-        <button class='btnNo'>No</button>
       </div>
       </div>
     </div>
