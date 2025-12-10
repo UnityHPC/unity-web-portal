@@ -6,7 +6,6 @@
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 20px;
-    color: #676767
 }
 
 .message h3 {
@@ -14,21 +13,26 @@
 }
 
 .message.debug {
-    background-color: rgb(255, 255, 128);
+    color: #856404;
+    background-color: #fff3cd;
 }
 
 .message.success {
-    background-color: rgb(146, 192, 146);
+    color: #155724;
+    background-color: #d4edda;
 }
 
 .message.info {
-    background-color: rgb(173, 173, 173);
+    color: #0c5460;
+    background-color: #d1ecf1;
 }
 
 .message.warning {
-    background-color: rgb(255, 199, 77);
+    color: #856404;
+    background-color: #fff3cd;
 }
 
 .message.error {
-    background-color: rgb(255, 182, 182);
+    color: #721c24;
+    background-color: #f8d7da;
 }
