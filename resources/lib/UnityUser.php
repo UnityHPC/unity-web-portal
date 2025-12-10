@@ -381,6 +381,11 @@ class UnityUser
         ]);
     }
 
+    public function cancelRequestAccountDeletion(): void
+    {
+        $this->SQL->deleteAccountDeletionRequest($this->uid);
+    }
+
     /**
      * Checks if the user has requested account deletion
      */
