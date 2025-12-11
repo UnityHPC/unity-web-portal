@@ -4,6 +4,7 @@ namespace UnityWebPortal\lib;
 
 use UnityWebPortal\lib\exceptions\NoDieException;
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
+use UnityWebPortal\lib\exceptions\UnityHTTPDMessageNotFoundException;
 use RuntimeException;
 
 enum UnityHTTPDMessageLevel: string
@@ -323,8 +324,49 @@ class UnityHTTPD
         return $_SESSION["messages"];
     }
 
-    public static function clearMessages()
-    {
-        $_SESSION["messages"] = [];
+    private static function getMessageIndex(
+        UnityHTTPDMessageLevel $level,
+        string $title_regex,
+        string $body_regex,
+    ) {
+        $messages = self::getMessages();
+        $error_msg = sprintf(
+            "message(level='%s' title_regex='%s' body_regex='%s'), not found. found messages: %s",
+            $level->value,
+            $title_regex,
+            $body_regex,
+            jsonEncode($messages),
+        );
+        foreach ($messages as $i => $message) {
+            if (
+                preg_match($title_regex, $message[0]) &&
+                preg_match($body_regex, $message[1]) &&
+                $level == $message[2]
+            ) {
+                return $i;
+            }
+        }
+        throw new UnityHTTPDMessageNotFoundException($error_msg);
+    }
+
+    /* returns the 1st message that matches criteria or throws UnityHTTPDMessageNotFoundException */
+    public static function getMessage(
+        UnityHTTPDMessageLevel $level,
+        string $title_regex,
+        string $body_regex,
+    ) {
+        $index = self::getMessageIndex($level, $title_regex, $body_regex);
+        return $_SESSION["messages"][$index];
+    }
+
+    /* deletes the 1st message that matches criteria or throws UnityHTTPDMessageNotFoundException */
+    public static function deleteMessage(
+        UnityHTTPDMessageLevel $level,
+        string $title_regex,
+        string $body_regex,
+    ) {
+        $index = self::getMessageIndex($level, $title_regex, $body_regex);
+        unset($_SESSION["messages"][$index]);
+        $_SESSION["messages"] = array_values($_SESSION["messages"]);
     }
 }
