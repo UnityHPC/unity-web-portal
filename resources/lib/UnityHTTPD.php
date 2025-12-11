@@ -58,6 +58,14 @@ class UnityHTTPD
         return md5(strval(session_id()) . spl_object_id($e));
     }
 
+    /*
+    generates a unique error ID, writes to error log, and then:
+        if the user is doing an HTTP POST:
+            registers a message in the user's session and issues a redirect to display that message
+        else:
+            prints a message to stdout, sets an HTTP response code, and dies
+    we can't always do a redirect or else we could risk an infinite loop.
+    */
     public static function gracefulDie(
         string $log_title,
         string $log_message,
@@ -79,8 +87,6 @@ class UnityHTTPD
             $user_message_body .= " $suffix";
         }
         self::errorLog($log_title, $log_message, data: $data, error: $error, errorid: $errorid);
-        // if the user was doing HTTP POST, then make a pretty error and redirect
-        // else, a redirect may cause an infinite loop, so fall back on the old ugly error
         if ($_SERVER["REQUEST_METHOD"] ?? "" == "POST") {
             self::messageError($user_message_title, $user_message_body);
             self::redirect();
