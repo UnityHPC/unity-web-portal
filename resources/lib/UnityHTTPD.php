@@ -40,7 +40,11 @@ class UnityHTTPD
         $dest ??= pathJoin(CONFIG["site"]["prefix"], $_SERVER["REQUEST_URI"]);
         $dest = htmlspecialchars($dest);
         header("Location: $dest");
-        self::errorToUser("Redirect failed, click <a href='$dest'>here</a> to continue.", 302);
+        http_response_code(302);
+        if (CONFIG["site"]["enable_error_to_user"]) {
+            echo "If you're reading this message, then your browser has failed to redirect you " .
+                "to the proper destination. click <a href='$dest'>here</a> to continue.";
+        }
         self::die();
     }
 
@@ -78,18 +82,16 @@ class UnityHTTPD
             self::messageError($user_message_title, $user_message_body);
             self::redirect();
         } else {
-            if (CONFIG["site"]["enable_error_to_user"]) {
-                if (!headers_sent()) {
-                    http_response_code($http_response_code);
-                }
-                // text may not be shown in the webpage in an obvious way, so make a popup
-                self::alert("$user_message_title -- $user_message_body");
-                echo "<h1>$user_message_title</h1><p>$user_message_body</p>";
-                if (!is_null($error) && ini_get("display_errors") && ini_get("html_errors")) {
-                    echo "<table>";
-                    echo $error->xdebug_message;
-                    echo "</table>";
-                }
+            if (!headers_sent()) {
+                http_response_code($http_response_code);
+            }
+            // text may not be shown in the webpage in an obvious way, so make a popup
+            self::alert("$user_message_title -- $user_message_body");
+            echo "<h1>$user_message_title</h1><p>$user_message_body</p>";
+            if (!is_null($error) && ini_get("display_errors") && ini_get("html_errors")) {
+                echo "<table>";
+                echo $error->xdebug_message;
+                echo "</table>";
             }
             self::die();
         }
