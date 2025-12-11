@@ -3,6 +3,7 @@
 require "../../../resources/autoload.php";
 
 use phpseclib3\Crypt\EC;
+use UnityWebPortal\lib\UnityHTTPD;
 
 echo "<pre>";
 
@@ -13,7 +14,7 @@ echo "<section class='pubKey'>";
 echo $public->toString('OpenSSH');
 echo "</section>";
 echo "<section class='privKey'>";
-if (isset($_GET["type"]) && $_GET["type"] == "ppk") {
+if (UnityHTTPD::getQueryParameter("type", false) == "ppk") {
     echo $private->toString('PuTTY');
 } else {
     echo $private->toString('OpenSSH');
