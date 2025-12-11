@@ -97,7 +97,7 @@ function switchUser(
     ensure(!is_null($USER));
 }
 
-function http_post(string $phpfile, array $post_data): void
+function http_post(string $phpfile, array $post_data, bool $enforce_PRG = true): void
 {
     global $LDAP,
         $SQL,
@@ -127,8 +127,10 @@ function http_post(string $phpfile, array $post_data): void
         unset($_POST);
         $_SERVER = $_PREVIOUS_SERVER;
     }
-    // https://en.wikipedia.org/wiki/Post/Redirect/Get
-    ensure($post_did_redirect_or_die, "post did not redirect or die!");
+    if ($enforce_PRG) {
+        // https://en.wikipedia.org/wiki/Post/Redirect/Get
+        ensure($post_did_redirect_or_die, "post did not redirect or die!");
+    }
 }
 
 function http_get(string $phpfile, array $get_data = []): void
