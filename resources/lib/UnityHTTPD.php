@@ -54,18 +54,6 @@ class UnityHTTPD
     }
 
     /*
-    generate a unique ID that can be logged and also displayed to the user when something has
-    gone wrong. This way the user can give us the ID and we can find the exact line in the log
-    file that represents their issue.
-    assumes that a session is started and has a good unique session_id
-    */
-    public static function errorID(?\Throwable $e = null): string
-    {
-        $e ??= new stdClass();
-        return md5(strval(session_id()) . spl_object_id($e));
-    }
-
-    /*
     generates a unique error ID, writes to error log, and then:
         if "html_errors" is disabled in the PHP config file:
             prints a message to stdout and dies
@@ -84,7 +72,7 @@ class UnityHTTPD
         int $http_response_code = 200,
         mixed $data = null,
     ): never {
-        $errorid = self::errorID($error);
+        $errorid = uniqid();
         $suffix = sprintf(
             "Please notify a Unity admin at %s. Error ID: %s.",
             CONFIG["mail"]["support"],
@@ -148,9 +136,6 @@ class UnityHTTPD
         $output["REMOTE_USER"] = $_SERVER["REMOTE_USER"] ?? null;
         $output["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"] ?? null;
         $output["_REQUEST"] = $_REQUEST;
-        if (is_null($errorid) && !is_null($error)) {
-            $errorid = self::errorID($error);
-        }
         if (!is_null($errorid)) {
             $output["errorid"] = $errorid;
         }
