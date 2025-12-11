@@ -155,20 +155,42 @@ class UnityHTTPD
         self::die($message);
     }
 
+    public static function internalServerError(
+        string $message,
+        ?\Throwable $error = null,
+        ?array $data = null,
+    ): never {
+        $errorid = uniqid();
+        self::errorToUser("An internal server error has occurred.", 500, $errorid);
+        self::errorLog("internal server error", $message, $errorid, $error, $data);
+        if (!is_null($error) && ini_get("display_errors") && ini_get("html_errors")) {
+            echo "<table>";
+            echo $error->xdebug_message;
+            echo "</table>";
+        }
+        self::die($message);
+    }
+
     // https://www.php.net/manual/en/function.set-exception-handler.php
     public static function exceptionHandler(\Throwable $e): void
     {
         // we disable log_errors before we enable this exception handler to avoid duplicate logging
         // if this exception handler itself fails, information will be lost unless we re-enable it
         ini_set("log_errors", true);
-        self::logThrowableAndMessageUser(
-            $e,
-            "uncaught exception",
-            strval($e),
-            "An internal server error has occurred.",
-            "",
-        );
-        self::redirect();
+        // if the user was doing HTTP POST, then make a pretty error and redirect
+        // else, a redirect may cause an infinite loop, so fall back on the old ugly error
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            self::logThrowableAndMessageUser(
+                $e,
+                "uncaught exception",
+                strval($e),
+                "An internal server error has occurred.",
+                "",
+            );
+            self::redirect();
+        } else {
+            self::internalServerError("", error: $e);
+        }
     }
 
     public static function errorHandler(int $severity, string $message, string $file, int $line)
