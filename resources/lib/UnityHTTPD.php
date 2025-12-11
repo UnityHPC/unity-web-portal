@@ -239,9 +239,6 @@ class UnityHTTPD
         if (!isset($_POST)) {
             self::badRequest('$_POST is unset');
         }
-        if ($_POST === null) {
-            self::badRequest('$_POST is null');
-        }
         if (!array_key_exists($key, $_POST)) {
             self::badRequest("\$_POST has no array key '$key'");
         }
