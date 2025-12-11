@@ -35,13 +35,18 @@ class UnityHTTPD
         }
     }
 
+    /*
+    send HTTP heaer, set HTTP response code,
+    print a message just in case the browser fails to redirect if PHP is not being run from the CLI,
+    and then die
+    */
     public static function redirect(?string $dest = null): never
     {
         $dest ??= pathJoin(CONFIG["site"]["prefix"], $_SERVER["REQUEST_URI"]);
         $dest = htmlspecialchars($dest);
         header("Location: $dest");
         http_response_code(302);
-        if (CONFIG["site"]["enable_error_to_user"]) {
+        if (php_sapi_name() !== "cli") {
             echo "If you're reading this message, then your browser has failed to redirect you " .
                 "to the proper destination. click <a href='$dest'>here</a> to continue.";
         }
@@ -62,10 +67,13 @@ class UnityHTTPD
 
     /*
     generates a unique error ID, writes to error log, and then:
-        if the user is doing an HTTP POST:
+        if PHP is being run in the CLI:
+            prints a message to stdout and dies
+        else, if the user is doing an HTTP POST:
             registers a message in the user's session and issues a redirect to display that message
         else:
-            prints a message to stdout, sets an HTTP response code, and dies
+            prints an HTML message to stdout, sets an HTTP response code, and dies
+    we don't want HTML formatted output in the CLI
     we can't always do a redirect or else we could risk an infinite loop.
     */
     public static function gracefulDie(
@@ -89,7 +97,9 @@ class UnityHTTPD
             $user_message_body .= " $suffix";
         }
         self::errorLog($log_title, $log_message, data: $data, error: $error, errorid: $errorid);
-        if ($_SERVER["REQUEST_METHOD"] ?? "" == "POST") {
+        if (php_sapi_name() == "cli") {
+            self::die("$user_message_title -- $user_message_body");
+        } elseif ($_SERVER["REQUEST_METHOD"] ?? "" == "POST") {
             self::messageError($user_message_title, $user_message_body);
             self::redirect();
         } else {
