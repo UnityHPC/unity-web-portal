@@ -67,13 +67,12 @@ class UnityHTTPD
 
     /*
     generates a unique error ID, writes to error log, and then:
-        if PHP is being run in the CLI:
+        if "html_errors" is disabled in the PHP config file:
             prints a message to stdout and dies
         else, if the user is doing an HTTP POST:
             registers a message in the user's session and issues a redirect to display that message
         else:
             prints an HTML message to stdout, sets an HTTP response code, and dies
-    we don't want HTML formatted output in the CLI
     we can't always do a redirect or else we could risk an infinite loop.
     */
     public static function gracefulDie(
@@ -97,7 +96,7 @@ class UnityHTTPD
             $user_message_body .= " $suffix";
         }
         self::errorLog($log_title, $log_message, data: $data, error: $error, errorid: $errorid);
-        if (php_sapi_name() == "cli") {
+        if (!ini_get("html_errors")) {
             self::die("$user_message_title -- $user_message_body");
         } elseif (($_SERVER["REQUEST_METHOD"] ?? "") == "POST") {
             self::messageError($user_message_title, $user_message_body);
@@ -109,7 +108,8 @@ class UnityHTTPD
             // text may not be shown in the webpage in an obvious way, so make a popup
             self::alert("$user_message_title -- $user_message_body");
             echo "<h1>$user_message_title</h1><p>$user_message_body</p>";
-            if (!is_null($error) && ini_get("display_errors") && ini_get("html_errors")) {
+            // display_errors should not be enabled in production
+            if (!is_null($error) && ini_get("display_errors")) {
                 echo "<table>";
                 echo $error->xdebug_message;
                 echo "</table>";
