@@ -2,6 +2,7 @@
 
 namespace UnityWebPortal\lib;
 
+use stdClass;
 use UnityWebPortal\lib\exceptions\NoDieException;
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use RuntimeException;
@@ -43,6 +44,13 @@ class UnityHTTPD
         self::die();
     }
 
+    // assumes that a session is started and has a good unique session_id
+    public static function errorID(?\Throwable $e = null): string
+    {
+        $e ??= new stdClass();
+        return md5(strval(session_id()) . spl_object_id($e));
+    }
+
     public static function logThrowableAndMessageUser(
         \Throwable $error,
         string $log_title,
@@ -50,7 +58,7 @@ class UnityHTTPD
         string $user_message_title,
         string $user_message_body,
     ) {
-        $errorid = spl_object_id($error);
+        $errorid = self::errorID($error);
         $data = [];
         self::errorLog($log_title, $log_message, error: $error, errorid: $errorid, data: $data);
         if (strlen($user_message_body) == 0) {
@@ -91,8 +99,8 @@ class UnityHTTPD
         $output["REMOTE_USER"] = $_SERVER["REMOTE_USER"] ?? null;
         $output["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"] ?? null;
         $output["_REQUEST"] = $_REQUEST;
-        if (!is_null($errorid)) {
-            $output["errorid"] = $errorid;
+        if (!is_null($errorid) || !is_null($error)) {
+            $output["errorid"] = self::errorID($error);
         }
         error_log("$title: " . \jsonEncode($output));
     }
@@ -138,7 +146,7 @@ class UnityHTTPD
         ?\Throwable $error = null,
         ?array $data = null,
     ): never {
-        $errorid = uniqid();
+        $errorid = self::errorID($error);
         self::errorToUser("Invalid requested action or submitted data.", 400, $errorid);
         self::errorLog("bad request", $message, $errorid, $error, $data);
         self::die($message);
@@ -149,7 +157,7 @@ class UnityHTTPD
         ?\Throwable $error = null,
         ?array $data = null,
     ): never {
-        $errorid = uniqid();
+        $errorid = self::errorID($error);
         self::errorToUser("Permission denied.", 403, $errorid);
         self::errorLog("forbidden", $message, $errorid, $error, $data);
         self::die($message);
@@ -160,7 +168,7 @@ class UnityHTTPD
         ?\Throwable $error = null,
         ?array $data = null,
     ): never {
-        $errorid = uniqid();
+        $errorid = self::errorID($error);
         self::errorToUser("An internal server error has occurred.", 500, $errorid);
         self::errorLog("internal server error", $message, $errorid, $error, $data);
         if (!is_null($error) && ini_get("display_errors") && ini_get("html_errors")) {
