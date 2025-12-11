@@ -36,7 +36,7 @@ class UnityHTTPD
     }
 
     /*
-    send HTTP heaer, set HTTP response code,
+    send HTTP header, set HTTP response code,
     print a message just in case the browser fails to redirect if PHP is not being run from the CLI,
     and then die
     */
