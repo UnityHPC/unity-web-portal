@@ -227,13 +227,25 @@ class UnityHTTPD
 
     public static function getPostData(string $key): mixed
     {
-        try {
-            return $_POST[$key];
-        } catch (ArrayKeyException $e) {
-            self::badRequest('failed to get $_POST data', $e, [
-                '$_POST' => $_POST,
-            ]);
+        if (!isset($_SERVER)) {
+            throw new RuntimeException('$_SERVER is unset');
         }
+        if (!array_key_exists("REQUEST_METHOD", $_SERVER)) {
+            throw new RuntimeException('$_SERVER has no array key "REQUEST_METHOD"');
+        }
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            self::badRequest('$_SERVER["REQUEST_METHOD"] != "POST"');
+        }
+        if (!isset($_POST)) {
+            self::badRequest('$_POST is unset');
+        }
+        if ($_POST === null) {
+            self::badRequest('$_POST is null');
+        }
+        if (!array_key_exists($key, $_POST)) {
+            self::badRequest("\$_POST has no array key '$key'");
+        }
+        return $_POST[$key];
     }
 
     public static function getUploadedFileContents(
