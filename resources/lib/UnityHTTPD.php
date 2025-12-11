@@ -336,6 +336,12 @@ class UnityHTTPD
         return $_SESSION["messages"];
     }
 
+    public static function clearMessages()
+    {
+        self::ensureSessionMessagesSanity();
+        $_SESSION["messages"] = [];
+    }
+
     private static function getMessageIndex(
         UnityHTTPDMessageLevel $level,
         string $title_regex,
