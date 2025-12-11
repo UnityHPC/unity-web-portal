@@ -6,7 +6,7 @@ require_once __DIR__ . "/../../../resources/autoload.php";
 <form
     id="newPIform"
     method="POST"
-    action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/groups.php"
+    action="<?php echo getURL("/panel/groups.php"); ?>"
 >
     <input type="hidden" name="form_type" value="addPIform">
     <div style="position: relative;">

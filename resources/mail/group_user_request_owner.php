@@ -22,4 +22,4 @@ The details of the user are below:
 </p>
 
 <p>You can approve or deny this user on the
-    <a href="<?php echo $this->MSG_LINKREF; ?>/panel/pi.php">my users</a> page</p>
+    <a href="<?php echo getURL("panel/pi.php"); ?>">my users</a> page</p>
