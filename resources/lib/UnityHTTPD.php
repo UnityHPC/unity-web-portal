@@ -2,7 +2,6 @@
 
 namespace UnityWebPortal\lib;
 
-use stdClass;
 use UnityWebPortal\lib\exceptions\NoDieException;
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use RuntimeException;
