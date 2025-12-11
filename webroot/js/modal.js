@@ -1,6 +1,5 @@
-function openModal(title, link, message = "") {
+function openModal(title, link) {
   $("span.modalTitle").html(title);
-  $("div.modalMessages").html(message);
   $.ajax({
     url: link,
     success: function (result) {

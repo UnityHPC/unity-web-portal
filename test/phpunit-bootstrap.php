@@ -25,6 +25,9 @@ require_once __DIR__ . "/../resources/lib/exceptions/EncodingUnknownException.ph
 require_once __DIR__ . "/../resources/lib/exceptions/EncodingConversionException.php";
 
 use UnityWebPortal\lib\UnityGroup;
+use UnityWebPortal\lib\UnityHTTPD;
+use UnityWebPortal\lib\UnityHTTPDMessageLevel;
+use PHPUnit\Framework\TestCase;
 
 $_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
 require_once __DIR__ . "/../resources/config.php";
@@ -322,4 +325,30 @@ function getMultipleValueAttributesAndExpectedSSO()
 function getAdminUser()
 {
     return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
+}
+
+function assertMessageExists(
+    TestCase $test_case,
+    UnityHTTPDMessageLevel $level,
+    string $title_regex,
+    string $body_regex,
+) {
+    $messages = UnityHTTPD::getMessages();
+    $error_msg = sprintf(
+        "message(level='%s' title_regex='%s' body_regex='%s'), not found. found messages: %s",
+        $level->value,
+        $title_regex,
+        $body_regex,
+        jsonEncode($messages),
+    );
+    $messages_with_title = array_filter($messages, fn($x) => preg_match($title_regex, $x[0]));
+    $messages_with_title_and_body = array_filter(
+        $messages_with_title,
+        fn($x) => preg_match($body_regex, $x[1]),
+    );
+    $messages_with_title_and_body_and_level = array_filter(
+        $messages_with_title_and_body,
+        fn($x) => $x[2] == $level,
+    );
+    $test_case->assertNotEmpty($messages_with_title_and_body_and_level, $error_msg);
 }

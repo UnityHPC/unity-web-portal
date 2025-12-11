@@ -4,6 +4,16 @@ namespace UnityWebPortal\lib;
 
 use UnityWebPortal\lib\exceptions\NoDieException;
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
+use RuntimeException;
+
+enum UnityHTTPDMessageLevel: string
+{
+    case DEBUG = "debug";
+    case INFO = "info";
+    case SUCCESS = "success";
+    case WARNING = "warning";
+    case ERROR = "error";
+}
 
 class UnityHTTPD
 {
@@ -24,8 +34,10 @@ class UnityHTTPD
         }
     }
 
-    public static function redirect($dest): never
+    public static function redirect(?string $dest = null): never
     {
+        $dest ??= pathJoin(CONFIG["site"]["prefix"], $_SERVER["REQUEST_URI"]);
+        $dest = htmlspecialchars($dest);
         header("Location: $dest");
         self::errorToUser("Redirect failed, click <a href='$dest'>here</a> to continue.", 302);
         self::die();
@@ -195,5 +207,67 @@ class UnityHTTPD
     {
         // jsonEncode escapes quotes
         echo "<script type='text/javascript'>alert(" . \jsonEncode($message) . ");</script>";
+    }
+
+    private static function ensureSessionMessagesSanity()
+    {
+        if (!isset($_SESSION)) {
+            throw new RuntimeException('$_SESSION is unset');
+        }
+        if (!array_key_exists("messages", $_SESSION)) {
+            self::errorLog(
+                "invalid session messages",
+                'array key "messages" does not exist for $_SESSION',
+                data: ['$_SESSION' => $_SESSION],
+            );
+            $_SESSION["messages"] = [];
+        }
+        if (!is_array($_SESSION["messages"])) {
+            $type = gettype($_SESSION["messages"]);
+            self::errorLog(
+                "invalid session messages",
+                "\$_SESSION['messages'] is type '$type', not an array",
+                data: ['$_SESSION' => $_SESSION],
+            );
+            $_SESSION["messages"] = [];
+        }
+    }
+
+    public static function message(string $title, string $body, UnityHTTPDMessageLevel $level)
+    {
+        self::ensureSessionMessagesSanity();
+        array_push($_SESSION["messages"], [$title, $body, $level]);
+    }
+
+    public static function messageDebug(string $title, string $body)
+    {
+        return self::message($title, $body, UnityHTTPDMessageLevel::DEBUG);
+    }
+    public static function messageInfo(string $title, string $body)
+    {
+        return self::message($title, $body, UnityHTTPDMessageLevel::INFO);
+    }
+    public static function messageSuccess(string $title, string $body)
+    {
+        return self::message($title, $body, UnityHTTPDMessageLevel::SUCCESS);
+    }
+    public static function messageWarning(string $title, string $body)
+    {
+        return self::message($title, $body, UnityHTTPDMessageLevel::WARNING);
+    }
+    public static function messageError(string $title, string $body)
+    {
+        return self::message($title, $body, UnityHTTPDMessageLevel::ERROR);
+    }
+
+    public static function getMessages()
+    {
+        self::ensureSessionMessagesSanity();
+        return $_SESSION["messages"];
+    }
+
+    public static function clearMessages()
+    {
+        $_SESSION["messages"] = [];
     }
 }

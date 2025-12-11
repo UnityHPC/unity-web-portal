@@ -7,8 +7,6 @@ use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $modalErrors = array();
-
     if (isset($_POST["form_type"])) {
         if (isset($_POST["pi"])) {
             $pi_groupname = $_POST["pi"];
@@ -20,7 +18,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             $pi_account = new UnityGroup($pi_groupname, $LDAP, $SQL, $MAILER, $WEBHOOK);
             if (!$pi_account->exists()) {
-                array_push($modalErrors, "This PI doesn't exist");
+                UnityHTTPD::messageError(
+                    "Invalid Group Membership Request",
+                    "This PI doesn't exist"
+                );
+                UnityHTTPD::redirect();
             }
         }
 
@@ -31,29 +33,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 if ($pi_account->exists()) {
                     if ($pi_account->requestExists($USER)) {
-                        array_push($modalErrors, "You've already requested this");
+                        UnityHTTPD::messageError(
+                            "Invalid Group Membership Request",
+                            "You've already requested this"
+                        );
+                        UnityHTTPD::redirect();
                     }
                     if ($pi_account->memberExists($USER)) {
-                        array_push($modalErrors, "You're already in this PI group");
+                        UnityHTTPD::messageError(
+                            "Invalid Group Membership Request",
+                            "You're already in this PI group"
+                        );
+                        UnityHTTPD::redirect();
                     }
                 }
-                if (empty($modalErrors)) {
-                    $pi_account->newUserRequest($USER);
-                }
+                $pi_account->newUserRequest($USER);
+                UnityHTTPD::redirect();
                 break;
             case "removePIForm":
                 $pi_account->removeUser($USER);
+                UnityHTTPD::redirect();
                 break;
             case "cancelPIForm":
                 $pi_account->cancelGroupJoinRequest($USER);
+                UnityHTTPD::redirect();
                 break;
         }
-    }
-    $_SESSION['MODAL_ERRORS'] = $modalErrors;
-} else {
-    if (isset($_SESSION['MODAL_ERRORS'])) {
-        $modalErrors = $_SESSION['MODAL_ERRORS'];
-        $_SESSION['MODAL_ERRORS'] = array();  // Forget after shown
     }
 }
 
@@ -177,19 +182,6 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
     $("button.btnAddPI").click(function () {
         openModal("Add New PI", "<?php echo CONFIG["site"]["prefix"]; ?>/panel/modal/new_pi.php");
     });
-
-    <?php
-    // This is here to re-open the modal if there are errors
-    if (isset($modalErrors) && is_array($modalErrors) && count($modalErrors) > 0) {
-        $errorHTML = "";
-        foreach ($modalErrors as $error) {
-            $errorHTML .= "<span>" . htmlentities($error) . "</span>";
-        }
-
-        echo "openModal('Add New PI', '" .
-            CONFIG["site"]["prefix"] . "/panel/modal/new_pi.php', '" . $errorHTML . "');";
-    }
-    ?>
 
     // tables.js uses ajax_url to populate expandable tables
     var ajax_url = "<?php echo CONFIG["site"]["prefix"]; ?>/panel/ajax/get_group_members.php?gid=";

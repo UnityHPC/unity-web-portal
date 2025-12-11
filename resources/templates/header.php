@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // header also needs to handle POST data. So this header does the PRG redirect
     // for all pages.
     unset($_POST); // unset ensures that header must not come before POST handling
-    UnityHTTPD::redirect(CONFIG["site"]["prefix"] . $_SERVER['REQUEST_URI']);
+    UnityHTTPD::redirect();
 }
 
 if (isset($SSO)) {
@@ -56,6 +56,7 @@ if (isset($SSO)) {
         <link rel='stylesheet' type='text/css' href='$prefix/css/modal.css'>
         <link rel='stylesheet' type='text/css' href='$prefix/css/tables.css'>
         <link rel='stylesheet' type='text/css' href='$prefix/css/filters.css'>
+        <link rel='stylesheet' type='text/css' href='$prefix/css/messages.css'>
     ";
     ?>
 
@@ -133,16 +134,6 @@ if (isset($SSO)) {
         <button style="position: absolute; right: 10px; top: 10px;" class="btnClose"></button>
       </div>
       <div class="modalBody"></div>
-      <div class="modalMessages"></div>
-      <div class="modalButtons">
-        <div class='buttonList messageButtons' style='display: none;'>
-            <button class='btnOkay'>Okay</button>
-        </div>
-        <div class='buttonList yesnoButtons' style='display: none;'>
-        <button class='btnYes'>Yes</button>
-        <button class='btnNo'>No</button>
-      </div>
-      </div>
     </div>
   </div>
   <script src="<?php echo CONFIG["site"]["prefix"]; ?>/js/modal.js"></script>
@@ -150,6 +141,21 @@ if (isset($SSO)) {
   <main>
 
   <?php
+    foreach (UnityHTTPD::getMessages() as [$title, $body, $level]) {
+        echo sprintf(
+            "
+              <div class='message %s'>
+                <h3>%s</h3>
+                <p>%s</p>
+                <button onclick=\"this.parentElement.style.display='none';\">×</button>
+              </div>
+            ",
+            htmlspecialchars($level->value),
+            htmlspecialchars($title),
+            htmlspecialchars($body)
+        );
+    }
+    UnityHTTPD::clearMessages();
     if (
         isset($_SESSION["is_admin"])
         && $_SESSION["is_admin"]
