@@ -99,7 +99,7 @@ class UnityHTTPD
         self::errorLog($log_title, $log_message, data: $data, error: $error, errorid: $errorid);
         if (php_sapi_name() == "cli") {
             self::die("$user_message_title -- $user_message_body");
-        } elseif ($_SERVER["REQUEST_METHOD"] ?? "" == "POST") {
+        } elseif (($_SERVER["REQUEST_METHOD"] ?? "") == "POST") {
             self::messageError($user_message_title, $user_message_body);
             self::redirect();
         } else {
