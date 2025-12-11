@@ -82,3 +82,8 @@ function pathJoin()
     }
     return preg_replace("#/+#", "/", join("/", $paths));
 }
+
+function getURL(...$args)
+{
+    return pathJoin([CONFIG["site"]["url"], CONFIG["site"]["prefix"], ...$args]);
+}

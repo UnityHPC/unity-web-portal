@@ -136,7 +136,7 @@ if ($isPI) {
     echo "<p>You are curently a <strong>qualified user</strong> on the Unity Cluster</p>";
 } else {
     $tos_url = CONFIG["site"]["terms_of_service_url"];
-    $sitePrefix = CONFIG["site"]["prefix"];
+    $sitePrefix = substr(getURL(""), strlen(CONFIG["site"]["url"]), -1);
     echo "
         <p>
             You are currently an <strong>unqualified user</strong>, and will be

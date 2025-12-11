@@ -6,7 +6,7 @@ use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UnityUser;
 
 if ($USER->exists()) {
-    UnityHTTPD::redirect(CONFIG["site"]["prefix"] . "/panel/account.php");
+    UnityHTTPD::redirect(getURL("/panel/account.php"));
 }
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     UnityHTTPD::validatePostCSRFToken();

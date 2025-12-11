@@ -8,7 +8,7 @@ $this->Subject = "PI Account Approved"; ?>
 <p>
 Your request for a PI account on the Unity cluster has been approved.
 You can access the management page for your group
-<a href="<?php echo $this->MSG_LINKREF; ?>/panel/pi.php">on this page</a>.
+<a href="<?php echo getURL("panel/pi.php"); ?>">on this page</a>.
 </p>
 
 <p>Do not hesitate to reply if you have any questions!</p>

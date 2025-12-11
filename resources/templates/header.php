@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         && ($_POST["form_type"] ?? null) == "clearView"
     ) {
         unset($_SESSION["viewUser"]);
-        UnityHTTPD::redirect(CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
+        UnityHTTPD::redirect(getURL("/admin/user-mgmt.php"));
     }
     // Webroot files need to handle their own POSTs before loading the header
     // so that they can do UnityHTTPD::badRequest before anything else has been printed.
@@ -26,7 +26,7 @@ if (isset($SSO)) {
         !$_SESSION["user_exists"]
         && !str_ends_with($_SERVER['PHP_SELF'], "/panel/new_account.php")
     ) {
-        UnityHTTPD::redirect(CONFIG["site"]["prefix"] . "/panel/new_account.php");
+        UnityHTTPD::redirect(getURL("/panel/new_account.php"));
     }
 }
 
@@ -51,15 +51,10 @@ if (isset($SSO)) {
   </style>
 
   <?php
-    $prefix = CONFIG["site"]["prefix"];
-    echo "
-        <link rel='stylesheet' type='text/css' href='$prefix/css/global.css'>
-        <link rel='stylesheet' type='text/css' href='$prefix/css/navbar.css'>
-        <link rel='stylesheet' type='text/css' href='$prefix/css/modal.css'>
-        <link rel='stylesheet' type='text/css' href='$prefix/css/tables.css'>
-        <link rel='stylesheet' type='text/css' href='$prefix/css/filters.css'>
-        <link rel='stylesheet' type='text/css' href='$prefix/css/messages.css'>
-    ";
+    foreach (["global", "navbar", "tables", "filters", "messages"] as $x) {
+        $url = getURL("css/$x.css");
+        echo "<link rel='stylesheet' type='text/css' href='$url'>";
+    }
     ?>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -72,11 +67,11 @@ if (isset($SSO)) {
 
   <header>
     <img id="imgLogo" draggable=false
-    src="<?php echo CONFIG["site"]["prefix"]; ?>/assets/<?php echo CONFIG["site"]["logo"]; ?>">
+    src="<?php echo getURL("assets", CONFIG["site"]["logo"]); ?>">
     <button class="hamburger vertical-align">
       <img
         draggable="false"
-        src="<?php echo CONFIG["site"]["prefix"]; ?>/assets/menu.png"
+        src="<?php echo getURL("assets/menu.png") ?>"
         alt="Menu Button"
       >
     </button>
@@ -138,7 +133,7 @@ if (isset($SSO)) {
       <div class="modalBody"></div>
     </div>
   </div>
-  <script src="<?php echo CONFIG["site"]["prefix"]; ?>/js/modal.js"></script>
+  <script src="<?php echo getURL("/js/modal.js"); ?>"></script>
 
   <main>
 
