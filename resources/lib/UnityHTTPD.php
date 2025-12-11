@@ -48,7 +48,10 @@ class UnityHTTPD
         self::die();
     }
 
-    // assumes that a session is started and has a good unique session_id
+    /* generate a unique ID that can be logged and also displayed to the user when something has
+    gone wrong. This way the user can give us the ID and we can find the exact line in the log
+    file that represents their issue.
+    assumes that a session is started and has a good unique session_id */
     public static function errorID(?\Throwable $e = null): string
     {
         $e ??= new stdClass();
