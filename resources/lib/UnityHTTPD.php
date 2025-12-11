@@ -78,7 +78,7 @@ class UnityHTTPD
         self::errorLog($log_title, $log_message, data: $data, error: $error, errorid: $errorid);
         // if the user was doing HTTP POST, then make a pretty error and redirect
         // else, a redirect may cause an infinite loop, so fall back on the old ugly error
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if ($_SERVER["REQUEST_METHOD"] ?? "" == "POST") {
             self::messageError($user_message_title, $user_message_body);
             self::redirect();
         } else {
