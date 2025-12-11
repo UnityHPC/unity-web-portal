@@ -50,7 +50,7 @@ class UnityHTTPD
         string $user_message_title,
         string $user_message_body,
     ) {
-        $errorid = spl_object_hash($error);
+        $errorid = spl_object_id($error);
         $data = [];
         self::errorLog($log_title, $log_message, error: $error, errorid: $errorid, data: $data);
         if (strlen($user_message_body) == 0) {
