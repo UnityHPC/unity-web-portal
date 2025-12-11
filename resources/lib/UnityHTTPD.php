@@ -43,6 +43,24 @@ class UnityHTTPD
         self::die();
     }
 
+    public static function logThrowableAndMessageUser(
+        \Throwable $error,
+        string $log_title,
+        string $log_message,
+        string $user_message_title,
+        string $user_message_body,
+    ) {
+        $errorid = spl_object_hash($error);
+        $data = [];
+        self::errorLog($log_title, $log_message, error: $error, errorid: $errorid, data: $data);
+        if (strlen($user_message_body) == 0) {
+            $user_message_body = "error ID: $errorid";
+        } else {
+            $user_message_body .= " error ID: $errorid";
+        }
+        self::messageError($user_message_title, $user_message_body);
+    }
+
     // $data must be JSON serializable
     public static function errorLog(
         string $title,
@@ -72,6 +90,7 @@ class UnityHTTPD
         }
         $output["REMOTE_USER"] = $_SERVER["REMOTE_USER"] ?? null;
         $output["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"] ?? null;
+        $output["_REQUEST"] = $_REQUEST;
         if (!is_null($errorid)) {
             $output["errorid"] = $errorid;
         }
@@ -136,27 +155,20 @@ class UnityHTTPD
         self::die($message);
     }
 
-    public static function internalServerError(
-        string $message,
-        ?\Throwable $error = null,
-        ?array $data = null,
-    ): never {
-        $errorid = uniqid();
-        self::errorToUser("An internal server error has occurred.", 500, $errorid);
-        self::errorLog("internal server error", $message, $errorid, $error, $data);
-        if (!is_null($error) && ini_get("display_errors") && ini_get("html_errors")) {
-            echo "<table>";
-            echo $error->xdebug_message;
-            echo "</table>";
-        }
-        self::die($message);
-    }
-
     // https://www.php.net/manual/en/function.set-exception-handler.php
     public static function exceptionHandler(\Throwable $e): void
     {
-        ini_set("log_errors", true); // in case something goes wrong and error is not logged
-        self::internalServerError("An internal server error has occurred.", error: $e);
+        // we disable log_errors before we enable this exception handler to avoid duplicate logging
+        // if this exception handler itself fails, information will be lost unless we re-enable it
+        ini_set("log_errors", true);
+        self::logThrowableAndMessageUser(
+            $e,
+            "uncaught exception",
+            strval($e),
+            "An internal server error has occurred.",
+            "",
+        );
+        self::redirect();
     }
 
     public static function errorHandler(int $severity, string $message, string $file, int $line)
