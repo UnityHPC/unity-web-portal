@@ -46,7 +46,7 @@ class UnityHTTPD
         $dest = htmlspecialchars($dest);
         header("Location: $dest");
         http_response_code(302);
-        if (php_sapi_name() !== "cli") {
+        if (CONFIG["site"]["enable_redirect_message"]) {
             echo "If you're reading this message, then your browser has failed to redirect you " .
                 "to the proper destination. click <a href='$dest'>here</a> to continue.";
         }
