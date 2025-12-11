@@ -34,13 +34,77 @@ class UnityHTTPD
         }
     }
 
+    /*
+    send HTTP header, set HTTP response code,
+    print a message just in case the browser fails to redirect if PHP is not being run from the CLI,
+    and then die
+    */
     public static function redirect(?string $dest = null): never
     {
         $dest ??= pathJoin(CONFIG["site"]["prefix"], $_SERVER["REQUEST_URI"]);
         $dest = htmlspecialchars($dest);
         header("Location: $dest");
-        self::errorToUser("Redirect failed, click <a href='$dest'>here</a> to continue.", 302);
+        http_response_code(302);
+        if (CONFIG["site"]["enable_redirect_message"]) {
+            echo "If you're reading this message, then your browser has failed to redirect you " .
+                "to the proper destination. click <a href='$dest'>here</a> to continue.";
+        }
         self::die();
+    }
+
+    /*
+    generates a unique error ID, writes to error log, and then:
+        if "html_errors" is disabled in the PHP config file:
+            prints a message to stdout and dies
+        else, if the user is doing an HTTP POST:
+            registers a message in the user's session and issues a redirect to display that message
+        else:
+            prints an HTML message to stdout, sets an HTTP response code, and dies
+    we can't always do a redirect or else we could risk an infinite loop.
+    */
+    public static function gracefulDie(
+        string $log_title,
+        string $log_message,
+        string $user_message_title,
+        string $user_message_body,
+        ?\Throwable $error = null,
+        int $http_response_code = 200,
+        mixed $data = null,
+    ): never {
+        $errorid = uniqid();
+        $suffix = sprintf(
+            "Please notify a Unity admin at %s. Error ID: %s.",
+            CONFIG["mail"]["support"],
+            $errorid,
+        );
+        $user_message_title = htmlspecialchars($user_message_title);
+        $user_message_body = htmlspecialchars($user_message_body);
+        if (strlen($user_message_body) === 0) {
+            $user_message_body = $suffix;
+        } else {
+            $user_message_body .= " $suffix";
+        }
+        self::errorLog($log_title, $log_message, data: $data, error: $error, errorid: $errorid);
+        if (ini_get("html_errors") !== "1") {
+            self::die("$user_message_title -- $user_message_body");
+        } elseif (($_SERVER["REQUEST_METHOD"] ?? "") == "POST") {
+            self::messageError($user_message_title, $user_message_body);
+            self::redirect();
+        } else {
+            if (!headers_sent()) {
+                http_response_code($http_response_code);
+            }
+            // text may not be shown in the webpage in an obvious way, so make a popup
+            self::alert("$user_message_title -- $user_message_body");
+            echo "<h1>$user_message_title</h1><p>$user_message_body</p>";
+            // display_errors should not be enabled in production
+            if (!is_null($error) && ini_get("display_errors") === "1") {
+                echo "<table>";
+                echo $error->xdebug_message;
+                echo "</table>";
+            }
+            self::die();
+        }
     }
 
     // $data must be JSON serializable
@@ -72,6 +136,7 @@ class UnityHTTPD
         }
         $output["REMOTE_USER"] = $_SERVER["REMOTE_USER"] ?? null;
         $output["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"] ?? null;
+        $output["_REQUEST"] = $_REQUEST;
         if (!is_null($errorid)) {
             $output["errorid"] = $errorid;
         }
@@ -94,69 +159,61 @@ class UnityHTTPD
         return $output;
     }
 
-    private static function errorToUser(
-        string $msg,
-        int $http_response_code,
-        ?string $errorid = null,
-    ): void {
-        if (!CONFIG["site"]["enable_error_to_user"]) {
-            return;
-        }
-        $notes = "Please notify a Unity admin at " . CONFIG["mail"]["support"] . ".";
-        if (!is_null($errorid)) {
-            $notes = $notes . " Error ID: $errorid.";
-        }
-        if (!headers_sent()) {
-            http_response_code($http_response_code);
-        }
-        // text may not be shown in the webpage in an obvious way, so make a popup
-        self::alert("$msg $notes");
-        echo "<h1>$msg</h1><p>$notes</p>";
-    }
-
     public static function badRequest(
-        string $message,
+        string $log_message,
         ?\Throwable $error = null,
         ?array $data = null,
     ): never {
-        $errorid = uniqid();
-        self::errorToUser("Invalid requested action or submitted data.", 400, $errorid);
-        self::errorLog("bad request", $message, $errorid, $error, $data);
-        self::die($message);
+        self::gracefulDie(
+            "bad request",
+            $log_message,
+            "Invalid requested action or submitted data.",
+            "",
+            error: $error,
+            http_response_code: 400,
+            data: $data,
+        );
     }
 
     public static function forbidden(
-        string $message,
+        string $log_message,
         ?\Throwable $error = null,
         ?array $data = null,
     ): never {
-        $errorid = uniqid();
-        self::errorToUser("Permission denied.", 403, $errorid);
-        self::errorLog("forbidden", $message, $errorid, $error, $data);
-        self::die($message);
+        self::gracefulDie(
+            "forbidden",
+            $log_message,
+            "Permission denied.",
+            "",
+            error: $error,
+            http_response_code: 403,
+            data: $data,
+        );
     }
 
     public static function internalServerError(
-        string $message,
+        string $log_message,
         ?\Throwable $error = null,
         ?array $data = null,
     ): never {
-        $errorid = uniqid();
-        self::errorToUser("An internal server error has occurred.", 500, $errorid);
-        self::errorLog("internal server error", $message, $errorid, $error, $data);
-        if (!is_null($error) && ini_get("display_errors") && ini_get("html_errors")) {
-            echo "<table>";
-            echo $error->xdebug_message;
-            echo "</table>";
-        }
-        self::die($message);
+        self::gracefulDie(
+            "internal server error",
+            $log_message,
+            "An internal server error has occurred.",
+            "",
+            error: $error,
+            http_response_code: 500,
+            data: $data,
+        );
     }
 
     // https://www.php.net/manual/en/function.set-exception-handler.php
     public static function exceptionHandler(\Throwable $e): void
     {
-        ini_set("log_errors", true); // in case something goes wrong and error is not logged
-        self::internalServerError("An internal server error has occurred.", error: $e);
+        // we disable log_errors before we enable this exception handler to avoid duplicate logging
+        // if this exception handler itself fails, information will be lost unless we re-enable it
+        ini_set("log_errors", true);
+        self::internalServerError("", error: $e);
     }
 
     public static function errorHandler(int $severity, string $message, string $file, int $line)
