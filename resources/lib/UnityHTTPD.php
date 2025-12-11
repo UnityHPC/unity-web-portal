@@ -96,7 +96,7 @@ class UnityHTTPD
             $user_message_body .= " $suffix";
         }
         self::errorLog($log_title, $log_message, data: $data, error: $error, errorid: $errorid);
-        if (!ini_get("html_errors")) {
+        if (ini_get("html_errors") !== "1") {
             self::die("$user_message_title -- $user_message_body");
         } elseif (($_SERVER["REQUEST_METHOD"] ?? "") == "POST") {
             self::messageError($user_message_title, $user_message_body);
@@ -109,7 +109,7 @@ class UnityHTTPD
             self::alert("$user_message_title -- $user_message_body");
             echo "<h1>$user_message_title</h1><p>$user_message_body</p>";
             // display_errors should not be enabled in production
-            if (!is_null($error) && ini_get("display_errors")) {
+            if (!is_null($error) && ini_get("display_errors") === "1") {
                 echo "<table>";
                 echo $error->xdebug_message;
                 echo "</table>";
