@@ -35,7 +35,7 @@ class PIBecomeRequestTest extends TestCase
     public function testRequestBecomePi()
     {
         global $USER, $SQL;
-        switchUser(...getUserNotPiNotRequestedBecomePi());
+        switchUser(...getBlankUser());
         $this->assertFalse($USER->isPI());
         $this->assertNumberPiBecomeRequests(0);
         try {

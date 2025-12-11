@@ -239,7 +239,8 @@ function getUserHasNotRequestedAccountDeletionHasGroup()
     return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
 }
 
-function getUserHasNotRequestedAccountDeletionHasNoGroups()
+/* a blank user has no requests, no PI group, and has not requested account deletion */
+function getBlankUser()
 {
     return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
 }
@@ -247,11 +248,6 @@ function getUserHasNotRequestedAccountDeletionHasNoGroups()
 function getUserHasNoSshKeys()
 {
     return ["user3@org1.test", "foo", "bar", "user3@org1.test"];
-}
-
-function getUserNotPiNotRequestedBecomePi()
-{
-    return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
 }
 
 function getUserNotPiNotRequestedBecomePiRequestedAccountDeletion()
