@@ -169,8 +169,8 @@ if (isset($SSO)) {
             htmlspecialchars($title),
             htmlspecialchars($body),
             htmlspecialchars($level->value),
-            htmlspecialchars($title),
-            htmlspecialchars($body),
+            preg_quote(htmlspecialchars($title), "/"),
+            preg_quote(htmlspecialchars($body), "/"),
         );
     }
     if (
