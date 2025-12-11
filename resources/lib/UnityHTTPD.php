@@ -78,6 +78,8 @@ class UnityHTTPD
             CONFIG["mail"]["support"],
             $errorid,
         );
+        $user_message_title = htmlspecialchars($user_message_title);
+        $user_message_body = htmlspecialchars($user_message_body);
         if (strlen($user_message_body) === 0) {
             $user_message_body = $suffix;
         } else {
