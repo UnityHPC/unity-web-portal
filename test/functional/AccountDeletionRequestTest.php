@@ -32,7 +32,7 @@ class AccountDeletionRequestTest extends TestCase
     public function testRequestAccountDeletionUserHasNoGroups()
     {
         global $USER, $SQL;
-        switchUser(...getUserHasNotRequestedAccountDeletionHasNoGroups());
+        switchUser(...getBlankUser());
         $this->assertEmpty($USER->getPIGroupGIDs());
         $this->assertNumberAccountDeletionRequests(0);
         try {
