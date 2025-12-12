@@ -10,7 +10,7 @@
     for ($i = 0; $i < count($footer_logos); $i++) {
         echo
         "<a target='_blank' href='" . $footer_links[$i] . "'>
-        <img src='" . CONFIG["site"]["prefix"] . "/assets/" . $footer_logos[$i] . "'
+        <img src='" . getURL("assets", $footer_logos[$i]) . "'
         draggable='false' title='" . $footer_titles[$i] . "'></a>";
     }
     ?>
@@ -29,10 +29,10 @@
 </footer>
 
 </body>
-
-<script src="<?php echo CONFIG["site"]["prefix"]; ?>/js/filter.js"></script>
-<script src="<?php echo CONFIG["site"]["prefix"]; ?>/js/sort.js"></script>
-<script src="<?php echo CONFIG["site"]["prefix"]; ?>/js/global.js"></script>
-<script src="<?php echo CONFIG["site"]["prefix"]; ?>/js/tables.js"></script>
-
+<?php
+foreach (["filter", "sort", "global", "tables"] as $x) {
+    $url = getURL("js/$x.js");
+    echo "<script src='$url'></script>";
+}
+?>
 </html>

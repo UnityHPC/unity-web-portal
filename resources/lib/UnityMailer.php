@@ -13,7 +13,6 @@ class UnityMailer extends PHPMailer
     private string $template_dir = __DIR__ . "/../mail"; // location of all email templates
     private string $override_template_dir = __DIR__ . "/../../deployment/mail_overrides";
 
-    private string $MSG_LINKREF;
     private string $MSG_SENDER_EMAIL;
     private string $MSG_SENDER_NAME;
     private string $MSG_SUPPORT_EMAIL;
@@ -28,7 +27,6 @@ class UnityMailer extends PHPMailer
         parent::__construct();
         $this->isSMTP();
 
-        $this->MSG_LINKREF = CONFIG["site"]["url"] . CONFIG["site"]["prefix"];
         $this->MSG_SENDER_EMAIL = CONFIG["mail"]["sender"];
         $this->MSG_SENDER_NAME = CONFIG["mail"]["sender_name"];
         $this->MSG_SUPPORT_EMAIL = CONFIG["mail"]["support"];
