@@ -4,31 +4,6 @@ use PHPUnit\Framework\TestCase;
 
 class AccountDeletionRequestTest extends TestCase
 {
-    private function assertNumberAccountDeletionRequests(int $x)
-    {
-        global $USER, $SQL;
-        if ($x == 0) {
-            $this->assertFalse($USER->hasRequestedAccountDeletion());
-            $this->assertFalse($SQL->accDeletionRequestExists($USER->uid));
-        } elseif ($x > 0) {
-            $this->assertTrue($USER->hasRequestedAccountDeletion());
-            $this->assertTrue($SQL->accDeletionRequestExists($USER->uid));
-        } else {
-            throw new RuntimeException("x must not be negative");
-        }
-        $this->assertEquals($x, $this->getNumberAccountDeletionRequests());
-    }
-
-    private function getNumberAccountDeletionRequests()
-    {
-        global $USER, $SQL;
-        $stmt = $SQL->getConn()->prepare("SELECT * FROM account_deletion_requests WHERE uid=:uid");
-        $uid = $USER->uid;
-        $stmt->bindParam(":uid", $uid);
-        $stmt->execute();
-        return count($stmt->fetchAll());
-    }
-
     public function testRequestAccountDeletionUserHasNoGroups()
     {
         global $USER, $SQL;

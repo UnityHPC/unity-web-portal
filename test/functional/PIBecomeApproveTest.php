@@ -6,15 +6,6 @@ use UnityWebPortal\lib\UnitySQL;
 
 class PIBecomeApproveTest extends TestCase
 {
-    private function assertRequestedPIGroup(bool $expected)
-    {
-        global $USER, $SQL;
-        $this->assertEquals(
-            $expected,
-            $SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI),
-        );
-    }
-
     private function requestGroupCreation()
     {
         http_post(__DIR__ . "/../../webroot/panel/account.php", [
