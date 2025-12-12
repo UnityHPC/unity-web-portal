@@ -25,6 +25,7 @@ require_once __DIR__ . "/../resources/lib/exceptions/EnsureException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/EncodingUnknownException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/EncodingConversionException.php";
 
+use UnityWebPortal\lib\CSRFToken;
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UnitySQL;
@@ -97,7 +98,7 @@ function switchUser(
     ensure(!is_null($USER));
 }
 
-function http_post(string $phpfile, array $post_data): void
+function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_token = true): void
 {
     global $LDAP,
         $SQL,
@@ -115,6 +116,9 @@ function http_post(string $phpfile, array $post_data): void
     $_SERVER["REQUEST_METHOD"] = "POST";
     $_SERVER["PHP_SELF"] = preg_replace("/.*webroot\//", "/", $phpfile);
     $_SERVER["REQUEST_URI"] = preg_replace("/.*webroot\//", "/", $phpfile); // Slightly imprecise because it doesn't include get parameters
+    if (!array_key_exists("csrf_token", $post_data) && $do_generate_csrf_token) {
+        $post_data["csrf_token"] = CSRFToken::generate();
+    }
     $_POST = $post_data;
     ob_start();
     $post_did_redirect_or_die = false;
