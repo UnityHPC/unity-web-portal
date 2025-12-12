@@ -8,9 +8,6 @@ if (!$USER->isAdmin()) {
     UnityHTTPD::forbidden("not an admin");
 }
 
-if (!isset($_GET["pageid"])) {
-    UnityHTTPD::badRequest("Pageid not found");
-}
-
-$page = $SQL->getPage($_GET["pageid"]);
+$pageid = UnityHTTPD::getQueryParameter("pageid");
+$page = $SQL->getPage($pageid);
 echo $page["content"];

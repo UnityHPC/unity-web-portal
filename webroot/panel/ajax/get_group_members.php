@@ -5,11 +5,9 @@ require_once __DIR__ . "/../../../resources/autoload.php";
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
 
-if (!isset($_GET["gid"])) {
-    UnityHTTPD::badRequest("PI UID not set");
-}
 
-$group = new UnityGroup($_GET["gid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
+$gid = UnityHTTPD::getQueryParameter("gid");
+$group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
 if (!$group->memberExists($USER)) {
     UnityHTTPD::forbidden("not a group member");
 }
