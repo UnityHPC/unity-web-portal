@@ -58,7 +58,9 @@ if (isset($_SERVER["REMOTE_USER"])) {
 
     $SQL->addLog($OPERATOR->uid, $_SERVER["REMOTE_ADDR"], "user_login", $OPERATOR->uid);
 
-    $_SESSION["csrf_tokens"] = [];
+    if (!array_key_exists("csrf_tokens", $_SESSION)) {
+        $_SESSION["csrf_tokens"] = [];
+    }
 }
 
 $LOC_HEADER = __DIR__ . "/templates/header.php";
