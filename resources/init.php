@@ -42,6 +42,13 @@ if (!array_key_exists("csrf_tokens", $_SESSION)) {
     $_SESSION["csrf_tokens"] = [];
 }
 
+// https://stackoverflow.com/a/1270960/18696276
+if (time() - ($_SESSION["LAST_ACTIVITY"] ?? 0) > CONFIG["site"]["session_cleanup_age_seconds"]) {
+    $_SESSION["csrf_tokens"] = [];
+    $_SESSION["messages"] = [];
+}
+$_SESSION["LAST_ACTIVITY"] = time();
+
 if (isset($_SERVER["REMOTE_USER"])) {
     // Check if SSO is enabled on this page
     $SSO = UnitySSO::getSSO();
