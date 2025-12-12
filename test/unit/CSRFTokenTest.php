@@ -10,17 +10,12 @@ class CSRFTokenTest extends TestCase
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-
-        if (isset($_SESSION["csrf_token"])) {
-            unset($_SESSION["csrf_token"]);
-        }
+        CSRFToken::clear();
     }
 
     protected function tearDown(): void
     {
-        if (isset($_SESSION["csrf_token"])) {
-            unset($_SESSION["csrf_token"]);
-        }
+        CSRFToken::clear();
     }
 
     public function testGenerateCreatesToken(): void
@@ -38,19 +33,22 @@ class CSRFTokenTest extends TestCase
     {
         $token = CSRFToken::generate();
 
-        $this->assertArrayHasKey("csrf_token", $_SESSION);
-        $this->assertEquals($token, $_SESSION["csrf_token"]);
+        $this->assertArrayHasKey("csrf_tokens", $_SESSION);
+        $this->assertArrayHasKey($token, $_SESSION["csrf_tokens"]);
+        $this->assertFalse($_SESSION["csrf_tokens"][$token]);
     }
 
     public function testGetTokenCreatesTokenIfNotExists(): void
     {
-        $this->assertArrayNotHasKey("csrf_token", $_SESSION);
+        $this->assertArrayNotHasKey("csrf_tokens", $_SESSION);
 
         $token = CSRFToken::getToken();
 
         $this->assertIsString($token);
         $this->assertEquals(64, strlen($token));
-        $this->assertEquals($token, $_SESSION["csrf_token"]);
+        $this->assertArrayHasKey("csrf_tokens", $_SESSION);
+        $this->assertArrayHasKey($token, $_SESSION["csrf_tokens"]);
+        $this->assertFalse($_SESSION["csrf_tokens"][$token]);
     }
 
     public function testGetTokenReturnsExistingToken(): void
@@ -66,6 +64,7 @@ class CSRFTokenTest extends TestCase
         $token = CSRFToken::generate();
 
         $this->assertTrue(CSRFToken::validate($token));
+        $this->assertTrue($_SESSION["csrf_tokens"][$token]);
     }
 
     public function testValidateWithInvalidToken(): void
@@ -90,11 +89,10 @@ class CSRFTokenTest extends TestCase
     public function testValidateUsesConstantTimeComparison(): void
     {
         $token = CSRFToken::generate();
-
-        $this->assertTrue(CSRFToken::validate($token));
-
         $invalidToken = substr($token, 0, -1) . ($token[-1] === "a" ? "b" : "a");
         $this->assertFalse(CSRFToken::validate($invalidToken));
+        $this->assertTrue(CSRFToken::validate($token));
+        $this->assertTrue($_SESSION["csrf_tokens"][$token]);
     }
 
     public function testGetHiddenInputReturnsHtmlField(): void
@@ -106,12 +104,13 @@ class CSRFTokenTest extends TestCase
         $this->assertStringContainsString('type=\'hidden\'', $html);
         $this->assertStringContainsString('name=\'csrf_token\'', $html);
         $this->assertStringContainsString("value='$token'", $html);
+        $this->assertArrayHasKey("csrf_tokens", $_SESSION);
+        $this->assertArrayHasKey($token, $_SESSION["csrf_tokens"]);
+        $this->assertFalse($_SESSION["csrf_tokens"][$token]);
     }
 
     public function testGetHiddenInputEscapesToken(): void
     {
-        $_SESSION["csrf_token"] = "'\"><script>alert('xss')</script>";
-
         $html = CSRFToken::getHiddenInput();
 
         $this->assertStringNotContainsString("<script>", $html);
@@ -121,11 +120,11 @@ class CSRFTokenTest extends TestCase
     public function testClearRemovesToken(): void
     {
         CSRFToken::generate();
-        $this->assertArrayHasKey("csrf_token", $_SESSION);
+        $this->assertArrayHasKey("csrf_tokens", $_SESSION);
 
         CSRFToken::clear();
 
-        $this->assertArrayNotHasKey("csrf_token", $_SESSION);
+        $this->assertArrayNotHasKey("csrf_tokens", $_SESSION);
     }
 
     public function testMultipleTokenGenerations(): void
@@ -138,8 +137,11 @@ class CSRFTokenTest extends TestCase
         $this->assertEquals($token2, CSRFToken::getToken());
     }
 
-    public function testParameterNameConstant(): void
+    public function testTokenIsSingleUse(): void
     {
-        $this->assertEquals("csrf_token", "csrf_token");
+        $token = CSRFToken::getToken();
+        $this->assertTrue(CSRFToken::validate($token));
+        $this->assertFalse(CSRFToken::validate($token));
+        $this->assertTrue($_SESSION["csrf_tokens"][$token]);
     }
 }

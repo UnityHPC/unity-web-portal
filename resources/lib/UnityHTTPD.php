@@ -341,14 +341,4 @@ class UnityHTTPD
             );
         }
     }
-
-    public static function getCSRFToken(): string
-    {
-        return CSRFToken::getToken();
-    }
-
-    public static function getCSRFTokenInput(): string
-    {
-        return CSRFToken::getHiddenInput();
-    }
 }
