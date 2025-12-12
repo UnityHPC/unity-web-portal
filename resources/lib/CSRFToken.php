@@ -3,8 +3,6 @@ namespace UnityWebPortal\lib;
 
 class CSRFToken
 {
-    private static ?string $requestToken = null;
-
     private static function ensureSession(): void
     {
         if (!isset($_SESSION)) {
@@ -20,17 +18,6 @@ class CSRFToken
         self::ensureSession();
         $token = bin2hex(random_bytes(32));
         $_SESSION["csrf_tokens"][$token] = false;
-        return $token;
-    }
-
-    public static function getToken(): string
-    {
-        self::ensureSession();
-        if (self::$requestToken !== null) {
-            return self::$requestToken;
-        }
-        $token = self::generate();
-        self::$requestToken = $token;
         return $token;
     }
 
@@ -51,13 +38,12 @@ class CSRFToken
             return false;
         }
         $_SESSION["csrf_tokens"][$token] = true;
-        self::$requestToken = null;
         return true;
     }
 
     public static function getHiddenInput(): string
     {
-        $token = htmlspecialchars(self::getToken());
+        $token = htmlspecialchars(self::generate());
         return "<input type='hidden' name='csrf_token' value='$token'>";
     }
 
@@ -69,9 +55,5 @@ class CSRFToken
         if (array_key_exists("csrf_tokens", $_SESSION)) {
             unset($_SESSION["csrf_tokens"]);
         }
-        if (array_key_exists("csrf_token", $_SESSION)) {
-            unset($_SESSION["csrf_token"]);
-        }
-        self::$requestToken = null;
     }
 }
