@@ -32,7 +32,7 @@
 <?php
 foreach (["filter", "sort", "global", "tables"] as $x) {
     $url = getURL("js/$x.js");
-    echo "<script src='$url'>";
+    echo "<script src='$url'></script>";
 }
 ?>
 </html>
