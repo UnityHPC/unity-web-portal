@@ -90,15 +90,15 @@ function pathJoin(...$path_components)
     }
 }
 
-function getURL(...$path_components)
+function getURL(...$url_components)
 {
-    return pathJoin(CONFIG["site"]["url"], CONFIG["site"]["prefix"], ...$path_components);
+    return pathJoin(CONFIG["site"]["url"], CONFIG["site"]["prefix"], ...$url_components);
 }
 
-function getHyperlink($text, ...$path_components)
+function getHyperlink($text, ...$url_components)
 {
     $text = htmlspecialchars($text);
-    $path_components = array_map("htmlspecialchars", $path_components);
-    $url = getURL(...$path_components);
+    $url_components = array_map("htmlspecialchars", $url_components);
+    $url = getURL(...$url_components);
     return "<a href='$url'>$text</a>";
 }
