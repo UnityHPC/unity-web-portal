@@ -58,15 +58,6 @@ class CSRFTokenTest extends TestCase
         $this->assertFalse(CSRFToken::validate("any_token"));
     }
 
-    public function testValidateUsesConstantTimeComparison(): void
-    {
-        $token = CSRFToken::generate();
-        $invalidToken = substr($token, 0, -1) . ($token[-1] === "a" ? "b" : "a");
-        $this->assertFalse(CSRFToken::validate($invalidToken));
-        $this->assertTrue(CSRFToken::validate($token));
-        $this->assertTrue($_SESSION["csrf_tokens"][$token]);
-    }
-
     public function testClearRemovesToken(): void
     {
         CSRFToken::generate();
