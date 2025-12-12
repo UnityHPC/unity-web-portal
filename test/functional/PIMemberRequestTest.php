@@ -47,8 +47,7 @@ class PIMemberRequestTest extends UnityWebPortalTestCase
             $this->assertFalse($SQL->requestExists($uid, $gid));
             UnityHTTPD::clearMessages();
             $this->requestMembership("asdlkjasldkj");
-            assertMessageExists(
-                $this,
+            $this->assertMessageExists(
                 UnityHTTPDMessageLevel::ERROR,
                 "/.*/",
                 "/^This PI doesn't exist$/",
