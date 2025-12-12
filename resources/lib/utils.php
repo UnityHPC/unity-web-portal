@@ -79,19 +79,15 @@ function pathNormalize(string $path)
 
 function getURL(...$relative_url_components)
 {
-    $url_components = array_merge(
-        [CONFIG["site"]["url"], CONFIG["site"]["prefix"]],
-        $relative_url_components,
-    );
-    $url = join("/", $url_components);
-    // if URL starts with a "scheme" like "https://", do not try to alter the slashes in the scheme
-    if (preg_match("#^\w+://#", $url)) {
-        $matches = [];
-        preg_match("#(^\w+://)(.*)#", $url, $matches);
-        return $matches[1] . pathNormalize($matches[2]);
-    } else {
-        return pathNormalize($url);
+    if (!preg_match("#^\w+://#", CONFIG["site"]["url"])) {
+        throw new RuntimeException('CONFIG[site][url] does not have a scheme! (ex: "https://")');
     }
+    $matches = [];
+    preg_match("#(^\w+://)(.*)#", CONFIG["site"]["url"], $matches);
+    [$_, $site_url_scheme, $site_url_noscheme] = $matches;
+    $path = join("/", [$site_url_noscheme, CONFIG["site"]["prefix"], ...$relative_url_components]);
+    $path_normalized = pathNormalize($path);
+    return $site_url_scheme . $path_normalized;
 }
 
 function getHyperlink($text, ...$url_components)
