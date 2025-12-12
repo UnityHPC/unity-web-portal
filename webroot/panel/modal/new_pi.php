@@ -28,9 +28,9 @@ use UnityWebPortal\lib\UnityHTTPD;
 <script>
     $("input[type=text][name=pi]").keyup(function() {
         var searchWrapper = $("div.searchWrapper");
-        const prefix = '<?php echo CONFIG["site"]["prefix"]; ?>';
+        const url = '<?php echo getURL("panel/modal/pi_search.php") ?>';
         $.ajax({
-            url: `${prefix}/panel/modal/pi_search.php?search=` + $(this).val(),
+            url: `${url}?search=` + $(this).val(),
             success: function(result) {
                 searchWrapper.html(result);
 

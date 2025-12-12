@@ -136,7 +136,7 @@ if ($isPI) {
     echo "<p>You are curently a <strong>qualified user</strong> on the Unity Cluster</p>";
 } else {
     $tos_url = CONFIG["site"]["terms_of_service_url"];
-    $sitePrefix = substr(getURL(""), strlen(CONFIG["site"]["url"]), -1);
+    $form_url = getURL("panel/groups.php");
     echo "
         <p>
             You are currently an <strong>unqualified user</strong>, and will be
@@ -145,7 +145,7 @@ if ($isPI) {
             Do not request a PI group if you are a student.
         </p>
         <br>
-        <form action='$sitePrefix/panel/groups.php' method='GET'>
+        <form action='$form_url' method='GET'>
             <label>
                 <input type='checkbox' name='tos' value='agree' required />
                 I have read and accept the
@@ -294,11 +294,11 @@ if ($hasGroups) {
 ?>
 
 <script>
-    const sitePrefix = '<?php echo CONFIG["site"]["prefix"]; ?>';
+    const url = '<?php echo getURL("panel/modal/new_key.php")?>';
     const ldapLoginShell = '<?php echo $USER->getLoginShell(); ?>';
 
     $("button.btnAddKey").click(function() {
-        openModal("Add New Key", `${sitePrefix}/panel/modal/new_key.php`);
+        openModal("Add New Key", url);
     });
 
     $("#loginSelector option").each(function(i, e) {
