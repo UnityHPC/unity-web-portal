@@ -77,22 +77,21 @@ function pathNormalize(string $path)
     return preg_replace("#/+#", "/", $path);
 }
 
-function pathJoin(...$path_components)
+function getURL(...$relative_url_components)
 {
-    $path = join("/", $path_components);
+    $url_components = array_merge(
+        [CONFIG["site"]["url"], CONFIG["site"]["prefix"]],
+        $relative_url_components,
+    );
+    $url = join("/", $url_components);
     // if URL starts with a "scheme" like "https://", do not try to alter the slashes in the scheme
-    if (preg_match("#^\w+://#", $path)) {
+    if (preg_match("#^\w+://#", $url)) {
         $matches = [];
-        preg_match("#(^\w+://)(.*)#", $path, $matches);
+        preg_match("#(^\w+://)(.*)#", $url, $matches);
         return $matches[1] . pathNormalize($matches[2]);
     } else {
-        return pathNormalize($path);
+        return pathNormalize($url);
     }
-}
-
-function getURL(...$url_components)
-{
-    return pathJoin(CONFIG["site"]["url"], CONFIG["site"]["prefix"], ...$url_components);
 }
 
 function getHyperlink($text, ...$url_components)
