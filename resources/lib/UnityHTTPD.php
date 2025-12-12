@@ -238,11 +238,8 @@ class UnityHTTPD
     /* returns null if not found and not $throw_if_not_found */
     public static function getQueryParameter(string $key, bool $throw_if_not_found = true): mixed
     {
-        if (isset($_GET)) {
-            self::badRequest('$_GET is unset');
-        }
-        if ($_GET === null) {
-            self::badRequest('$_GET is null');
+        if (!is_array($_GET)) {
+            throw new RuntimeException('$_GET is not an array!');
         }
         if (!array_key_exists($key, $_GET)) {
             if ($throw_if_not_found) {
