@@ -54,12 +54,6 @@ class CSRFToken
         return true;
     }
 
-    public static function getHiddenInput(): string
-    {
-        $token = htmlspecialchars(self::generate());
-        return "<input type='hidden' name='csrf_token' value='$token'>";
-    }
-
     public static function clear(): void
     {
         if (!isset($_SESSION)) {
