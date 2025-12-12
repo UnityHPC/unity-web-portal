@@ -327,4 +327,27 @@ class UnityHTTPD
     {
         $_SESSION["messages"] = [];
     }
+
+    public static function validateCSRFToken(?string $token = null): void
+    {
+        if (!CSRFToken::validate($token)) {
+            self::badRequest(
+                "CSRF token validation failed",
+                data: [
+                    "token_provided" => !empty($token) || isset($_POST[CSRFToken::PARAMETER_NAME]),
+                    "request_method" => $_SERVER["REQUEST_METHOD"] ?? null,
+                ],
+            );
+        }
+    }
+
+    public static function getCSRFToken(): string
+    {
+        return CSRFToken::getToken();
+    }
+
+    public static function getCSRFTokenInput(): string
+    {
+        return CSRFToken::getHiddenInput();
+    }
 }
