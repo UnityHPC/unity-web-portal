@@ -326,7 +326,7 @@ function getAdminUser()
 
 class UnityWebPortalTestCase extends TestCase
 {
-    private function assertMessageExists(
+    public function assertMessageExists(
         UnityHTTPDMessageLevel $level,
         string $title_regex,
         string $body_regex,
@@ -351,7 +351,7 @@ class UnityWebPortalTestCase extends TestCase
         $this->assertNotEmpty($messages_with_title_and_body_and_level, $error_msg);
     }
 
-    private function assertGroupMembers(UnityGroup $group, array $expected_members)
+    public function assertGroupMembers(UnityGroup $group, array $expected_members)
     {
         sort($expected_members);
         $found_members = $group->getGroupMemberUIDs();
@@ -359,13 +359,13 @@ class UnityWebPortalTestCase extends TestCase
         $this->assertEqualsCanonicalizing($expected_members, $found_members);
     }
 
-    private function assertRequestedMembership(bool $expected, string $gid)
+    public function assertRequestedMembership(bool $expected, string $gid)
     {
         global $USER, $SQL;
         $this->assertEquals($expected, $SQL->requestExists($USER->uid, $gid));
     }
 
-    private function getNumberAccountDeletionRequests()
+    public function getNumberAccountDeletionRequests()
     {
         global $USER, $SQL;
         $stmt = $SQL->getConn()->prepare("SELECT * FROM account_deletion_requests WHERE uid=:uid");
@@ -375,7 +375,7 @@ class UnityWebPortalTestCase extends TestCase
         return count($stmt->fetchAll());
     }
 
-    private function assertNumberAccountDeletionRequests(int $x)
+    public function assertNumberAccountDeletionRequests(int $x)
     {
         global $USER, $SQL;
         if ($x == 0) {
@@ -390,7 +390,7 @@ class UnityWebPortalTestCase extends TestCase
         $this->assertEquals($x, $this->getNumberAccountDeletionRequests());
     }
 
-    private function assertRequestedPIGroup(bool $expected)
+    public function assertRequestedPIGroup(bool $expected)
     {
         global $USER, $SQL;
         $this->assertEquals(
@@ -399,10 +399,10 @@ class UnityWebPortalTestCase extends TestCase
         );
     }
 
-    private function getNumberPiBecomeRequests()
+    public function getNumberPiBecomeRequests()
     {
         global $USER, $SQL;
-        // FIXME table name, "admin" are private constants in UnitySQL
+        // FIXME table name, "admin" are public constants in UnitySQL
         // FIXME "admin" should be something else
         $stmt = $SQL
             ->getConn()
@@ -413,7 +413,7 @@ class UnityWebPortalTestCase extends TestCase
         return count($stmt->fetchAll());
     }
 
-    private function assertNumberPiBecomeRequests(int $x)
+    public function assertNumberPiBecomeRequests(int $x)
     {
         global $USER, $SQL;
         if ($x == 0) {
