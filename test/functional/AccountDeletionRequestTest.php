@@ -69,4 +69,25 @@ class AccountDeletionRequestTest extends UnityWebPortalTestCase
             ensureUserNotInPIGroup($pi_group);
         }
     }
+
+    public function testRequestAccountDeletionCancel()
+    {
+        global $USER;
+        switchUser(...getBlankUser());
+        $this->assertEmpty($USER->getPIGroupGIDs());
+        $this->assertNumberAccountDeletionRequests(0);
+        $this->assertNumberRequests(0);
+        try {
+            http_post(__DIR__ . "/../../webroot/panel/account.php", [
+                "form_type" => "account_deletion_request",
+            ]);
+            $this->assertNumberAccountDeletionRequests(1);
+            http_post(__DIR__ . "/../../webroot/panel/account.php", [
+                "form_type" => "cancel_account_deletion_request",
+            ]);
+            $this->assertNumberAccountDeletionRequests(0);
+        } finally {
+            ensureUserNotRequestedAccountDeletion();
+        }
+    }
 }
