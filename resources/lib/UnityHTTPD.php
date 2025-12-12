@@ -390,4 +390,18 @@ class UnityHTTPD
         unset($_SESSION["messages"][$index]);
         $_SESSION["messages"] = array_values($_SESSION["messages"]);
     }
+
+    public static function validatePostCSRFToken(): void
+    {
+        $token = self::getPostData("csrf_token");
+        if (!CSRFToken::validate($token)) {
+            self::badRequest("CSRF token validation failed", data: ["token" => $token]);
+        }
+    }
+
+    public static function getCSRFTokenHiddenFormInput(): string
+    {
+        $token = htmlspecialchars(CSRFToken::generate());
+        return "<input type='hidden' name='csrf_token' value='$token'>";
+    }
 }

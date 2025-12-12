@@ -1,10 +1,12 @@
 <?php
 
 require_once __DIR__ . "/../../../resources/autoload.php";  // Load required libs
+use UnityWebPortal\lib\UnityHTTPD;
 ?>
 
 <form id="newKeyform" enctype="multipart/form-data" method="POST"
 action="<?php echo CONFIG["site"]["prefix"]; ?>/panel/account.php">
+    <?php echo UnityHTTPD::getCSRFTokenHiddenFormInput(); ?>
     <input type='hidden' name='form_type' value='addKey'>
 
     <div class='inline'>
