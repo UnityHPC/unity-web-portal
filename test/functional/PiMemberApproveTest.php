@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\UnitySQL;
 use UnityWebPortal\lib\UnityGroup;
 
-class PIMemberApproveTest extends TestCase
+class PIMemberApproveTest extends UnityWebPortalTestCase
 {
     private function requestGroupMembership(string $gid_or_mail)
     {

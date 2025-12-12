@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class AccountDeletionRequestTest extends TestCase
+class AccountDeletionRequestTest extends UnityWebPortalTestCase
 {
     public function testRequestAccountDeletionUserHasNoGroups()
     {

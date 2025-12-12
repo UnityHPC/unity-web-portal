@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\UnityOrg;
 use UnityWebPortal\lib\UnitySQL;
 
-class PIBecomeApproveTest extends TestCase
+class PIBecomeApproveTest extends UnityWebPortalTestCase
 {
     private function requestGroupCreation()
     {

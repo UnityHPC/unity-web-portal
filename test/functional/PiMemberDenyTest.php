@@ -5,7 +5,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\UnityUser;
 use function PHPUnit\Framework\assertEquals;
 
-class PIMemberDenyTest extends TestCase
+class PIMemberDenyTest extends UnityWebPortalTestCase
 {
     static $requestUid;
 

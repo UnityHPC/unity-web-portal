@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\UnitySQL;
 
-class PIBecomeRequestTest extends TestCase
+class PIBecomeRequestTest extends UnityWebPortalTestCase
 {
     public function testRequestBecomePi()
     {

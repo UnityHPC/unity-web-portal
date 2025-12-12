@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\UnityOrg;
 
-class RegisterUserTest extends TestCase
+class RegisterUserTest extends UnityWebPortalTestCase
 {
     public static function provider()
     {

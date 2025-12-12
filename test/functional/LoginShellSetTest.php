@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class LoginShellSetTest extends TestCase
+class LoginShellSetTest extends UnityWebPortalTestCase
 {
     private static $_initialLoginShell;
 

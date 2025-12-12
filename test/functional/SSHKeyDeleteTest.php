@@ -3,7 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class SSHKeyDeleteTest extends TestCase
+class SSHKeyDeleteTest extends UnityWebPortalTestCase
 {
     static $initialKeys;
 

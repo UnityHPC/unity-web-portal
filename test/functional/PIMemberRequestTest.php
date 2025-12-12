@@ -5,7 +5,7 @@ use UnityWebPortal\lib\UnityHTTPDMessageLevel;
 use UnityWebPortal\lib\UnitySQL;
 use UnityWebPortal\lib\UnityHTTPD;
 
-class PIMemberRequestTest extends TestCase
+class PIMemberRequestTest extends UnityWebPortalTestCase
 {
     private function requestMembership(string $gid_or_mail)
     {

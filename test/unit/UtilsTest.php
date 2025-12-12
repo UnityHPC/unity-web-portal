@@ -4,7 +4,7 @@ use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class UtilsTest extends TestCase
+class UtilsTest extends UnityWebPortalTestCase
 {
     public static function SSHKeyProvider()
     {
