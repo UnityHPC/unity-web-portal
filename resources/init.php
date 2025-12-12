@@ -38,6 +38,10 @@ if (!array_key_exists("messages", $_SESSION)) {
     $_SESSION["messages"] = [];
 }
 
+if (!array_key_exists("csrf_tokens", $_SESSION)) {
+    $_SESSION["csrf_tokens"] = [];
+}
+
 if (isset($_SERVER["REMOTE_USER"])) {
     // Check if SSO is enabled on this page
     $SSO = UnitySSO::getSSO();
@@ -57,10 +61,6 @@ if (isset($_SERVER["REMOTE_USER"])) {
     $SEND_PIMESG_TO_ADMINS = CONFIG["mail"]["send_pimesg_to_admins"];
 
     $SQL->addLog($OPERATOR->uid, $_SERVER["REMOTE_ADDR"], "user_login", $OPERATOR->uid);
-
-    if (!array_key_exists("csrf_tokens", $_SESSION)) {
-        $_SESSION["csrf_tokens"] = [];
-    }
 }
 
 $LOC_HEADER = __DIR__ . "/templates/header.php";
