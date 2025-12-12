@@ -7,7 +7,7 @@ use UnityWebPortal\lib\UnityHTTPD;
 <form
     id="newPIform"
     method="POST"
-    action="<?php echo getURL("/panel/groups.php"); ?>"
+    action="<?php echo getURL("panel/groups.php"); ?>"
 >
     <?php echo UnityHTTPD::getCSRFTokenHiddenFormInput(); ?>
     <input type="hidden" name="form_type" value="addPIform">

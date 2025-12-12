@@ -123,7 +123,7 @@ if (count($req_filtered) > 0) {
 echo "<h5>Current Groups</h5>";
 
 if ($USER->isPI() && count($PIGroupGIDs) == 1) {
-    $url = getURL("/panel/pi.php");
+    $url = getURL("panel/pi.php");
     echo "
         You are only a member of your own PI group.
         Navigate to the
@@ -186,11 +186,11 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
 
 <script>
     $("button.btnAddPI").click(function () {
-        openModal("Add New PI", "<?php echo getURL("/panel/modal/new_pi.php"); ?>");
+        openModal("Add New PI", "<?php echo getURL("panel/modal/new_pi.php"); ?>");
     });
 
     // tables.js uses ajax_url to populate expandable tables
-    var ajax_url = "<?php echo getURL("/panel/ajax/get_group_members.php"); ?>?gid=";
+    var ajax_url = "<?php echo getURL("panel/ajax/get_group_members.php"); ?>?gid=";
 </script>
 
 <style>

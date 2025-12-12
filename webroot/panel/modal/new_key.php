@@ -8,7 +8,7 @@ use UnityWebPortal\lib\UnityHTTPD;
     id="newKeyform"
     enctype="multipart/form-data"
     method="POST"
-    action="<?php echo getURL("/panel/account.php"); ?>"
+    action="<?php echo getURL("panel/account.php"); ?>"
 >
     <?php echo UnityHTTPD::getCSRFTokenHiddenFormInput(); ?>
     <input type='hidden' name='form_type' value='addKey'>
@@ -74,7 +74,7 @@ use UnityWebPortal\lib\UnityHTTPD;
         var endingSection = "</section>";
 
         $.ajax({
-            url: "<?php echo getURL("/js/ajax/ssh_generate.php"); ?>?type=" + type,
+            url: "<?php echo getURL("js/ajax/ssh_generate.php"); ?>?type=" + type,
             success: function(result) {
                 var pubKey = result.substr(result.indexOf(pubSection) + pubSection.length,
                 result.indexOf(endingSection) - result.indexOf(pubSection) - pubSection.length);
@@ -103,7 +103,7 @@ use UnityWebPortal\lib\UnityHTTPD;
     $("textarea[name=key]").on("input", function() {
         var key = $(this).val();
         $.ajax({
-            url: "<?php echo getURL("/js/ajax/ssh_validate.php"); ?>",
+            url: "<?php echo getURL("js/ajax/ssh_validate.php"); ?>",
             type: "POST",
             data: {
                 key: key

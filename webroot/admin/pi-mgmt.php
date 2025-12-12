@@ -146,7 +146,7 @@ require $LOC_HEADER;
         }
     });
 
-    var ajax_url = "<?php echo getURL("/admin/ajax/get_group_members.php"); ?>?gid=";
+    var ajax_url = "<?php echo getURL("admin/ajax/get_group_members.php"); ?>?gid=";
 </script>
 
 <?php
