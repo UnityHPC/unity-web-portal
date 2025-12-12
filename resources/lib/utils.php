@@ -72,15 +72,22 @@ function mbDetectEncoding(string $string, ?array $encodings = null, mixed $_ = n
 }
 
 /* https://stackoverflow.com/a/15575293/18696276 */
-function pathJoin()
+function pathNormalize(string $path)
 {
-    $paths = [];
-    foreach (func_get_args() as $arg) {
-        if ($arg !== "") {
-            $paths[] = $arg;
-        }
+    return preg_replace("#/+#", "/", $path);
+}
+
+function pathJoin(...$path_components)
+{
+    $path = join("/", $path_components);
+    // if URL starts with a "scheme" like "https://", do not try to alter the slashes in the scheme
+    if (preg_match("#^\w+://#", $path)) {
+        $matches = [];
+        preg_match("#(^\w+://)(.*)#", $path, $matches);
+        return $matches[1] . pathNormalize($matches[2]);
+    } else {
+        return pathNormalize($path);
     }
-    return preg_replace("#/+#", "/", join("/", $paths));
 }
 
 function getURL(...$path_components)
