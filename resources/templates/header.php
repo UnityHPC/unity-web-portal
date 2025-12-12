@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         && ($_POST["form_type"] ?? null) == "clearView"
     ) {
         unset($_SESSION["viewUser"]);
-        UnityHTTPD::redirect(getURL("/admin/user-mgmt.php"));
+        UnityHTTPD::redirect(getURL("admin/user-mgmt.php"));
     }
     // Webroot files need to handle their own POSTs before loading the header
     // so that they can do UnityHTTPD::badRequest before anything else has been printed.
@@ -26,7 +26,7 @@ if (isset($SSO)) {
         !$_SESSION["user_exists"]
         && !str_ends_with($_SERVER['PHP_SELF'], "/panel/new_account.php")
     ) {
-        UnityHTTPD::redirect(getURL("/panel/new_account.php"));
+        UnityHTTPD::redirect(getURL("panel/new_account.php"));
     }
 }
 
@@ -133,7 +133,7 @@ if (isset($SSO)) {
       <div class="modalBody"></div>
     </div>
   </div>
-  <script src="<?php echo getURL("/js/modal.js"); ?>"></script>
+  <script src="<?php echo getURL("js/modal.js"); ?>"></script>
 
   <main>
 
