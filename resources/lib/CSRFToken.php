@@ -8,7 +8,20 @@ class CSRFToken
         if (!isset($_SESSION)) {
             throw new \RuntimeException("Session is not started. Call session_start() first.");
         }
-        if (!array_key_exists("csrf_tokens", $_SESSION) || !is_array($_SESSION["csrf_tokens"])) {
+        if (!array_key_exists("csrf_tokens", $_SESSION)) {
+            UnityHTTPD::errorLog(
+                "invalid session",
+                '$_SESSION has no array key "csrf_tokens"',
+                data: ['$_SESSION' => $_SESSION],
+            );
+            $_SESSION["csrf_tokens"] = [];
+        }
+        if (!is_array($_SESSION["csrf_tokens"])) {
+            UnityHTTPD::errorLog(
+                "invalid session",
+                '$_SESSION["csrf_tokens"] is not an array',
+                data: ['$_SESSION' => $_SESSION],
+            );
             $_SESSION["csrf_tokens"] = [];
         }
     }
