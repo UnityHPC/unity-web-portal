@@ -12,6 +12,7 @@ if (!$USER->isPI()) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    UnityHTTPD::validatePostCSRFToken();
     if (isset($_POST["uid"])) {
         $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     }

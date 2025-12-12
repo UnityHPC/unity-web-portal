@@ -10,6 +10,7 @@ use UnityWebPortal\lib\UnitySQL;
 $hasGroups = count($USER->getPIGroupGIDs()) > 0;
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    UnityHTTPD::validatePostCSRFToken();
     switch (UnityHTTPD::getPostData("form_type")) {
         case "addKey":
             $keys = array();

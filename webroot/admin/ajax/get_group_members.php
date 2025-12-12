@@ -13,6 +13,10 @@ if (!isset($_GET["gid"])) {
     UnityHTTPD::badRequest("PI UID not set");
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    UnityHTTPD::validatePostCSRFToken();
+}
+
 $group = new UnityGroup($_GET["gid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
 $members = $group->getGroupMembersAttributes(["gecos", "mail"]);
 $requests = $group->getRequests();

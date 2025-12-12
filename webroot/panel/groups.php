@@ -7,6 +7,7 @@ use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    UnityHTTPD::validatePostCSRFToken();
     if (isset($_POST["form_type"])) {
         if (isset($_POST["pi"])) {
             $pi_groupname = $_POST["pi"];

@@ -9,6 +9,7 @@ if (!$USER->isAdmin()) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    UnityHTTPD::validatePostCSRFToken();
     switch ($_POST["form_type"]) {
         case "viewAsUser":
             $_SESSION["viewUser"] = $_POST["uid"];
