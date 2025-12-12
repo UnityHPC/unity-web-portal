@@ -372,6 +372,7 @@ class UnityUser
      */
     public function requestAccountDeletion(): void
     {
+        $this->SQL->deleteRequestsByUser($this->uid);
         $this->SQL->addAccountDeletionRequest($this->uid);
         $this->MAILER->sendMail("admin", "account_deletion_request_admin", [
             "user" => $this->uid,
