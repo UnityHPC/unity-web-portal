@@ -82,11 +82,11 @@ class UtilsTest extends UnityWebPortalTestCase
 
     public static function URLComponentProvider()
     {
-        if (CONFIG["site"]["prefix"] != "http://127.0.0.1:8000") {
-            throw new RuntimeException("site prefix has changed!");
+        if (CONFIG["site"]["url"] != "http://127.0.0.1:8000/") {
+            throw new RuntimeException("site url has changed!");
         }
         return [
-            [["", ""], "http://127.0.0.1:8000"],
+            [["", ""], "http://127.0.0.1:8000/"],
             [["", "/"], "http://127.0.0.1:8000/"],
             [["/", "a"], "http://127.0.0.1:8000/a"],
             [["/", "/a"], "http://127.0.0.1:8000/a"],
