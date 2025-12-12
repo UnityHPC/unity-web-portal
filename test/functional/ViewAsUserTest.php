@@ -1,7 +1,6 @@
 <?php
 
 use UnityWebPortal\lib\UnityHTTPD;
-use PHPUnit\Framework\TestCase;
 
 class ViewAsUserTest extends UnityWebPortalTestCase
 {

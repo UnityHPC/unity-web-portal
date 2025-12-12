@@ -1,6 +1,5 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\UnitySQL;
 
 class PIBecomeRequestTest extends UnityWebPortalTestCase

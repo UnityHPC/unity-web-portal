@@ -1,7 +1,6 @@
 <?php
 
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class UtilsTest extends UnityWebPortalTestCase

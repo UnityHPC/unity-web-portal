@@ -1,7 +1,6 @@
 <?php
 
 use UnityWebPortal\lib\exceptions\SSOException;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class InvalidEPPNTest extends UnityWebPortalTestCase
