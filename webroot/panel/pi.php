@@ -45,9 +45,9 @@ $requests = $group->getRequests();
 $assocs = $group->getGroupMembers();
 
 if (count($requests) + count($assocs) == 1) {
+    $url = getURL("/panel/groups.php");
     echo "<p>You do not have any users attached to your PI account.
-    Ask your users to request to join your account on the <a href='" . getURL("/panel/groups.php") .
-        "/panel/groups.php'>My PIs</a> page.</p>";
+    Ask your users to request to join your account on the <a href='$url'>My PIs</a> page.</p>";
 }
 
 if (count($requests) > 0) {

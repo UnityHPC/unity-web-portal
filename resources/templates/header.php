@@ -79,9 +79,8 @@ if (isset($SSO)) {
 
   <nav class="mainNav">
     <?php
-    $prefix = CONFIG["site"]["prefix"];
     // Public Items - Always Visible
-    echo "<a href='$prefix/index.php'>Home</a>";
+    echo getHyperlink("Home", "index.php");
 
     $num_additional_items = count(CONFIG["menuitems"]["labels"]);
     for ($i = 0; $i < $num_additional_items; $i++) {
@@ -91,13 +90,13 @@ if (isset($SSO)) {
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
         // Menu Items for Present Users
-        echo "<a href='$prefix/panel/support.php'>Support</a>";
-        echo "<a href='$prefix/panel/account.php'>Account Settings</a>";
-        echo "<a href='$prefix/panel/groups.php'>My PIs</a>";
+        echo getHyperlink("Support", "panel/support.php");
+        echo getHyperlink("Account Settings", "panel/account.php");
+        echo getHyperlink("My PIs", "panel/groups.php");
 
         if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
             // PI only pages
-            echo "<a href='$prefix/panel/pi.php'>My Users</a>";
+            echo getHyperlink("My Users", "panel/pi.php");
         }
 
         // additional branding items
@@ -113,13 +112,13 @@ if (isset($SSO)) {
         ) {
             echo "<hr class='navHR'>";
             // Admin only pages
-            echo "<a href='$prefix/admin/user-mgmt.php'>User Management</a>";
-            echo "<a href='$prefix/admin/pi-mgmt.php'>PI Management</a>";
-            echo "<a href='$prefix/admin/notices.php'>Cluster Notices</a>";
-            echo "<a href='$prefix/admin/content.php'>Content Management</a>";
+            echo getHyperlink("User Management", "admin/user-mgmt.php");
+            echo getHyperlink("PI Management", "admin/pi-mgmt.php");
+            echo getHyperlink("Cluster Notices", "admin/notices.php");
+            echo getHyperlink("Content Management", "admin/content.php");
         }
     } else {
-        echo "<a href='$prefix/panel/account.php'>Login / Request Account</a>";
+        echo getHyperlink("Login / Request Account", "panel/account.php");
     }
     ?>
   </nav>
