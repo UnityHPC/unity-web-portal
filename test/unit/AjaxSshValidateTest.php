@@ -1,7 +1,5 @@
 <?php
 
-namespace UnityWebPortal\lib;
-
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 

@@ -1,9 +1,8 @@
 <?php
 
-namespace UnityWebPortal\lib;
-
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use UnityWebPortal\lib\UnityGithub;
 
 class UnityGithubTest extends UnityWebPortalTestCase
 {
