@@ -341,46 +341,36 @@ class UnityHTTPD
 
     private static function getMessageIndex(
         UnityHTTPDMessageLevel $level,
-        string $title_regex,
-        string $body_regex,
+        string $title,
+        string $body,
     ) {
         $messages = self::getMessages();
         $error_msg = sprintf(
-            "message(level='%s' title_regex='%s' body_regex='%s'), not found. found messages: %s",
+            "message(level='%s' title='%s' body='%s'), not found. found messages: %s",
             $level->value,
-            $title_regex,
-            $body_regex,
+            $title,
+            $body,
             jsonEncode($messages),
         );
         foreach ($messages as $i => $message) {
-            if (
-                preg_match($title_regex, $message[0]) &&
-                preg_match($body_regex, $message[1]) &&
-                $level == $message[2]
-            ) {
+            if ($title == $message[0] && $body == $message[1] && $level == $message[2]) {
                 return $i;
             }
         }
         throw new UnityHTTPDMessageNotFoundException($error_msg);
     }
 
-    /* returns the 1st message that matches criteria or throws UnityHTTPDMessageNotFoundException */
-    public static function getMessage(
-        UnityHTTPDMessageLevel $level,
-        string $title_regex,
-        string $body_regex,
-    ) {
-        $index = self::getMessageIndex($level, $title_regex, $body_regex);
+    /* returns the 1st message that matches or throws UnityHTTPDMessageNotFoundException */
+    public static function getMessage(UnityHTTPDMessageLevel $level, string $title, string $body)
+    {
+        $index = self::getMessageIndex($level, $title, $body);
         return $_SESSION["messages"][$index];
     }
 
-    /* deletes the 1st message that matches criteria or throws UnityHTTPDMessageNotFoundException */
-    public static function deleteMessage(
-        UnityHTTPDMessageLevel $level,
-        string $title_regex,
-        string $body_regex,
-    ) {
-        $index = self::getMessageIndex($level, $title_regex, $body_regex);
+    /* deletes the 1st message that matches or throws UnityHTTPDMessageNotFoundException */
+    public static function deleteMessage(UnityHTTPDMessageLevel $level, string $title, string $body)
+    {
+        $index = self::getMessageIndex($level, $title, $body);
         unset($_SESSION["messages"][$index]);
         $_SESSION["messages"] = array_values($_SESSION["messages"]);
     }

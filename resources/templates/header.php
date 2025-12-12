@@ -155,8 +155,8 @@ if (isset($SSO)) {
                         method: 'POST',
                         data: {
                           'level': '%s',
-                          'title_regex': '/^%s$/',
-                          'body_regex': '/^%s$/',
+                          'title': '%s',
+                          'body': '%s',
                         }
                     });
                   \"
@@ -169,8 +169,8 @@ if (isset($SSO)) {
             htmlspecialchars($title),
             htmlspecialchars($body),
             htmlspecialchars($level->value),
-            preg_quote(htmlspecialchars($title), "/"),
-            preg_quote(htmlspecialchars($body), "/"),
+            htmlspecialchars($title),
+            htmlspecialchars($body),
         );
     }
     if (

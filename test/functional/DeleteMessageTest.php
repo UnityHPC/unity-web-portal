@@ -24,8 +24,8 @@ class DeleteMessageTest extends TestCase
                 __DIR__ . "/../../webroot/panel/ajax/delete_message.php",
                 [
                     "level" => "debug",
-                    "title_regex" => "/^.*2$/",
-                    "body_regex" => "/^.*2$/",
+                    "title" => "foo2",
+                    "body" => "bar2",
                 ],
                 enforce_PRG: false,
             );

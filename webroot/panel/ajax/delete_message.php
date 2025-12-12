@@ -7,6 +7,6 @@ use UnityWebPortal\lib\UnityHTTPDMessageLevel;
 
 $level_str = UnityHTTPD::getPostData("level");
 $level = UnityHTTPDMessageLevel::from($level_str);
-$title_regex = UnityHTTPD::getPostData("title_regex");
-$body_regex = UnityHTTPD::getPostData("body_regex");
-UnityHTTPD::deleteMessage($level, $title_regex, $body_regex);
+$title = UnityHTTPD::getPostData("title");
+$body = UnityHTTPD::getPostData("body");
+UnityHTTPD::deleteMessage($level, $title, $body);
