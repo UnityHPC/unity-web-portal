@@ -57,6 +57,8 @@ if (isset($_SERVER["REMOTE_USER"])) {
     $SEND_PIMESG_TO_ADMINS = CONFIG["mail"]["send_pimesg_to_admins"];
 
     $SQL->addLog($OPERATOR->uid, $_SERVER["REMOTE_ADDR"], "user_login", $OPERATOR->uid);
+
+    $_SESSION["csrf_tokens"] = [];
 }
 
 $LOC_HEADER = __DIR__ . "/templates/header.php";
