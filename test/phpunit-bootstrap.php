@@ -206,6 +206,14 @@ function ensureOrgGroupDoesNotExist()
     }
 }
 
+function ensureUserNotRequestedAccountDeletion()
+{
+    global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
+    if ($SQL->accDeletionRequestExists($USER->uid)) {
+        $SQL->deleteAccountDeletionRequest($USER->uid);
+    }
+}
+
 function ensureUserNotInPIGroup(UnityGroup $pi_group)
 {
     global $USER;
