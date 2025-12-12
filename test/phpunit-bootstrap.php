@@ -425,4 +425,15 @@ class UnityWebPortalTestCase extends TestCase
         }
         $this->assertEquals($x, $this->getNumberPiBecomeRequests());
     }
+
+    public function getNumberRequests()
+    {
+        global $USER, $SQL;
+        return count($SQL->getRequestsByUser($USER->uid));
+    }
+
+    public function assertNumberRequests(int $x)
+    {
+        $this->assertEquals($x, $this->getNumberRequests());
+    }
 }
