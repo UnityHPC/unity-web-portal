@@ -102,7 +102,9 @@ if (count($req_filtered) > 0) {
         echo "<td><a href='mailto:$mail'>$mail</a></td>";
         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
         echo "<td>";
+        $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         echo "<form action='' method='POST' id='cancelPI'>
+            $CSRFTokenHiddenFormInput
             <input type='hidden' name='pi' value='{$requested_account->gid}'>
             <input type='hidden' name='form_type' value='cancelPIForm'>
             <input name='cancel' style='margin-top: 10px;' type='submit' value='Cancel Request'/>
@@ -148,10 +150,12 @@ foreach ($PIGroupGIDs as $gid) {
     echo "<td><button class='btnExpand'>&#9654;</button>$full_name</td>";
     echo "<td>" . $group->gid . "</td>";
     echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
+    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
         "<td>
     <form action='' method='POST'
     onsubmit='return confirm(\"Are you sure you want to leave the PI group " . $group->gid . "?\")'>
+    $CSRFTokenHiddenFormInput
     <input type='hidden' name='form_type' value='removePIForm'>
     <input type='hidden' name='pi' value='" . $group->gid . "'>
     <input type='submit' value='Leave Group'>

@@ -36,6 +36,7 @@ require $LOC_HEADER;
 <button style='display: none;' class='btnClear'>Create New Notice Instead</button>
 
 <form action="" method="POST" id="noticeForm">
+    <?php echo UnityHTTPD::getCSRFTokenHiddenFormInput(); ?>
     <input type="hidden" name=id>
     <input type="hidden" name="form_type" value="newNotice">
     <input type="text" name="title" placeholder="Notice Title">
@@ -62,8 +63,10 @@ foreach ($notices as $notice) {
     echo "<span class='noticeDate'>" . date('Y-m-d', strtotime($notice["date"])) . "</span>";
     echo "<div class='noticeText'>" . $notice["message"] . "</div>";
     echo "<button class='btnEdit'>Edit</button>";
-    echo
-    "<form style='display: inline-block; margin-left: 10px;' method='POST' action=''>
+    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
+    echo "
+    <form style='display: inline-block; margin-left: 10px;' method='POST' action=''>
+    $CSRFTokenHiddenFormInput
     <input type='hidden' name='form_type' value='delNotice'>
     <input type='hidden' name='id' value='" . $notice["id"] . "'>
     <input type='submit' value='Delete'>

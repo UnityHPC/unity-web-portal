@@ -64,8 +64,10 @@ if (count($requests) > 0) {
         echo "<td><a href='mailto:$email'>$email</a></td>";
         echo "<td>$date</td>";
         echo "<td>";
+        $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         echo
             "<form action='' method='POST'>
+        $CSRFTokenHiddenFormInput
         <input type='hidden' name='form_type' value='userReq'>
         <input type='hidden' name='uid' value='$uid'>
         <input type='submit' name='action' value='Approve'
@@ -94,8 +96,10 @@ foreach ($assocs as $assoc) {
 
     echo "<tr>";
     echo "<td>";
+    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
         "<form action='' method='POST'>
+    $CSRFTokenHiddenFormInput
     <input type='hidden' name='form_type' value='remUser'>
     <input type='hidden' name='uid' value='" . $assoc->uid . "'>
     <input

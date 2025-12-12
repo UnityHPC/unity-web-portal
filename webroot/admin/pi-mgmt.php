@@ -76,8 +76,10 @@ require $LOC_HEADER;
         echo "<td><a href='mailto:$email'>$email</a></td>";
         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
         echo "<td>";
+        $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         echo
             "<form action='' method='POST'>
+        $CSRFTokenHiddenFormInput
         <input type='hidden' name='form_type' value='req'>
         <input type='hidden' name='uid' value='$uid'>
         <input type='submit' name='action' value='Approve'

@@ -29,6 +29,7 @@ require $LOC_HEADER;
 <p>Your unity cluster username will be <strong><?php echo $SSO["user"]; ?></strong></p>
 <br>
 <form action="" method="POST">
+    <?php echo UnityHTTPD::getCSRFTokenHiddenFormInput(); ?>
     <input type='submit' value='Register'>
 </form>
 <?php
