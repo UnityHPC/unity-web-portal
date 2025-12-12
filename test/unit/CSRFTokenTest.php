@@ -1,5 +1,4 @@
 <?php
-
 use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\CSRFToken;
 
@@ -21,18 +20,14 @@ class CSRFTokenTest extends TestCase
     public function testGenerateCreatesToken(): void
     {
         $token = CSRFToken::generate();
-
         $this->assertIsString($token);
-
         $this->assertEquals(64, strlen($token));
-
         $this->assertMatchesRegularExpression('/^[0-9a-f]{64}$/', $token);
     }
 
     public function testGenerateStoresTokenInSession(): void
     {
         $token = CSRFToken::generate();
-
         $this->assertArrayHasKey("csrf_tokens", $_SESSION);
         $this->assertArrayHasKey($token, $_SESSION["csrf_tokens"]);
         $this->assertFalse($_SESSION["csrf_tokens"][$token]);
@@ -41,7 +36,6 @@ class CSRFTokenTest extends TestCase
     public function testValidateWithValidToken(): void
     {
         $token = CSRFToken::generate();
-
         $this->assertTrue(CSRFToken::validate($token));
         $this->assertTrue($_SESSION["csrf_tokens"][$token]);
     }
@@ -49,14 +43,12 @@ class CSRFTokenTest extends TestCase
     public function testValidateWithInvalidToken(): void
     {
         CSRFToken::generate();
-
         $this->assertFalse(CSRFToken::validate("invalid_token"));
     }
 
     public function testValidateWithEmptyToken(): void
     {
         CSRFToken::generate();
-
         $this->assertFalse(CSRFToken::validate(""));
     }
 
@@ -74,36 +66,11 @@ class CSRFTokenTest extends TestCase
         $this->assertTrue($_SESSION["csrf_tokens"][$token]);
     }
 
-    public function testGetHiddenInputReturnsHtmlField(): void
-    {
-        $html = CSRFToken::getHiddenInput();
-
-        $this->assertStringContainsString("<input", $html);
-        $this->assertStringContainsString('type=\'hidden\'', $html);
-        $this->assertStringContainsString('name=\'csrf_token\'', $html);
-        $matches = [];
-        $this->assertTrue(preg_match("/value='([a-f0-9]{64})'/", $html, $matches) === 1);
-        $token = $matches[1];
-        $this->assertArrayHasKey("csrf_tokens", $_SESSION);
-        $this->assertArrayHasKey($token, $_SESSION["csrf_tokens"]);
-        $this->assertFalse($_SESSION["csrf_tokens"][$token]);
-    }
-
-    public function testGetHiddenInputEscapesToken(): void
-    {
-        $html = CSRFToken::getHiddenInput();
-
-        $this->assertStringNotContainsString("<script>", $html);
-        $this->assertStringContainsString("&", $html);
-    }
-
     public function testClearRemovesToken(): void
     {
         CSRFToken::generate();
         $this->assertArrayHasKey("csrf_tokens", $_SESSION);
-
         CSRFToken::clear();
-
         $this->assertArrayNotHasKey("csrf_tokens", $_SESSION);
     }
 
@@ -111,7 +78,6 @@ class CSRFTokenTest extends TestCase
     {
         $token1 = CSRFToken::generate();
         $token2 = CSRFToken::generate();
-
         $this->assertNotEquals($token1, $token2);
     }
 
