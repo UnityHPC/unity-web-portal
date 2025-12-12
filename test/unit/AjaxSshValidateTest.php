@@ -1,11 +1,8 @@
 <?php
 
-namespace UnityWebPortal\lib;
-
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class AjaxSshValidateTest extends TestCase
+class AjaxSshValidateTest extends UnityWebPortalTestCase
 {
     public static function providerTestSshValidate()
     {

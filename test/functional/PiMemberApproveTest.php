@@ -1,25 +1,10 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\UnitySQL;
 use UnityWebPortal\lib\UnityGroup;
 
-class PIMemberApproveTest extends TestCase
+class PIMemberApproveTest extends UnityWebPortalTestCase
 {
-    private function assertGroupMembers(UnityGroup $group, array $expected_members)
-    {
-        sort($expected_members);
-        $found_members = $group->getGroupMemberUIDs();
-        sort($found_members);
-        $this->assertEqualsCanonicalizing($expected_members, $found_members);
-    }
-
-    private function assertRequestedMembership(bool $expected, string $gid)
-    {
-        global $USER, $SQL;
-        $this->assertEquals($expected, $SQL->requestExists($USER->uid, $gid));
-    }
-
     private function requestGroupMembership(string $gid_or_mail)
     {
         http_post(__DIR__ . "/../../webroot/panel/groups.php", [

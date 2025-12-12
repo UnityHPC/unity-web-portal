@@ -1,10 +1,9 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\UnityUser;
 
-class PIRemoveUserTest extends TestCase
+class PIRemoveUserTest extends UnityWebPortalTestCase
 {
     private function removeUser(string $uid)
     {

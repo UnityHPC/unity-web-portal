@@ -1,11 +1,9 @@
 <?php
 
-namespace UnityWebPortal\lib;
-
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use UnityWebPortal\lib\UnityGithub;
 
-class UnityGithubTest extends TestCase
+class UnityGithubTest extends UnityWebPortalTestCase
 {
     public static function providerTestGetGithubKeys()
     {

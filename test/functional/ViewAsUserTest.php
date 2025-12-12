@@ -1,9 +1,8 @@
 <?php
 
 use UnityWebPortal\lib\UnityHTTPD;
-use PHPUnit\Framework\TestCase;
 
-class ViewAsUserTest extends TestCase
+class ViewAsUserTest extends UnityWebPortalTestCase
 {
     public function _testViewAsUser(array $beforeUser, array $afterUser)
     {

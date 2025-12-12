@@ -26,6 +26,7 @@ require_once __DIR__ . "/../resources/lib/exceptions/EncodingConversionException
 
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
+use UnityWebPortal\lib\UnitySQL;
 use UnityWebPortal\lib\UnityHTTPDMessageLevel;
 use PHPUnit\Framework\TestCase;
 
@@ -323,28 +324,105 @@ function getAdminUser()
     return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
 }
 
-function assertMessageExists(
-    TestCase $test_case,
-    UnityHTTPDMessageLevel $level,
-    string $title_regex,
-    string $body_regex,
-) {
-    $messages = UnityHTTPD::getMessages();
-    $error_msg = sprintf(
-        "message(level='%s' title_regex='%s' body_regex='%s'), not found. found messages: %s",
-        $level->value,
-        $title_regex,
-        $body_regex,
-        jsonEncode($messages),
-    );
-    $messages_with_title = array_filter($messages, fn($x) => preg_match($title_regex, $x[0]));
-    $messages_with_title_and_body = array_filter(
-        $messages_with_title,
-        fn($x) => preg_match($body_regex, $x[1]),
-    );
-    $messages_with_title_and_body_and_level = array_filter(
-        $messages_with_title_and_body,
-        fn($x) => $x[2] == $level,
-    );
-    $test_case->assertNotEmpty($messages_with_title_and_body_and_level, $error_msg);
+class UnityWebPortalTestCase extends TestCase
+{
+    public function assertMessageExists(
+        UnityHTTPDMessageLevel $level,
+        string $title_regex,
+        string $body_regex,
+    ) {
+        $messages = UnityHTTPD::getMessages();
+        $error_msg = sprintf(
+            "message(level='%s' title_regex='%s' body_regex='%s'), not found. found messages: %s",
+            $level->value,
+            $title_regex,
+            $body_regex,
+            jsonEncode($messages),
+        );
+        $messages_with_title = array_filter($messages, fn($x) => preg_match($title_regex, $x[0]));
+        $messages_with_title_and_body = array_filter(
+            $messages_with_title,
+            fn($x) => preg_match($body_regex, $x[1]),
+        );
+        $messages_with_title_and_body_and_level = array_filter(
+            $messages_with_title_and_body,
+            fn($x) => $x[2] == $level,
+        );
+        $this->assertNotEmpty($messages_with_title_and_body_and_level, $error_msg);
+    }
+
+    public function assertGroupMembers(UnityGroup $group, array $expected_members)
+    {
+        sort($expected_members);
+        $found_members = $group->getGroupMemberUIDs();
+        sort($found_members);
+        $this->assertEqualsCanonicalizing($expected_members, $found_members);
+    }
+
+    public function assertRequestedMembership(bool $expected, string $gid)
+    {
+        global $USER, $SQL;
+        $this->assertEquals($expected, $SQL->requestExists($USER->uid, $gid));
+    }
+
+    public function getNumberAccountDeletionRequests()
+    {
+        global $USER, $SQL;
+        $stmt = $SQL->getConn()->prepare("SELECT * FROM account_deletion_requests WHERE uid=:uid");
+        $uid = $USER->uid;
+        $stmt->bindParam(":uid", $uid);
+        $stmt->execute();
+        return count($stmt->fetchAll());
+    }
+
+    public function assertNumberAccountDeletionRequests(int $x)
+    {
+        global $USER, $SQL;
+        if ($x == 0) {
+            $this->assertFalse($USER->hasRequestedAccountDeletion());
+            $this->assertFalse($SQL->accDeletionRequestExists($USER->uid));
+        } elseif ($x > 0) {
+            $this->assertTrue($USER->hasRequestedAccountDeletion());
+            $this->assertTrue($SQL->accDeletionRequestExists($USER->uid));
+        } else {
+            throw new RuntimeException("x must not be negative");
+        }
+        $this->assertEquals($x, $this->getNumberAccountDeletionRequests());
+    }
+
+    public function assertRequestedPIGroup(bool $expected)
+    {
+        global $USER, $SQL;
+        $this->assertEquals(
+            $expected,
+            $SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI),
+        );
+    }
+
+    public function getNumberPiBecomeRequests()
+    {
+        global $USER, $SQL;
+        // FIXME table name, "admin" are public constants in UnitySQL
+        // FIXME "admin" should be something else
+        $stmt = $SQL
+            ->getConn()
+            ->prepare("SELECT * FROM requests WHERE uid=:uid and request_for='admin'");
+        $uid = $USER->uid;
+        $stmt->bindParam(":uid", $uid);
+        $stmt->execute();
+        return count($stmt->fetchAll());
+    }
+
+    public function assertNumberPiBecomeRequests(int $x)
+    {
+        global $USER, $SQL;
+        if ($x == 0) {
+            $this->assertFalse($SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI));
+        } elseif ($x > 0) {
+            $this->assertTrue($SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI));
+        } else {
+            throw new RuntimeException("x must not be negative");
+        }
+        $this->assertEquals($x, $this->getNumberPiBecomeRequests());
+    }
 }

@@ -1,10 +1,9 @@
 <?php
 
 use UnityWebPortal\lib\exceptions\SSOException;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class InvalidEPPNTest extends TestCase
+class InvalidEPPNTest extends UnityWebPortalTestCase
 {
     public static function provider()
     {

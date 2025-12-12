@@ -1,12 +1,10 @@
 <?php
 
-namespace UnityWebPortal\lib;
-
 use UnityWebPortal\lib\exceptions\SSOException;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
+use UnityWebPortal\lib\UnitySSO;
 
-class UnitySSOTest extends TestCase
+class UnitySSOTest extends UnityWebPortalTestCase
 {
     public function testMultipleAttributeValues()
     {

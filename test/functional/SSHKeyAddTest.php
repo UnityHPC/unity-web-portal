@@ -1,11 +1,10 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\UnityGithub;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockBuilder;
 
-class SSHKeyAddTest extends TestCase
+class SSHKeyAddTest extends UnityWebPortalTestCase
 {
     private function addSshKeysPaste(array $keys): void
     {

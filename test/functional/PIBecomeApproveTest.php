@@ -1,20 +1,10 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\UnityOrg;
 use UnityWebPortal\lib\UnitySQL;
 
-class PIBecomeApproveTest extends TestCase
+class PIBecomeApproveTest extends UnityWebPortalTestCase
 {
-    private function assertRequestedPIGroup(bool $expected)
-    {
-        global $USER, $SQL;
-        $this->assertEquals(
-            $expected,
-            $SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI),
-        );
-    }
-
     private function requestGroupCreation()
     {
         http_post(__DIR__ . "/../../webroot/panel/account.php", [

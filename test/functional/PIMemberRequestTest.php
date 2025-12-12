@@ -1,11 +1,10 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\UnityHTTPDMessageLevel;
 use UnityWebPortal\lib\UnitySQL;
 use UnityWebPortal\lib\UnityHTTPD;
 
-class PIMemberRequestTest extends TestCase
+class PIMemberRequestTest extends UnityWebPortalTestCase
 {
     private function requestMembership(string $gid_or_mail)
     {
@@ -47,8 +46,7 @@ class PIMemberRequestTest extends TestCase
             $this->assertFalse($SQL->requestExists($uid, $gid));
             UnityHTTPD::clearMessages();
             $this->requestMembership("asdlkjasldkj");
-            assertMessageExists(
-                $this,
+            $this->assertMessageExists(
                 UnityHTTPDMessageLevel::ERROR,
                 "/.*/",
                 "/^This PI doesn't exist$/",

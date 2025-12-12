@@ -1,9 +1,8 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class PageLoadTest extends TestCase
+class PageLoadTest extends UnityWebPortalTestCase
 {
     public static function provider()
     {
