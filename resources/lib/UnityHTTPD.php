@@ -330,15 +330,9 @@ class UnityHTTPD
 
     public static function validateCSRFToken(): void
     {
-        $token = $_POST["csrf_token"] ?? "";
+        $token = self::getPostData("csrf_token");
         if (!CSRFToken::validate($token)) {
-            self::badRequest(
-                "CSRF token validation failed",
-                data: [
-                    "token_provided" => isset($_POST["csrf_token"]),
-                    "request_method" => $_SERVER["REQUEST_METHOD"] ?? null,
-                ],
-            );
+            self::badRequest("CSRF token validation failed", data: ["token" => $token]);
         }
     }
 }
