@@ -4,6 +4,7 @@ namespace UnityWebPortal\lib;
 
 use UnityWebPortal\lib\exceptions\NoDieException;
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
+use UnityWebPortal\lib\exceptions\UnityHTTPDMessageNotFoundException;
 use RuntimeException;
 
 enum UnityHTTPDMessageLevel: string
@@ -226,13 +227,22 @@ class UnityHTTPD
 
     public static function getPostData(string $key): mixed
     {
-        try {
-            return $_POST[$key];
-        } catch (ArrayKeyException $e) {
-            self::badRequest('failed to get $_POST data', $e, [
-                '$_POST' => $_POST,
-            ]);
+        if (!isset($_SERVER)) {
+            throw new RuntimeException('$_SERVER is unset');
         }
+        if (!array_key_exists("REQUEST_METHOD", $_SERVER)) {
+            throw new RuntimeException('$_SERVER has no array key "REQUEST_METHOD"');
+        }
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            self::badRequest('$_SERVER["REQUEST_METHOD"] != "POST"');
+        }
+        if (!isset($_POST)) {
+            self::badRequest('$_POST is unset');
+        }
+        if (!array_key_exists($key, $_POST)) {
+            self::badRequest("\$_POST has no array key '$key'");
+        }
+        return $_POST[$key];
     }
 
     public static function getUploadedFileContents(
@@ -325,6 +335,43 @@ class UnityHTTPD
 
     public static function clearMessages()
     {
+        self::ensureSessionMessagesSanity();
         $_SESSION["messages"] = [];
+    }
+
+    private static function getMessageIndex(
+        UnityHTTPDMessageLevel $level,
+        string $title,
+        string $body,
+    ) {
+        $messages = self::getMessages();
+        $error_msg = sprintf(
+            "message(level='%s' title='%s' body='%s'), not found. found messages: %s",
+            $level->value,
+            $title,
+            $body,
+            jsonEncode($messages),
+        );
+        foreach ($messages as $i => $message) {
+            if ($title == $message[0] && $body == $message[1] && $level == $message[2]) {
+                return $i;
+            }
+        }
+        throw new UnityHTTPDMessageNotFoundException($error_msg);
+    }
+
+    /* returns the 1st message that matches or throws UnityHTTPDMessageNotFoundException */
+    public static function getMessage(UnityHTTPDMessageLevel $level, string $title, string $body)
+    {
+        $index = self::getMessageIndex($level, $title, $body);
+        return $_SESSION["messages"][$index];
+    }
+
+    /* deletes the 1st message that matches or throws UnityHTTPDMessageNotFoundException */
+    public static function deleteMessage(UnityHTTPDMessageLevel $level, string $title, string $body)
+    {
+        $index = self::getMessageIndex($level, $title, $body);
+        unset($_SESSION["messages"][$index]);
+        $_SESSION["messages"] = array_values($_SESSION["messages"]);
     }
 }
