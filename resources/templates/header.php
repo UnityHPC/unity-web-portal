@@ -3,6 +3,7 @@
 use UnityWebPortal\lib\UnityHTTPD;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    UnityHTTPD::validatePostCSRFToken();
     if (
         ($_SESSION["is_admin"] ?? false) == true
         && ($_POST["form_type"] ?? null) == "clearView"
