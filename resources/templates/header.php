@@ -51,7 +51,7 @@ if (isset($SSO)) {
   </style>
 
   <?php
-    foreach (["global", "navbar", "tables", "filters", "messages"] as $x) {
+    foreach (["global", "navbar", "modal", "tables", "filters", "messages"] as $x) {
         $url = getURL("css/$x.css");
         echo "<link rel='stylesheet' type='text/css' href='$url'>";
     }
