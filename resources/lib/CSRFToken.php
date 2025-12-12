@@ -17,7 +17,7 @@ class CSRFToken
         if (!isset($_SESSION)) {
             throw new \RuntimeException("Session is not started. Call session_start() first.");
         }
-        if (!isset($_SESSION["csrf_token"])) {
+        if (!array_key_exists("csrf_token", $_SESSION)) {
             return self::generate();
         }
         return $_SESSION["csrf_token"];
@@ -47,7 +47,7 @@ class CSRFToken
 
     public static function clear(): void
     {
-        if (isset($_SESSION["csrf_token"])) {
+        if (array_key_exists("csrf_token", $_SESSION)) {
             unset($_SESSION["csrf_token"]);
         }
     }
