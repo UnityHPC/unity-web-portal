@@ -3,7 +3,7 @@ namespace UnityWebPortal\lib;
 
 class CSRFToken
 {
-    private static function ensureSession(): void
+    private static function ensureSessionCSRFTokensSanity(): void
     {
         if (!isset($_SESSION)) {
             throw new \RuntimeException("Session is not started. Call session_start() first.");
@@ -15,7 +15,7 @@ class CSRFToken
 
     public static function generate(): string
     {
-        self::ensureSession();
+        self::ensureSessionCSRFTokensSanity();
         $token = bin2hex(random_bytes(32));
         $_SESSION["csrf_tokens"][$token] = false;
         return $token;
@@ -23,7 +23,7 @@ class CSRFToken
 
     public static function validate(string $token): bool
     {
-        self::ensureSession();
+        self::ensureSessionCSRFTokensSanity();
         if ($token === "") {
             UnityHTTPD::errorLog("empty CSRF token", "");
             return false;
