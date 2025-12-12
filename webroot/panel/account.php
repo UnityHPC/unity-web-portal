@@ -86,12 +86,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($hasGroups) {
                 break;
             }
+            // FIXME send an error message if already exists
             if (!$SQL->accDeletionRequestExists($USER->uid)) {
                 $USER->requestAccountDeletion();
             }
             break;
         case "cancel_account_deletion_request":
-            $USER->cancelRequestAccountDeletion();
+            // FIXME send an error message if doesn't exist
+            if ($SQL->accDeletionRequestExists($USER->uid)) {
+                $USER->cancelRequestAccountDeletion();
+            }
             break;
     }
 }
