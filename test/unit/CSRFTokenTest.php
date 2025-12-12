@@ -6,15 +6,16 @@ class CSRFTokenTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        CSRFToken::clear();
+        session_id(uniqid());
+        session_start();
+        $_SESSION["csrf_tokens"] = [];
     }
 
     protected function tearDown(): void
     {
         CSRFToken::clear();
+        session_write_close();
+        session_id(uniqid());
     }
 
     public function testGenerateCreatesToken(): void
