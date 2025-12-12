@@ -3,7 +3,7 @@
 >
   <span>
     You are receiving this email because you have an account
-    on the <a target='_blank' href='<?php echo getURL("/"); ?>'>Unity Cluster</a>.
+    on the <?php echo getHyperlink("Unity Cluster", "/"); ?>.
     If you would like to stop receiving these emails,
     you may request to close your account by replying to this email.
   </span>

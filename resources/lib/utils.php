@@ -83,7 +83,15 @@ function pathJoin()
     return preg_replace("#/+#", "/", join("/", $paths));
 }
 
-function getURL(...$args)
+function getURL(...$path_components)
 {
-    return pathJoin([CONFIG["site"]["url"], CONFIG["site"]["prefix"], ...$args]);
+    return pathJoin([CONFIG["site"]["url"], CONFIG["site"]["prefix"], ...$path_components]);
+}
+
+function getHyperlink($text, ...$path_components)
+{
+    $text = htmlspecialchars($text);
+    $path_components = array_map("htmlspecialchars", $path_components);
+    $url = getURL(...$path_components);
+    return "<a href='$url'>$text</a>";
 }

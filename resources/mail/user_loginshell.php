@@ -7,6 +7,6 @@ $this->Subject = "Login Shell Updated"; ?>
 
 <p>You have updated your login shell on the Unity cluster to <?php echo $data["new_shell"]; ?>.
 You can view the login shell settings on the
-<a href="<?php echo getURL("panel/account.php"); ?>">account settings</a> page</p>
+<?php echo getHyperlink("account settings", "panel/account.php"); ?> page</p>
 
 <p>If you believe this to be a mistake, please reply to this email as soon as possible.</p>
