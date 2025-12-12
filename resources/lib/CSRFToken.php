@@ -23,13 +23,10 @@ class CSRFToken
         return $_SESSION["csrf_token"];
     }
 
-    public static function validate(?string $token = null): bool
+    public static function validate(string $token): bool
     {
         if (!isset($_SESSION)) {
             throw new \RuntimeException("Session is not started. Call session_start() first.");
-        }
-        if ($token === null) {
-            $token = $_POST["csrf_token"] ?? ($_GET["csrf_token"] ?? null);
         }
         if ($token === null || $token === "") {
             return false;

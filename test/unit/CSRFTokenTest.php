@@ -75,13 +75,6 @@ class CSRFTokenTest extends TestCase
         $this->assertFalse(CSRFToken::validate("invalid_token"));
     }
 
-    public function testValidateWithNullToken(): void
-    {
-        CSRFToken::generate();
-
-        $this->assertFalse(CSRFToken::validate(null));
-    }
-
     public function testValidateWithEmptyToken(): void
     {
         CSRFToken::generate();
@@ -143,22 +136,6 @@ class CSRFTokenTest extends TestCase
         $this->assertNotEquals($token1, $token2);
 
         $this->assertEquals($token2, CSRFToken::getToken());
-    }
-
-    public function testValidateTokenFromPostData(): void
-    {
-        $token = CSRFToken::generate();
-        $_POST["csrf_token"] = $token;
-
-        $this->assertTrue(CSRFToken::validate());
-    }
-
-    public function testValidateTokenFromGetData(): void
-    {
-        $token = CSRFToken::generate();
-        $_GET["csrf_token"] = $token;
-
-        $this->assertTrue(CSRFToken::validate());
     }
 
     public function testParameterNameConstant(): void
