@@ -29,10 +29,10 @@
 </footer>
 
 </body>
-
-<script src="<?php echo getURL("js/filter.js") ;?>"></script>
-<script src="<?php echo getURL("js/sort.js"); ?>"></script>
-<script src="<?php echo getURL("js/global.js"); ?>"></script>
-<script src="<?php echo getURL("js/tables.js"); ?>"></script>
-
+<?php
+foreach (["filter", "sort", "global", "tables"] as $x) {
+    $url = getURL("js/$x.js");
+    echo "<script src='$url'>";
+}
+?>
 </html>
