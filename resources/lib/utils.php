@@ -85,7 +85,7 @@ function pathJoin()
 
 function getURL(...$path_components)
 {
-    return pathJoin([CONFIG["site"]["url"], CONFIG["site"]["prefix"], ...$path_components]);
+    return pathJoin(CONFIG["site"]["url"], CONFIG["site"]["prefix"], ...$path_components);
 }
 
 function getHyperlink($text, ...$path_components)
