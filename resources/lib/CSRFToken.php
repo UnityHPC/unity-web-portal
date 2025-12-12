@@ -2,15 +2,13 @@
 namespace UnityWebPortal\lib;
 class CSRFToken
 {
-    private const SESSION_KEY = "csrf_token";
-    public const PARAMETER_NAME = "csrf_token";
     public static function generate(): string
     {
         if (!isset($_SESSION)) {
             throw new \RuntimeException("Session is not started. Call session_start() first.");
         }
         $token = bin2hex(random_bytes(32));
-        $_SESSION[self::SESSION_KEY] = $token;
+        $_SESSION["csrf_token"] = $token;
         return $token;
     }
 
@@ -19,10 +17,10 @@ class CSRFToken
         if (!isset($_SESSION)) {
             throw new \RuntimeException("Session is not started. Call session_start() first.");
         }
-        if (!isset($_SESSION[self::SESSION_KEY])) {
+        if (!isset($_SESSION["csrf_token"])) {
             return self::generate();
         }
-        return $_SESSION[self::SESSION_KEY];
+        return $_SESSION["csrf_token"];
     }
 
     public static function validate(?string $token = null): bool
@@ -31,12 +29,12 @@ class CSRFToken
             throw new \RuntimeException("Session is not started. Call session_start() first.");
         }
         if ($token === null) {
-            $token = $_POST[self::PARAMETER_NAME] ?? ($_GET[self::PARAMETER_NAME] ?? null);
+            $token = $_POST["csrf_token"] ?? ($_GET["csrf_token"] ?? null);
         }
         if ($token === null || $token === "") {
             return false;
         }
-        $storedToken = $_SESSION[self::SESSION_KEY] ?? null;
+        $storedToken = $_SESSION["csrf_token"] ?? null;
         if ($storedToken === null || $storedToken === "") {
             return false;
         }
@@ -46,14 +44,14 @@ class CSRFToken
     public static function getHiddenInput(): string
     {
         $token = htmlspecialchars(self::getToken(), ENT_QUOTES, "UTF-8");
-        $paramName = htmlspecialchars(self::PARAMETER_NAME, ENT_QUOTES, "UTF-8");
+        $paramName = htmlspecialchars("csrf_token", ENT_QUOTES, "UTF-8");
         return "<input type='hidden' name='$paramName' value='$token'>";
     }
 
     public static function clear(): void
     {
-        if (isset($_SESSION[self::SESSION_KEY])) {
-            unset($_SESSION[self::SESSION_KEY]);
+        if (isset($_SESSION["csrf_token"])) {
+            unset($_SESSION["csrf_token"]);
         }
     }
 }

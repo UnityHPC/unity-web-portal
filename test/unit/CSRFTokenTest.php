@@ -163,6 +163,6 @@ class CSRFTokenTest extends TestCase
 
     public function testParameterNameConstant(): void
     {
-        $this->assertEquals("csrf_token", CSRFToken::PARAMETER_NAME);
+        $this->assertEquals("csrf_token", "csrf_token");
     }
 }

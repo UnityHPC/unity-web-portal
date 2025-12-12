@@ -334,7 +334,7 @@ class UnityHTTPD
             self::badRequest(
                 "CSRF token validation failed",
                 data: [
-                    "token_provided" => !empty($token) || isset($_POST[CSRFToken::PARAMETER_NAME]),
+                    "token_provided" => !empty($token) || isset($_POST["csrf_token"]),
                     "request_method" => $_SERVER["REQUEST_METHOD"] ?? null,
                 ],
             );
