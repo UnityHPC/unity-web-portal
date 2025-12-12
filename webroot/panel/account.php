@@ -10,6 +10,7 @@ use UnityWebPortal\lib\UnitySQL;
 $hasGroups = count($USER->getPIGroupGIDs()) > 0;
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    UnityHTTPD::validatePostCSRFToken();
     switch (UnityHTTPD::getPostData("form_type")) {
         case "addKey":
             $keys = array();
@@ -158,6 +159,7 @@ if (!$isPI) {
             id='piReq'
         >
     ";
+    echo UnityHTTPD::getCSRFTokenHiddenFormInput();
     if ($SQL->accDeletionRequestExists($USER->uid)) {
         echo "<input type='submit' value='Request PI Account' disabled />";
         echo "
@@ -207,6 +209,7 @@ if (count($sshPubKeys) == 0) {
 }
 
 for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {
+    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
     "<div class='key-box'>
         <textarea spellcheck='false' readonly>" . $sshPubKeys[$i] . "</textarea>
@@ -215,6 +218,7 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {
             onsubmit='return confirm(\"Are you sure you want to delete this SSH key?\");'
             method='POST'
         >
+            $CSRFTokenHiddenFormInput
             <input type='hidden' name='delIndex' value='$i' />
             <input type='hidden' name='form_type' value='delKey' />
             <input type='submit' value='&times;' />
@@ -222,21 +226,23 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {
     </div>";
 }
 
-echo '
-    <button type="button" class="plusBtn btnAddKey"><span>&#43;</span></button>
+$CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
+echo "
+    <button type='button' class='plusBtn btnAddKey'><span>&#43;</span></button>
     <hr>
     <h5>Login Shell</h5>
-    <form action="" method="POST">
-    <input type="hidden" name="form_type" value="loginshell" />
-    <select id="loginSelector" class="code" name="shellSelect">
-';
+    <form action='' method='POST'>
+      $CSRFTokenHiddenFormInput
+      <input type='hidden' name='form_type' value='loginshell' />
+      <select id='loginSelector' class='code' name='shellSelect'>
+";
 foreach (CONFIG["loginshell"]["shell"] as $shell) {
     echo "<option>$shell</option>";
 }
 echo "
-    </select>
-    <br>
-    <input id='submitLoginShell' type='submit' value='Set Login Shell' />
+      </select>
+      <br>
+      <input id='submitLoginShell' type='submit' value='Set Login Shell' />
     </form>
     <hr>
     <h5>Account Deletion</h5>
@@ -245,6 +251,7 @@ echo "
 if ($hasGroups) {
     echo "<p>You cannot request to delete your account while you are in a PI group.</p>";
 } else {
+    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo "
         <form
             action=''
@@ -252,6 +259,7 @@ if ($hasGroups) {
             id='accDel'
             onsubmit='return confirm(\"Are you sure you want to request an account deletion?\")'
         >
+        $CSRFTokenHiddenFormInput
         <input type='hidden' name='form_type' value='account_deletion_request' />
     ";
     if ($SQL->accDeletionRequestExists($USER->uid)) {

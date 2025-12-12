@@ -21,8 +21,6 @@ if (CONFIG["site"]["enable_error_handler"]) {
     set_error_handler(["UnityWebPortal\lib\UnityHTTPD", "errorHandler"]);
 }
 
-session_start();
-
 if (isset($GLOBALS["ldapconn"])) {
     $LDAP = $GLOBALS["ldapconn"];
 } else {
@@ -37,6 +35,20 @@ $GITHUB = new UnityGithub();
 if (!array_key_exists("messages", $_SESSION)) {
     $_SESSION["messages"] = [];
 }
+
+if (!array_key_exists("csrf_tokens", $_SESSION)) {
+    $_SESSION["csrf_tokens"] = [];
+}
+
+session_start();
+// https://stackoverflow.com/a/1270960/18696276
+if (time() - ($_SESSION["LAST_ACTIVITY"] ?? 0) > CONFIG["site"]["session_cleanup_age_seconds"]) {
+    $_SESSION["csrf_tokens"] = [];
+    $_SESSION["messages"] = [];
+    session_write_close();
+    session_start();
+}
+$_SESSION["LAST_ACTIVITY"] = time();
 
 if (isset($_SERVER["REMOTE_USER"])) {
     // Check if SSO is enabled on this page

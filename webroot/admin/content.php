@@ -9,6 +9,7 @@ if (!$USER->isAdmin()) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    UnityHTTPD::validatePostCSRFToken();
     if (!empty($_POST["pageSel"])) {
         $SQL->editPage($_POST["pageSel"], $_POST["content"], $USER);
     }
@@ -21,6 +22,7 @@ require $LOC_HEADER;
 <hr>
 
 <form id="pageForm" method="POST" action="">
+    <?php echo UnityHTTPD::getCSRFTokenHiddenFormInput(); ?>
     <select name="pageSel" required>
         <option value="" selected disabled hidden>Select page...</option>
         <?php
