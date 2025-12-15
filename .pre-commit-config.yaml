@@ -31,6 +31,7 @@ repos:
               resources/lib/phpopenldaper/.*|
               vendor/.*|
               resources/lib/.*|
+              resources/mail/.*|
           )$
 
   - repo: https://github.com/rbubley/mirrors-prettier
@@ -47,6 +48,7 @@ repos:
               vendor/.*|
               resources/templates/.*|
               webroot/.*|
+              resources/mail/.*|
           )$
 
   # linters (work required) ########################################################################
@@ -81,6 +83,7 @@ repos:
               resources/lib/phpopenldaper/.*|
               vendor/.*|
               resources/lib/.*|
+              resources/mail/.*|
           )$
       - id: php-l
         name: php -l
