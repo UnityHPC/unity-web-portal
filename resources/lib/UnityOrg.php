@@ -3,7 +3,7 @@
 namespace UnityWebPortal\lib;
 use PHPOpenLDAPer\LDAPEntry;
 
-class UnityOrg
+class UnityOrg extends LDAPEntry
 {
     public string $gid;
     private LDAPEntry $entry;
@@ -19,9 +19,9 @@ class UnityOrg
         UnityMailer $MAILER,
         UnityWebhook $WEBHOOK,
     ) {
+        parent::__construct($LDAP, $LDAP->getOrgGroupDN($this->gid));
         $gid = trim($gid);
         $this->gid = $gid;
-        $this->entry = $LDAP->getOrgGroupEntry($this->gid);
 
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
@@ -31,16 +31,11 @@ class UnityOrg
 
     public function init(): void
     {
-        \ensure(!$this->entry->exists());
+        \ensure(!$this->exists());
         $nextGID = $this->LDAP->getNextOrgGIDNumber();
-        $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
-        $this->entry->setAttribute("gidnumber", strval($nextGID));
-        $this->entry->write();
-    }
-
-    public function exists(): bool
-    {
-        return $this->entry->exists();
+        $this->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
+        $this->setAttribute("gidnumber", strval($nextGID));
+        $this->write();
     }
 
     public function inOrg(UnityUser $user): bool
@@ -67,20 +62,20 @@ class UnityOrg
 
     public function getOrgMemberUIDs(): array
     {
-        $members = $this->entry->getAttribute("memberuid");
+        $members = $this->getAttribute("memberuid");
         sort($members);
         return $members;
     }
 
     public function addUser(UnityUser $user): void
     {
-        $this->entry->appendAttribute("memberuid", $user->uid);
-        $this->entry->write();
+        $this->appendAttribute("memberuid", $user->uid);
+        $this->write();
     }
 
     public function removeUser(UnityUser $user): void
     {
-        $this->entry->removeAttributeEntryByValue("memberuid", $user->uid);
-        $this->entry->write();
+        $this->removeAttributeEntryByValue("memberuid", $user->uid);
+        $this->write();
     }
 }

@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\UnityOrg;
+use PHPOpenLDAPer\LDAPEntry;
 
 class RegisterUserTest extends UnityWebPortalTestCase
 {
@@ -23,9 +24,9 @@ class RegisterUserTest extends UnityWebPortalTestCase
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
         switchuser(...$user_to_register_args);
-        $user_entry = $LDAP->getUserEntry($USER->uid);
-        $user_group_entry = $LDAP->getGroupEntry($USER->uid);
-        $org_entry = $LDAP->getOrgGroupEntry($SSO["org"]);
+        $user_entry = new LDAPEntry($LDAP, $LDAP->getUserDN($USER->uid));
+        $user_group_entry = new LDAPEntry($LDAP, $LDAP->getUserGroupDN($USER->uid));
+        $org_entry = new LDAPEntry($LDAP, $LDAP->getOrgGroupDN($SSO["org"]));
         $this->assertTrue(!$user_entry->exists());
         $this->assertTrue(!$user_group_entry->exists());
         $this->assertTrue(!$org_entry->exists());

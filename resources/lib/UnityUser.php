@@ -5,7 +5,7 @@ namespace UnityWebPortal\lib;
 use PHPOpenLDAPer\LDAPEntry;
 use Exception;
 
-class UnityUser
+class UnityUser extends LDAPEntry
 {
     private const HOME_DIR = "/home/";
 
@@ -23,9 +23,9 @@ class UnityUser
         UnityMailer $MAILER,
         UnityWebhook $WEBHOOK,
     ) {
+        parent::__construct($LDAP, $LDAP->getUserDN($uid));
         $uid = trim($uid);
         $this->uid = $uid;
-        $this->entry = $LDAP->getUserEntry($uid);
 
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
@@ -68,22 +68,22 @@ class UnityUser
         $ldapGroupEntry->setAttribute("gidnumber", strval($id));
         $ldapGroupEntry->write();
 
-        \ensure(!$this->entry->exists());
-        $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_ACCOUNT_CLASS);
-        $this->entry->setAttribute("uid", $this->uid);
-        $this->entry->setAttribute("givenname", $firstname);
-        $this->entry->setAttribute("sn", $lastname);
-        $this->entry->setAttribute(
+        \ensure(!$this->exists());
+        $this->setAttribute("objectclass", UnityLDAP::POSIX_ACCOUNT_CLASS);
+        $this->setAttribute("uid", $this->uid);
+        $this->setAttribute("givenname", $firstname);
+        $this->setAttribute("sn", $lastname);
+        $this->setAttribute(
             "gecos",
             \transliterator_transliterate("Latin-ASCII", "$firstname $lastname"),
         );
-        $this->entry->setAttribute("mail", $email);
-        $this->entry->setAttribute("o", $org);
-        $this->entry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
-        $this->entry->setAttribute("loginshell", $this->LDAP->getDefUserShell());
-        $this->entry->setAttribute("uidnumber", strval($id));
-        $this->entry->setAttribute("gidnumber", strval($id));
-        $this->entry->write();
+        $this->setAttribute("mail", $email);
+        $this->setAttribute("o", $org);
+        $this->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
+        $this->setAttribute("loginshell", $this->LDAP->getDefUserShell());
+        $this->setAttribute("uidnumber", strval($id));
+        $this->setAttribute("gidnumber", strval($id));
+        $this->write();
 
         $org = $this->getOrgGroup();
         if (!$org->exists()) {
@@ -136,24 +136,19 @@ class UnityUser
      */
     public function getGroupEntry(): LDAPEntry
     {
-        return $this->LDAP->getGroupEntry($this->uid);
-    }
-
-    public function exists(): bool
-    {
-        return $this->entry->exists() && $this->getGroupEntry()->exists();
+        return new LDAPEntry($this->LDAP, $this->LDAP->getUserGroupDN($this->uid));
     }
 
     public function setOrg(UnityOrg $org): void
     {
-        $this->entry->setAttribute("o", $org);
-        $this->entry->write();
+        $this->setAttribute("o", $org);
+        $this->write();
     }
 
     public function getOrg(): string
     {
-        $this->entry->ensureExists();
-        return $this->entry->getAttribute("o")[0];
+        $this->ensureExists();
+        return $this->getAttribute("o")[0];
     }
 
     /**
@@ -161,12 +156,12 @@ class UnityUser
      */
     public function setFirstname(string $firstname, ?UnityUser $operator = null): void
     {
-        $this->entry->setAttribute("givenname", $firstname);
+        $this->setAttribute("givenname", $firstname);
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "firstname_changed", $this->uid);
 
-        $this->entry->write();
+        $this->write();
     }
 
     /**
@@ -174,8 +169,8 @@ class UnityUser
      */
     public function getFirstname(): string
     {
-        $this->entry->ensureExists();
-        return $this->entry->getAttribute("givenname")[0];
+        $this->ensureExists();
+        return $this->getAttribute("givenname")[0];
     }
 
     /**
@@ -183,12 +178,12 @@ class UnityUser
      */
     public function setLastname(string $lastname, $operator = null): void
     {
-        $this->entry->setAttribute("sn", $lastname);
+        $this->setAttribute("sn", $lastname);
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "lastname_changed", $this->uid);
 
-        $this->entry->write();
+        $this->write();
     }
 
     /**
@@ -196,13 +191,13 @@ class UnityUser
      */
     public function getLastname(): string
     {
-        $this->entry->ensureExists();
-        return $this->entry->getAttribute("sn")[0];
+        $this->ensureExists();
+        return $this->getAttribute("sn")[0];
     }
 
     public function getFullname(): string
     {
-        $this->entry->ensureExists();
+        $this->ensureExists();
         return $this->getFirstname() . " " . $this->getLastname();
     }
 
@@ -211,12 +206,12 @@ class UnityUser
      */
     public function setMail(string $email, ?UnityUser $operator = null): void
     {
-        $this->entry->setAttribute("mail", $email);
+        $this->setAttribute("mail", $email);
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "email_changed", $this->uid);
 
-        $this->entry->write();
+        $this->write();
     }
 
     /**
@@ -224,8 +219,8 @@ class UnityUser
      */
     public function getMail(): string
     {
-        $this->entry->ensureExists();
-        return $this->entry->getAttribute("mail")[0];
+        $this->ensureExists();
+        return $this->getAttribute("mail")[0];
     }
 
     /**
@@ -235,9 +230,9 @@ class UnityUser
     {
         $operator = is_null($operator) ? $this->uid : $operator->uid;
         $keys_filt = array_values(array_unique($keys));
-        \ensure($this->entry->exists());
-        $this->entry->setAttribute("sshpublickey", $keys_filt);
-        $this->entry->write();
+        \ensure($this->exists());
+        $this->setAttribute("sshpublickey", $keys_filt);
+        $this->write();
 
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "sshkey_modify", $this->uid);
 
@@ -253,8 +248,8 @@ class UnityUser
      */
     public function getSSHKeys(): array
     {
-        $this->entry->ensureExists();
-        $result = $this->entry->getAttribute("sshpublickey");
+        $this->ensureExists();
+        $result = $this->getAttribute("sshpublickey");
         return $result;
     }
 
@@ -276,9 +271,9 @@ class UnityUser
         if (empty($shell)) {
             throw new Exception("login shell must not be empty!");
         }
-        \ensure($this->entry->exists());
-        $this->entry->setAttribute("loginshell", $shell);
-        $this->entry->write();
+        \ensure($this->exists());
+        $this->setAttribute("loginshell", $shell);
+        $this->write();
 
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
@@ -296,15 +291,15 @@ class UnityUser
      */
     public function getLoginShell(): string
     {
-        $this->entry->ensureExists();
-        return $this->entry->getAttribute("loginshell")[0];
+        $this->ensureExists();
+        return $this->getAttribute("loginshell")[0];
     }
 
     public function setHomeDir(string $home, ?UnityUser $operator = null): void
     {
-        \ensure($this->entry->exists());
-        $this->entry->setAttribute("homedirectory", $home);
-        $this->entry->write();
+        \ensure($this->exists());
+        $this->setAttribute("homedirectory", $home);
+        $this->write();
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "homedir_changed", $this->uid);
@@ -315,8 +310,8 @@ class UnityUser
      */
     public function getHomeDir(): string
     {
-        $this->entry->ensureExists();
-        return $this->entry->getAttribute("homedirectory");
+        $this->ensureExists();
+        return $this->getAttribute("homedirectory");
     }
 
     /**

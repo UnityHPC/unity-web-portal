@@ -363,28 +363,28 @@ class UnityLDAP extends LDAPConn
         );
     }
 
-    public function getUserEntry(string $uid): LDAPEntry
+    public function getUserDN(string $uid): string
     {
         $uid = ldap_escape($uid, "", LDAP_ESCAPE_DN);
-        return $this->getEntry(UnityLDAP::RDN . "=$uid," . CONFIG["ldap"]["user_ou"]);
+        return UnityLDAP::RDN . "=$uid," . CONFIG["ldap"]["user_ou"];
     }
 
-    public function getGroupEntry(string $gid): LDAPEntry
+    public function getUserGroupDN(string $gid): string
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
-        return $this->getEntry(UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["group_ou"]);
+        return UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["group_ou"];
     }
 
-    public function getPIGroupEntry(string $gid): LDAPEntry
+    public function getPIGroupDN(string $gid): string
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
-        return $this->getEntry(UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["pigroup_ou"]);
+        return UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["pigroup_ou"];
     }
 
-    public function getOrgGroupEntry(string $gid): LDAPEntry
+    public function getOrgGroupDN(string $gid): string
     {
         $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
-        return $this->getEntry(UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["orggroup_ou"]);
+        return UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["orggroup_ou"];
     }
 
     /**

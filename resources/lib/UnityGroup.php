@@ -8,7 +8,7 @@ use Exception;
 /**
  * Class that represents a single PI group in the Unity Cluster.
  */
-class UnityGroup
+class UnityGroup extends LDAPEntry
 {
     public const string PI_PREFIX = "pi_";
 
@@ -26,9 +26,9 @@ class UnityGroup
         UnityMailer $MAILER,
         UnityWebhook $WEBHOOK,
     ) {
+        parent::__construct($LDAP, $LDAP->getPIGroupDN($gid));
         $gid = trim($gid);
         $this->gid = $gid;
-        $this->entry = $LDAP->getPIGroupEntry($gid);
 
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
@@ -52,14 +52,6 @@ class UnityGroup
     public function __toString(): string
     {
         return $this->gid;
-    }
-
-    /**
-     * Checks if the current PI is an approved and existent group
-     */
-    public function exists(): bool
-    {
-        return $this->entry->exists();
     }
 
     public function requestGroup(bool $send_mail_to_admins, bool $send_mail = true): void
@@ -179,8 +171,8 @@ class UnityGroup
     //     $users = $this->getGroupMembers();
 
     //     // now we delete the ldap entry
-    //     $this->entry->ensureExists();
-    //     $this->entry->delete();
+    //     $this->ensureExists();
+    //     $this->delete();
 
     //     // send email to every user of the now deleted PI group
     //     if ($send_mail) {
@@ -327,7 +319,7 @@ class UnityGroup
 
     public function getGroupMemberUIDs(): array
     {
-        $members = $this->entry->getAttribute("memberuid");
+        $members = $this->getAttribute("memberuid");
         sort($members);
         return $members;
     }
@@ -348,26 +340,26 @@ class UnityGroup
     private function init(): void
     {
         $owner = $this->getOwner();
-        \ensure(!$this->entry->exists());
+        \ensure(!$this->exists());
         $nextGID = $this->LDAP->getNextPIGIDNumber();
-        $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
-        $this->entry->setAttribute("gidnumber", strval($nextGID));
-        $this->entry->setAttribute("memberuid", [$owner->uid]);
-        $this->entry->write();
+        $this->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
+        $this->setAttribute("gidnumber", strval($nextGID));
+        $this->setAttribute("memberuid", [$owner->uid]);
+        $this->write();
         // TODO if we ever make this project based,
         // we need to update the cache here with the memberuid
     }
 
     private function addUserToGroup(UnityUser $new_user): void
     {
-        $this->entry->appendAttribute("memberuid", $new_user->uid);
-        $this->entry->write();
+        $this->appendAttribute("memberuid", $new_user->uid);
+        $this->write();
     }
 
     private function removeUserFromGroup(UnityUser $old_user): void
     {
-        $this->entry->removeAttributeEntryByValue("memberuid", $old_user->uid);
-        $this->entry->write();
+        $this->removeAttributeEntryByValue("memberuid", $old_user->uid);
+        $this->write();
     }
 
     public function memberExists(UnityUser $user): bool

@@ -30,6 +30,7 @@ use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UnitySQL;
 use UnityWebPortal\lib\UnityHTTPDMessageLevel;
 use PHPUnit\Framework\TestCase;
+use PHPOpenLDAPer\LDAPEntry;
 
 $_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
 require_once __DIR__ . "/../resources/config.php";
@@ -178,7 +179,7 @@ function ensureUserDoesNotExist()
             $org->removeUser($USER);
             ensure(!$org->inOrg($USER));
         }
-        $LDAP->getUserEntry($USER->uid)->delete();
+        (new LDAPEntry($LDAP, $LDAP->getUserDN($USER->uid)))->delete();
         ensure(!$USER->exists());
     }
     if ($USER->getGroupEntry()->exists()) {
@@ -202,7 +203,7 @@ function ensureUserDoesNotExist()
 function ensureOrgGroupDoesNotExist()
 {
     global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
-    $org_group = $LDAP->getOrgGroupEntry($SSO["org"]);
+    $org_group = new LDAPEntry($LDAP, $LDAP->getOrgGroupDN($SSO["org"]));
     if ($org_group->exists()) {
         $org_group->delete();
         ensure(!$org_group->exists());
@@ -231,7 +232,7 @@ function ensurePIGroupDoesNotExist()
     global $USER, $LDAP;
     $gid = $USER->getPIGroup()->gid;
     if ($USER->getPIGroup()->exists()) {
-        $LDAP->getPIGroupEntry($gid)->delete();
+        (new LDAPEntry($LDAP, $LDAP->getPIGroupDN($gid)))->delete();
         ensure(!$USER->getPIGroup()->exists());
     }
 }
