@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         && ($_POST["form_type"] ?? null) == "clearView"
     ) {
         unset($_SESSION["viewUser"]);
-        UnityHTTPD::redirect(CONFIG["site"]["prefix"] . "/admin/user-mgmt.php");
+        UnityHTTPD::redirect(getURL("admin/user-mgmt.php"));
     }
     // Webroot files need to handle their own POSTs before loading the header
     // so that they can do UnityHTTPD::badRequest before anything else has been printed.
@@ -26,7 +26,7 @@ if (isset($SSO)) {
         !$_SESSION["user_exists"]
         && !str_ends_with($_SERVER['PHP_SELF'], "/panel/new_account.php")
     ) {
-        UnityHTTPD::redirect(CONFIG["site"]["prefix"] . "/panel/new_account.php");
+        UnityHTTPD::redirect(getURL("panel/new_account.php"));
     }
 }
 
@@ -51,15 +51,10 @@ if (isset($SSO)) {
   </style>
 
   <?php
-    $prefix = CONFIG["site"]["prefix"];
-    echo "
-        <link rel='stylesheet' type='text/css' href='$prefix/css/global.css'>
-        <link rel='stylesheet' type='text/css' href='$prefix/css/navbar.css'>
-        <link rel='stylesheet' type='text/css' href='$prefix/css/modal.css'>
-        <link rel='stylesheet' type='text/css' href='$prefix/css/tables.css'>
-        <link rel='stylesheet' type='text/css' href='$prefix/css/filters.css'>
-        <link rel='stylesheet' type='text/css' href='$prefix/css/messages.css'>
-    ";
+    foreach (["global", "navbar", "modal", "tables", "filters", "messages"] as $x) {
+        $url = getURL("css/$x.css");
+        echo "<link rel='stylesheet' type='text/css' href='$url'>";
+    }
     ?>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -72,11 +67,11 @@ if (isset($SSO)) {
 
   <header>
     <img id="imgLogo" draggable=false
-    src="<?php echo CONFIG["site"]["prefix"]; ?>/assets/<?php echo CONFIG["site"]["logo"]; ?>">
+    src="<?php echo getURL("assets", CONFIG["site"]["logo"]); ?>">
     <button class="hamburger vertical-align">
       <img
         draggable="false"
-        src="<?php echo CONFIG["site"]["prefix"]; ?>/assets/menu.png"
+        src="<?php echo getURL("assets/menu.png") ?>"
         alt="Menu Button"
       >
     </button>
@@ -84,9 +79,8 @@ if (isset($SSO)) {
 
   <nav class="mainNav">
     <?php
-    $prefix = CONFIG["site"]["prefix"];
     // Public Items - Always Visible
-    echo "<a href='$prefix/index.php'>Home</a>";
+    echo getHyperlink("Home", "index.php");
 
     $num_additional_items = count(CONFIG["menuitems"]["labels"]);
     for ($i = 0; $i < $num_additional_items; $i++) {
@@ -96,13 +90,13 @@ if (isset($SSO)) {
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
         // Menu Items for Present Users
-        echo "<a href='$prefix/panel/support.php'>Support</a>";
-        echo "<a href='$prefix/panel/account.php'>Account Settings</a>";
-        echo "<a href='$prefix/panel/groups.php'>My PIs</a>";
+        echo getHyperlink("Support", "panel/support.php");
+        echo getHyperlink("Account Settings", "panel/account.php");
+        echo getHyperlink("My PIs", "panel/groups.php");
 
         if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
             // PI only pages
-            echo "<a href='$prefix/panel/pi.php'>My Users</a>";
+            echo getHyperlink("My Users", "panel/pi.php");
         }
 
         // additional branding items
@@ -118,13 +112,13 @@ if (isset($SSO)) {
         ) {
             echo "<hr class='navHR'>";
             // Admin only pages
-            echo "<a href='$prefix/admin/user-mgmt.php'>User Management</a>";
-            echo "<a href='$prefix/admin/pi-mgmt.php'>PI Management</a>";
-            echo "<a href='$prefix/admin/notices.php'>Cluster Notices</a>";
-            echo "<a href='$prefix/admin/content.php'>Content Management</a>";
+            echo getHyperlink("User Management", "admin/user-mgmt.php");
+            echo getHyperlink("PI Management", "admin/pi-mgmt.php");
+            echo getHyperlink("Cluster Notices", "admin/notices.php");
+            echo getHyperlink("Content Management", "admin/content.php");
         }
     } else {
-        echo "<a href='$prefix/panel/account.php'>Login / Request Account</a>";
+        echo getHyperlink("Login / Request Account", "panel/account.php");
     }
     ?>
   </nav>
@@ -138,7 +132,7 @@ if (isset($SSO)) {
       <div class="modalBody"></div>
     </div>
   </div>
-  <script src="<?php echo CONFIG["site"]["prefix"]; ?>/js/modal.js"></script>
+  <script src="<?php echo getURL("js/modal.js"); ?>"></script>
 
   <main>
 

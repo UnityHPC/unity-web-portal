@@ -53,10 +53,10 @@ require $LOC_HEADER;
         .catch(error => {
             console.error(error)
         });
-    const prefix = '<?php echo CONFIG["site"]["prefix"]; ?>';
+    const url = '<?php echo getURL("admin/ajax/get_page_contents.php"); ?>';
     $("#pageForm > select[name=pageSel]").change(function(e) {
         $.ajax({
-            url: `${prefix}/admin/ajax/get_page_contents.php?pageid=` + $(this).val(),
+            url: `${url}?pageid=` + $(this).val(),
             success: function(result) {
             mainEditor.setData(result);
         }});

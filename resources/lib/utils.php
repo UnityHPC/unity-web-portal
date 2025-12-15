@@ -72,13 +72,27 @@ function mbDetectEncoding(string $string, ?array $encodings = null, mixed $_ = n
 }
 
 /* https://stackoverflow.com/a/15575293/18696276 */
-function pathJoin()
+function pathNormalize(string $path)
 {
-    $paths = [];
-    foreach (func_get_args() as $arg) {
-        if ($arg !== "") {
-            $paths[] = $arg;
-        }
+    return preg_replace("#/+#", "/", $path);
+}
+
+function getURL(...$relative_url_components)
+{
+    if (!preg_match("#^\w+://#", CONFIG["site"]["url"])) {
+        throw new RuntimeException('CONFIG[site][url] does not have a scheme! (ex: "https://")');
     }
-    return preg_replace("#/+#", "/", join("/", $paths));
+    $matches = [];
+    preg_match("#(^\w+://)(.*)#", CONFIG["site"]["url"], $matches);
+    [$_, $site_url_scheme, $site_url_noscheme] = $matches;
+    $path = join("/", [$site_url_noscheme, CONFIG["site"]["prefix"], ...$relative_url_components]);
+    $path_normalized = pathNormalize($path);
+    return $site_url_scheme . $path_normalized;
+}
+
+function getHyperlink($text, ...$url_components)
+{
+    $text = htmlspecialchars($text);
+    $url = getURL(...$url_components);
+    return "<a href='$url'>$text</a>";
 }

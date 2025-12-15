@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     switch ($_POST["form_type"]) {
         case "viewAsUser":
             $_SESSION["viewUser"] = $_POST["uid"];
-            UnityHTTPD::redirect(CONFIG["site"]["prefix"] . "/panel/account.php");
+            UnityHTTPD::redirect(getURL("panel/account.php"));
             break;
     }
 }

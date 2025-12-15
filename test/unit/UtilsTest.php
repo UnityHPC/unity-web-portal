@@ -79,4 +79,29 @@ class UtilsTest extends UnityWebPortalTestCase
     {
         $this->assertEquals($expected, testValidSSHKey($key));
     }
+
+    public static function URLComponentProvider()
+    {
+        if (CONFIG["site"]["url"] != "http://127.0.0.1:8000/") {
+            throw new RuntimeException("site url has changed!");
+        }
+        return [
+            [["", ""], "http://127.0.0.1:8000/"],
+            [["", "/"], "http://127.0.0.1:8000/"],
+            [["/", "a"], "http://127.0.0.1:8000/a"],
+            [["/", "/a"], "http://127.0.0.1:8000/a"],
+            [["abc", "def"], "http://127.0.0.1:8000/abc/def"],
+            [["abc", "/def"], "http://127.0.0.1:8000/abc/def"],
+            [["/abc", "def"], "http://127.0.0.1:8000/abc/def"],
+            [["/abc", "def///"], "http://127.0.0.1:8000/abc/def/"],
+            [["", "foo.jpg"], "http://127.0.0.1:8000/foo.jpg"],
+            [["dir", "0", "a.jpg"], "http://127.0.0.1:8000/dir/0/a.jpg"],
+        ];
+    }
+
+    #[DataProvider("URLComponentProvider")]
+    public function testGetURL(array $relative_url_components, string $expected)
+    {
+        $this->assertEquals($expected, getURL(...$relative_url_components));
+    }
 }
