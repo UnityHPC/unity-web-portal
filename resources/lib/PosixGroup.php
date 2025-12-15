@@ -5,6 +5,10 @@ namespace UnityWebPortal\lib;
 use PHPOpenLDAPer\LDAPEntry;
 use \Exception;
 
+/*
+does not extend LDAPEntry because UnityGroup extends this and I don't want UnityGroup
+to extend LDAPEntry because the functions from LDAPEntry should not be exposed there
+*/
 class PosixGroup
 {
     private LDAPEntry $entry;
