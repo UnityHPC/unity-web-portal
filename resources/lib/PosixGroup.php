@@ -12,11 +12,9 @@ to extend LDAPEntry because the functions from LDAPEntry should not be exposed t
 class PosixGroup
 {
     protected LDAPEntry $entry;
-    public string $gid;
 
-    public function __construct(LDAPEntry $entry, string $gid)
+    public function __construct(LDAPEntry $entry)
     {
-        $this->gid = $gid;
         $this->entry = $entry;
     }
 
@@ -35,11 +33,6 @@ class PosixGroup
             );
         }
         return $this->getDN() == $other_group->getDN();
-    }
-
-    public function __toString(): string
-    {
-        return $this->gid;
     }
 
     public function exists(): bool

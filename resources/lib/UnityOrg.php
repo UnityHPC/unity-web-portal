@@ -5,6 +5,7 @@ use PHPOpenLDAPer\LDAPEntry;
 
 class UnityOrg extends PosixGroup
 {
+    public string $gid;
     private UnityLDAP $LDAP;
     private UnitySQL $SQL;
     private UnityMailer $MAILER;
@@ -17,12 +18,16 @@ class UnityOrg extends PosixGroup
         UnityMailer $MAILER,
         UnityWebhook $WEBHOOK,
     ) {
-        $gid = trim($gid);
-        parent::__construct($LDAP->getOrgGroupEntry($gid), $gid);
+        parent::__construct($LDAP->getOrgGroupEntry(trim($gid)));
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
         $this->WEBHOOK = $WEBHOOK;
+    }
+
+    public function __toString(): string
+    {
+        return $this->gid;
     }
 
     public function init(): void

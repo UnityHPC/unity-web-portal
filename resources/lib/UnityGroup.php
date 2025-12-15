@@ -11,6 +11,7 @@ use Exception;
 class UnityGroup extends PosixGroup
 {
     public const string PI_PREFIX = "pi_";
+    public string $gid;
     private UnityLDAP $LDAP;
     private UnitySQL $SQL;
     private UnityMailer $MAILER;
@@ -23,12 +24,16 @@ class UnityGroup extends PosixGroup
         UnityMailer $MAILER,
         UnityWebhook $WEBHOOK,
     ) {
-        $gid = trim($gid);
-        parent::__construct($LDAP->getPIGroupEntry($gid), $gid);
+        parent::__construct($LDAP->getPIGroupEntry(trim($gid)));
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
         $this->WEBHOOK = $WEBHOOK;
+    }
+
+    public function __toString(): string
+    {
+        return $this->gid;
     }
 
     public function requestGroup(bool $send_mail_to_admins, bool $send_mail = true): void
