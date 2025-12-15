@@ -93,7 +93,6 @@ function getURL(...$relative_url_components)
 function getHyperlink($text, ...$url_components)
 {
     $text = htmlspecialchars($text);
-    $url_components = array_map("htmlspecialchars", $url_components);
     $url = getURL(...$url_components);
     return "<a href='$url'>$text</a>";
 }
