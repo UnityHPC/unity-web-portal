@@ -381,6 +381,16 @@ class UnityUser
         ]);
     }
 
+    public function cancelRequestAccountDeletion(): void
+    {
+        $this->SQL->deleteAccountDeletionRequest($this->uid);
+        $this->MAILER->sendMail("admin", "account_deletion_request_cancelled_admin", [
+            "user" => $this->uid,
+            "name" => $this->getFullname(),
+            "email" => $this->getMail(),
+        ]);
+    }
+
     /**
      * Checks if the user has requested account deletion
      */

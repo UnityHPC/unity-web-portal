@@ -86,8 +86,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($hasGroups) {
                 break;
             }
+            // FIXME send an error message if already exists
             if (!$SQL->accDeletionRequestExists($USER->uid)) {
                 $USER->requestAccountDeletion();
+            }
+            break;
+        case "cancel_account_deletion_request":
+            // FIXME send an error message if doesn't exist
+            if ($SQL->accDeletionRequestExists($USER->uid)) {
+                $USER->cancelRequestAccountDeletion();
             }
             break;
     }
@@ -245,25 +252,34 @@ echo "
 if ($hasGroups) {
     echo "<p>You cannot request to delete your account while you are in a PI group.</p>";
 } else {
-    echo "
-        <form
-            action=''
-            method='POST'
-            id='accDel'
-            onsubmit='return confirm(\"Are you sure you want to request an account deletion?\")'
-        >
-        <input type='hidden' name='form_type' value='account_deletion_request' />
-    ";
     if ($SQL->accDeletionRequestExists($USER->uid)) {
-        echo "<input type='submit' value='Request Account Deletion' disabled />";
         echo "
-            <label style='margin-left: 10px'>
-            Your request has been submitted and is currently pending</label>
+            <p>Your request has been submitted and is currently pending.</p>
+            <form
+                action=''
+                method='POST'
+                onsubmit='
+                    return confirm(
+                        \"Are you sure you want to cancel your request for account deletion?\"
+                    )
+                '
+            >
+                <input type='hidden' name='form_type' value='cancel_account_deletion_request' />
+                <input type='submit' value='Cancel Account Deletion Request' />
+            </form>
         ";
     } else {
-        echo "<input type='submit' value='Request Account Deletion' />";
+        echo "
+            <form
+                action=''
+                method='POST'
+                onsubmit='return confirm(\"Are you sure you want to request an account deletion?\")'
+            >
+                <input type='hidden' name='form_type' value='account_deletion_request' />
+                <input type='submit' value='Request Account Deletion' />
+            </form>
+        ";
     }
-    echo "</form>";
 }
 
 ?>
