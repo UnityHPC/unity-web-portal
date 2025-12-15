@@ -90,8 +90,8 @@ class UnityUser
             $org->init();
         }
 
-        if (!$org->inOrg($this)) {
-            $org->addUser($this);
+        if (!$org->memberUIDExists($this->uid)) {
+            $org->addMemberUID($this->uid);
         }
 
         $this->SQL->addLog($this->uid, $_SERVER["REMOTE_ADDR"], "user_added", $this->uid);
@@ -416,6 +416,6 @@ class UnityUser
             $group_checked = $group;
         }
 
-        return in_array($uid, $group_checked->getGroupMemberUIDs());
+        return in_array($uid, $group_checked->getMemberUIDs());
     }
 }

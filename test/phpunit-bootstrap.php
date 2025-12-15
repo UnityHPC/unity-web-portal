@@ -5,6 +5,7 @@ require_once __DIR__ . "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPCo
 
 require_once __DIR__ . "/../resources/lib/UnityLDAP.php";
 require_once __DIR__ . "/../resources/lib/UnityUser.php";
+require_once __DIR__ . "/../resources/lib/PosixGroup.php";
 require_once __DIR__ . "/../resources/lib/UnityGroup.php";
 require_once __DIR__ . "/../resources/lib/UnityOrg.php";
 require_once __DIR__ . "/../resources/lib/UnitySQL.php";
@@ -174,9 +175,9 @@ function ensureUserDoesNotExist()
     $SQL->deleteRequestsByUser($USER->uid);
     if ($USER->exists()) {
         $org = $USER->getOrgGroup();
-        if ($org->exists() and $org->inOrg($USER)) {
-            $org->removeUser($USER);
-            ensure(!$org->inOrg($USER));
+        if ($org->exists() and $org->memberUIDExists($USER->uid)) {
+            $org->removeMemberUID($USER->uid);
+            ensure(!$org->memberUIDExists($USER->uid));
         }
         $LDAP->getUserEntry($USER->uid)->delete();
         ensure(!$USER->exists());
@@ -220,9 +221,9 @@ function ensureUserNotRequestedAccountDeletion()
 function ensureUserNotInPIGroup(UnityGroup $pi_group)
 {
     global $USER;
-    if ($pi_group->memberExists($USER)) {
+    if ($pi_group->memberUIDExists($USER->uid)) {
         $pi_group->removeUser($USER);
-        ensure(!$pi_group->memberExists($USER));
+        ensure(!$pi_group->memberUIDExists($USER->uid));
     }
 }
 
@@ -365,7 +366,7 @@ class UnityWebPortalTestCase extends TestCase
     public function assertGroupMembers(UnityGroup $group, array $expected_members)
     {
         sort($expected_members);
-        $found_members = $group->getGroupMemberUIDs();
+        $found_members = $group->getMemberUIDs();
         sort($found_members);
         $this->assertEqualsCanonicalizing($expected_members, $found_members);
     }

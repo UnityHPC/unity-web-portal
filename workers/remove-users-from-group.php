@@ -27,7 +27,7 @@ if (!$group->exists()) {
 while (($line = fgets($handle)) !== false) {
     $uid = trim($line);
     $user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
-    if (!$group->memberExists($user)) {
+    if (!$group->memberUIDExists($user->uid)) {
         print "Skipping '$uid' who doesn't appear to be in '$gid'\n";
         continue;
     }

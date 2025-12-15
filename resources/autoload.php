@@ -14,6 +14,7 @@ require_once __DIR__ . "/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPConn.php";
 // load libs
 require_once __DIR__ . "/lib/UnityLDAP.php";
 require_once __DIR__ . "/lib/UnityUser.php";
+require_once __DIR__ . "/lib/PosixGroup.php";
 require_once __DIR__ . "/lib/UnityGroup.php";
 require_once __DIR__ . "/lib/UnityOrg.php";
 require_once __DIR__ . "/lib/UnitySQL.php";

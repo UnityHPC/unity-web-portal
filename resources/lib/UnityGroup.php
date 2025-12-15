@@ -8,12 +8,10 @@ use Exception;
 /**
  * Class that represents a single PI group in the Unity Cluster.
  */
-class UnityGroup
+class UnityGroup extends PosixGroup
 {
     public const string PI_PREFIX = "pi_";
-
     public string $gid;
-    private LDAPEntry $entry;
     private UnityLDAP $LDAP;
     private UnitySQL $SQL;
     private UnityMailer $MAILER;
@@ -26,40 +24,17 @@ class UnityGroup
         UnityMailer $MAILER,
         UnityWebhook $WEBHOOK,
     ) {
-        $gid = trim($gid);
+        parent::__construct($LDAP->getPIGroupEntry(trim($gid)));
         $this->gid = $gid;
-        $this->entry = $LDAP->getPIGroupEntry($gid);
-
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
         $this->WEBHOOK = $WEBHOOK;
     }
 
-    public function equals(UnityGroup $other_group): bool
-    {
-        if (!is_a($other_group, self::class)) {
-            throw new Exception(
-                "Unable to check equality because the parameter is not a " .
-                    self::class .
-                    " object",
-            );
-        }
-
-        return $this->gid == $other_group->gid;
-    }
-
     public function __toString(): string
     {
         return $this->gid;
-    }
-
-    /**
-     * Checks if the current PI is an approved and existent group
-     */
-    public function exists(): bool
-    {
-        return $this->entry->exists();
     }
 
     public function requestGroup(bool $send_mail_to_admins, bool $send_mail = true): void
@@ -202,7 +177,7 @@ class UnityGroup
     {
         $request = $this->SQL->getRequest($new_user->uid, $this->gid);
         \ensure($new_user->exists());
-        $this->addUserToGroup($new_user);
+        $this->addMemberUID($new_user->uid);
         $this->SQL->removeRequest($new_user->uid, $this->gid);
         if ($send_mail) {
             $this->MAILER->sendMail($new_user->getMail(), "group_user_added", [
@@ -240,14 +215,14 @@ class UnityGroup
 
     public function removeUser(UnityUser $new_user, bool $send_mail = true): void
     {
-        if (!$this->memberExists($new_user)) {
+        if (!$this->memberUIDExists($new_user->uid)) {
             return;
         }
         if ($new_user->uid == $this->getOwner()->uid) {
             throw new Exception("Cannot delete group owner from group. Disband group instead");
         }
         // remove request, this will fail silently if the request doesn't exist
-        $this->removeUserFromGroup($new_user);
+        $this->removeMemberUID($new_user->uid);
         if ($send_mail) {
             $this->MAILER->sendMail($new_user->getMail(), "group_user_removed", [
                 "group" => $this->gid,
@@ -264,7 +239,7 @@ class UnityGroup
 
     public function newUserRequest(UnityUser $new_user, bool $send_mail = true): void
     {
-        if ($this->memberExists($new_user)) {
+        if ($this->memberUIDExists($new_user->uid)) {
             UnityHTTPD::errorLog("warning", "user '$new_user' already in group");
             return;
         }
@@ -310,7 +285,7 @@ class UnityGroup
 
     public function getGroupMembers(): array
     {
-        $members = $this->getGroupMemberUIDs();
+        $members = $this->getMemberUIDs();
         $out = [];
         foreach ($members as $member) {
             $user_obj = new UnityUser(
@@ -323,13 +298,6 @@ class UnityGroup
             array_push($out, $user_obj);
         }
         return $out;
-    }
-
-    public function getGroupMemberUIDs(): array
-    {
-        $members = $this->entry->getAttribute("memberuid");
-        sort($members);
-        return $members;
     }
 
     public function requestExists(UnityUser $user): bool
@@ -356,23 +324,6 @@ class UnityGroup
         $this->entry->write();
         // TODO if we ever make this project based,
         // we need to update the cache here with the memberuid
-    }
-
-    private function addUserToGroup(UnityUser $new_user): void
-    {
-        $this->entry->appendAttribute("memberuid", $new_user->uid);
-        $this->entry->write();
-    }
-
-    private function removeUserFromGroup(UnityUser $old_user): void
-    {
-        $this->entry->removeAttributeEntryByValue("memberuid", $old_user->uid);
-        $this->entry->write();
-    }
-
-    public function memberExists(UnityUser $user): bool
-    {
-        return in_array($user->uid, $this->getGroupMemberUIDs());
     }
 
     private function addRequest(string $uid): void
@@ -418,7 +369,7 @@ class UnityGroup
     public function getGroupMembersAttributes(array $attributes, array $default_values = []): array
     {
         return $this->LDAP->getUsersAttributes(
-            $this->getGroupMemberUIDs(),
+            $this->getMemberUIDs(),
             $attributes,
             $default_values,
         );

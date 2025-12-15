@@ -38,7 +38,7 @@ class PIMemberRequestTest extends UnityWebPortalTestCase
         $uid = $USER->uid;
         $this->assertFalse($USER->isPI());
         $this->assertFalse($SQL->requestExists($uid, UnitySQL::REQUEST_BECOME_PI));
-        $this->assertFalse($pi_group->memberExists($USER));
+        $this->assertFalse($pi_group->memberUIDExists($USER->uid));
         try {
             $this->requestMembership($gid);
             $this->assertTrue($SQL->requestExists($uid, $gid));
