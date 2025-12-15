@@ -113,7 +113,7 @@ class UnityMailer extends PHPMailer
                         $this->addBCC($addr);
                     }
                 } else {
-                    $this->AddAddress($recipients);
+                    $this->addAddress($recipients);
                 }
             }
         }
