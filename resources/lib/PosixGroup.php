@@ -60,9 +60,25 @@ class PosixGroup
         $this->entry->write();
     }
 
+    public function addMemberUIDs(array $uids): void
+    {
+        foreach ($uids as $uid) {
+            $this->entry->appendAttribute("memberuid", $uid);
+        }
+        $this->entry->write();
+    }
+
     public function removeMemberUID(string $uid): void
     {
         $this->entry->removeAttributeEntryByValue("memberuid", $uid);
+        $this->entry->write();
+    }
+
+    public function removeMemberUIDs(array $uids): void
+    {
+        foreach ($uids as $uid) {
+            $this->entry->removeAttributeEntryByValue("memberuid", $uid);
+        }
         $this->entry->write();
     }
 
