@@ -9,6 +9,7 @@ if (!$USER->isAdmin()) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    UnityHTTPD::validatePostCSRFToken();
     switch ($_POST["form_type"]) {
         case "viewAsUser":
             $_SESSION["viewUser"] = $_POST["uid"];
@@ -74,8 +75,10 @@ require $LOC_HEADER;
         }
         echo "</td>";
         echo "<td>";
+        $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         echo "<form class='viewAsUserForm' action='' method='POST'
         onsubmit='return confirm(\"Are you sure you want to switch to the user $uid?\");'>
+        $CSRFTokenHiddenFormInput
         <input type='hidden' name='form_type' value='viewAsUser'>
         <input type='hidden' name='uid' value='$uid'>
         <input type='submit' name='action' value='Access'>

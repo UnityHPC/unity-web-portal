@@ -25,7 +25,7 @@ class ViewAsUserTest extends UnityWebPortalTestCase
         // now we should be new user
         $this->assertEquals($afterUid, $USER->uid);
         // $this->assertTrue($_SESSION["user_exists"]);
-        http_post(__DIR__ . "/../../resources/templates/header.php", [
+        http_post(__DIR__ . "/../../webroot/panel/account.php", [
             "form_type" => "clearView",
         ]);
         $this->assertArrayNotHasKey("viewUser", $_SESSION);

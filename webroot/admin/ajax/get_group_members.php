@@ -31,6 +31,7 @@ foreach ($members as $uid => $attributes) {
     echo "<td>$uid</td>";
     echo "<td><a href='mailto:$mail'>$mail</a></td>";
     echo "<td>";
+    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo "
         <form
             action=''
@@ -39,6 +40,7 @@ foreach ($members as $uid => $attributes) {
                 return confirm(\"Are you sure you want to remove $uid from this group?\");
             '
         >
+        $CSRFTokenHiddenFormInput
         <input type='hidden' name='form_type' value='remUserChild'>
         <input type='hidden' name='uid' value='$uid'>
         <input type='hidden' name='pi' value='$group->gid'>
@@ -62,9 +64,11 @@ foreach ($requests as $i => [$user, $timestamp]) {
     echo "<td>$user->uid</td>";
     echo "<td><a href='mailto:$email'>$email</a></td>";
     echo "<td>";
+    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
         "<form action='' method='POST'
     onsubmit='return confirm(\"Are you sure you want to approve $user->uid ?\");'>
+    $CSRFTokenHiddenFormInput
     <input type='hidden' name='form_type' value='reqChild'>
     <input type='hidden' name='uid' value='$user->uid'>
     <input type='hidden' name='pi' value='$group->gid'>

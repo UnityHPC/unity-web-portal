@@ -3,6 +3,8 @@
 use UnityWebPortal\lib\UnityHTTPD;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // another page should have already validated and we can't validate the same token twice
+    // UnityHTTPD::validatePostCSRFToken();
     if (
         ($_SESSION["is_admin"] ?? false) == true
         && ($_POST["form_type"] ?? null) == "clearView"
@@ -179,10 +181,12 @@ if (isset($SSO)) {
         && isset($_SESSION["viewUser"])
     ) {
         $viewUser = $_SESSION["viewUser"];
+        $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         echo "
           <div id='viewAsBar'>
             <span>You are accessing the web portal as the user <strong>$viewUser</strong></span>
             <form method='POST' action=''>
+              $CSRFTokenHiddenFormInput
               <input type='hidden' name='form_type' value='clearView'>
               <input type='hidden' name='uid' value='$viewUser'>
               <input type='submit' value='Return to My User'>
