@@ -2,7 +2,6 @@
 
 namespace UnityWebPortal\lib;
 use PHPOpenLDAPer\LDAPEntry;
-use PHPOpenLDAPer\PosixGroup;
 
 class UnityOrg extends PosixGroup
 {

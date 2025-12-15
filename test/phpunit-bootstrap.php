@@ -2,7 +2,6 @@
 // submodule
 require_once __DIR__ . "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPEntry.php";
 require_once __DIR__ . "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPConn.php";
-require_once __DIR__ . "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/PosixGroup.php";
 
 require_once __DIR__ . "/../resources/lib/UnityLDAP.php";
 require_once __DIR__ . "/../resources/lib/UnityUser.php";
@@ -16,6 +15,7 @@ require_once __DIR__ . "/../resources/lib/UnityConfig.php";
 require_once __DIR__ . "/../resources/lib/UnityWebhook.php";
 require_once __DIR__ . "/../resources/lib/UnityGithub.php";
 require_once __DIR__ . "/../resources/lib/utils.php";
+require_once __DIR__ . "/../resources/lib/PosixGroup.php";
 require_once __DIR__ . "/../resources/lib/exceptions/NoDieException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/SSOException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/ArrayKeyException.php";
