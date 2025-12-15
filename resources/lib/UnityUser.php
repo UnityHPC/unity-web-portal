@@ -97,31 +97,33 @@ class UnityUser
         $this->SQL->addLog($this->uid, $_SERVER["REMOTE_ADDR"], "user_added", $this->uid);
     }
 
-    public function isQualified(): bool
+    public function getModifier($modifier): bool
     {
-        return $this->LDAP->qualifiedUserGroup->memberUIDExists($this->uid);
+        return $this->LDAP->userModifierGroups[$modifier]->memberUIDExists($this->uid);
     }
 
-    public function setIsQualified(bool $newIsQualified, bool $doSendMail = true): void
+    public function setModifier($modifier, bool $newValue, bool $doSendMail = true): void
     {
-        $oldIsQualified = $this->isQualified();
-        if ($oldIsQualified == $newIsQualified) {
+        $oldValue = $this->getModifier($modifier);
+        if ($oldValue == $newValue) {
             return;
         }
-        if ($newIsQualified) {
-            $this->LDAP->qualifiedUserGroup->addMemberUID($this->uid);
+        if ($newValue) {
+            $this->LDAP->userModifierGroups[$modifier]->addMemberUID($this->uid);
             if ($doSendMail) {
-                $this->MAILER->sendMail($this->getMail(), "user_qualified", [
+                $this->MAILER->sendMail($this->getMail(), "user_modifier_added", [
                     "user" => $this->uid,
                     "org" => $this->getOrg(),
+                    "modifier" => $modifier,
                 ]);
             }
         } else {
-            $this->LDAP->qualifiedUserGroup->removeMemberUID($this->uid);
+            $this->LDAP->userModifierGroups[$modifier]->removeMemberUID($this->uid);
             if ($doSendMail) {
-                $this->MAILER->sendMail($this->getMail(), "user_dequalified", [
+                $this->MAILER->sendMail($this->getMail(), "user_modifier_removed", [
                     "user" => $this->uid,
                     "org" => $this->getOrg(),
+                    "modifier" => $modifier,
                 ]);
             }
         }
@@ -313,14 +315,6 @@ class UnityUser
     {
         $this->entry->ensureExists();
         return $this->entry->getAttribute("homedirectory");
-    }
-
-    /**
-     * Checks if the current account is an admin
-     */
-    public function isAdmin(): bool
-    {
-        return $this->LDAP->adminGroup->memberUIDExists($this->uid);
     }
 
     /**

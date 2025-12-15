@@ -131,7 +131,7 @@ $isPI = $USER->isPI();
 
 if ($isPI) {
     echo "<p>You are curently a <strong>principal investigator</strong> on the Unity Cluster</p>";
-} elseif ($USER->isQualified()) {
+} elseif ($USER->getModifier("qualified")) {
     echo "<p>You are curently a <strong>qualified user</strong> on the Unity Cluster</p>";
 } else {
     $tos_url = CONFIG["site"]["terms_of_service_url"];

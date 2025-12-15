@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityHTTPD;
 
-if (!$USER->isAdmin()) {
+if (!$USER->getModifier("admin")) {
     UnityHTTPD::forbidden("not an admin");
 }
 

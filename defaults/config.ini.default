@@ -29,15 +29,15 @@ user_ou = "ou=users,dc=unityhpc,dc=test"  ; User organizational unit (may contai
 group_ou = "ou=groups,dc=unityhpc,dc=test"  ; Group organizational unit
 pigroup_ou = "ou=pi_groups,dc=unityhpc,dc=test"  ; PI Group organizational unit
 orggroup_ou = "ou=org_groups,dc=unityhpc,dc=test"  ; ORG group organizational unit
-admin_group = "cn=web_admins,dc=unityhpc,dc=test"  ; admin dn (members of this group are admins on the web portal)
-qualified_user_group = "cn=unityusers,dc=unityhpc,dc=test" ; Qualified user group (in at least one PI group)
-locked_user_group = "cn=locked,dc=unityhpc,dc=test"  ; locked user group dn
-idlelocked_user_group = "cn=idlelocked,dc=unityhpc,dc=test"  ; idlelocked user group dn
-ghost_user_group = "cn=ghost,dc=unityhpc,dc=test"  ; ghost user group dn
 def_user_shell = "/bin/bash"  ; Default shell for new users
 offset_UIDGID = 1000000 ; start point when allocating new UID/GID pairs for a new user
 offset_PIGID = 2000000 ; start point when allocating new GID for a new PI group
 offset_ORGGID = 3000000 ; start point when allocating new GID for a new org group
+user_modifier_groups[admin] =      "cn=web_admins,dc=unityhpc,dc=test" ; admin user group dn
+user_modifier_groups[ghost] =      "cn=ghost,dc=unityhpc,dc=test"      ; ghost user group dn
+user_modifier_groups[idlelocked] = "cn=idlelocked,dc=unityhpc,dc=test" ; idlelocked user group dn
+user_modifier_groups[locked] =     "cn=locked,dc=unityhpc,dc=test"     ; locked user group dn
+user_modifier_groups[qualified] =  "cn=unityusers,dc=unityhpc,dc=test" ; qualified user group (in at least one PI group)
 
 [sql]
 host = "sql"  ; mariadb hostname
