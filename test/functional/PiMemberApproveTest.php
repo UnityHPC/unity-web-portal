@@ -54,7 +54,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
         $this->assertTrue($piGroup->exists());
         $this->assertGroupMembers($piGroup, [$piUID]);
         $this->assertEmpty($piGroup->getRequests());
-        $this->assertFalse($piGroup->memberExists($user));
+        $this->assertFalse($piGroup->memberExists($user->uid));
         $this->assertEmpty($piGroup->getRequests());
         try {
             $this->expectException(Exception::class); // FIXME more specific exception type
@@ -77,7 +77,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
         $this->assertTrue($USER->exists());
         $this->assertTrue($pi_group->exists());
         $this->assertGroupMembers($pi_group, [$pi_uid]);
-        $this->assertTrue(!$pi_group->memberExists($USER));
+        $this->assertTrue(!$pi_group->memberExists($USER->uid));
         $this->assertRequestedMembership(false, $gid);
         try {
             $this->requestGroupMembership($pi_group->gid);
@@ -106,7 +106,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
 
             $this->assertTrue(!$pi_group->requestExists($USER));
             $this->assertRequestedMembership(false, $gid);
-            $this->assertTrue($pi_group->memberExists($USER));
+            $this->assertTrue($pi_group->memberExists($USER->uid));
             $this->assertTrue($USER->isQualified());
 
             // $third_request_failed = false;
@@ -137,7 +137,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
         $this->assertTrue($USER->exists());
         $this->assertTrue($pi_group->exists());
         $this->assertGroupMembers($pi_group, [$pi_uid]);
-        $this->assertTrue(!$pi_group->memberExists($USER));
+        $this->assertTrue(!$pi_group->memberExists($USER->uid));
         $this->assertRequestedMembership(false, $gid);
         try {
             $this->requestGroupMembership($pi_group->gid);
@@ -166,7 +166,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
 
             $this->assertTrue(!$pi_group->requestExists($USER));
             $this->assertRequestedMembership(false, $gid);
-            $this->assertTrue($pi_group->memberExists($USER));
+            $this->assertTrue($pi_group->memberExists($USER->uid));
             $this->assertTrue($USER->isQualified());
 
             // $third_request_failed = false;

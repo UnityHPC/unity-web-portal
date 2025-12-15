@@ -2,8 +2,9 @@
 
 namespace UnityWebPortal\lib;
 use PHPOpenLDAPer\LDAPEntry;
+use PHPOpenLDAPer\PosixGroup;
 
-class UnityOrg
+class UnityOrg extends PosixGroup
 {
     public string $gid;
     private LDAPEntry $entry;
@@ -38,19 +39,9 @@ class UnityOrg
         $this->entry->write();
     }
 
-    public function exists(): bool
-    {
-        return $this->entry->exists();
-    }
-
-    public function inOrg(UnityUser $user): bool
-    {
-        return in_array($user->uid, $this->getOrgMemberUIDs());
-    }
-
     public function getOrgMembers(): array
     {
-        $members = $this->getOrgMemberUIDs();
+        $members = $this->getMembers();
         $out = [];
         foreach ($members as $member) {
             $user_obj = new UnityUser(
@@ -63,24 +54,5 @@ class UnityOrg
             array_push($out, $user_obj);
         }
         return $out;
-    }
-
-    public function getOrgMemberUIDs(): array
-    {
-        $members = $this->entry->getAttribute("memberuid");
-        sort($members);
-        return $members;
-    }
-
-    public function addUser(UnityUser $user): void
-    {
-        $this->entry->appendAttribute("memberuid", $user->uid);
-        $this->entry->write();
-    }
-
-    public function removeUser(UnityUser $user): void
-    {
-        $this->entry->removeAttributeEntryByValue("memberuid", $user->uid);
-        $this->entry->write();
     }
 }

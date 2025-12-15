@@ -21,7 +21,7 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
         $piUid = $USER->uid;
         $piGroup = $USER->getPIGroup();
         $this->assertTrue($piGroup->exists());
-        $memberUIDs = $piGroup->getGroupMemberUIDs();
+        $memberUIDs = $piGroup->getMembers();
         // the 0th member of the PI group is the PI
         $this->assertGreaterThan(1, count($memberUIDs));
         // the ordering of the uids in getGroupMemberUIDs is different each time
@@ -37,12 +37,12 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
             }
         }
         $this->assertNotEquals($pi->uid, $memberToDelete->uid);
-        $this->assertTrue($piGroup->memberExists($memberToDelete));
+        $this->assertTrue($piGroup->memberExists($memberToDelete->uid));
         try {
             $this->removeUser($memberToDelete->uid);
-            $this->assertFalse($piGroup->memberExists($memberToDelete));
+            $this->assertFalse($piGroup->memberExists($memberToDelete->uid));
         } finally {
-            if (!$piGroup->memberExists($memberToDelete)) {
+            if (!$piGroup->memberExists($memberToDelete->uid)) {
                 $piGroup->newUserRequest($memberToDelete);
                 $piGroup->approveUser($memberToDelete);
             }
@@ -56,13 +56,13 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
         $pi = $USER;
         $piGroup = $USER->getPIGroup();
         $this->assertTrue($piGroup->exists());
-        $this->assertTrue($piGroup->memberExists($pi));
+        $this->assertTrue($piGroup->memberExists($pi->uid));
         $this->expectException(Exception::class);
         try {
             $this->removeUser($pi->uid);
-            $this->assertTrue($piGroup->memberExists($pi));
+            $this->assertTrue($piGroup->memberExists($pi->uid));
         } finally {
-            if (!$piGroup->memberExists($pi)) {
+            if (!$piGroup->memberExists($pi->uid)) {
                 $piGroup->newUserRequest($pi);
                 $piGroup->approveUser($pi);
             }
