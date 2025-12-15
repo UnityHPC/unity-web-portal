@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../resources/autoload.php";  // Load required lib
 
 use UnityWebPortal\lib\UnityHTTPD;
 
-$search_query = $_GET["search"];  // Search is passed as a get var
+$search_query = UnityHTTPD::getQueryParameter("search");
 if (empty($search_query)) {
     echo "<span>No Results</span>";
     UnityHTTPD::die();
@@ -27,7 +27,11 @@ foreach ($assocs as $assoc_obj) {
     try {
         $fn = strtolower($assoc_obj->getOwner()->getFullName());
     } catch (Throwable $e) {
-        UnitySite::errorLog("warning", "failed to get owner name for PI group '$assoc'", error: $e);
+        UnityHTTPD::errorLog(
+            "warning",
+            "failed to get owner name for PI group '$assoc'",
+            error: $e
+        );
         $fn = "";
     }
     if (strpos($fn, strtolower($search_query)) !== false) {

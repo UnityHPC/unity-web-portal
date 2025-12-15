@@ -9,11 +9,8 @@ if (!$USER->isAdmin()) {
     UnityHTTPD::forbidden("not an admin");
 }
 
-if (!isset($_GET["gid"])) {
-    UnityHTTPD::badRequest("PI UID not set");
-}
-
-$group = new UnityGroup($_GET["gid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
+$gid = UnityHTTPD::getQueryParameter("gid");
+$group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
 $members = $group->getGroupMembersAttributes(["gecos", "mail"]);
 $requests = $group->getRequests();
 
