@@ -180,31 +180,11 @@ class UnityLDAP extends LDAPConn
         );
     }
 
-    public function getQualifiedUsersUIDs(): array
-    {
-        // should not use $user_ou->getChildren or $base_ou->getChildren(objectClass=posixAccount)
-        // qualified users might be outside user ou, and not all users in LDAP tree are qualified users
-        return $this->userModifierGroups["qualified"]->getMemberUIDs();
-    }
-
-    public function getQualifiedUsers($UnitySQL, $UnityMailer, $UnityWebhook): array
-    {
-        $out = [];
-
-        $qualifiedUsers = $this->getQualifiedUsersUIDs();
-        sort($qualifiedUsers);
-        foreach ($qualifiedUsers as $user) {
-            $params = [$user, $this, $UnitySQL, $UnityMailer, $UnityWebhook];
-            array_push($out, new UnityUser(...$params));
-        }
-        return $out;
-    }
-
     public function getQualifiedUsersAttributes(
         array $attributes,
         array $default_values = [],
     ): array {
-        $include_uids = $this->getQualifiedUsersUIDs();
+        $include_uids = $this->userModifierGroups["qualified"]->getMemberUIDs();
         $user_attributes = $this->baseOU->getChildrenArrayStrict(
             $attributes,
             true, // recursive
@@ -301,7 +281,7 @@ class UnityLDAP extends LDAPConn
     public function getQualifiedUID2PIGIDs(): array
     {
         // initialize output so each UID is a key with an empty array as its value
-        $uids = $this->getQualifiedUsersUIDs();
+        $uids = $this->userModifierGroups["qualified"]->getMemberUIDs();
         $uid2pigids = array_combine($uids, array_fill(0, count($uids), []));
         // for each PI group, append that GID to the member list for each of its member UIDs
         foreach (
