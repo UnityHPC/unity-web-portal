@@ -130,7 +130,7 @@ if ($isPI) {
     echo "
         <p>You are curently a <strong>principal investigator</strong> on the UnityHPC Platform</p>
     ";
-} elseif ($USER->isQualified()) {
+} elseif ($USER->getModifier("qualified")) {
     echo "<p>You are curently a <strong>qualified user</strong> on the UnityHPC Platform</p>";
 } else {
     $tos_url = CONFIG["site"]["terms_of_service_url"];

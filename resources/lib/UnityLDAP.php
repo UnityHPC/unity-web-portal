@@ -37,11 +37,7 @@ class UnityLDAP extends LDAPConn
     private LDAPEntry $pi_groupOU;
     private LDAPEntry $org_groupOU;
 
-    public PosixGroup $adminGroup;
-    public PosixGroup $qualifiedUserGroup;
-    public PosixGroup $lockedUserGroup;
-    public PosixGroup $idlelockedUserGroup;
-    public PosixGroup $ghostUserGroup;
+    public array $userModifierGroups;
 
     public function __construct()
     {
@@ -51,21 +47,10 @@ class UnityLDAP extends LDAPConn
         $this->groupOU = $this->getEntry(CONFIG["ldap"]["group_ou"]);
         $this->pi_groupOU = $this->getEntry(CONFIG["ldap"]["pigroup_ou"]);
         $this->org_groupOU = $this->getEntry(CONFIG["ldap"]["orggroup_ou"]);
-        $this->adminGroup = new PosixGroup(
-            new LDAPEntry($this->conn, CONFIG["ldap"]["admin_group"]),
-        );
-        $this->qualifiedUserGroup = new PosixGroup(
-            new LDAPEntry($this->conn, CONFIG["ldap"]["qualified_user_group"]),
-        );
-        $this->lockedUserGroup = new PosixGroup(
-            new LDAPEntry($this->conn, CONFIG["ldap"]["locked_user_group"]),
-        );
-        $this->idlelockedUserGroup = new PosixGroup(
-            new LDAPEntry($this->conn, CONFIG["ldap"]["idlelocked_user_group"]),
-        );
-        $this->ghostUserGroup = new PosixGroup(
-            new LDAPEntry($this->conn, CONFIG["ldap"]["ghost_user_group"]),
-        );
+        $this->userModifierGroups = [];
+        foreach (CONFIG["ldap"]["user_modifier_groups"] as $gid => $dn) {
+            $this->userModifierGroups[$gid] = new PosixGroup(new LDAPEntry($this->conn, $dn));
+        }
     }
 
     public function getUserOU(): LDAPEntry
@@ -199,7 +184,7 @@ class UnityLDAP extends LDAPConn
     {
         // should not use $user_ou->getChildren or $base_ou->getChildren(objectClass=posixAccount)
         // qualified users might be outside user ou, and not all users in LDAP tree are qualified users
-        return $this->qualifiedUserGroup->getMemberUIDs();
+        return $this->userModifierGroups["qualified"]->getMemberUIDs();
     }
 
     public function getQualifiedUsers($UnitySQL, $UnityMailer, $UnityWebhook): array

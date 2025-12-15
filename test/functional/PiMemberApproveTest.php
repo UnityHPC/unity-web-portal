@@ -107,7 +107,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $this->assertTrue(!$pi_group->requestExists($USER));
             $this->assertRequestedMembership(false, $gid);
             $this->assertTrue($pi_group->memberUIDExists($USER->uid));
-            $this->assertTrue($USER->isQualified());
+            $this->assertTrue($USER->getModifier("qualified"));
 
             // $third_request_failed = false;
             // try {
@@ -167,7 +167,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $this->assertTrue(!$pi_group->requestExists($USER));
             $this->assertRequestedMembership(false, $gid);
             $this->assertTrue($pi_group->memberUIDExists($USER->uid));
-            $this->assertTrue($USER->isQualified());
+            $this->assertTrue($USER->getModifier("qualified"));
 
             // $third_request_failed = false;
             // try {
