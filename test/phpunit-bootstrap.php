@@ -2,6 +2,7 @@
 // submodule
 require_once __DIR__ . "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPEntry.php";
 require_once __DIR__ . "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPConn.php";
+require_once __DIR__ . "/../resources/lib/phpopenldaper/src/PHPOpenLDAPer/PosixGroup.php";
 
 require_once __DIR__ . "/../resources/lib/UnityLDAP.php";
 require_once __DIR__ . "/../resources/lib/UnityUser.php";

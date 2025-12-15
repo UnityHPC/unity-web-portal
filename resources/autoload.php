@@ -10,6 +10,7 @@ require_once __DIR__ . "/../vendor/autoload.php";
 // submodule
 require_once __DIR__ . "/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPEntry.php";
 require_once __DIR__ . "/lib/phpopenldaper/src/PHPOpenLDAPer/LDAPConn.php";
+require_once __DIR__ . "/lib/phpopenldaper/src/PHPOpenLDAPer/PosixGroup.php";
 
 // load libs
 require_once __DIR__ . "/lib/UnityLDAP.php";
