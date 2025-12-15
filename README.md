@@ -120,6 +120,8 @@ rm "$prod" && ln -s "$old" "$prod"
 ### 1.5.0 -> 1.5.1
 
 - the `[site]getting_started_url` option should be defined
+- the `[ldap]admin_group` option has been renamed to `[ldap]user_modifier_groups[admin]`
+- the `[ldap]qualified_user_group` option has been renamed to `[ldap]user_modifier_groups[qualified]`
 
 ### 1.4 -> 1.5
 
