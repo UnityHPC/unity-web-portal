@@ -25,6 +25,7 @@ class UnityGroup extends PosixGroup
         UnityWebhook $WEBHOOK,
     ) {
         parent::__construct($LDAP->getPIGroupEntry(trim($gid)));
+        $this->gid = $gid;
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
