@@ -5,6 +5,7 @@ namespace UnityWebPortal\lib;
 use UnityWebPortal\lib\exceptions\EntryNotFoundException;
 use PHPOpenLDAPer\LDAPConn;
 use PHPOpenLDAPer\LDAPEntry;
+use UnityWebPortal\lib\PosixGroup;
 
 /**
  * An LDAP connection class which extends LDAPConn tailored for the UnityHPC Platform
@@ -35,8 +36,12 @@ class UnityLDAP extends LDAPConn
     private LDAPEntry $groupOU;
     private LDAPEntry $pi_groupOU;
     private LDAPEntry $org_groupOU;
-    private LDAPEntry $adminGroup;
-    private LDAPEntry $qualifiedUserGroup;
+
+    public PosixGroup $adminGroup;
+    public PosixGroup $qualifiedUserGroup;
+    public PosixGroup $lockedUserGroup;
+    public PosixGroup $idlelockedUserGroup;
+    public PosixGroup $ghostUserGroup;
 
     public function __construct()
     {
@@ -46,8 +51,21 @@ class UnityLDAP extends LDAPConn
         $this->groupOU = $this->getEntry(CONFIG["ldap"]["group_ou"]);
         $this->pi_groupOU = $this->getEntry(CONFIG["ldap"]["pigroup_ou"]);
         $this->org_groupOU = $this->getEntry(CONFIG["ldap"]["orggroup_ou"]);
-        $this->adminGroup = $this->getEntry(CONFIG["ldap"]["admin_group"]);
-        $this->qualifiedUserGroup = $this->getEntry(CONFIG["ldap"]["qualified_user_group"]);
+        $this->adminGroup = new PosixGroup(
+            new LDAPEntry($this->conn, CONFIG["ldap"]["admin_group"]),
+        );
+        $this->qualifiedUserGroup = new PosixGroup(
+            new LDAPEntry($this->conn, CONFIG["ldap"]["qualified_user_group"]),
+        );
+        $this->lockedUserGroup = new PosixGroup(
+            new LDAPEntry($this->conn, CONFIG["ldap"]["locked_user_group"]),
+        );
+        $this->idlelockedUserGroup = new PosixGroup(
+            new LDAPEntry($this->conn, CONFIG["ldap"]["idlelocked_user_group"]),
+        );
+        $this->ghostUserGroup = new PosixGroup(
+            new LDAPEntry($this->conn, CONFIG["ldap"]["ghost_user_group"]),
+        );
     }
 
     public function getUserOU(): LDAPEntry
@@ -68,16 +86,6 @@ class UnityLDAP extends LDAPConn
     public function getOrgGroupOU(): LDAPEntry
     {
         return $this->org_groupOU;
-    }
-
-    public function getAdminGroup(): LDAPEntry
-    {
-        return $this->adminGroup;
-    }
-
-    public function getQualifiedUserGroup(): LDAPEntry
-    {
-        return $this->qualifiedUserGroup;
     }
 
     public function getDefUserShell(): string
@@ -191,7 +199,7 @@ class UnityLDAP extends LDAPConn
     {
         // should not use $user_ou->getChildren or $base_ou->getChildren(objectClass=posixAccount)
         // qualified users might be outside user ou, and not all users in LDAP tree are qualified users
-        return $this->qualifiedUserGroup->getAttribute("memberuid");
+        return $this->qualifiedUserGroup->getMemberUIDs();
     }
 
     public function getQualifiedUsers($UnitySQL, $UnityMailer, $UnityWebhook): array

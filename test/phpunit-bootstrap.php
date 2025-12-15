@@ -195,18 +195,8 @@ function ensureUserDoesNotExist()
         $USER->getGroupEntry()->delete();
         ensure(!$USER->getGroupEntry()->exists());
     }
-    $qualified_users_group = $LDAP->getQualifiedUserGroup();
-    $all_member_uids = $qualified_users_group->getAttribute("memberuid");
-    if (in_array($USER->uid, $all_member_uids)) {
-        $qualified_users_group->setAttribute(
-            "memberuid",
-            // array_diff will break the contiguity of the array indexes
-            // ldap_mod_replace requires contiguity, array_values restores contiguity
-            array_values(array_diff($all_member_uids, [$USER->uid])),
-        );
-        $qualified_users_group->write();
-        ensure(!in_array($USER->uid, $qualified_users_group->getAttribute("memberuid")));
-    }
+    $USER->setIsQualified(false);
+    ensure(!$LDAP->qualifiedUserGroup->memberUIDExists($USER->uid));
 }
 
 function ensureOrgGroupDoesNotExist()
