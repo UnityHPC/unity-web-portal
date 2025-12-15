@@ -191,7 +191,8 @@ class UnityGroup extends PosixGroup
                 "org" => $new_user->getOrg(),
             ]);
         }
-        $new_user->setModifier("qualified", true); // being in a group makes you qualified
+        // being in a group makes you qualified
+        $new_user->setModifier("qualified", true, true, false);
     }
 
     public function denyUser(UnityUser $new_user, bool $send_mail = true): void

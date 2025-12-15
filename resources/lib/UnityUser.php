@@ -102,8 +102,12 @@ class UnityUser
         return $this->LDAP->userModifierGroups[$modifier]->memberUIDExists($this->uid);
     }
 
-    public function setModifier($modifier, bool $newValue, bool $doSendMail = true): void
-    {
+    public function setModifier(
+        $modifier,
+        bool $newValue,
+        bool $doSendMail = true,
+        bool $doSendMailAdmin = true,
+    ): void {
         $oldValue = $this->getModifier($modifier);
         if ($oldValue == $newValue) {
             return;
@@ -117,10 +121,24 @@ class UnityUser
                     "modifier" => $modifier,
                 ]);
             }
+            if ($doSendMailAdmin) {
+                $this->MAILER->sendMail($this->getMail(), "user_modifier_added_admin", [
+                    "user" => $this->uid,
+                    "org" => $this->getOrg(),
+                    "modifier" => $modifier,
+                ]);
+            }
         } else {
             $this->LDAP->userModifierGroups[$modifier]->removeMemberUID($this->uid);
             if ($doSendMail) {
                 $this->MAILER->sendMail($this->getMail(), "user_modifier_removed", [
+                    "user" => $this->uid,
+                    "org" => $this->getOrg(),
+                    "modifier" => $modifier,
+                ]);
+            }
+            if ($doSendMailAdmin) {
+                $this->MAILER->sendMail($this->getMail(), "user_modifier_removed_admin", [
                     "user" => $this->uid,
                     "org" => $this->getOrg(),
                     "modifier" => $modifier,
