@@ -11,9 +11,6 @@ use Exception;
 class UnityGroup extends PosixGroup
 {
     public const string PI_PREFIX = "pi_";
-
-    public string $gid;
-    private LDAPEntry $entry;
     private UnityLDAP $LDAP;
     private UnitySQL $SQL;
     private UnityMailer $MAILER;

@@ -11,8 +11,8 @@ to extend LDAPEntry because the functions from LDAPEntry should not be exposed t
 */
 class PosixGroup
 {
-    private LDAPEntry $entry;
-    private string $gid;
+    protected LDAPEntry $entry;
+    public string $gid;
 
     public function __construct(LDAPEntry $entry, string $gid)
     {
