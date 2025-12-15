@@ -147,15 +147,32 @@ if (isset($SSO)) {
               <div class='message %s'>
                 <h3>%s</h3>
                 <p>%s</p>
-                <button onclick=\"this.parentElement.style.display='none';\">×</button>
+                <button
+                  onclick=\"
+                    this.parentElement.style.display='none';
+                    $.ajax({
+                        url: '/panel/ajax/delete_message.php',
+                        method: 'POST',
+                        data: {
+                          'level': '%s',
+                          'title': '%s',
+                          'body': '%s',
+                        }
+                    });
+                  \"
+                >
+                  ×
+                </button>
               </div>
             ",
             htmlspecialchars($level->value),
             htmlspecialchars($title),
-            htmlspecialchars($body)
+            htmlspecialchars($body),
+            htmlspecialchars($level->value),
+            htmlspecialchars($title),
+            htmlspecialchars($body),
         );
     }
-    UnityHTTPD::clearMessages();
     if (
         isset($_SESSION["is_admin"])
         && $_SESSION["is_admin"]
