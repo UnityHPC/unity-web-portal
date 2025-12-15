@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         );
                         UnityHTTPD::redirect();
                     }
-                    if ($pi_account->mermberUIDExists($USER->uid)) {
+                    if ($pi_account->memberUIDExists($USER->uid)) {
                         UnityHTTPD::messageError(
                             "Invalid Group Membership Request",
                             "You're already in this PI group"

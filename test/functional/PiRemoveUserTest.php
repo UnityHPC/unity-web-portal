@@ -37,12 +37,12 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
             }
         }
         $this->assertNotEquals($pi->uid, $memberToDelete->uid);
-        $this->assertTrue($piGroup->mermberUIDExists($memberToDelete->uid));
+        $this->assertTrue($piGroup->memberUIDExists($memberToDelete->uid));
         try {
             $this->removeUser($memberToDelete->uid);
-            $this->assertFalse($piGroup->mermberUIDExists($memberToDelete->uid));
+            $this->assertFalse($piGroup->memberUIDExists($memberToDelete->uid));
         } finally {
-            if (!$piGroup->mermberUIDExists($memberToDelete->uid)) {
+            if (!$piGroup->memberUIDExists($memberToDelete->uid)) {
                 $piGroup->newUserRequest($memberToDelete);
                 $piGroup->approveUser($memberToDelete);
             }
@@ -56,13 +56,13 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
         $pi = $USER;
         $piGroup = $USER->getPIGroup();
         $this->assertTrue($piGroup->exists());
-        $this->assertTrue($piGroup->mermberUIDExists($pi->uid));
+        $this->assertTrue($piGroup->memberUIDExists($pi->uid));
         $this->expectException(Exception::class);
         try {
             $this->removeUser($pi->uid);
-            $this->assertTrue($piGroup->mermberUIDExists($pi->uid));
+            $this->assertTrue($piGroup->memberUIDExists($pi->uid));
         } finally {
-            if (!$piGroup->mermberUIDExists($pi->uid)) {
+            if (!$piGroup->memberUIDExists($pi->uid)) {
                 $piGroup->newUserRequest($pi);
                 $piGroup->approveUser($pi);
             }

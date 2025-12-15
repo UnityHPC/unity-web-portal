@@ -36,12 +36,12 @@ class PIMemberDenyTest extends UnityWebPortalTestCase
         $requestedUser = new UnityUser(self::$requestUid, $LDAP, $SQL, $MAILER, $WEBHOOK);
         try {
             $piGroup->newUserRequest($requestedUser);
-            $this->assertFalse($piGroup->mermberUIDExists($requestedUser->uid));
+            $this->assertFalse($piGroup->memberUIDExists($requestedUser->uid));
 
             $piGroup->denyUser($requestedUser);
             $this->assertEmpty($piGroup->getRequests());
             $this->assertEqualsCanonicalizing([$pi->uid], $piGroup->getMemberUIDs());
-            $this->assertFalse($piGroup->mermberUIDExists($requestedUser->uid));
+            $this->assertFalse($piGroup->memberUIDExists($requestedUser->uid));
         } finally {
             $SQL->removeRequest(self::$requestUid, $piGroup->gid);
         }

@@ -75,7 +75,7 @@ class PosixGroup
         $this->entry->write();
     }
 
-    public function mermberUIDExists(string $uid): bool
+    public function memberUIDExists(string $uid): bool
     {
         return in_array($uid, $this->getMemberUIDs());
     }

@@ -8,7 +8,7 @@ use UnityWebPortal\lib\UnityHTTPD;
 
 $gid = UnityHTTPD::getQueryParameter("gid");
 $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
-if (!$group->mermberUIDExists($USER->uid)) {
+if (!$group->memberUIDExists($USER->uid)) {
     UnityHTTPD::forbidden("not a group member");
 }
 $members = $group->getGroupMembersAttributes(["gecos", "mail"]);

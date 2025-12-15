@@ -175,9 +175,9 @@ function ensureUserDoesNotExist()
     $SQL->deleteRequestsByUser($USER->uid);
     if ($USER->exists()) {
         $org = $USER->getOrgGroup();
-        if ($org->exists() and $org->mermberUIDExists($USER->uid)) {
+        if ($org->exists() and $org->memberUIDExists($USER->uid)) {
             $org->removeUser($USER);
-            ensure(!$org->mermberUIDExists($USER->uid));
+            ensure(!$org->memberUIDExists($USER->uid));
         }
         $LDAP->getUserEntry($USER->uid)->delete();
         ensure(!$USER->exists());
@@ -221,9 +221,9 @@ function ensureUserNotRequestedAccountDeletion()
 function ensureUserNotInPIGroup(UnityGroup $pi_group)
 {
     global $USER;
-    if ($pi_group->mermberUIDExists($USER->uid)) {
+    if ($pi_group->memberUIDExists($USER->uid)) {
         $pi_group->removeUser($USER);
-        ensure(!$pi_group->mermberUIDExists($USER->uid));
+        ensure(!$pi_group->memberUIDExists($USER->uid));
     }
 }
 

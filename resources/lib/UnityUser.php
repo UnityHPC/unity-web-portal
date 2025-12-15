@@ -90,7 +90,7 @@ class UnityUser
             $org->init();
         }
 
-        if (!$org->mermberUIDExists($this->uid)) {
+        if (!$org->memberUIDExists($this->uid)) {
             $org->addMemberUID($this->uid);
         }
 

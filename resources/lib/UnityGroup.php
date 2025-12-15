@@ -214,7 +214,7 @@ class UnityGroup extends PosixGroup
 
     public function removeUser(UnityUser $new_user, bool $send_mail = true): void
     {
-        if (!$this->mermberUIDExists($new_user->uid)) {
+        if (!$this->memberUIDExists($new_user->uid)) {
             return;
         }
         if ($new_user->uid == $this->getOwner()->uid) {
@@ -238,7 +238,7 @@ class UnityGroup extends PosixGroup
 
     public function newUserRequest(UnityUser $new_user, bool $send_mail = true): void
     {
-        if ($this->mermberUIDExists($new_user->uid)) {
+        if ($this->memberUIDExists($new_user->uid)) {
             UnityHTTPD::errorLog("warning", "user '$new_user' already in group");
             return;
         }
