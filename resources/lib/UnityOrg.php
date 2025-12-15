@@ -19,10 +19,7 @@ class UnityOrg extends PosixGroup
         UnityMailer $MAILER,
         UnityWebhook $WEBHOOK,
     ) {
-        $gid = trim($gid);
-        $this->gid = $gid;
-        $this->entry = $LDAP->getOrgGroupEntry($this->gid);
-
+        parent::__construct($LDAP->getOrgGroupEntry($this->gid), trim($gid));
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;

@@ -26,10 +26,7 @@ class UnityGroup extends PosixGroup
         UnityMailer $MAILER,
         UnityWebhook $WEBHOOK,
     ) {
-        $gid = trim($gid);
-        $this->gid = $gid;
-        $this->entry = $LDAP->getPIGroupEntry($gid);
-
+        parent::__construct($LDAP->getPIGroupEntry($gid), trim($gid));
         $this->LDAP = $LDAP;
         $this->SQL = $SQL;
         $this->MAILER = $MAILER;
