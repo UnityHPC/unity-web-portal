@@ -99,7 +99,7 @@ class UnityUser
 
     public function isQualified(): bool
     {
-        return $this->LDAP->getQualifiedUserGroup()->attributeValueExists("memberUid", $this->uid);
+        return $this->LDAP->qualifiedUserGroup->memberUIDExists($this->uid);
     }
 
     public function setIsQualified(bool $newIsQualified, bool $doSendMail = true): void
@@ -109,8 +109,7 @@ class UnityUser
             return;
         }
         if ($newIsQualified) {
-            $this->LDAP->getQualifiedUserGroup()->appendAttribute("memberuid", $this->uid);
-            $this->LDAP->getQualifiedUserGroup()->write();
+            $this->LDAP->qualifiedUserGroup->addMemberUID($this->uid);
             if ($doSendMail) {
                 $this->MAILER->sendMail($this->getMail(), "user_qualified", [
                     "user" => $this->uid,
@@ -118,10 +117,7 @@ class UnityUser
                 ]);
             }
         } else {
-            $this->LDAP
-                ->getQualifiedUserGroup()
-                ->removeAttributeEntryByValue("memberuid", $this->uid);
-            $this->LDAP->getQualifiedUserGroup()->write();
+            $this->LDAP->qualifiedUserGroup->removeMemberUID($this->uid);
             if ($doSendMail) {
                 $this->MAILER->sendMail($this->getMail(), "user_dequalified", [
                     "user" => $this->uid,
@@ -324,8 +320,7 @@ class UnityUser
      */
     public function isAdmin(): bool
     {
-        $admins = $this->LDAP->getAdminGroup()->getAttribute("memberuid");
-        return in_array($this->uid, $admins);
+        return $this->LDAP->adminGroup->memberUIDExists($this->uid);
     }
 
     /**
