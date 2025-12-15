@@ -177,7 +177,7 @@ class UnityGroup extends PosixGroup
     {
         $request = $this->SQL->getRequest($new_user->uid, $this->gid);
         \ensure($new_user->exists());
-        $this->addMember($new_user->uid);
+        $this->addMemberUID($new_user->uid);
         $this->SQL->removeRequest($new_user->uid, $this->gid);
         if ($send_mail) {
             $this->MAILER->sendMail($new_user->getMail(), "group_user_added", [
@@ -215,14 +215,14 @@ class UnityGroup extends PosixGroup
 
     public function removeUser(UnityUser $new_user, bool $send_mail = true): void
     {
-        if (!$this->memberExists($new_user->uid)) {
+        if (!$this->mermberUIDExists($new_user->uid)) {
             return;
         }
         if ($new_user->uid == $this->getOwner()->uid) {
             throw new Exception("Cannot delete group owner from group. Disband group instead");
         }
         // remove request, this will fail silently if the request doesn't exist
-        $this->removeMember($new_user->uid);
+        $this->removeMemberUID($new_user->uid);
         if ($send_mail) {
             $this->MAILER->sendMail($new_user->getMail(), "group_user_removed", [
                 "group" => $this->gid,
@@ -239,7 +239,7 @@ class UnityGroup extends PosixGroup
 
     public function newUserRequest(UnityUser $new_user, bool $send_mail = true): void
     {
-        if ($this->memberExists($new_user->uid)) {
+        if ($this->mermberUIDExists($new_user->uid)) {
             UnityHTTPD::errorLog("warning", "user '$new_user' already in group");
             return;
         }
@@ -285,7 +285,7 @@ class UnityGroup extends PosixGroup
 
     public function getGroupMembers(): array
     {
-        $members = $this->getMembers();
+        $members = $this->getMemberUIDs();
         $out = [];
         foreach ($members as $member) {
             $user_obj = new UnityUser(
@@ -368,6 +368,10 @@ class UnityGroup extends PosixGroup
 
     public function getGroupMembersAttributes(array $attributes, array $default_values = []): array
     {
-        return $this->LDAP->getUsersAttributes($this->getMembers(), $attributes, $default_values);
+        return $this->LDAP->getUsersAttributes(
+            $this->getMemberUIDs(),
+            $attributes,
+            $default_values,
+        );
     }
 }

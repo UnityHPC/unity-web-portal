@@ -21,7 +21,7 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
         $piUid = $USER->uid;
         $piGroup = $USER->getPIGroup();
         $this->assertTrue($piGroup->exists());
-        $memberUIDs = $piGroup->getMembers();
+        $memberUIDs = $piGroup->getMemberUIDs();
         // the 0th member of the PI group is the PI
         $this->assertGreaterThan(1, count($memberUIDs));
         // the ordering of the uids in getGroupMemberUIDs is different each time
@@ -37,12 +37,12 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
             }
         }
         $this->assertNotEquals($pi->uid, $memberToDelete->uid);
-        $this->assertTrue($piGroup->memberExists($memberToDelete->uid));
+        $this->assertTrue($piGroup->mermberUIDExists($memberToDelete->uid));
         try {
             $this->removeUser($memberToDelete->uid);
-            $this->assertFalse($piGroup->memberExists($memberToDelete->uid));
+            $this->assertFalse($piGroup->mermberUIDExists($memberToDelete->uid));
         } finally {
-            if (!$piGroup->memberExists($memberToDelete->uid)) {
+            if (!$piGroup->mermberUIDExists($memberToDelete->uid)) {
                 $piGroup->newUserRequest($memberToDelete);
                 $piGroup->approveUser($memberToDelete);
             }
@@ -56,13 +56,13 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
         $pi = $USER;
         $piGroup = $USER->getPIGroup();
         $this->assertTrue($piGroup->exists());
-        $this->assertTrue($piGroup->memberExists($pi->uid));
+        $this->assertTrue($piGroup->mermberUIDExists($pi->uid));
         $this->expectException(Exception::class);
         try {
             $this->removeUser($pi->uid);
-            $this->assertTrue($piGroup->memberExists($pi->uid));
+            $this->assertTrue($piGroup->mermberUIDExists($pi->uid));
         } finally {
-            if (!$piGroup->memberExists($pi->uid)) {
+            if (!$piGroup->mermberUIDExists($pi->uid)) {
                 $piGroup->newUserRequest($pi);
                 $piGroup->approveUser($pi);
             }

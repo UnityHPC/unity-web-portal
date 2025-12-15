@@ -49,7 +49,7 @@ class AccountDeletionRequestTest extends UnityWebPortalTestCase
         switchUser(...$pi_args);
         $pi = $USER;
         $pi_group = $USER->getPIGroup();
-        $this->assertEqualsCanonicalizing([$pi->uid], $pi_group->getMembers());
+        $this->assertEqualsCanonicalizing([$pi->uid], $pi_group->getMemberUIDs());
         $user_args = getBlankUser();
         switchUser(...$user_args);
         $this->assertEmpty($USER->getPIGroupGIDs());

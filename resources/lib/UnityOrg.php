@@ -41,7 +41,7 @@ class UnityOrg extends PosixGroup
 
     public function getOrgMembers(): array
     {
-        $members = $this->getMembers();
+        $members = $this->getMemberUIDs();
         $out = [];
         foreach ($members as $member) {
             $user_obj = new UnityUser(

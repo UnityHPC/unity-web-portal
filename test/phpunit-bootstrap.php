@@ -174,9 +174,9 @@ function ensureUserDoesNotExist()
     $SQL->deleteRequestsByUser($USER->uid);
     if ($USER->exists()) {
         $org = $USER->getOrgGroup();
-        if ($org->exists() and $org->memberExists($USER->uid)) {
+        if ($org->exists() and $org->mermberUIDExists($USER->uid)) {
             $org->removeUser($USER);
-            ensure(!$org->memberExists($USER->uid));
+            ensure(!$org->mermberUIDExists($USER->uid));
         }
         $LDAP->getUserEntry($USER->uid)->delete();
         ensure(!$USER->exists());
@@ -220,9 +220,9 @@ function ensureUserNotRequestedAccountDeletion()
 function ensureUserNotInPIGroup(UnityGroup $pi_group)
 {
     global $USER;
-    if ($pi_group->memberExists($USER->uid)) {
+    if ($pi_group->mermberUIDExists($USER->uid)) {
         $pi_group->removeUser($USER);
-        ensure(!$pi_group->memberExists($USER->uid));
+        ensure(!$pi_group->mermberUIDExists($USER->uid));
     }
 }
 
@@ -365,7 +365,7 @@ class UnityWebPortalTestCase extends TestCase
     public function assertGroupMembers(UnityGroup $group, array $expected_members)
     {
         sort($expected_members);
-        $found_members = $group->getMembers();
+        $found_members = $group->getMemberUIDs();
         sort($found_members);
         $this->assertEqualsCanonicalizing($expected_members, $found_members);
     }
