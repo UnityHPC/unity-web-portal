@@ -99,8 +99,12 @@ function switchUser(
     ensure(!is_null($USER));
 }
 
-function http_post(string $phpfile, array $post_data, bool $enforce_PRG = true, bool $do_generate_csrf_token = true): void
-{
+function http_post(
+    string $phpfile,
+    array $post_data,
+    bool $enforce_PRG = true,
+    bool $do_generate_csrf_token = true,
+): void {
     global $LDAP,
         $SQL,
         $MAILER,
