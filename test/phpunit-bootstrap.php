@@ -208,7 +208,7 @@ function ensureOrgGroupDoesNotExist()
 
 function ensureUserNotRequestedAccountDeletion()
 {
-    global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
+    global $USER, $SQL;
     if ($SQL->accDeletionRequestExists($USER->uid)) {
         $SQL->deleteAccountDeletionRequest($USER->uid);
     }
