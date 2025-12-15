@@ -1,3 +1,24 @@
+dn: ou=org_groups,dc=unityhpc,dc=test
+objectclass: organizationalUnit
+objectclass: top
+ou: org_groups
+
+dn: ou=groups,dc=unityhpc,dc=test
+objectclass: organizationalUnit
+objectclass: top
+ou: groups
+
+dn: ou=pi_groups,dc=unityhpc,dc=test
+objectclass: organizationalUnit
+objectclass: top
+ou: pi_groups
+
+dn: ou=users,dc=unityhpc,dc=test
+description: Holds all posix accounts.
+objectclass: organizationalUnit
+objectclass: top
+ou: users
+
 dn: dc=unityhpc,dc=test
 objectClass: top
 objectClass: dcObject
@@ -31,10 +52,23 @@ memberuid: user14_org3_test
 objectclass: posixGroup
 objectclass: top
 
-dn: ou=groups,dc=unityhpc,dc=test
-objectclass: organizationalUnit
+dn: cn=locked,dc=unityhpc,dc=test
+cn: locked
+gidnumber: 502
+objectclass: posixGroup
 objectclass: top
-ou: groups
+
+dn: cn=idlelocked,dc=unityhpc,dc=test
+cn: idlelocked
+gidnumber: 503
+objectclass: posixGroup
+objectclass: top
+
+dn: cn=ghost,dc=unityhpc,dc=test
+cn: ghost
+gidnumber: 504
+objectclass: posixGroup
+objectclass: top
 
 dn: cn=unityusers,dc=unityhpc,dc=test
 cn: unityusers
@@ -9183,11 +9217,6 @@ gidnumber: 33130
 objectclass: posixGroup
 objectclass: top
 
-dn: ou=org_groups,dc=unityhpc,dc=test
-objectclass: organizationalUnit
-objectclass: top
-ou: org_groups
-
 dn: cn=org11_test,ou=org_groups,dc=unityhpc,dc=test
 cn: org11_test
 gidnumber: 20007
@@ -10576,11 +10605,6 @@ memberuid: user227_org8_test
 memberuid: user494_org8_test
 objectclass: posixGroup
 objectclass: top
-
-dn: ou=pi_groups,dc=unityhpc,dc=test
-objectclass: organizationalUnit
-objectclass: top
-ou: pi_groups
 
 dn: cn=pi_user36_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user36_org2_test
@@ -13489,12 +13513,6 @@ gidnumber: 10210
 memberuid: user1298_org1_test
 objectclass: posixGroup
 objectclass: top
-
-dn: ou=users,dc=unityhpc,dc=test
-description: Holds all posix accounts.
-objectclass: organizationalUnit
-objectclass: top
-ou: users
 
 dn: cn=user15_org3_test,ou=users,dc=unityhpc,dc=test
 cn: user15_org3_test
