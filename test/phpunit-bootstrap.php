@@ -176,7 +176,7 @@ function ensureUserDoesNotExist()
     if ($USER->exists()) {
         $org = $USER->getOrgGroup();
         if ($org->exists() and $org->memberUIDExists($USER->uid)) {
-            $org->removeUser($USER);
+            $org->removeMemberUID($USER->uid);
             ensure(!$org->memberUIDExists($USER->uid));
         }
         $LDAP->getUserEntry($USER->uid)->delete();
