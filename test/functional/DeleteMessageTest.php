@@ -23,9 +23,9 @@ class DeleteMessageTest extends TestCase
             http_post(
                 __DIR__ . "/../../webroot/panel/ajax/delete_message.php",
                 [
-                    "level" => "debug",
-                    "title" => "foo2",
-                    "body" => "bar2",
+                    "level" => base64_encode("debug"),
+                    "title" => base64_encode("foo2"),
+                    "body" => base64_encode("bar2"),
                 ],
                 enforce_PRG: false,
             );

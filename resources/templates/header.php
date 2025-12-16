@@ -164,9 +164,9 @@ if (isset($SSO)) {
             htmlspecialchars($level->value),
             htmlspecialchars($title),
             htmlspecialchars($body),
-            htmlspecialchars($level->value),
-            htmlspecialchars($title),
-            htmlspecialchars($body),
+            base64_encode($level->value),
+            base64_encode($title),
+            base64_encode($body),
         );
     }
     if (
