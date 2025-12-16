@@ -97,13 +97,13 @@ class UnityUser
         $this->SQL->addLog($this->uid, $_SERVER["REMOTE_ADDR"], "user_added", $this->uid);
     }
 
-    public function getModifier($modifier): bool
+    public function getModifier(string $modifier): bool
     {
         return $this->LDAP->userModifierGroups[$modifier]->memberUIDExists($this->uid);
     }
 
     public function setModifier(
-        $modifier,
+        string $modifier,
         bool $newValue,
         bool $doSendMail = true,
         bool $doSendMailAdmin = true,
