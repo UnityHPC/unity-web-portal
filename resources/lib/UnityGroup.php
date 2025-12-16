@@ -94,7 +94,7 @@ class UnityGroup extends PosixGroup
     public function denyGroup(?UnityUser $operator = null, bool $send_mail = true): void
     {
         $request = $this->SQL->getRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
-        $this->SQL->removeRequest($this->getOwner()->uid);
+        $this->SQL->removeRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         if ($this->exists()) {
             return;
         }
