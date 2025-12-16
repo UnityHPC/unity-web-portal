@@ -5,7 +5,7 @@ $this->Subject = "User Activated"; ?>
 
 <p>Hello,</p>
 
-<p>Your account on the Unity cluster has been activated. Your account details are below:</p>
+<p>Your account on the UnityHPC Platform has been activated. Your account details are below:</p>
 
 <p>
 <strong>Username</strong> <?php echo $data["user"]; ?>

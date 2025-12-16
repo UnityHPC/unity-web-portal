@@ -1,8 +1,8 @@
 ![UNITY](https://user-images.githubusercontent.com/40907639/137608695-2d914da2-1ecc-480b-a47e-a9e33b2b1b45.png)
 
-# Unity Web Portal
+# UnityHPC Account Portal
 
-Unity Web Portal is a PHP application built in top of MariaDB and LDAP which acts as a central user portal for high-performance-computing clusters.
+An identity management GUI for research computing written in PHP and built on MariaDB and OpenLDAP.
 
 Typical Usage:
 

@@ -6,7 +6,7 @@ use PHPOpenLDAPer\LDAPEntry;
 use Exception;
 
 /**
- * Class that represents a single PI group in the Unity Cluster.
+ * Class that represents a single PI group in the UnityHPC Platform.
  */
 class UnityGroup extends PosixGroup
 {

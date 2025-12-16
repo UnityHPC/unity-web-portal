@@ -5,6 +5,6 @@ $this->Subject = "User Deactivated"; ?>
 
 <p>Hello,</p>
 
-<p>Your account on the Unity cluster has been deactivated.</p>
+<p>Your account on the UnityHPC Platform has been deactivated.</p>
 
 <p>If you believe this to be a mistake, please reply to this email as soon as possible.</p>

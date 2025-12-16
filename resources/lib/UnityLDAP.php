@@ -7,7 +7,7 @@ use PHPOpenLDAPer\LDAPConn;
 use PHPOpenLDAPer\LDAPEntry;
 
 /**
- * An LDAP connection class which extends LDAPConn tailored for the Unity Cluster
+ * An LDAP connection class which extends LDAPConn tailored for the UnityHPC Platform
  */
 class UnityLDAP extends LDAPConn
 {
