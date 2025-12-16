@@ -127,23 +127,19 @@ class SSHKeyAddTest extends UnityWebPortalTestCase
         $numKeysBefore = $this->getKeyCount();
         $this->assertEquals(0, $numKeysBefore);
         $oldGithub = $GITHUB;
+        $GITHUB = $this->createMock(UnityGithub::class);
+        $GITHUB->method("getSshPublicKeys")->willReturn($keys);
         try {
-            $GITHUB = $this->createMock(UnityGithub::class);
-            $GITHUB->method("getSshPublicKeys")->willReturn($keys);
-            try {
-                http_post(__DIR__ . "/../../webroot/panel/account.php", [
-                    "form_type" => "addKey",
-                    "add_type" => "github",
-                    "gh_user" => "foobar",
-                ]);
-            } finally {
-                $GITHUB = $oldGithub;
-            }
+            http_post(__DIR__ . "/../../webroot/panel/account.php", [
+                "form_type" => "addKey",
+                "add_type" => "github",
+                "gh_user" => "foobar",
+            ]);
             $numKeysAfter = $this->getKeyCount();
             $this->assertEquals($expectedKeysAdded, $numKeysAfter - $numKeysBefore);
         } finally {
-            $USER->setSSHKeys([]);
             $GITHUB = $oldGithub;
+            $USER->setSSHKeys([]);
         }
     }
 }
