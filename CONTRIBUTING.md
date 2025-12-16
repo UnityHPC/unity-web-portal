@@ -26,7 +26,7 @@
   This will enable strict mode and throw an exception rather than issuing a warning.
 - `UnityHTTPD`'s user-facing error functionality (ex: `badRequest`) should only be called from `webroot/**/*.php`.
   `resources/**/*.php` should throw exceptions instead.
-- all pages under `webroot/admin/` must check for `$USER->isAdmin()` and call `UnityHTTPD::forbidden()` if not admin.
+- all pages under `webroot/admin/` must check for `$USER->getFlag("admin")` and call `UnityHTTPD::forbidden()` if not admin.
 
 This repository will automatically check PRs for linting compliance.
 
