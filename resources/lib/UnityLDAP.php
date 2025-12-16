@@ -37,7 +37,7 @@ class UnityLDAP extends LDAPConn
     private LDAPEntry $pi_groupOU;
     private LDAPEntry $org_groupOU;
 
-    public array $userModifierGroups;
+    public array $userFlagGroups;
 
     public function __construct()
     {
@@ -47,9 +47,9 @@ class UnityLDAP extends LDAPConn
         $this->groupOU = $this->getEntry(CONFIG["ldap"]["group_ou"]);
         $this->pi_groupOU = $this->getEntry(CONFIG["ldap"]["pigroup_ou"]);
         $this->org_groupOU = $this->getEntry(CONFIG["ldap"]["orggroup_ou"]);
-        $this->userModifierGroups = [];
-        foreach (CONFIG["ldap"]["user_modifier_groups"] as $gid => $dn) {
-            $this->userModifierGroups[$gid] = new PosixGroup(new LDAPEntry($this->conn, $dn));
+        $this->userFlagGroups = [];
+        foreach (CONFIG["ldap"]["user_flag_groups"] as $gid => $dn) {
+            $this->userFlagGroups[$gid] = new PosixGroup(new LDAPEntry($this->conn, $dn));
         }
     }
 
@@ -184,7 +184,7 @@ class UnityLDAP extends LDAPConn
         array $attributes,
         array $default_values = [],
     ): array {
-        $include_uids = $this->userModifierGroups["qualified"]->getMemberUIDs();
+        $include_uids = $this->userFlagGroups["qualified"]->getMemberUIDs();
         $user_attributes = $this->baseOU->getChildrenArrayStrict(
             $attributes,
             true, // recursive
@@ -281,7 +281,7 @@ class UnityLDAP extends LDAPConn
     public function getQualifiedUID2PIGIDs(): array
     {
         // initialize output so each UID is a key with an empty array as its value
-        $uids = $this->userModifierGroups["qualified"]->getMemberUIDs();
+        $uids = $this->userFlagGroups["qualified"]->getMemberUIDs();
         $uid2pigids = array_combine($uids, array_fill(0, count($uids), []));
         // for each PI group, append that GID to the member list for each of its member UIDs
         foreach (

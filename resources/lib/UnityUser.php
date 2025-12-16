@@ -97,51 +97,51 @@ class UnityUser
         $this->SQL->addLog($this->uid, $_SERVER["REMOTE_ADDR"], "user_added", $this->uid);
     }
 
-    public function getModifier(string $modifier): bool
+    public function getFlag(string $flag): bool
     {
-        return $this->LDAP->userModifierGroups[$modifier]->memberUIDExists($this->uid);
+        return $this->LDAP->userFlagGroups[$flag]->memberUIDExists($this->uid);
     }
 
-    public function setModifier(
-        string $modifier,
+    public function setFlag(
+        string $flag,
         bool $newValue,
         bool $doSendMail = true,
         bool $doSendMailAdmin = true,
     ): void {
-        $oldValue = $this->getModifier($modifier);
+        $oldValue = $this->getFlag($flag);
         if ($oldValue == $newValue) {
             return;
         }
         if ($newValue) {
-            $this->LDAP->userModifierGroups[$modifier]->addMemberUID($this->uid);
+            $this->LDAP->userFlagGroups[$flag]->addMemberUID($this->uid);
             if ($doSendMail) {
-                $this->MAILER->sendMail($this->getMail(), "user_modifier_added", [
+                $this->MAILER->sendMail($this->getMail(), "user_flag_added", [
                     "user" => $this->uid,
                     "org" => $this->getOrg(),
-                    "modifier" => $modifier,
+                    "flag" => $flag,
                 ]);
             }
             if ($doSendMailAdmin) {
-                $this->MAILER->sendMail("admin", "user_modifier_added_admin", [
+                $this->MAILER->sendMail("admin", "user_flag_added_admin", [
                     "user" => $this->uid,
                     "org" => $this->getOrg(),
-                    "modifier" => $modifier,
+                    "flag" => $flag,
                 ]);
             }
         } else {
-            $this->LDAP->userModifierGroups[$modifier]->removeMemberUID($this->uid);
+            $this->LDAP->userFlagGroups[$flag]->removeMemberUID($this->uid);
             if ($doSendMail) {
-                $this->MAILER->sendMail($this->getMail(), "user_modifier_removed", [
+                $this->MAILER->sendMail($this->getMail(), "user_flag_removed", [
                     "user" => $this->uid,
                     "org" => $this->getOrg(),
-                    "modifier" => $modifier,
+                    "flag" => $flag,
                 ]);
             }
             if ($doSendMailAdmin) {
-                $this->MAILER->sendMail("admin", "user_modifier_removed_admin", [
+                $this->MAILER->sendMail("admin", "user_flag_removed_admin", [
                     "user" => $this->uid,
                     "org" => $this->getOrg(),
-                    "modifier" => $modifier,
+                    "flag" => $flag,
                 ]);
             }
         }

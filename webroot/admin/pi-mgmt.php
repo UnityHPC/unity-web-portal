@@ -7,7 +7,7 @@ use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UnitySQL;
 
-if (!$USER->getModifier("admin")) {
+if (!$USER->getFlag("admin")) {
     UnityHTTPD::forbidden("not an admin");
 }
 

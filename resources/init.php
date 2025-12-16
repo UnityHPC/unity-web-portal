@@ -56,7 +56,7 @@ if (isset($_SERVER["REMOTE_USER"])) {
     $_SESSION["SSO"] = $SSO;
 
     $OPERATOR = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $WEBHOOK);
-    $_SESSION["is_admin"] = $OPERATOR->getModifier("admin");
+    $_SESSION["is_admin"] = $OPERATOR->getFlag("admin");
 
     if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
         $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $WEBHOOK);

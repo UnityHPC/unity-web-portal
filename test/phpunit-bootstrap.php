@@ -195,8 +195,8 @@ function ensureUserDoesNotExist()
         $USER->getGroupEntry()->delete();
         ensure(!$USER->getGroupEntry()->exists());
     }
-    $USER->setModifier("qualified", false);
-    ensure(!$LDAP->userModifierGroups["qualified"]->memberUIDExists($USER->uid));
+    $USER->setFlag("qualified", false);
+    ensure(!$LDAP->userFlagGroups["qualified"]->memberUIDExists($USER->uid));
 }
 
 function ensureOrgGroupDoesNotExist()
