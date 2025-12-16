@@ -8,9 +8,11 @@ class UtilsTest extends UnityWebPortalTestCase
     public static function SSHKeyProvider()
     {
         global $HTTP_HEADER_TEST_INPUTS;
+        // these key types must all be in CONFIG["ldap"]["allowed_ssh_key_types"]
         $validKeys = [
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+XqO25MUB9x/pS04I3JQ7rMGboWyGXh0GUzkOrTi7a",
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+XqO25MUB9x/pS04I3JQ7rMGboWyGXh0GUzkOrTi7a foobar",
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+XqO25MUB9x/pS04I3JQ7rMGboWyGXh0GUzkOrTi7a foo bar baz",
             "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBF/dSI9/7YWeyB8wa4rEWRdeb9pQbrGxZwYFV2ulr0agXdbiJIApp0MWDYlIc9XI+4Y+cVAj66PQ2YaRz44BV+o=",
             "ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzODQAAABhBOr8ZnJPs/mP/1c74P8NsiPL2pq/vKo6u0vtkgqgyZjqJJpPS5rP6EFJkT8DI0Fx9/70jvyH8wGK6tx+/gNElMlZ6P2RyHbDvL4Nh2LAEW3BQ2lbULyElP/ZeXIEQzPxng==",
             "ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAFmNNrz+B6exxuReTXQJzXUzJ4zB5JTuB8Xtcr79P4tk4SlA5a5ufQlsqMdPRhA76KFaLmONGF1e+vwcQWsj/MbRQE0H56tkZRNa+ch5/YI6iKSffkzpRKogl/uTP4rlpRb1vppsURRYxQ2JBzLYolj8VUV+N0sCwM+8maiOGJYuc4dlQ==",
@@ -66,18 +68,43 @@ class UtilsTest extends UnityWebPortalTestCase
             ]),
         ];
         $validKeysArgs = array_map(function ($x) {
-            return [true, $x];
+            return [true, $x, "/^$/"];
         }, $validKeys);
-        $invalidKeysArgs = array_map(function ($x) {
-            return [false, $x];
+        $garbageKeysArgs = array_map(function ($x) {
+            return [false, $x, "/.*/"];
         }, $HTTP_HEADER_TEST_INPUTS);
-        return $validKeysArgs + $invalidKeysArgs;
+        $invalidKeysArgs = [
+            [false, "foo ", "/leading or trailing whitespace/"],
+            [false, "foo\n", "/leading or trailing whitespace/"],
+            [false, "foo\nbar", "/multiple lines/"],
+            [false, "foo", "/at least 2 words/"],
+            [false, "foo bar", "/key type 'foo' not allowed/"],
+            [false, "ssh-rsa deadbeef", "/Unity admin/"],
+        ];
+        return $validKeysArgs + $garbageKeysArgs + $invalidKeysArgs;
     }
 
     #[DataProvider("SSHKeyProvider")]
-    public function testTestValidSSHKey(bool $expected, string $key)
+    public function testTestValidSSHKey(bool $expected, string $key, string $explanation_regex)
     {
-        $this->assertEquals($expected, testValidSSHKey($key));
+        [$is_valid, $explanation] = testValidSSHKey($key);
+        $this->assertMatchesRegularExpression($explanation_regex, $explanation);
+        $this->assertEquals($expected, $is_valid);
+    }
+
+    public static function sshKeyCommentProvider()
+    {
+        return [
+            ["foo bar", "foo bar"],
+            ["foo bar baz", "foo bar"],
+            ["foo bar baz baz bam", "foo bar"],
+        ];
+    }
+
+    #[DataProvider("sshKeyCommentProvider")]
+    public function testRemoveSSHKeyOptionalCommentSuffix(string $input, string $expected_output)
+    {
+        $this->assertEquals(removeSSHKeyOptionalCommentSuffix($input), $expected_output);
     }
 
     public static function URLComponentProvider()
@@ -103,5 +130,24 @@ class UtilsTest extends UnityWebPortalTestCase
     public function testGetURL(array $relative_url_components, string $expected)
     {
         $this->assertEquals($expected, getURL(...$relative_url_components));
+    }
+
+    public static function shortenStringProvider()
+    {
+        return [
+            [["foo###bar", 3, 3, "..."], "foo...bar"],
+            [["foo###bar", 1, 3, "..."], "f...bar"],
+            // input string is shorter than requested output size
+            [["foo###bar", 999, 999, "..."], "foo###bar"],
+            // input string is shorter than requested output size due to the long ellipsis
+            [["foo###bar", 3, 3, "...."], "foo###bar"],
+            [["", 3, 3], ""],
+        ];
+    }
+
+    #[DataProvider("shortenStringProvider")]
+    public function testShortenString(array $input_args, string $expected_output)
+    {
+        $this->assertEquals(shortenString(...$input_args), $expected_output);
     }
 }

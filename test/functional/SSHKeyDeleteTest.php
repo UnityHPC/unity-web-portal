@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\Attributes\DataProvider;
+use UnityWebPortal\lib\exceptions\ArrayKeyException;
 
 class SSHKeyDeleteTest extends UnityWebPortalTestCase
 {
@@ -44,7 +45,7 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
             $this->deleteKey($index);
             $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
         } finally {
-            $USER->setSSHKeys(self::$initialKeys);
+            callPrivateMethod($USER, "setSSHKeys", self::$initialKeys, $USER);
         }
     }
 
@@ -52,10 +53,11 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
     {
         global $USER;
         try {
+            $this->expectException(ArrayKeyException::class);
             $this->deleteKey("99");
             $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
         } finally {
-            $USER->setSSHKeys(self::$initialKeys);
+            callPrivateMethod($USER, "setSSHKeys", self::$initialKeys, $USER);
         }
     }
 
@@ -66,7 +68,7 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
             $this->deleteKey("0");
             $this->assertEquals([], $USER->getSSHKeys());
         } finally {
-            $USER->setSSHKeys(self::$initialKeys);
+            callPrivateMethod($USER, "setSSHKeys", self::$initialKeys, $USER);
         }
     }
 }
