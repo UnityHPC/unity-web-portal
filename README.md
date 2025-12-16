@@ -117,6 +117,10 @@ rm "$prod" && ln -s "$old" "$prod"
 
 ### Version-specific update instructions:
 
+### 1.5.0 -> 1.5.1
+
+- the `[site]getting_started_url` option should be defined
+
 ### 1.4 -> 1.5
 
 - Redis can be shut down
