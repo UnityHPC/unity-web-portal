@@ -110,3 +110,8 @@ repos:
         language: system
         files: ^resources/.*\.php$
         exclude: ^resources/lib/UnityHTTPD\.php$
+      - id: assert-forbidden-used
+        name: Assert forbidden() is used
+        entry: bash ./test/assert-forbidden-used.bash
+        language: system
+        files: ^webroot/admin/.*\.php$
