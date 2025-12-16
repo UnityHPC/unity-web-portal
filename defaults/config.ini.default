@@ -13,6 +13,7 @@ description = "The UnityHPC Account Portal is an identity management GUI for res
 logo = "logo.png"  ; path to logo file, in the webroot/assets/branding folder
 terms_of_service_url = "https://github.com" ; this can be external or a portal page created with "content management"
 account_policy_url = "https://github.com" ; this can be external or a portal page created with "content management"
+getting_started_url = "https://github.com" ; documentation about how to get started
 allow_die = true ; internal use only
 enable_verbose_error_log = true ; internal use only
 enable_redirect_message = true ; internal use only
