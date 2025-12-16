@@ -7,7 +7,6 @@ fi
 
 rc=0
 for file in "$@"; do
-    # --color=never because magit git output log doesn't support it
     grep_rc=0; grep -q UnityHTTPD::forbidden "$file" || grep_rc=$?
     case "$grep_rc" in
         0)
