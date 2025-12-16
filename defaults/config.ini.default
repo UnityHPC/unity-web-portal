@@ -40,6 +40,11 @@ user_flag_groups[ghost] =      "cn=ghost,dc=unityhpc,dc=test"      ; ghost user 
 user_flag_groups[idlelocked] = "cn=idlelocked,dc=unityhpc,dc=test" ; idlelocked user group dn
 user_flag_groups[locked] =     "cn=locked,dc=unityhpc,dc=test"     ; locked user group dn
 user_flag_groups[qualified] =  "cn=unityusers,dc=unityhpc,dc=test" ; qualified user group (in at least one PI group)
+allowed_ssh_key_types[] = ssh-rsa
+allowed_ssh_key_types[] = ecdsa-sha2-nistp256
+allowed_ssh_key_types[] = ecdsa-sha2-nistp384
+allowed_ssh_key_types[] = ecdsa-sha2-nistp521
+allowed_ssh_key_types[] = ssh-ed25519
 
 [sql]
 host = "sql"  ; mariadb hostname

@@ -201,6 +201,13 @@ function ensurePIGroupDoesNotExist()
     }
 }
 
+function callPrivateMethod($obj, $name, ...$args)
+{
+    $class = new \ReflectionClass($obj);
+    $method = $class->getMethod($name);
+    return $method->invokeArgs($obj, $args);
+}
+
 class UnityWebPortalTestCase extends TestCase
 {
     private ?string $last_user_nickname = null;

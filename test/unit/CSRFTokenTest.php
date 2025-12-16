@@ -6,6 +6,9 @@ class CSRFTokenTest extends TestCase
 {
     protected function setUp(): void
     {
+        if (session_status() == PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
         session_id(uniqid());
         session_start();
         $_SESSION["csrf_tokens"] = [];
