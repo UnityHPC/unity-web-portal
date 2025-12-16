@@ -3,6 +3,7 @@
 use UnityWebPortal\lib\UnityGithub;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockBuilder;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 class SSHKeyAddTest extends UnityWebPortalTestCase
 {
@@ -94,6 +95,7 @@ class SSHKeyAddTest extends UnityWebPortalTestCase
         return count($USER->getSSHKeys());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider("provider")]
     public function testAddSshKeys(string $methodName, int $expectedKeysAdded, array $keys)
     {
