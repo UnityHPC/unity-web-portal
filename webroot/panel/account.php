@@ -131,16 +131,18 @@ echo "
 $isPI = $USER->isPI();
 
 if ($isPI) {
-    echo "<p>You are curently a <strong>principal investigator</strong> on the Unity Cluster</p>";
+    echo "
+        <p>You are curently a <strong>principal investigator</strong> on the UnityHPC Platform</p>
+    ";
 } elseif ($USER->isQualified()) {
-    echo "<p>You are curently a <strong>qualified user</strong> on the Unity Cluster</p>";
+    echo "<p>You are curently a <strong>qualified user</strong> on the UnityHPC Platform</p>";
 } else {
     $tos_url = CONFIG["site"]["terms_of_service_url"];
     $form_url = getURL("panel/groups.php");
     echo "
         <p>
             You are currently an <strong>unqualified user</strong>, and will be
-            <strong>unable to use the cluster</strong>.
+            <strong>unable to access UnityHPC Platform services</strong>.
             To become qualified, request to join a PI group, or if you are a PI, request a PI group.
             Do not request a PI group if you are a student.
         </p>

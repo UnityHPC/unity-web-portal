@@ -27,7 +27,7 @@ require $LOC_HEADER;
     <strong>Email&nbsp;&nbsp;</strong>
     <?php echo $SSO["mail"]; ?>
 </div>
-<p>Your unity cluster username will be <strong><?php echo $SSO["user"]; ?></strong></p>
+<p>Your UnityHPC username will be <strong><?php echo $SSO["user"]; ?></strong></p>
 <br>
 <form action="" method="POST">
     <?php echo UnityHTTPD::getCSRFTokenHiddenFormInput(); ?>

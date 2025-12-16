@@ -13492,7 +13492,7 @@ objectclass: posixGroup
 objectclass: top
 
 dn: ou=users,dc=unityhpc,dc=test
-description: Hold all of the posix account of the cluster.
+description: Holds all posix accounts.
 objectclass: organizationalUnit
 objectclass: top
 ou: users

@@ -1,4 +1,4 @@
-# Contributing to the Unity Web Portal
+# Contributing to the UnityHPC Platform Account Portal
 
 ## Conventions
 
@@ -49,7 +49,7 @@ This repository will automatically check PRs for linting compliance.
 
 While the environment is running, the following is accessible:
 
-- http://127.0.0.1:8000 - Web Portal
+- http://127.0.0.1:8000 - Account Portal
 - http://127.0.0.1:8010 - PHPLDAPAdmin Portal
 - http://127.0.0.1:8020 - PHPMyAdmin Portal
 - http://127.0.0.1:8030 - Mailcatcher Portal
@@ -69,7 +69,7 @@ Notable users:
 
 ### Changes to Dev Environment
 
-Should the default schema of the web portal change, the `ldap/bootstrap.ldif` and `sql/bootstrap.sql` must be updated for the LDAP server and the MySQL server, respectively.
+Should the default schema change, the `ldap/bootstrap.ldif` and `sql/bootstrap.sql` must be updated for the LDAP server and the MySQL server, respectively.
 
 ## Testing
 

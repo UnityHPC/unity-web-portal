@@ -8,7 +8,7 @@ class UnityGithub
     public function getSshPublicKeys(string $username): array
     {
         $url = "https://api.github.com/users/$username/keys";
-        $headers = ["User-Agent: Unity Cluster User Portal"];
+        $headers = ["User-Agent: UnityHPC Account Portal"];
 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
