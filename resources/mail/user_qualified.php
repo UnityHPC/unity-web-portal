@@ -13,8 +13,10 @@ $this->Subject = "User Activated"; ?>
 <strong>Organization</strong> <?php echo $data["org"]; ?>
 </p>
 
-<p>Please login to the web portal to access Unity.
-    If you need console access, you will need to set your SSH keys in the
-    <?php echo getHyperlink("account settings", "/panel/account.php"); ?> page.</p>
+<p>
+See the
+<a href="<?php echo CONFIG["site"]["getting_started_url"]; ?>">Getting Started</a>
+page in our documentation for next steps.
+</p>
 
 <p>If you believe this to be a mistake, please reply to this email as soon as possible.</p>
