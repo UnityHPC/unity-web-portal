@@ -35,5 +35,5 @@ case "qualified": ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>
 <?php default: ?>
-<?php throw new \Exception("unknown modifier: " . $data["modifier"]) ?>
+<?php throw new \Exception("unknown modifier: " . $data["modifier"]); ?>
 <?php endswitch; ?>
