@@ -14,42 +14,33 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     UnityHTTPD::validatePostCSRFToken();
     switch (UnityHTTPD::getPostData("form_type")) {
         case "addKey":
-            $keys = array();
             switch (UnityHTTPD::getPostData("add_type")) {
                 case "paste":
-                    array_push($keys, UnityHTTPD::getPostData("key"));
+                    $keys = [UnityHTTPD::getPostData("key")];
                     break;
                 case "import":
                     try {
-                        $key = UnityHTTPD::getUploadedFileContents("keyfile");
+                        $keys = [UnityHTTPD::getUploadedFileContents("keyfile")];
                     } catch (EncodingUnknownException | EncodingConversionException $e) {
                         UnityHTTPD::badRequest("uploaded key has bad encoding", error: $e);
                     }
-                    array_push($keys, $key);
                     break;
                 case "generate":
-                    array_push($keys, UnityHTTPD::getPostData("gen_key"));
+                    $keys = [UnityHTTPD::getPostData("gen_key")];
                     break;
                 case "github":
                     $githubUsername = UnityHTTPD::getPostData("gh_user");
-                    $githubKeys = $GITHUB->getSshPublicKeys($githubUsername);
-                    $keys = array_merge($keys, $githubKeys);
+                    $keys = $GITHUB->getSshPublicKeys($githubUsername);
                     break;
             }
-            if (!empty($keys)) {
-                $keys = array_map("trim", $keys);
-                $validKeys = array_filter($keys, "testValidSSHKey");
-                $USER->setSSHKeys(array_merge($USER->getSSHKeys(), $validKeys));
-                if (count($keys) != count($validKeys)) {
-                    UnityHTTPD::badRequest(
-                        "one more more invalid SSH keys were not added",
-                        data: [
-                            "keys_valid_added" => $validKeys,
-                            "keys_invalid_not_added" => array_diff($keys, $validKeys),
-                        ],
-                    );
+            $keys = array_map("trim", $keys);
+            foreach ($keys as $key) {
+                if (!testValidSSHKey($key)) {
+                    UnityHTTPD::messageError("Invalid SSH Key", $key);
+                    UnityHTTPD::redirect();
                 }
             }
+            $USER->setSSHKeys(array_merge($USER->getSSHKeys(), $keys));
             break;
         case "delKey":
             $keys = $USER->getSSHKeys();

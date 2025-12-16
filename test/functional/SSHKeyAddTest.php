@@ -7,20 +7,69 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 #[AllowMockObjectsWithoutExpectations]
 class SSHKeyAddTest extends UnityWebPortalTestCase
 {
-    private function addSshKeysPaste(array $keys): void
+    public static function keyProvider()
     {
-        foreach ($keys as $key) {
+        $validKey =
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+XqO25MUB9x/pS04I3JQ7rMGboWyGXh0GUzkOrTi7a foobar";
+        $invalidKey = "foobar";
+        return [[false, $invalidKey], [true, $validKey]];
+    }
+
+    public static function keysProvider()
+    {
+        $validKey =
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+XqO25MUB9x/pS04I3JQ7rMGboWyGXh0GUzkOrTi7a foobar";
+        $validKey2 =
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+XqO25MUB9x/pS04I3JQ7rMGboWyGXh0GUzkOrTi7a foobar2";
+        $invalidKey = "foobar";
+        return [
+            [0, []],
+            [0, [$invalidKey]],
+            [1, [$validKey]],
+            [0, [$validKey, $invalidKey]],
+            [1, [$validKey, $validKey]],
+            [2, [$validKey, $validKey2]],
+        ];
+    }
+
+    public function getKeyCount()
+    {
+        global $USER;
+        return count($USER->getSSHKeys());
+    }
+
+    #[DataProvider("keyProvider")]
+    public function testAddSshKeyPaste(bool $expectedKeyAdded, string $key)
+    {
+        global $USER;
+        switchUser(...getUserHasNoSshKeys());
+        $numKeysBefore = $this->getKeyCount();
+        $this->assertEquals(0, $numKeysBefore);
+        try {
             http_post(__DIR__ . "/../../webroot/panel/account.php", [
                 "form_type" => "addKey",
                 "add_type" => "paste",
                 "key" => $key,
             ]);
+            $numKeysAfter = $this->getKeyCount();
+            if ($expectedKeyAdded) {
+                $this->assertEquals(1, $numKeysAfter - $numKeysBefore);
+            } else {
+                $this->assertEquals(0, $numKeysAfter - $numKeysBefore);
+            }
+        } finally {
+            $USER->setSSHKeys([]);
         }
     }
 
-    private function addSshKeysImport(array $keys): void
+    #[DataProvider("keyProvider")]
+    public function testAddSshKeyImport(bool $expectedKeyAdded, string $key)
     {
-        foreach ($keys as $key) {
+        global $USER;
+        switchUser(...getUserHasNoSshKeys());
+        $numKeysBefore = $this->getKeyCount();
+        $this->assertEquals(0, $numKeysBefore);
+        try {
             $tmp = tmpfile();
             $tmp_path = stream_get_meta_data($tmp)["uri"];
             fwrite($tmp, $key);
@@ -34,82 +83,67 @@ class SSHKeyAddTest extends UnityWebPortalTestCase
             } finally {
                 unset($_FILES["keyfile"]);
             }
-        }
-    }
-
-    private function addSshKeysGenerate(array $keys): void
-    {
-        foreach ($keys as $key) {
-            http_post(__DIR__ . "/../../webroot/panel/account.php", [
-                "form_type" => "addKey",
-                "add_type" => "generate",
-                "gen_key" => $key,
-            ]);
-        }
-    }
-
-    private function addSshKeysGithub(array $keys): void
-    {
-        global $GITHUB;
-        $oldGithub = $GITHUB;
-        $GITHUB = $this->createMock(UnityGithub::class);
-        $GITHUB->method("getSshPublicKeys")->willReturn($keys);
-        try {
-            http_post(__DIR__ . "/../../webroot/panel/account.php", [
-                "form_type" => "addKey",
-                "add_type" => "github",
-                "gh_user" => "foobar",
-            ]);
+            $numKeysAfter = $this->getKeyCount();
+            if ($expectedKeyAdded) {
+                $this->assertEquals(1, $numKeysAfter - $numKeysBefore);
+            } else {
+                $this->assertEquals(0, $numKeysAfter - $numKeysBefore);
+            }
         } finally {
-            $GITHUB = $oldGithub;
+            $USER->setSSHKeys([]);
         }
     }
 
-    public static function provider()
-    {
-        $validKey =
-            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+XqO25MUB9x/pS04I3JQ7rMGboWyGXh0GUzkOrTi7a foobar";
-        $invalidKey = "foobar";
-        $methods = [
-            "addSshKeysPaste",
-            "addSshKeysImport",
-            "addSshKeysGenerate",
-            "addSshKeysGithub",
-        ];
-        $output = [];
-        foreach ($methods as $method) {
-            $output = array_merge($output, [
-                [$method, 0, []],
-                [$method, 0, [$invalidKey]],
-                [$method, 1, [$validKey]],
-                [$method, 1, [$validKey, $invalidKey]],
-                [$method, 1, [$validKey, $validKey]],
-            ]);
-        }
-        return $output;
-    }
-
-    public function getKeyCount()
-    {
-        global $USER;
-        return count($USER->getSSHKeys());
-    }
-
-    #[AllowMockObjectsWithoutExpectations]
-    #[DataProvider("provider")]
-    public function testAddSshKeys(string $methodName, int $expectedKeysAdded, array $keys)
+    #[DataProvider("keyProvider")]
+    public function testAddSshKeyGenerate(bool $expectedKeyAdded, string $key)
     {
         global $USER;
         switchUser(...getUserHasNoSshKeys());
         $numKeysBefore = $this->getKeyCount();
         $this->assertEquals(0, $numKeysBefore);
         try {
-            call_user_func([SSHKeyAddTest::class, $methodName], $keys);
-            // $method($keys);
+            http_post(__DIR__ . "/../../webroot/panel/account.php", [
+                "form_type" => "addKey",
+                "add_type" => "generate",
+                "gen_key" => $key,
+            ]);
+            $numKeysAfter = $this->getKeyCount();
+            if ($expectedKeyAdded) {
+                $this->assertEquals(1, $numKeysAfter - $numKeysBefore);
+            } else {
+                $this->assertEquals(0, $numKeysAfter - $numKeysBefore);
+            }
+        } finally {
+            $USER->setSSHKeys([]);
+        }
+    }
+
+    #[AllowMockObjectsWithoutExpectations]
+    #[DataProvider("keysProvider")]
+    public function testAddSshKeysGithub(int $expectedKeysAdded, array $keys)
+    {
+        global $USER, $GITHUB;
+        switchUser(...getUserHasNoSshKeys());
+        $numKeysBefore = $this->getKeyCount();
+        $this->assertEquals(0, $numKeysBefore);
+        $oldGithub = $GITHUB;
+        try {
+            $GITHUB = $this->createMock(UnityGithub::class);
+            $GITHUB->method("getSshPublicKeys")->willReturn($keys);
+            try {
+                http_post(__DIR__ . "/../../webroot/panel/account.php", [
+                    "form_type" => "addKey",
+                    "add_type" => "github",
+                    "gh_user" => "foobar",
+                ]);
+            } finally {
+                $GITHUB = $oldGithub;
+            }
             $numKeysAfter = $this->getKeyCount();
             $this->assertEquals($expectedKeysAdded, $numKeysAfter - $numKeysBefore);
         } finally {
             $USER->setSSHKeys([]);
+            $GITHUB = $oldGithub;
         }
     }
 }
