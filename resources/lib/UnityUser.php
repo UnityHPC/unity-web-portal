@@ -122,7 +122,7 @@ class UnityUser
                 ]);
             }
             if ($doSendMailAdmin) {
-                $this->MAILER->sendMail($this->getMail(), "user_modifier_added_admin", [
+                $this->MAILER->sendMail("admin", "user_modifier_added_admin", [
                     "user" => $this->uid,
                     "org" => $this->getOrg(),
                     "modifier" => $modifier,
@@ -138,7 +138,7 @@ class UnityUser
                 ]);
             }
             if ($doSendMailAdmin) {
-                $this->MAILER->sendMail($this->getMail(), "user_modifier_removed_admin", [
+                $this->MAILER->sendMail("admin", "user_modifier_removed_admin", [
                     "user" => $this->uid,
                     "org" => $this->getOrg(),
                     "modifier" => $modifier,
