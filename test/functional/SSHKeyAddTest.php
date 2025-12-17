@@ -26,7 +26,7 @@ class SSHKeyAddTest extends UnityWebPortalTestCase
             [0, []],
             [0, [$invalidKey]],
             [1, [$validKey]],
-            [0, [$validKey, $invalidKey]],
+            [1, [$validKey, $invalidKey]],
             [1, [$validKey, $validKey]],
             [2, [$validKey, $validKey2]],
         ];
