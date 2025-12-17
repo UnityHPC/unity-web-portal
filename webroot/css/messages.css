@@ -10,6 +10,7 @@
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 20px;
+    word-wrap: break-word;
 }
 
 .message h3 {
