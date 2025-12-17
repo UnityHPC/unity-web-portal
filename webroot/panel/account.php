@@ -48,14 +48,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 $keyShort = shortenString($key, 10, 10);
                 try {
                     $keyWasAdded = $USER->addSSHKey($key, $OPERATOR);
+                    if ($keyWasAdded) {
+                        UnityHTTPD::messageSuccess("SSH Key Added", $keyShort);
+                    } else {
+                        UnityHTTPD::messageInfo("SSH Key Not Added: Already Exists", $keyShort);
+                    }
                 } catch (NoKeyLoadedException $e) {
                     UnityHTTPD::errorLog("Invalid SSH key", "", error: $e);
                     UnityHTTPD::messageError("SSH Key Not Added: Invalid Key", $keyShort);
-                }
-                if ($keyWasAdded) {
-                    UnityHTTPD::messageSuccess("SSH Key Added", $keyShort);
-                } else {
-                    UnityHTTPD::messageInfo("SSH Key Not Added: Already Exists", $keyShort);
                 }
             }
             UnityHTTPD::redirect();
