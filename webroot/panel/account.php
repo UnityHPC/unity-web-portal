@@ -51,16 +51,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 } catch (NoKeyLoadedException $e) {
                     UnityHTTPD::errorLog("Invalid SSH key", "", error: $e);
                     UnityHTTPD::messageError("SSH Key Not Added: Invalid Key", $keyShort);
-                    UnityHTTPD::redirect();
                 }
                 if ($keyWasAdded) {
                     UnityHTTPD::messageSuccess("SSH Key Added", $keyShort);
-                    UnityHTTPD::redirect();
                 } else {
                     UnityHTTPD::messageInfo("SSH Key Not Added: Already Exists", $keyShort);
-                    UnityHTTPD::redirect();
                 }
             }
+            UnityHTTPD::redirect();
             break;
         case "delKey":
             $index = str2int(UnityHTTPD::getPostData("delIndex"));
