@@ -316,6 +316,33 @@ class UnityUser
         return $result;
     }
 
+    /* checks if key exists, ignoring the optional comment suffix */
+    public function SSHKeyExists(string $key): bool
+    {
+        // if a key is 3 words, assume the 3rd word is the optional comment suffix
+        $keyMatches = [];
+        if (preg_match("/^\s*(\S+\s+\S+)\s+(\S+)\s*$/", $key, $keyMatches)) {
+            $keyNoComment = $keyMatches[1];
+        } else {
+            $keyNoComment = $key;
+        }
+        foreach ($this->getSSHKeys() as $foundKey) {
+            if ($key === $foundKey) {
+                return true;
+            }
+            $foundKeyMatches = [];
+            if (preg_match("/^\s*(\S+\s+\S+)\s+(\S+)\s*$/", $foundKey, $foundKeyMatches)) {
+                $foundKeyNoComment = $foundKeyMatches[1];
+            } else {
+                $foundKeyNoComment = $foundKey;
+            }
+            if ($keyNoComment === $foundKeyNoComment) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Sets the login shell for the account
      */
