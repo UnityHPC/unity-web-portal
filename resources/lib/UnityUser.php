@@ -316,27 +316,23 @@ class UnityUser
         return $result;
     }
 
+    private static function removeSSHKeyOptionalCommentSuffix(string $key): string
+    {
+        $matches = [];
+        if (preg_match("/^\s*(\S+\s+\S+)\s+(\S+)\s*$/", $key, $matches)) {
+            return $matches[1];
+        } else {
+            return $key;
+        }
+    }
+
     /* checks if key exists, ignoring the optional comment suffix */
     public function SSHKeyExists(string $key): bool
     {
-        // if a key is 3 words, assume the 3rd word is the optional comment suffix
-        $keyMatches = [];
-        if (preg_match("/^\s*(\S+\s+\S+)\s+(\S+)\s*$/", $key, $keyMatches)) {
-            $keyNoComment = $keyMatches[1];
-        } else {
-            $keyNoComment = $key;
-        }
+        $keyNoSuffix = self::removeSSHKeyOptionalCommentSuffix($key);
         foreach ($this->getSSHKeys() as $foundKey) {
-            if ($key === $foundKey) {
-                return true;
-            }
-            $foundKeyMatches = [];
-            if (preg_match("/^\s*(\S+\s+\S+)\s+(\S+)\s*$/", $foundKey, $foundKeyMatches)) {
-                $foundKeyNoComment = $foundKeyMatches[1];
-            } else {
-                $foundKeyNoComment = $foundKey;
-            }
-            if ($keyNoComment === $foundKeyNoComment) {
+            $foundKeyNoSuffix = self::removeSSHKeyOptionalCommentSuffix($foundKey);
+            if ($key === $foundKey || $keyNoSuffix === $foundKeyNoSuffix) {
                 return true;
             }
         }
