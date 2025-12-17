@@ -6,6 +6,7 @@ use PHPOpenLDAPer\LDAPEntry;
 use phpseclib3\Crypt\PublicKeyLoader;
 use Exception;
 use phpseclib3\Exception\NoKeyLoadedException;
+use UnityWebPortal\lib\exceptions\ArrayKeyException;
 
 class UnityUser
 {
@@ -263,12 +264,24 @@ class UnityUser
         return true;
     }
 
-    public function removeSSHKey(int $index, ?UnityUser $operator = null, bool $send_mail = true)
-    {
+    /**
+     *  @return string the removed key
+     *  @throws ArrayKeyException
+     */
+    public function removeSSHKey(
+        int $index,
+        ?UnityUser $operator = null,
+        bool $send_mail = true,
+    ): string {
         $keys = $this->getSSHKeys();
+        if (!array_key_exists($index, $keys)) {
+            throw new ArrayKeyException($index);
+        }
+        $key = $keys[$index];
         unset($keys[$index]);
         $keys = array_values($keys);
         $this->setSSHKeys($keys, $operator, $send_mail);
+        return $key;
     }
 
     /**
