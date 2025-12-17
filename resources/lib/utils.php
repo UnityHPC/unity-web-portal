@@ -1,6 +1,5 @@
 <?php
 
-use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use UnityWebPortal\lib\exceptions\EnsureException;
 use UnityWebPortal\lib\exceptions\EncodingUnknownException;
 use UnityWebPortal\lib\exceptions\EncodingConversionException;
@@ -82,4 +81,16 @@ function getHyperlink($text, ...$url_components)
     $text = htmlspecialchars($text);
     $url = getURL(...$url_components);
     return "<a href='$url'>$text</a>";
+}
+
+/**
+ * @throws ValueError
+ */
+function str2int(string $x): int
+{
+    if (is_numeric($x)) {
+        return intval($x);
+    } else {
+        throw new ValueError("not numeric: $x");
+    }
 }
