@@ -32,12 +32,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 case "github":
                     $githubUsername = UnityHTTPD::getPostData("gh_user");
                     $keys = $GITHUB->getSshPublicKeys($githubUsername);
+                    if (count($keys) == 0) {
+                        UnityHTTPD::messageWarning(
+                            "No Keys Added",
+                            "No keys found associated with Github account."
+                        );
+                        UnityHTTPD::redirect();
+                    }
                     break;
             }
             $keys = array_map("trim", $keys);
-            if (count($keys) == 0) {
-                throw new \Exception("list of keys is empty");
-            }
             try {
                 if (count($keys) == 1) {
                     $keyWasAdded = $USER->addSSHKey($keys[0], $OPERATOR);
