@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
             $keys = array_map("trim", $keys);
             foreach ($keys as $key) {
-                $keyShort = shortenString($key, 10, 10);
+                $keyShort = shortenString($key, 10, 30);
                 try {
                     $keyWasAdded = $USER->addSSHKey($key, $OPERATOR);
                     if ($keyWasAdded) {
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         case "delKey":
             $index = str2int(UnityHTTPD::getPostData("delIndex"));
             $key = $USER->removeSSHKey($index, $OPERATOR);
-            $keyShort = shortenString($key, 10, 10);
+            $keyShort = shortenString($key, 10, 30);
             UnityHTTPD::messageSuccess("SSH Key Removed", $keyShort);
             UnityHTTPD::redirect();
             break;
