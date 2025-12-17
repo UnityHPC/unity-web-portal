@@ -58,7 +58,7 @@ class SSHKeyAddTest extends UnityWebPortalTestCase
                 $this->assertEquals(0, $numKeysAfter - $numKeysBefore);
             }
         } finally {
-            $USER->setSSHKeys([]);
+            callPrivateMethod($USER, "setSSHKeys", [], $USER);
         }
     }
 
@@ -90,7 +90,7 @@ class SSHKeyAddTest extends UnityWebPortalTestCase
                 $this->assertEquals(0, $numKeysAfter - $numKeysBefore);
             }
         } finally {
-            $USER->setSSHKeys([]);
+            callPrivateMethod($USER, "setSSHKeys", [], $USER);
         }
     }
 
@@ -114,7 +114,7 @@ class SSHKeyAddTest extends UnityWebPortalTestCase
                 $this->assertEquals(0, $numKeysAfter - $numKeysBefore);
             }
         } finally {
-            $USER->setSSHKeys([]);
+            callPrivateMethod($USER, "setSSHKeys", [], $USER);
         }
     }
 
@@ -139,7 +139,7 @@ class SSHKeyAddTest extends UnityWebPortalTestCase
             $this->assertEquals($expectedKeysAdded, $numKeysAfter - $numKeysBefore);
         } finally {
             $GITHUB = $oldGithub;
-            $USER->setSSHKeys([]);
+            callPrivateMethod($USER, "setSSHKeys", [], $USER);
         }
     }
 }

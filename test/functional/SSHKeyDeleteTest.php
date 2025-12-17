@@ -44,7 +44,7 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
             $this->deleteKey($index);
             $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
         } finally {
-            $USER->setSSHKeys(self::$initialKeys);
+            callPrivateMethod($USER, "setSSHKeys", self::$initialKeys, $USER);
         }
     }
 
@@ -55,7 +55,7 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
             $this->deleteKey("99");
             $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
         } finally {
-            $USER->setSSHKeys(self::$initialKeys);
+            callPrivateMethod($USER, "setSSHKeys", self::$initialKeys, $USER);
         }
     }
 
@@ -66,7 +66,7 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
             $this->deleteKey("0");
             $this->assertEquals([], $USER->getSSHKeys());
         } finally {
-            $USER->setSSHKeys(self::$initialKeys);
+            callPrivateMethod($USER, "setSSHKeys", self::$initialKeys, $USER);
         }
     }
 }

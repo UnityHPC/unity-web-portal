@@ -3,7 +3,9 @@
 namespace UnityWebPortal\lib;
 
 use PHPOpenLDAPer\LDAPEntry;
+use phpseclib3\Crypt\PublicKeyLoader;
 use Exception;
+use phpseclib3\Exception\NoKeyLoadedException;
 
 class UnityUser
 {
@@ -245,14 +247,51 @@ class UnityUser
     }
 
     /**
+     * @return bool true if key added, false if key not added because it was already there
+     * @throws NoKeyLoadedException if key is invalid
+     */
+    public function addSSHKey(string $key, UnityUser $operator, bool $send_mail = true): bool
+    {
+        if (in_array($key, $this->getSSHKeys())) {
+            return false;
+        }
+        PublicKeyLoader::load($key); // throws NoKeyLoadedException
+        $this->setSSHKeys(array_merge($this->getSSHKeys(), [$key]), $operator, $send_mail);
+        return true;
+    }
+
+    /**
+     * @return array bools corresponding to each key
+     * true if key added, false if key not added because it was already there
+     * @throws NoKeyLoadedException if any key is invalid
+     */
+    public function addSSHKeys(array $keys, UnityUser $operator, bool $send_mail = true): array
+    {
+        foreach ($keys as $key) {
+            PublicKeyLoader::load($key); // throws NoKeyLoadedException
+        }
+        $keysBefore = $this->getSSHKeys();
+        $output = array_map(fn($key) => !in_array($key, $keysBefore), $keys);
+        $newKeys = array_filter($keys, fn($key) => !in_array($key, $keysBefore));
+        $this->setSSHKeys(array_merge($this->getSSHKeys(), $newKeys), $operator, $send_mail);
+        return $output;
+    }
+
+    public function removeSSHKey(int $index, UnityUser $operator, bool $send_mail = true)
+    {
+        $keys = $this->getSSHKeys();
+        unset($keys[$index]);
+        $keys = array_values($keys);
+        $this->setSSHKeys($keys, $operator, $send_mail);
+    }
+
+    /**
      * Sets the SSH keys on the account and the corresponding entry
      */
-    public function setSSHKeys($keys, $operator = null, bool $send_mail = true): void
+    private function setSSHKeys(array $keys, $operator, bool $send_mail = true): void
     {
-        $operator = is_null($operator) ? $this->uid : $operator->uid;
-        $keys_filt = array_values(array_unique($keys));
         \ensure($this->entry->exists());
-        $this->entry->setAttribute("sshpublickey", $keys_filt);
+        $this->entry->setAttribute("sshpublickey", $keys);
         $this->entry->write();
 
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "sshkey_modify", $this->uid);
