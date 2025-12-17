@@ -104,3 +104,18 @@ function str2int(string $x, ...$args): int
         throw new ValueError("not digits: $x");
     }
 }
+
+/* example with 3 leading chars and 3 trailing chars: "foobarbaz" -> "foo...baz" */
+function shortenString(
+    string $x,
+    int $leading_chars,
+    int $trailing_chars,
+    string $ellipsis = "...",
+): string {
+    if ($leading_chars + strlen($ellipsis) + $trailing_chars > strlen($x)) {
+        return $x;
+    }
+    return substr($x, 0, $leading_chars) .
+        $ellipsis .
+        substr($x, -1 * $trailing_chars, $trailing_chars);
+}

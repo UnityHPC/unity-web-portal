@@ -43,17 +43,18 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
             $keys = array_map("trim", $keys);
             foreach ($keys as $key) {
+                $keyShort = shortenString($key, 10, 10);
                 try {
                     $keyWasAdded = $USER->addSSHKey($key, $OPERATOR);
                 } catch (NoKeyLoadedException) {
-                    UnityHTTPD::messageError("SSH Key Not Added: Invalid", $key);
+                    UnityHTTPD::messageError("SSH Key Not Added: Invalid", $keyShort);
                     UnityHTTPD::redirect();
                 }
                 if ($keyWasAdded) {
-                    UnityHTTPD::messageSuccess("SSH Key Added", $key);
+                    UnityHTTPD::messageSuccess("SSH Key Added", $keyShort);
                     UnityHTTPD::redirect();
                 } else {
-                    UnityHTTPD::messageInfo("SSH Key Not Added: Already Exists", $key);
+                    UnityHTTPD::messageInfo("SSH Key Not Added: Already Exists", $keyShort);
                     UnityHTTPD::redirect();
                 }
             }
