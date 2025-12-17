@@ -84,12 +84,13 @@ function getHyperlink($text, ...$url_components)
 }
 
 /**
+ * extra args (ex: base) are passed along to intval()
  * @throws ValueError
  */
-function str2int(string $x): int
+function str2int(string $x, ...$args): int
 {
     if (is_numeric($x)) {
-        return intval($x);
+        return intval($x, ...$args);
     } else {
         throw new ValueError("not numeric: $x");
     }
