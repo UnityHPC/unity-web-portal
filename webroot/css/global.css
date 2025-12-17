@@ -266,44 +266,6 @@ footer #footerLogos img {
   }
 }
 
-/* notices */
-div.notice {
-  background: var(--light_panel_background);
-  border-radius: 10px;
-  margin: 20px 0 20px 0;
-  padding-bottom: 5px;
-}
-
-div.notice > span.noticeTitle {
-  display: block;
-  background: var(--accent);
-  color: var(--accent_foreground);
-  border-radius: 8px 8px 0 0;
-  padding: 10px 10px 0 10px;
-  font-size: 14pt;
-  font-weight: bold;
-}
-
-div.notice > span.noticeDate {
-  display: block;
-  background: var(--accent);
-  color: var(--accent_foreground);
-  padding: 0 10px 10px 10px;
-}
-
-div.notice > p {
-  margin: 10px 15px 10px 15px;
-  padding: 0;
-}
-
-div.notice > div.noticeText {
-  padding: 0 10px 0 10px;
-}
-
-div.notice > button {
-  margin: 0 0 5px 10px;
-}
-
 #viewAsBar {
   background: orange;
   padding: 10px;

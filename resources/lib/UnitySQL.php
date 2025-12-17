@@ -7,7 +7,6 @@ use PDO;
 class UnitySQL
 {
     private const string TABLE_REQS = "requests";
-    private const string TABLE_NOTICES = "notices";
     private const string TABLE_PAGES = "pages";
     private const string TABLE_AUDIT_LOG = "audit_log";
     private const string TABLE_ACCOUNT_DELETION_REQUESTS = "account_deletion_requests";
@@ -137,67 +136,6 @@ class UnitySQL
         $stmt->bindParam(":uid", $user);
 
         $stmt->execute();
-    }
-
-    public function addNotice(
-        string $title,
-        string $date,
-        string $content,
-        UnityUser $operator,
-    ): void {
-        $table = self::TABLE_NOTICES;
-        $stmt = $this->conn->prepare(
-            "INSERT INTO $table (date, title, message) VALUES (:date, :title, :message)",
-        );
-        $stmt->bindParam(":date", $date);
-        $stmt->bindParam(":title", $title);
-        $stmt->bindParam(":message", $content);
-
-        $stmt->execute();
-
-        $this->addLog($operator->uid, $_SERVER["REMOTE_ADDR"], "added_cluster_notice", $operator);
-    }
-
-    public function editNotice(string $id, string $title, string $date, string $content): void
-    {
-        $table = self::TABLE_NOTICES;
-        $stmt = $this->conn->prepare(
-            "UPDATE $table SET date=:date, title=:title, message=:message WHERE id=:id",
-        );
-        $stmt->bindParam(":date", $date);
-        $stmt->bindParam(":title", $title);
-        $stmt->bindParam(":message", $content);
-        $stmt->bindParam(":id", $id);
-
-        $stmt->execute();
-    }
-
-    public function deleteNotice(string $id): void
-    {
-        $stmt = $this->conn->prepare("DELETE FROM " . self::TABLE_NOTICES . " WHERE id=:id");
-        $stmt->bindParam(":id", $id);
-
-        $stmt->execute();
-    }
-
-    public function getNotice(string $id): array
-    {
-        $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_NOTICES . " WHERE id=:id");
-        $stmt->bindParam(":id", $id);
-
-        $stmt->execute();
-
-        return $stmt->fetchAll()[0];
-    }
-
-    public function getNotices(): array
-    {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM " . self::TABLE_NOTICES . " ORDER BY date DESC",
-        );
-        $stmt->execute();
-
-        return $stmt->fetchAll();
     }
 
     public function getPages(): array
