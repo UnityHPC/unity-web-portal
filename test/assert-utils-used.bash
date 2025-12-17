@@ -10,6 +10,7 @@ declare -A utils=(
     ["json_encode"]="jsonEncode"
     ["mb_detect_encoding"]="mbDetectEncoding"
     ["mb_convert_encoding"]="mbConvertEncoding"
+    ["intval"]="str2int"
 )
 
 rc=0
