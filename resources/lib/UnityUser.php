@@ -319,7 +319,7 @@ class UnityUser
     private static function removeSSHKeyOptionalCommentSuffix(string $key): string
     {
         $matches = [];
-        if (preg_match("/^\s*(\S+\s+\S+)\s+(.*)\s*$/", $key, $matches)) {
+        if (preg_match("/^(\s*\S+\s+\S+)\s+(.*)\s*$/", $key, $matches)) {
             return $matches[1];
         } else {
             return $key;
