@@ -23,7 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     try {
                         $keys = [UnityHTTPD::getUploadedFileContents("keyfile")];
                     } catch (EncodingUnknownException | EncodingConversionException $e) {
-                        UnityHTTPD::badRequest("uploaded key has bad encoding", error: $e);
+                        UnityHTTPD::errorLog("uploaded key has bad encoding", "", error: $e);
+                        UnityHTTPD::messageError("SSH Key Not Added: Invalid Key", "");
+                        UnityHTTPD::redirect();
                     }
                     break;
                 case "generate":
@@ -46,8 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 $keyShort = shortenString($key, 10, 10);
                 try {
                     $keyWasAdded = $USER->addSSHKey($key, $OPERATOR);
-                } catch (NoKeyLoadedException) {
-                    UnityHTTPD::messageError("SSH Key Not Added: Invalid", $keyShort);
+                } catch (NoKeyLoadedException $e) {
+                    UnityHTTPD::errorLog("Invalid SSH key", "", error: $e);
+                    UnityHTTPD::messageError("SSH Key Not Added: Invalid Key", $keyShort);
                     UnityHTTPD::redirect();
                 }
                 if ($keyWasAdded) {
