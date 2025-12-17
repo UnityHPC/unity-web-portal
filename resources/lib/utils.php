@@ -89,7 +89,7 @@ function getHyperlink($text, ...$url_components)
  */
 function str2int(string $x, ...$args): int
 {
-    if (preg_match("/^[0-9]+$/", $x)) {
+    if (ctype_digit($x)) {
         return intval($x, ...$args);
     } else {
         throw new ValueError("not digits: $x");
