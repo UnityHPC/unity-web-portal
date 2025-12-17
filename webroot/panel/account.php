@@ -42,6 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                         UnityHTTPD::redirect();
                     }
                     break;
+                default:
+                    UnityHTTPD::badRequest("invalid add_type");
             }
             $keys = array_map("trim", $keys);
             foreach ($keys as $key) {
