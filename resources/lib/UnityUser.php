@@ -250,8 +250,11 @@ class UnityUser
      * @return bool true if key added, false if key not added because it was already there
      * @throws NoKeyLoadedException if key is invalid
      */
-    public function addSSHKey(string $key, UnityUser $operator, bool $send_mail = true): bool
-    {
+    public function addSSHKey(
+        string $key,
+        ?UnityUser $operator = null,
+        bool $send_mail = true,
+    ): bool {
         if (in_array($key, $this->getSSHKeys())) {
             return false;
         }
@@ -260,7 +263,7 @@ class UnityUser
         return true;
     }
 
-    public function removeSSHKey(int $index, UnityUser $operator, bool $send_mail = true)
+    public function removeSSHKey(int $index, ?UnityUser $operator = null, bool $send_mail = true)
     {
         $keys = $this->getSSHKeys();
         unset($keys[$index]);
@@ -271,8 +274,12 @@ class UnityUser
     /**
      * Sets the SSH keys on the account and the corresponding entry
      */
-    private function setSSHKeys(array $keys, $operator, bool $send_mail = true): void
-    {
+    private function setSSHKeys(
+        array $keys,
+        ?UnityUser $operator = null,
+        bool $send_mail = true,
+    ): void {
+        $operator = is_null($operator) ? $this->uid : $operator->uid;
         \ensure($this->entry->exists());
         $this->entry->setAttribute("sshpublickey", $keys);
         $this->entry->write();
