@@ -42,44 +42,20 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     break;
             }
             $keys = array_map("trim", $keys);
-            try {
-                if (count($keys) == 1) {
-                    $keyWasAdded = $USER->addSSHKey($keys[0], $OPERATOR);
-                    if ($keyWasAdded) {
-                        UnityHTTPD::messageSuccess("SSH Key Added", "");
-                        UnityHTTPD::redirect();
-                    } else {
-                        UnityHTTPD::messageWarning("SSH Key Not Added", "This key already exists");
-                        UnityHTTPD::redirect();
-                    }
-                } else {
-                    $numKeysAdded = $USER->addSSHKeys($keys, $OPERATOR);
-                    $numKeysNotAdded = count($keys) - $numKeysAdded;
-                    if ($numKeysAdded == 0) {
-                        UnityHTTPD::messageWarning(
-                            "SSH Keys Not Added",
-                            "These keys already exist"
-                        );
-                        UnityHTTPD::redirect();
-                    } elseif ($numKeysAdded == count($keys)) {
-                        UnityHTTPD::messageSuccess("SSH Keys Added", "");
-                        UnityHTTPD::redirect();
-                    } else {
-                        UnityHTTPD::messageWarning(
-                            "Some SSH Keys Not Added",
-                            // pluralization may be wrong here but I don't care
-                            sprintf(
-                                "%s keys were added. The other %s keys already existed.",
-                                $numKeysAdded,
-                                $numKeysNotAdded
-                            )
-                        );
-                        UnityHTTPD::redirect();
-                    }
+            foreach ($keys as $key) {
+                try {
+                    $keyWasAdded = $USER->addSSHKey($key, $OPERATOR);
+                } catch (NoKeyLoadedException) {
+                    UnityHTTPD::messageError("SSH Key Not Added", "This key is invalid");
+                    UnityHTTPD::redirect();
                 }
-            } catch (NoKeyLoadedException $e) {
-                UnityHTTPD::messageError("Invalid SSH Key", "");
-                UnityHTTPD::redirect();
+                if ($keyWasAdded) {
+                    UnityHTTPD::messageSuccess("SSH Key Added", "");
+                    UnityHTTPD::redirect();
+                } else {
+                    UnityHTTPD::messageInfo("SSH Key Not Added", "This key already exists");
+                    UnityHTTPD::redirect();
+                }
             }
             break;
         case "delKey":
