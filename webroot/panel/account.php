@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $key = $keys[$index];
             $keyShort = shortenString($key, 10, 10);
             $USER->removeSSHKey($index, $OPERATOR);
-            UnityHTTPD::messageSuccess("SSH Key Removed", $key);
+            UnityHTTPD::messageSuccess("SSH Key Removed", $keyShort);
             UnityHTTPD::redirect();
             break;
         case "loginshell":
