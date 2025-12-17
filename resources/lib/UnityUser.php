@@ -261,20 +261,19 @@ class UnityUser
     }
 
     /**
-     * @return array bools corresponding to each key
-     * true if key added, false if key not added because it was already there
+     * @return int number of keys added -- a key might not be added because it was already there
      * @throws NoKeyLoadedException if any key is invalid
      */
-    public function addSSHKeys(array $keys, UnityUser $operator, bool $send_mail = true): array
+    public function addSSHKeys(array $keys, UnityUser $operator, bool $send_mail = true): int
     {
         foreach ($keys as $key) {
             PublicKeyLoader::load($key); // throws NoKeyLoadedException
         }
         $keysBefore = $this->getSSHKeys();
-        $output = array_map(fn($key) => !in_array($key, $keysBefore), $keys);
-        $newKeys = array_filter($keys, fn($key) => !in_array($key, $keysBefore));
-        $this->setSSHKeys(array_merge($this->getSSHKeys(), $newKeys), $operator, $send_mail);
-        return $output;
+        // merge, then remove duplicates, then re-index
+        $keysAfter = array_values(array_unique(array_merge($keysBefore, $keys)));
+        $this->setSSHKeys($keysAfter, $operator, $send_mail);
+        return count($keysAfter) - count($keysBefore);
     }
 
     public function removeSSHKey(int $index, UnityUser $operator, bool $send_mail = true)

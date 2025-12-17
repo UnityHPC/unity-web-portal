@@ -53,8 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                         UnityHTTPD::redirect();
                     }
                 } else {
-                    $wasEachKeyAdded = $USER->addSSHKeys($keys, $OPERATOR);
-                    $numKeysAdded = count(array_filter($wasEachKeyAdded, fn($x) => $x === true));
+                    $numKeysAdded = $USER->addSSHKeys($keys, $OPERATOR);
                     $numKeysNotAdded = count($keys) - $numKeysAdded;
                     if ($numKeysAdded == 0) {
                         UnityHTTPD::messageWarning(
