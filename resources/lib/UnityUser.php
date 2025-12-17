@@ -316,14 +316,17 @@ class UnityUser
         return $result;
     }
 
+    /*
+    key must take the form "KEY_TYPE KEY_DATA OPTIONAL_COMMENT"
+    https://github.com/phpseclib/phpseclib/issues/2117
+    */
     private static function removeSSHKeyOptionalCommentSuffix(string $key): string
     {
         $matches = [];
-        // (leadingWhitespace? word whitespace word) whitespace (words) trailingWhitespace?
-        if (preg_match("/^(\s*\S+\s+\S+)\s+(\S.*\S)\s*$/", $key, $matches)) {
+        if (preg_match("/^(\S+\s+\S+)/", $key, $matches)) {
             return $matches[1];
         } else {
-            return $key;
+            throw new \ValueError("invalid SSH key: $key");
         }
     }
 
