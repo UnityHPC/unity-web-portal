@@ -24,9 +24,15 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
     public static function getGarbageIndexArgs()
     {
         global $HTTP_HEADER_TEST_INPUTS;
-        return array_map(function ($x) {
-            return [$x];
-        }, $HTTP_HEADER_TEST_INPUTS);
+        $http_header_test_inputs_no_ints = array_filter(
+            $HTTP_HEADER_TEST_INPUTS,
+            fn($x) => !ctype_digit($x),
+        );
+        $http_header_test_inputs_no_ints_2d = array_map(
+            fn($x) => [$x],
+            $http_header_test_inputs_no_ints,
+        );
+        return array_merge([["-1"], ["0.5"]], $http_header_test_inputs_no_ints_2d);
     }
 
     #[DataProvider("getGarbageIndexArgs")]
@@ -34,18 +40,8 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
     {
         global $USER;
         try {
+            $this->expectException(ValueError::class);
             $this->deleteKey($index);
-            $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
-        } finally {
-            $USER->setSSHKeys(self::$initialKeys);
-        }
-    }
-
-    public function testDeleteKeyNegativeIndex()
-    {
-        global $USER;
-        try {
-            $this->deleteKey("-1");
             $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
         } finally {
             $USER->setSSHKeys(self::$initialKeys);
@@ -57,17 +53,6 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
         global $USER;
         try {
             $this->deleteKey("99");
-            $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
-        } finally {
-            $USER->setSSHKeys(self::$initialKeys);
-        }
-    }
-
-    public function testDeleteKeyDecimal()
-    {
-        global $USER;
-        try {
-            $this->deleteKey("0.5");
             $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
         } finally {
             $USER->setSSHKeys(self::$initialKeys);

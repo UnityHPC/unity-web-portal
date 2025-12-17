@@ -160,7 +160,7 @@ class UnityLDAP extends LDAPConn
         }
         $output_map = [];
         foreach ($output as [$uid, $uidNumber_str]) {
-            $output_map[$uid] = intval($uidNumber_str);
+            $output_map[$uid] = str2int($uidNumber_str);
         }
         return $output_map;
     }

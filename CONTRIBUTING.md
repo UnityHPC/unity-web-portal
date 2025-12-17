@@ -20,6 +20,8 @@
   This will throw an exception rather than returning `false`.
 - No code should call `mb_detect_encoding()`, instead `\mbDetectEncoding()`.
   This will enable strict mode and throw an exception rather than returning `false`.
+- No code should call `intval()`, instead `\str2int()`.
+  This will enable strict mode and throw an exception rather than issuing a warning.
 - `UnityHTTPD`'s user-facing error functionality (ex: `badRequest`) should only be called from `webroot/**/*.php`.
   `resources/**/*.php` should throw exceptions instead.
 - all pages under `webroot/admin/` must check for `$USER->isAdmin()` and call `UnityHTTPD::forbidden()` if not admin.
