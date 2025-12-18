@@ -194,7 +194,7 @@ class UnityLDAP extends LDAPConn
         array $attributes,
         array $default_values = [],
     ): array {
-        $include_uids = $this->userFlagGroups[UserFlag::QUALIFIED]->getMemberUIDs();
+        $include_uids = $this->userFlagGroups[UserFlag::QUALIFIED->value]->getMemberUIDs();
         $user_attributes = $this->baseOU->getChildrenArrayStrict(
             $attributes,
             true, // recursive
@@ -291,7 +291,7 @@ class UnityLDAP extends LDAPConn
     public function getQualifiedUID2PIGIDs(): array
     {
         // initialize output so each UID is a key with an empty array as its value
-        $uids = $this->userFlagGroups[UserFlag::QUALIFIED]->getMemberUIDs();
+        $uids = $this->userFlagGroups[UserFlag::QUALIFIED->value]->getMemberUIDs();
         $uid2pigids = array_combine($uids, array_fill(0, count($uids), []));
         // for each PI group, append that GID to the member list for each of its member UIDs
         foreach (
