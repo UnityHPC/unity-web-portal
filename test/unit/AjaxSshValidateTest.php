@@ -25,7 +25,7 @@ class AjaxSshValidateTest extends UnityWebPortalTestCase
         ob_start();
         include __DIR__ . "/../../webroot/js/ajax/ssh_validate.php";
         $output_str = ob_get_clean();
-        $output = jsonDecode($output);
+        $output = jsonDecode($output_str, true);
         $this->assertEquals($is_valid, $output["is_valid"]);
     }
 }
