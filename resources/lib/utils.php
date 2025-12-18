@@ -1,6 +1,5 @@
 <?php
 
-use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\exceptions\EnsureException;
 use UnityWebPortal\lib\exceptions\EncodingUnknownException;
 use UnityWebPortal\lib\exceptions\EncodingConversionException;
@@ -60,16 +59,7 @@ function testValidSSHKey(string $key): array
     } catch (NoKeyLoadedException $e) {
         // phpseclib internally catches any throwable to make NoKeyLoadedException,
         // so I am not comfortable sharing the exception message with the user
-        $errorid = uniqid();
-        UnityHTTPD::errorLog("invalid SSH key", "", error: $e, errorid: $errorid);
-        return [
-            false,
-            sprintf(
-                "Key is invalid. A Unity admin (%s) may have more information. Error ID: %s",
-                CONFIG["mail"]["support"],
-                $errorid,
-            ),
-        ];
+        return [false, "Invalid key"];
     }
 }
 
