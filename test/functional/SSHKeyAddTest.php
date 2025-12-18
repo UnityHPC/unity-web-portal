@@ -19,8 +19,10 @@ class SSHKeyAddTest extends UnityWebPortalTestCase
     {
         $validKey =
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+XqO25MUB9x/pS04I3JQ7rMGboWyGXh0GUzkOrTi7a foobar";
-        $validKey2 =
+        $validKeyDuplicateDifferentComment =
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+XqO25MUB9x/pS04I3JQ7rMGboWyGXh0GUzkOrTi7a foobar2";
+        $validKey2 =
+            "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBF/dSI9/7YWeyB8wa4rEWRdeb9pQbrGxZwYFV2ulr0agXdbiJIApp0MWDYlIc9XI+4Y+cVAj66PQ2YaRz44BV+o=";
         $invalidKey = "foobar";
         return [
             [0, []],
@@ -28,6 +30,7 @@ class SSHKeyAddTest extends UnityWebPortalTestCase
             [1, [$validKey]],
             [1, [$validKey, $invalidKey]],
             [1, [$validKey, $validKey]],
+            [1, [$validKey, $validKeyDuplicateDifferentComment]],
             [2, [$validKey, $validKey2]],
         ];
     }
