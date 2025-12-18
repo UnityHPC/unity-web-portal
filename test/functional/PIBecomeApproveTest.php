@@ -1,7 +1,6 @@
 <?php
 
-use UnityWebPortal\lib\UnityOrg;
-use UnityWebPortal\lib\UnitySQL;
+use UnityWebPortal\lib\UserFlag;
 
 class PIBecomeApproveTest extends UnityWebPortalTestCase
 {
@@ -64,7 +63,7 @@ class PIBecomeApproveTest extends UnityWebPortalTestCase
 
             $this->assertRequestedPIGroup(false);
             $this->assertTrue($pi_group->exists());
-            $this->assertTrue($USER->isQualified());
+            $this->assertTrue($USER->getFlag(UserFlag::QUALIFIED));
 
             // $third_request_failed = false;
             // try {

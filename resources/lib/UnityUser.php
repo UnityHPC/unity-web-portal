@@ -97,35 +97,51 @@ class UnityUser
         $this->SQL->addLog($this->uid, $_SERVER["REMOTE_ADDR"], "user_added", $this->uid);
     }
 
-    public function isQualified(): bool
+    public function getFlag(UserFlag $flag): bool
     {
-        return $this->LDAP->getQualifiedUserGroup()->attributeValueExists("memberUid", $this->uid);
+        return $this->LDAP->userFlagGroups[$flag->value]->memberUIDExists($this->uid);
     }
 
-    public function setIsQualified(bool $newIsQualified, bool $doSendMail = true): void
-    {
-        $oldIsQualified = $this->isQualified();
-        if ($oldIsQualified == $newIsQualified) {
+    public function setFlag(
+        UserFlag $flag,
+        bool $newValue,
+        bool $doSendMail = true,
+        bool $doSendMailAdmin = true,
+    ): void {
+        $oldValue = $this->getFlag($flag);
+        if ($oldValue == $newValue) {
             return;
         }
-        if ($newIsQualified) {
-            $this->LDAP->getQualifiedUserGroup()->appendAttribute("memberuid", $this->uid);
-            $this->LDAP->getQualifiedUserGroup()->write();
+        if ($newValue) {
+            $this->LDAP->userFlagGroups[$flag->value]->addMemberUID($this->uid);
             if ($doSendMail) {
-                $this->MAILER->sendMail($this->getMail(), "user_qualified", [
+                $this->MAILER->sendMail($this->getMail(), "user_flag_added", [
                     "user" => $this->uid,
                     "org" => $this->getOrg(),
+                    "flag" => $flag,
+                ]);
+            }
+            if ($doSendMailAdmin) {
+                $this->MAILER->sendMail("admin", "user_flag_added_admin", [
+                    "user" => $this->uid,
+                    "org" => $this->getOrg(),
+                    "flag" => $flag,
                 ]);
             }
         } else {
-            $this->LDAP
-                ->getQualifiedUserGroup()
-                ->removeAttributeEntryByValue("memberuid", $this->uid);
-            $this->LDAP->getQualifiedUserGroup()->write();
+            $this->LDAP->userFlagGroups[$flag->value]->removeMemberUID($this->uid);
             if ($doSendMail) {
-                $this->MAILER->sendMail($this->getMail(), "user_dequalified", [
+                $this->MAILER->sendMail($this->getMail(), "user_flag_removed", [
                     "user" => $this->uid,
                     "org" => $this->getOrg(),
+                    "flag" => $flag,
+                ]);
+            }
+            if ($doSendMailAdmin) {
+                $this->MAILER->sendMail("admin", "user_flag_removed_admin", [
+                    "user" => $this->uid,
+                    "org" => $this->getOrg(),
+                    "flag" => $flag,
                 ]);
             }
         }
@@ -317,15 +333,6 @@ class UnityUser
     {
         $this->entry->ensureExists();
         return $this->entry->getAttribute("homedirectory");
-    }
-
-    /**
-     * Checks if the current account is an admin
-     */
-    public function isAdmin(): bool
-    {
-        $admins = $this->LDAP->getAdminGroup()->getAttribute("memberuid");
-        return in_array($this->uid, $admins);
     }
 
     /**

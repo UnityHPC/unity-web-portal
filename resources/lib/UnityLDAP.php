@@ -5,6 +5,16 @@ namespace UnityWebPortal\lib;
 use UnityWebPortal\lib\exceptions\EntryNotFoundException;
 use PHPOpenLDAPer\LDAPConn;
 use PHPOpenLDAPer\LDAPEntry;
+use UnityWebPortal\lib\PosixGroup;
+
+enum UserFlag: string
+{
+    case ADMIN = "admin";
+    case GHOST = "ghost";
+    case IDLELOCKED = "idlelocked";
+    case LOCKED = "locked";
+    case QUALIFIED = "qualified";
+}
 
 /**
  * An LDAP connection class which extends LDAPConn tailored for the UnityHPC Platform
@@ -35,8 +45,8 @@ class UnityLDAP extends LDAPConn
     private LDAPEntry $groupOU;
     private LDAPEntry $pi_groupOU;
     private LDAPEntry $org_groupOU;
-    private LDAPEntry $adminGroup;
-    private LDAPEntry $qualifiedUserGroup;
+
+    public array $userFlagGroups;
 
     public function __construct()
     {
@@ -46,8 +56,11 @@ class UnityLDAP extends LDAPConn
         $this->groupOU = $this->getEntry(CONFIG["ldap"]["group_ou"]);
         $this->pi_groupOU = $this->getEntry(CONFIG["ldap"]["pigroup_ou"]);
         $this->org_groupOU = $this->getEntry(CONFIG["ldap"]["orggroup_ou"]);
-        $this->adminGroup = $this->getEntry(CONFIG["ldap"]["admin_group"]);
-        $this->qualifiedUserGroup = $this->getEntry(CONFIG["ldap"]["qualified_user_group"]);
+        $this->userFlagGroups = [];
+        foreach (UserFlag::cases() as $flag) {
+            $dn = CONFIG["ldap"]["user_flag_groups"][$flag->value];
+            $this->userFlagGroups[$flag->value] = new PosixGroup(new LDAPEntry($this->conn, $dn));
+        }
     }
 
     public function getUserOU(): LDAPEntry
@@ -68,16 +81,6 @@ class UnityLDAP extends LDAPConn
     public function getOrgGroupOU(): LDAPEntry
     {
         return $this->org_groupOU;
-    }
-
-    public function getAdminGroup(): LDAPEntry
-    {
-        return $this->adminGroup;
-    }
-
-    public function getQualifiedUserGroup(): LDAPEntry
-    {
-        return $this->qualifiedUserGroup;
     }
 
     public function getDefUserShell(): string
@@ -187,31 +190,11 @@ class UnityLDAP extends LDAPConn
         );
     }
 
-    public function getQualifiedUsersUIDs(): array
-    {
-        // should not use $user_ou->getChildren or $base_ou->getChildren(objectClass=posixAccount)
-        // qualified users might be outside user ou, and not all users in LDAP tree are qualified users
-        return $this->qualifiedUserGroup->getAttribute("memberuid");
-    }
-
-    public function getQualifiedUsers($UnitySQL, $UnityMailer, $UnityWebhook): array
-    {
-        $out = [];
-
-        $qualifiedUsers = $this->getQualifiedUsersUIDs();
-        sort($qualifiedUsers);
-        foreach ($qualifiedUsers as $user) {
-            $params = [$user, $this, $UnitySQL, $UnityMailer, $UnityWebhook];
-            array_push($out, new UnityUser(...$params));
-        }
-        return $out;
-    }
-
     public function getQualifiedUsersAttributes(
         array $attributes,
         array $default_values = [],
     ): array {
-        $include_uids = $this->getQualifiedUsersUIDs();
+        $include_uids = $this->userFlagGroups[UserFlag::QUALIFIED->value]->getMemberUIDs();
         $user_attributes = $this->baseOU->getChildrenArrayStrict(
             $attributes,
             true, // recursive
@@ -308,7 +291,7 @@ class UnityLDAP extends LDAPConn
     public function getQualifiedUID2PIGIDs(): array
     {
         // initialize output so each UID is a key with an empty array as its value
-        $uids = $this->getQualifiedUsersUIDs();
+        $uids = $this->userFlagGroups[UserFlag::QUALIFIED->value]->getMemberUIDs();
         $uid2pigids = array_combine($uids, array_fill(0, count($uids), []));
         // for each PI group, append that GID to the member list for each of its member UIDs
         foreach (

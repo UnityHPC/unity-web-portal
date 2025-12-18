@@ -85,7 +85,7 @@ class UnityGroup extends PosixGroup
         if ($send_mail) {
             $this->MAILER->sendMail($this->getOwner()->getMail(), "group_created");
         }
-        $this->getOwner()->setIsQualified(true); // having your own group makes you qualified
+        $this->getOwner()->setFlag(UserFlag::QUALIFIED, true); // having your own group makes you qualified
     }
 
     /**
@@ -191,7 +191,8 @@ class UnityGroup extends PosixGroup
                 "org" => $new_user->getOrg(),
             ]);
         }
-        $new_user->setIsQualified(true); // being in a group makes you qualified
+        // being in a group makes you qualified
+        $new_user->setFlag(UserFlag::QUALIFIED, true, doSendMail: true, doSendMailAdmin: false);
     }
 
     public function denyUser(UnityUser $new_user, bool $send_mail = true): void
