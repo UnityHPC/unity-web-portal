@@ -291,7 +291,7 @@ class UnityLDAP extends LDAPConn
     public function getQualifiedUID2PIGIDs(): array
     {
         // initialize output so each UID is a key with an empty array as its value
-        $uids = $this->userFlagGroups["qualified"]->getMemberUIDs();
+        $uids = $this->userFlagGroups[UserFlag::QUALIFIED]->getMemberUIDs();
         $uid2pigids = array_combine($uids, array_fill(0, count($uids), []));
         // for each PI group, append that GID to the member list for each of its member UIDs
         foreach (
