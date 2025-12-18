@@ -18,7 +18,7 @@ class UnityGithub
         if ($curl_output === false) {
             throw new CurlException(curl_error($curl));
         }
-        $keys = json_decode($curl_output, false);
+        $keys = jsonDecode($curl_output, false);
         curl_close($curl);
 
         // normally returns array of objects each with a ->key attribute
