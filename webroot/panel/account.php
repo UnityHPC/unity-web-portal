@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                         $keys = [UnityHTTPD::getUploadedFileContents("keyfile")];
                     } catch (EncodingUnknownException | EncodingConversionException $e) {
                         UnityHTTPD::errorLog("uploaded key has bad encoding", "", error: $e);
-                        UnityHTTPD::messageError("SSH Key Not Added: Invalid Key", "");
+                        UnityHTTPD::messageError("SSH Key Not Added: Invalid Encoding", "");
                         UnityHTTPD::redirect();
                     }
                     break;
