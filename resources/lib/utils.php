@@ -26,7 +26,7 @@ function testValidSSHKey(string $key): array
     if (substr_count($key, "\n") != 0) {
         return [false, "Key must not span multiple lines"];
     }
-    $exploded = explode(" ", $key, 1);
+    $exploded = explode(" ", $key, 2);
     if (count($exploded) == 1) {
         return [false, "Key must have at least 2 words"];
     }
