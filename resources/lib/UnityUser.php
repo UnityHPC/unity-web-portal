@@ -249,7 +249,7 @@ class UnityUser
 
     /**
      * @return bool true if key added, false if key not added because it was already there
-     * @throws NoKeyLoadedException if key is invalid
+     * be sure to check that the key is actually valid first!
      */
     public function addSSHKey(
         string $key,
@@ -259,7 +259,6 @@ class UnityUser
         if (in_array($key, $this->getSSHKeys())) {
             return false;
         }
-        PublicKeyLoader::load($key); // throws NoKeyLoadedException
         $this->setSSHKeys(array_merge($this->getSSHKeys(), [$key]), $operator, $send_mail);
         return true;
     }
