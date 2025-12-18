@@ -1,5 +1,6 @@
 <?php
 
+use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\exceptions\EnsureException;
 use UnityWebPortal\lib\exceptions\EncodingUnknownException;
 use UnityWebPortal\lib\exceptions\EncodingConversionException;
@@ -14,13 +15,40 @@ function ensure(bool $condition, ?string $message = null): void
     }
 }
 
-function testValidSSHKey(string $key_str): bool
+/* returns empty string if valid, returns explanation if invalid */
+function testValidSSHKey(string $key): string
 {
+    if ($key != trim($key)) {
+        return "Key must not have leading or trailing whitespace";
+    }
+    if (substr_count($key, "\n") != 0) {
+        return "Key must not span multiple lines";
+    }
+    $exploded = explode(" ", $key, 1);
+    if (count($exploded) == 1) {
+        return "Key must have at least 2 words";
+    }
+    $key_type = $exploded[0];
+    if (!array_key_exists($key_type, CONFIG["ldap"]["allowed_ssh_key_types"])) {
+        return sprintf(
+            "Key type '%s' is not allowed. Allowed key types are: %s",
+            shortenString($key_type, 5, 5),
+            jsonEncode(CONFIG["ldap"]["allowed_ssh_key_types"]),
+        );
+    }
     try {
-        PublicKeyLoader::load($key_str);
-        return true;
+        PublicKeyLoader::loadPublicKey($key);
+        return "";
     } catch (NoKeyLoadedException $e) {
-        return false;
+        // phpseclib internally catches any throwable to make NoKeyLoadedException,
+        // so I am not comfortable sharing the exception message with the user
+        $errorid = uniqid();
+        UnityHTTPD::errorLog("invalid SSH key", "", error: $e, errorid: $errorid);
+        return sprintf(
+            "Key is invalid. A Unity admin at %s can give you more information. Error ID: %s",
+            CONFIG["mail"]["support"],
+            $errorid,
+        );
     }
 }
 
