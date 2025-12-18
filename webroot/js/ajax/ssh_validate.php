@@ -7,4 +7,5 @@ require_once __DIR__ . "/../../../resources/lib/UnityHTTPD.php";
 use UnityWebPortal\lib\UnityHTTPD;
 
 header('Content-Type: application/json; charset=utf-8');
-echo jsonEncode(["is_valid" => testValidSSHKey(UnityHTTPD::getPostData("key"))]);
+[$is_valid, $explanation] = testValidSSHKey(UnityHTTPD::getPostData("key"));
+echo jsonEncode(["is_valid" => $is_valid, "explanation" => $explanation]);
