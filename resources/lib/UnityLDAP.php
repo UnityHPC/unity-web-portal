@@ -194,7 +194,7 @@ class UnityLDAP extends LDAPConn
         array $attributes,
         array $default_values = [],
     ): array {
-        $include_uids = $this->userFlagGroups["qualified"]->getMemberUIDs();
+        $include_uids = $this->userFlagGroups[UserFlag::QUALIFIED]->getMemberUIDs();
         $user_attributes = $this->baseOU->getChildrenArrayStrict(
             $attributes,
             true, // recursive
