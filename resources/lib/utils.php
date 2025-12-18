@@ -29,7 +29,7 @@ function removeSSHKeyOptionalCommentSuffix(string $key): string
 }
 
 /**
- *  @return array of length 2: boolean is_valid, string invalid_explanation
+ *  @return array of length 2: [boolean is_valid, string invalid_explanation]
  */
 function testValidSSHKey(string $key): array
 {
