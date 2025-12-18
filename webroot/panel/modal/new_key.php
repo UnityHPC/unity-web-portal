@@ -109,7 +109,7 @@ use UnityWebPortal\lib\UnityHTTPD;
                     $("textarea[name=key]").css("box-shadow", "0 0 0 0.3rem rgba(220,53,69,0.25)");
                     console.log(result.explanation);
                 }
-            }
+            },
             error: function(result) {
                 $("input[id=add-key]").prop("disabled", true);
                 $("textarea[name=key]").css("box-shadow", "0 0 0 0.3rem rgba(220,53,69,0.25)");
