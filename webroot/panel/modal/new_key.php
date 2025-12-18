@@ -110,13 +110,11 @@ use UnityWebPortal\lib\UnityHTTPD;
                     $("input[id=add-key]").prop("disabled", false);
                     $("#key_invalid_explanation").text("");
                 } else {
-                    console.log(result.explanation);
                     $("input[id=add-key]").prop("disabled", true);
                     $("#key_invalid_explanation").text(result.explanation);
                 }
             },
             error: function(result) {
-                console.log("ssh validation ajax failed!");
                 $("input[id=add-key]").prop("disabled", true);
                 $("#key_invalid_explanation").text("Something went wrong...");
             }
