@@ -92,6 +92,21 @@ class UtilsTest extends UnityWebPortalTestCase
         $this->assertEquals($expected, $is_valid);
     }
 
+    public static function sshKeyCommentProvider()
+    {
+        return [
+            ["foo bar", "foo bar"],
+            ["foo bar baz", "foo bar"],
+            ["foo bar baz baz bam", "foo bar"],
+        ];
+    }
+
+    #[DataProvider("sshKeyCommentProvider")]
+    public function testRemoveSSHKeyOptionalCommentSuffix(string $input, string $expected_output)
+    {
+        $this->assertEquals(removeSSHKeyOptionalCommentSuffix($input), $expected_output);
+    }
+
     public static function URLComponentProvider()
     {
         if (CONFIG["site"]["url"] != "http://127.0.0.1:8000/") {
