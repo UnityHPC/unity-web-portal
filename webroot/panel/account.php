@@ -51,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 [$is_valid, $explanation] = testValidSSHKey($key);
                 if (!$is_valid) {
                     UnityHTTPD::messageError("SSH Key Not Added: $explanation", $keyShort);
+                    continue;
                 }
                 $keyWasAdded = $USER->addSSHKey($key, $OPERATOR);
                 if ($keyWasAdded) {
