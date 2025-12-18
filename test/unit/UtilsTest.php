@@ -77,7 +77,8 @@ class UtilsTest extends UnityWebPortalTestCase
     #[DataProvider("SSHKeyProvider")]
     public function testTestValidSSHKey(bool $expected, string $key)
     {
-        $this->assertEquals($expected, testValidSSHKey($key));
+        [$is_valid, $explanation] = testValidSSHKey($key);
+        $this->assertEquals($expected, $is_valid);
     }
 
     public static function URLComponentProvider()
