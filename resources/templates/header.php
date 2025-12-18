@@ -114,7 +114,6 @@ if (isset($SSO)) {
             // Admin only pages
             echo getHyperlink("User Management", "admin/user-mgmt.php");
             echo getHyperlink("PI Management", "admin/pi-mgmt.php");
-            echo getHyperlink("Cluster Notices", "admin/notices.php");
             echo getHyperlink("Content Management", "admin/content.php");
         }
     } else {
