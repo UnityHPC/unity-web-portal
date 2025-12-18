@@ -1,5 +1,6 @@
+<?php use UnityWebPortal\lib\UserFlag; ?>
 <?php switch ($data["flag"]):
-case "qualified": ?>
+case UserFlag::QUALIFIED: ?>
 <?php $this->Subject = "User Deactivated"; ?>
 <p>Hello,</p>
 <p>Your account on the UnityHPC Platform has been deactivated.</p>
@@ -7,7 +8,7 @@ case "qualified": ?>
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>
-<?php case "ghost": ?>
+<?php case UserFlag::GHOST: ?>
 <?php $this->Subject = "User Resurrected"; ?>
 <p>Hello,</p>
 <p>Your account on the UnityHPC Platform has been resurrected.</p>
@@ -15,7 +16,7 @@ case "qualified": ?>
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>
-<?php case "locked": ?>
+<?php case UserFlag::LOCKED: ?>
 <?php $this->Subject = "User Unlocked"; ?>
 <p>Hello,</p>
 <p>Your account on the UnityHPC Platform has been unlocked.</p>
@@ -23,7 +24,7 @@ case "qualified": ?>
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>
-<?php case "idlelocked": ?>
+<?php case UserFlag::IDLELOCKED: ?>
 <?php $this->Subject = "User Unlocked"; ?>
 <p>Hello,</p>
 <p>Your account on the UnityHPC Platform has been unlocked.</p>
@@ -31,7 +32,7 @@ case "qualified": ?>
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>
-<?php case "admin": ?>
+<?php case UserFlag::ADMIN: ?>
 <?php $this->Subject = "User Demoted"; ?>
 <p>Hello,</p>
 <p>Your account on the UnityHPC Platform has been demoted from admin.</p>

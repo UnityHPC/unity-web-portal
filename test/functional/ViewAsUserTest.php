@@ -1,6 +1,6 @@
 <?php
 
-use UnityWebPortal\lib\UnityHTTPD;
+use UnityWebPortal\lib\UserFlag;
 
 class ViewAsUserTest extends UnityWebPortalTestCase
 {
@@ -10,7 +10,7 @@ class ViewAsUserTest extends UnityWebPortalTestCase
         switchUser(...$afterUser);
         $afterUid = $USER->uid;
         switchUser(...$beforeUser);
-        // $this->assertTrue($USER->getFlag("admin"));
+        // $this->assertTrue($USER->getFlag(UserFlag::ADMIN));
         $beforeUid = $USER->uid;
         // $this->assertNotEquals($afterUid, $beforeUid);
         http_post(__DIR__ . "/../../webroot/admin/user-mgmt.php", [
@@ -57,7 +57,7 @@ class ViewAsUserTest extends UnityWebPortalTestCase
         global $USER;
         switchUser(...getAdminUser());
         $adminUid = $USER->uid;
-        $this->assertTrue($USER->getFlag("admin"));
+        $this->assertTrue($USER->getFlag(UserFlag::ADMIN));
         switchUser(...getNormalUser());
         http_post(__DIR__ . "/../../webroot/admin/user-mgmt.php", [
             "form_type" => "viewAsUser",

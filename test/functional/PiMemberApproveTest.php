@@ -1,7 +1,6 @@
 <?php
 
-use UnityWebPortal\lib\UnitySQL;
-use UnityWebPortal\lib\UnityGroup;
+use UnityWebPortal\lib\UserFlag;
 
 class PIMemberApproveTest extends UnityWebPortalTestCase
 {
@@ -107,7 +106,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $this->assertTrue(!$pi_group->requestExists($USER));
             $this->assertRequestedMembership(false, $gid);
             $this->assertTrue($pi_group->memberUIDExists($USER->uid));
-            $this->assertTrue($USER->getFlag("qualified"));
+            $this->assertTrue($USER->getFlag(UserFlag::QUALIFIED));
 
             // $third_request_failed = false;
             // try {
@@ -167,7 +166,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $this->assertTrue(!$pi_group->requestExists($USER));
             $this->assertRequestedMembership(false, $gid);
             $this->assertTrue($pi_group->memberUIDExists($USER->uid));
-            $this->assertTrue($USER->getFlag("qualified"));
+            $this->assertTrue($USER->getFlag(UserFlag::QUALIFIED));
 
             // $third_request_failed = false;
             // try {

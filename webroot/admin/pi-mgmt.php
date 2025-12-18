@@ -6,8 +6,9 @@ use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UnitySQL;
+use UnityWebPortal\lib\UserFlag;
 
-if (!$USER->getFlag("admin")) {
+if (!$USER->getFlag(UserFlag::ADMIN)) {
     UnityHTTPD::forbidden("not an admin");
 }
 

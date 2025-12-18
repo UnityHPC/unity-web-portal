@@ -12,6 +12,7 @@ use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityWebhook;
 use UnityWebPortal\lib\UnityGithub;
 use UnityWebPortal\lib\UnityHTTPD;
+use UnityWebPortal\lib\UserFlag;
 
 if (CONFIG["site"]["enable_exception_handler"]) {
     set_exception_handler(["UnityWebPortal\lib\UnityHTTPD", "exceptionHandler"]);
@@ -56,7 +57,7 @@ if (isset($_SERVER["REMOTE_USER"])) {
     $_SESSION["SSO"] = $SSO;
 
     $OPERATOR = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $WEBHOOK);
-    $_SESSION["is_admin"] = $OPERATOR->getFlag("admin");
+    $_SESSION["is_admin"] = $OPERATOR->getFlag(UserFlag::ADMIN);
 
     if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
         $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $WEBHOOK);

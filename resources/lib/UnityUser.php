@@ -97,13 +97,13 @@ class UnityUser
         $this->SQL->addLog($this->uid, $_SERVER["REMOTE_ADDR"], "user_added", $this->uid);
     }
 
-    public function getFlag(string $flag): bool
+    public function getFlag(UserFlag $flag): bool
     {
-        return $this->LDAP->userFlagGroups[$flag]->memberUIDExists($this->uid);
+        return $this->LDAP->userFlagGroups[$flag->value]->memberUIDExists($this->uid);
     }
 
     public function setFlag(
-        string $flag,
+        UserFlag $flag,
         bool $newValue,
         bool $doSendMail = true,
         bool $doSendMailAdmin = true,
@@ -113,7 +113,7 @@ class UnityUser
             return;
         }
         if ($newValue) {
-            $this->LDAP->userFlagGroups[$flag]->addMemberUID($this->uid);
+            $this->LDAP->userFlagGroups[$flag->value]->addMemberUID($this->uid);
             if ($doSendMail) {
                 $this->MAILER->sendMail($this->getMail(), "user_flag_added", [
                     "user" => $this->uid,
@@ -129,7 +129,7 @@ class UnityUser
                 ]);
             }
         } else {
-            $this->LDAP->userFlagGroups[$flag]->removeMemberUID($this->uid);
+            $this->LDAP->userFlagGroups[$flag->value]->removeMemberUID($this->uid);
             if ($doSendMail) {
                 $this->MAILER->sendMail($this->getMail(), "user_flag_removed", [
                     "user" => $this->uid,

@@ -1,33 +1,34 @@
+<?php use UnityWebPortal\lib\UserFlag; ?>
 <?php switch ($data["flag"]):
-case "qualified": ?>
+case UserFlag::QUALIFIED: ?>
 <?php $this->Subject = "User Qualified"; ?>
 <p>Hello,</p>
 <p>User "<?php echo $data["user"] ?>" has been qualified. </p>
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>
-<?php case "ghost": ?>
+<?php case UserFlag::GHOST: ?>
 <?php $this->Subject = "User Ghosted"; ?>
 <p>Hello,</p>
 <p>User "<?php echo $data["user"] ?>" has been marked as ghost. </p>
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>
-<?php case "locked": ?>
+<?php case UserFlag::LOCKED: ?>
 <?php $this->Subject = "User Locked"; ?>
 <p>Hello,</p>
 <p>User "<?php echo $data["user"] ?>" has been locked. </p>
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>
-<?php case "idlelocked": ?>
+<?php case UserFlag::IDLELOCKED: ?>
 <?php $this->Subject = "User Idle Locked"; ?>
 <p>Hello,</p>
 <p>User "<?php echo $data["user"] ?>" has been idle locked. </p>
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>
-<?php case "admin": ?>
+<?php case UserFlag::ADMIN: ?>
 <?php $this->Subject = "User Promoted"; ?>
 <p>Hello,</p>
 <p>User "<?php echo $data["user"] ?>" has been promoted to admin. </p>

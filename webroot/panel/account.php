@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/../../resources/autoload.php";
 
+use UnityWebPortal\lib\UserFlag;
 use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\exceptions\EncodingUnknownException;
 use UnityWebPortal\lib\exceptions\EncodingConversionException;
@@ -130,7 +131,7 @@ if ($isPI) {
     echo "
         <p>You are curently a <strong>principal investigator</strong> on the UnityHPC Platform</p>
     ";
-} elseif ($USER->getFlag("qualified")) {
+} elseif ($USER->getFlag(UserFlag::QUALIFIED)) {
     echo "<p>You are curently a <strong>qualified user</strong> on the UnityHPC Platform</p>";
 } else {
     $tos_url = CONFIG["site"]["terms_of_service_url"];

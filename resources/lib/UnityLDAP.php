@@ -7,6 +7,15 @@ use PHPOpenLDAPer\LDAPConn;
 use PHPOpenLDAPer\LDAPEntry;
 use UnityWebPortal\lib\PosixGroup;
 
+enum UserFlag: string
+{
+    case ADMIN = "admin";
+    case GHOST = "ghost";
+    case IDLELOCKED = "idlelocked";
+    case LOCKED = "locked";
+    case QUALIFIED = "qualified";
+}
+
 /**
  * An LDAP connection class which extends LDAPConn tailored for the UnityHPC Platform
  */
@@ -48,8 +57,9 @@ class UnityLDAP extends LDAPConn
         $this->pi_groupOU = $this->getEntry(CONFIG["ldap"]["pigroup_ou"]);
         $this->org_groupOU = $this->getEntry(CONFIG["ldap"]["orggroup_ou"]);
         $this->userFlagGroups = [];
-        foreach (CONFIG["ldap"]["user_flag_groups"] as $gid => $dn) {
-            $this->userFlagGroups[$gid] = new PosixGroup(new LDAPEntry($this->conn, $dn));
+        foreach (UserFlag::cases() as $flag) {
+            $dn = CONFIG["ldap"]["user_flag_groups"][$flag->value];
+            $this->userFlagGroups[$flag->value] = new PosixGroup(new LDAPEntry($this->conn, $dn));
         }
     }
 

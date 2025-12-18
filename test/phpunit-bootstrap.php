@@ -30,6 +30,7 @@ require_once __DIR__ . "/../resources/lib/exceptions/UnityHTTPDMessageNotFoundEx
 use UnityWebPortal\lib\CSRFToken;
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
+use UnityWebPortal\lib\UserFlag;
 use UnityWebPortal\lib\UnitySQL;
 use UnityWebPortal\lib\UnityHTTPDMessageLevel;
 use PHPUnit\Framework\TestCase;
@@ -195,7 +196,7 @@ function ensureUserDoesNotExist()
         $USER->getGroupEntry()->delete();
         ensure(!$USER->getGroupEntry()->exists());
     }
-    $USER->setFlag("qualified", false);
+    $USER->setFlag(UserFlag::QUALIFIED, false);
     ensure(!$LDAP->userFlagGroups["qualified"]->memberUIDExists($USER->uid));
 }
 
