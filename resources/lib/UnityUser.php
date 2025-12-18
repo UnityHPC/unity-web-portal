@@ -315,26 +315,12 @@ class UnityUser
         return $result;
     }
 
-    /*
-    key must take the form "KEY_TYPE KEY_DATA OPTIONAL_COMMENT"
-    https://github.com/phpseclib/phpseclib/issues/2117
-    */
-    private static function removeSSHKeyOptionalCommentSuffix(string $key): string
-    {
-        $matches = [];
-        if (preg_match("/^(\S+ \S+)/", $key, $matches)) {
-            return $matches[1];
-        } else {
-            throw new \ValueError("invalid SSH key: $key");
-        }
-    }
-
     /* checks if key exists, ignoring the optional comment suffix */
     public function SSHKeyExists(string $key): bool
     {
-        $keyNoSuffix = self::removeSSHKeyOptionalCommentSuffix($key);
+        $keyNoSuffix = removeSSHKeyOptionalCommentSuffix($key);
         foreach ($this->getSSHKeys() as $foundKey) {
-            $foundKeyNoSuffix = self::removeSSHKeyOptionalCommentSuffix($foundKey);
+            $foundKeyNoSuffix = removeSSHKeyOptionalCommentSuffix($foundKey);
             if ($key === $foundKey || $keyNoSuffix === $foundKeyNoSuffix) {
                 return true;
             }

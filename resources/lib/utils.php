@@ -15,6 +15,19 @@ function ensure(bool $condition, ?string $message = null): void
     }
 }
 
+/*
+key must take the form "KEY_TYPE KEY_DATA OPTIONAL_COMMENT"
+*/
+function removeSSHKeyOptionalCommentSuffix(string $key): string
+{
+    $matches = [];
+    if (preg_match("/^(\S+ \S+)/", $key, $matches)) {
+        return $matches[1];
+    } else {
+        throw new \ValueError("invalid SSH key: $key");
+    }
+}
+
 /**
  *  @return array of length 2: boolean is_valid, string invalid_explanation
  */
