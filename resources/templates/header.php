@@ -80,45 +80,45 @@ if (isset($SSO)) {
   <nav class="mainNav">
     <?php
     // Public Items - Always Visible
-    echo getHyperlink("Home", "index.php");
+    echo getHyperlink("Home", "index.php") . "\n";
 
     $num_additional_items = count(CONFIG["menuitems"]["labels"]);
     for ($i = 0; $i < $num_additional_items; $i++) {
         echo "<a target='_blank' href='" . CONFIG["menuitems"]["links"][$i] . "'>" .
-        CONFIG["menuitems"]["labels"][$i] . "</a>";
+        CONFIG["menuitems"]["labels"][$i] . "</a>\n";
     }
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
         // Menu Items for Present Users
-        echo getHyperlink("Support", "panel/support.php");
-        echo getHyperlink("Account Settings", "panel/account.php");
-        echo getHyperlink("My PIs", "panel/groups.php");
+        echo getHyperlink("Support", "panel/support.php") . "\n";
+        echo getHyperlink("Account Settings", "panel/account.php") . "\n";
+        echo getHyperlink("My PIs", "panel/groups.php") . "\n";
 
         if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
             // PI only pages
-            echo getHyperlink("My Users", "panel/pi.php");
+            echo getHyperlink("My Users", "panel/pi.php") . "\n";
         }
 
         // additional branding items
         $num_additional_items = count(CONFIG["menuitems_secure"]["labels"]);
         for ($i = 0; $i < $num_additional_items; $i++) {
             echo "<a target='_blank' href='" . CONFIG["menuitems_secure"]["links"][$i] . "'>" .
-            CONFIG["menuitems_secure"]["labels"][$i] . "</a>";
+            CONFIG["menuitems_secure"]["labels"][$i] . "</a>\n";
         }
 
         // admin pages
         if (
             isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] && !isset($_SESSION["viewUser"])
         ) {
-            echo "<hr class='navHR'>";
+            echo "<hr class='navHR'>\n";
             // Admin only pages
-            echo getHyperlink("User Management", "admin/user-mgmt.php");
-            echo getHyperlink("PI Management", "admin/pi-mgmt.php");
-            echo getHyperlink("Cluster Notices", "admin/notices.php");
-            echo getHyperlink("Content Management", "admin/content.php");
+            echo getHyperlink("User Management", "admin/user-mgmt.php") . "\n";
+            echo getHyperlink("PI Management", "admin/pi-mgmt.php") . "\n";
+            echo getHyperlink("Cluster Notices", "admin/notices.php") . "\n";
+            echo getHyperlink("Content Management", "admin/content.php") . "\n";
         }
     } else {
-        echo getHyperlink("Login / Request Account", "panel/account.php");
+        echo getHyperlink("Login / Request Account", "panel/account.php") . "\n";
     }
     ?>
   </nav>
