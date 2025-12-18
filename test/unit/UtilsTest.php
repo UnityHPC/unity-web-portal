@@ -116,4 +116,23 @@ class UtilsTest extends UnityWebPortalTestCase
     {
         $this->assertEquals($expected, getURL(...$relative_url_components));
     }
+
+    public static function shortenStringProvider()
+    {
+        return [
+            [["foo###bar", 3, 3, "..."], "foo...bar"],
+            [["foo###bar", 1, 3, "..."], "f...bar"],
+            // input string is shorter than requested output size
+            [["foo###bar", 999, 999, "..."], "foo###bar"],
+            // input string is shorter than requested output size due to the long ellipsis
+            [["foo###bar", 3, 3, "...."], "foo###bar"],
+            [["", 3, 3], ""],
+        ];
+    }
+
+    #[DataProvider("shortenStringProvider")]
+    public function testShortenString(array $input_args, string $expected_output)
+    {
+        $this->assertEquals(shortenString(...$input_args), $expected_output);
+    }
 }
