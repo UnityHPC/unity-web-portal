@@ -1,5 +1,6 @@
 <?php
 
+use Exception;
 use UnityWebPortal\lib\exceptions\EnsureException;
 use UnityWebPortal\lib\exceptions\EncodingUnknownException;
 use UnityWebPortal\lib\exceptions\EncodingConversionException;
@@ -28,6 +29,15 @@ function jsonEncode(mixed $value, int $flags = 0, int $depth = 512): string
 {
     $flags |= JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES;
     return json_encode($value, $flags, $depth);
+}
+
+function jsonDecode(...$args): mixed
+{
+    $output = json_decode(...$args);
+    if ($output === null) {
+        throw new Exception("json_decode returned null");
+    }
+    return $output;
 }
 
 function mbConvertEncoding(
