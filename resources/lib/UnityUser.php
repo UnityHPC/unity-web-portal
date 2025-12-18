@@ -256,7 +256,7 @@ class UnityUser
         ?UnityUser $operator = null,
         bool $send_mail = true,
     ): bool {
-        if (in_array($key, $this->getSSHKeys())) {
+        if ($this->SSHKeyExists($key)) {
             return false;
         }
         $this->setSSHKeys(array_merge($this->getSSHKeys(), [$key]), $operator, $send_mail);
