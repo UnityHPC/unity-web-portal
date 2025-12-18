@@ -69,21 +69,12 @@ use UnityWebPortal\lib\UnityHTTPD;
     });
 
     function generateKey(type) {
-        var pubSection = "<section class='pubKey'>";
-        var privSection = "<section class='privKey'>";
-        var endingSection = "</section>";
-
         $.ajax({
             url: "<?php echo getURL("js/ajax/ssh_generate.php"); ?>?type=" + type,
+            dataType: "json",
             success: function(result) {
-                var pubKey = result.substr(result.indexOf(pubSection) + pubSection.length,
-                result.indexOf(endingSection) - result.indexOf(pubSection) - pubSection.length);
-                var privKey = result.substr(result.indexOf(privSection) + privSection.length,
-                result.indexOf(endingSection, result.indexOf(endingSection) + 1) -
-                result.indexOf(privSection) - privSection.length);
-                $("input[type=hidden][name=gen_key]").val(pubKey);
-                downloadFile(privKey, "privkey." + type); // Force download of private key
-
+                $("input[type=hidden][name=gen_key]").val(result.public);
+                downloadFile(result.private, "privkey." + type); // Force download of private key
                 $("#newKeyform").submit();
             }
         });
@@ -104,13 +95,13 @@ use UnityWebPortal\lib\UnityHTTPD;
         var key = $(this).val();
         $.ajax({
             url: "<?php echo getURL("js/ajax/ssh_validate.php"); ?>",
+            dataType: "json",
             type: "POST",
             data: {
                 key: key
             },
             success: function(result) {
-                const res = result.replace(key, "");
-                if (res == "true") {
+                if (result.is_valid) {
                     $("input[id=add-key]").prop("disabled", false);
                     $("textarea[name=key]").css("box-shadow", "none");
                 } else {

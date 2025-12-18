@@ -57,8 +57,9 @@ require $LOC_HEADER;
     $("#pageForm > select[name=pageSel]").change(function(e) {
         $.ajax({
             url: `${url}?pageid=` + $(this).val(),
+            dataType: "json",
             success: function(result) {
-            mainEditor.setData(result);
+                mainEditor.setData(result.content);
         }});
     });
 
