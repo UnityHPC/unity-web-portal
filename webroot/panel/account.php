@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     if (count($keys) == 0) {
                         UnityHTTPD::messageWarning(
                             "No Keys Added",
-                            "No keys found associated with Github account."
+                            "No keys found associated with GitHub account."
                         );
                         UnityHTTPD::redirect();
                     }
