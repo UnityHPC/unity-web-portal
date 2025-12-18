@@ -322,7 +322,7 @@ class UnityUser
     private static function removeSSHKeyOptionalCommentSuffix(string $key): string
     {
         $matches = [];
-        if (preg_match("/^(\S+\s+\S+)/", $key, $matches)) {
+        if (preg_match("/^(\S+ \S+)/", $key, $matches)) {
             return $matches[1];
         } else {
             throw new \ValueError("invalid SSH key: $key");
