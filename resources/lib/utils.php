@@ -31,7 +31,7 @@ function testValidSSHKey(string $key): array
         return [false, "Key must have at least 2 words"];
     }
     $key_type = $exploded[0];
-    if (!array_key_exists($key_type, CONFIG["ldap"]["allowed_ssh_key_types"])) {
+    if (!in_array($key_type, CONFIG["ldap"]["allowed_ssh_key_types"])) {
         return [
             false,
             sprintf(
