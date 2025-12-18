@@ -52,7 +52,7 @@ function testValidSSHKey(string $key): array
         return [
             false,
             sprintf(
-                "Key is invalid. A Unity admin at %s can give you more information. Error ID: %s",
+                "Key is invalid. A Unity admin (%s) may have more information. Error ID: %s",
                 CONFIG["mail"]["support"],
                 $errorid,
             ),
