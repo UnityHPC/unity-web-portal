@@ -30,6 +30,15 @@ function jsonEncode(mixed $value, int $flags = 0, int $depth = 512): string
     return json_encode($value, $flags, $depth);
 }
 
+function jsonDecode(...$args): mixed
+{
+    $output = json_decode(...$args);
+    if ($output === null) {
+        throw new Exception("json_decode returned null");
+    }
+    return $output;
+}
+
 function mbConvertEncoding(
     string $string,
     string $to_encoding,

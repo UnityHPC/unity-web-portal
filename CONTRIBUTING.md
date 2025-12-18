@@ -16,6 +16,8 @@
   This will enforce conditions even in production.
 - No code should call `json_encode()`, instead `\jsonEncode()`.
   This will throw errors and escape slashes by default.
+- No code should call `json_decode()`, instead `\jsonDecode()`.
+  This will throw an exception rather than returning `null`.
 - No code should call `mb_convert_encoding()`, instead `\mbConvertEncoding()`.
   This will throw an exception rather than returning `false`.
 - No code should call `mb_detect_encoding()`, instead `\mbDetectEncoding()`.

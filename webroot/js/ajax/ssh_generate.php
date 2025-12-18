@@ -5,20 +5,13 @@ require "../../../resources/autoload.php";
 use phpseclib3\Crypt\EC;
 use UnityWebPortal\lib\UnityHTTPD;
 
-echo "<pre>";
-
 $private = EC::createKey('Ed25519');
 $public = $private->getPublicKey();
-
-echo "<section class='pubKey'>";
-echo $public->toString('OpenSSH');
-echo "</section>";
-echo "<section class='privKey'>";
+$public_str = $public->toString('OpenSSH');
 if (UnityHTTPD::getQueryParameter("type", false) == "ppk") {
-    echo $private->toString('PuTTY');
+    $private_str = $private->toString('PuTTY');
 } else {
-    echo $private->toString('OpenSSH');
+    $private_str = $private->toString('OpenSSH');
 }
-echo "</section>";
-
-echo "</pre>";
+header('Content-Type: application/json; charset=utf-8');
+echo jsonEncode(["public" => $public_str, "private" => $private_str]);

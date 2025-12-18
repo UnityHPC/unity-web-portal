@@ -8,6 +8,7 @@ fi
 declare -A utils=(
     ["assert"]="ensure"
     ["json_encode"]="jsonEncode"
+    ["json_decode"]="jsonDecode"
     ["mb_detect_encoding"]="mbDetectEncoding"
     ["mb_convert_encoding"]="mbConvertEncoding"
     ["intval"]="str2int"

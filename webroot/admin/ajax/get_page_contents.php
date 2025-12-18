@@ -10,4 +10,5 @@ if (!$USER->isAdmin()) {
 
 $pageid = UnityHTTPD::getQueryParameter("pageid");
 $page = $SQL->getPage($pageid);
-echo $page["content"];
+header('Content-Type: application/json; charset=utf-8');
+echo jsonEncode(["content" => $page["content"]]);
