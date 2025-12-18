@@ -3,7 +3,6 @@
 require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UserFlag;
-use phpseclib3\Exception\NoKeyLoadedException;
 use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\exceptions\EncodingUnknownException;
 use UnityWebPortal\lib\exceptions\EncodingConversionException;
