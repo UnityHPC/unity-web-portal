@@ -40,10 +40,11 @@ use UnityWebPortal\lib\UnityHTTPD;
                     searchWrapper.show();
                 }
             },
-            error: function() {
-                searchWrapper.html("Something went wrong...");
+            error: function (result) {
+                searchWrapper.html(result.responseText);
                 searchWrapper.show();
-            }
+                console.log();
+            },
         });
     });
 

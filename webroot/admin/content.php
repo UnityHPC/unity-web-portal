@@ -62,8 +62,8 @@ require $LOC_HEADER;
             success: function(result) {
                 mainEditor.setData(result.content);
             },
-            error: function() {
-                mainEditor.setData("Something went wrong...");
+            error: function(result) {
+                mainEditor.setData(result.responseText);
             },
         });
     });

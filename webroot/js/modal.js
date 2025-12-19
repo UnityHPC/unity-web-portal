@@ -5,8 +5,8 @@ function openModal(title, link) {
     success: function (result) {
       $("div.modalBody").html(result);
     },
-    error: function () {
-      $("div.modalBody").html("Something went wrong...");
+    error: function (result) {
+      $("div.modalBody").html(result.responseText);
     },
   });
 

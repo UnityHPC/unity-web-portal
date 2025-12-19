@@ -35,8 +35,9 @@ $("button.btnExpand").click(function () {
       success: function (result) {
         piRow.after(result);
       },
-      error: function () {
-        piRow.after("Something went wrong...");
+      error: function (result) {
+        piRow.after(result.responseText);
+        $("div.modalBody").html();
       },
     });
 
