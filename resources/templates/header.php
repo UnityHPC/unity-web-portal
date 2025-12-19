@@ -160,6 +160,7 @@ if (isset($SSO)) {
                           'body': '%s',
                         }
                     });
+                    hideClearAllMessagesButtonIfAllMessagesAlreadyCleared();
                   \"
                 >
                   ×
