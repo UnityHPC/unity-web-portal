@@ -39,6 +39,10 @@ use UnityWebPortal\lib\UnityHTTPD;
                 } else {
                     searchWrapper.show();
                 }
+            },
+            error: function() {
+                searchWrapper.html("Something went wrong...");
+                searchWrapper.show();
             }
         });
     });

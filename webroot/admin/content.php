@@ -61,7 +61,11 @@ require $LOC_HEADER;
             dataType: "json",
             success: function(result) {
                 mainEditor.setData(result.content);
-        }});
+            },
+            error: function() {
+                mainEditor.setData("Something went wrong...");
+            },
+        });
     });
 
     $("#pageForm").on("submit", function(e) {

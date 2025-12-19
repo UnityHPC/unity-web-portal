@@ -5,6 +5,9 @@ function openModal(title, link) {
     success: function (result) {
       $("div.modalBody").html(result);
     },
+    error: function () {
+      $("div.modalBody").html("Something went wrong...");
+    },
   });
 
   $("div.modalWrapper").fadeIn(100); // With Animation
