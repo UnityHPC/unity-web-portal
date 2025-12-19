@@ -137,25 +137,21 @@ if (isset($SSO)) {
   <main>
 
   <?php
-    foreach (UnityHTTPD::getMessages() as [$title, $body, $level]) {
+    echo "<div id='messages'>";
+    $messages = UnityHTTPD::getMessages();
+    if (count($messages) >= 3) {
+        echo "<button id='clear_all_messages_button'>Clear All Messages</button>";
+    }
+    foreach ($messages as [$title, $body, $level]) {
         echo sprintf(
             "
               <div class='message %s'>
                 <h3>%s</h3>
                 <p>%s</p>
                 <button
-                  onclick=\"
-                    this.parentElement.style.display='none';
-                    $.ajax({
-                        url: '/panel/ajax/delete_message.php',
-                        method: 'POST',
-                        data: {
-                          'level': '%s',
-                          'title': '%s',
-                          'body': '%s',
-                        }
-                    });
-                  \"
+                  data-level='%s'
+                  data-title='%s'
+                  data-body='%s'
                 >
                   ×
                 </button>
@@ -169,6 +165,7 @@ if (isset($SSO)) {
             base64_encode($body),
         );
     }
+    echo "</div>";
     if (
         isset($_SESSION["is_admin"])
         && $_SESSION["is_admin"]

@@ -30,7 +30,7 @@
 
 </body>
 <?php
-foreach (["filter", "sort", "global", "tables"] as $x) {
+foreach (["filter", "sort", "global", "tables", "messages"] as $x) {
     $url = getURL("js/$x.js");
     echo "<script src='$url'></script>";
 }
