@@ -116,7 +116,7 @@ use UnityWebPortal\lib\UnityHTTPD;
             },
             error: function(result) {
                 $("input[id=add-key]").prop("disabled", true);
-                $("#key_invalid_explanation").text("Something went wrong...");
+                $("#key_invalid_explanation").html(result.responseText);
             }
         });
     });
