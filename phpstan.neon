@@ -3,3 +3,9 @@ parameters:
   paths:
     - resources
     - test
+  ignoreErrors:
+    - messages:
+        - '#Variable \$this might not be defined.#'
+        - '#Variable \$data might not be defined.#'
+      paths:
+        - resources/mail/*
