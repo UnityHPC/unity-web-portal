@@ -12,14 +12,16 @@ if (!$USER->getFlag(UserFlag::ADMIN)) {
     UnityHTTPD::forbidden("not an admin");
 }
 
+$getUserFromPost = function () {
+    global $LDAP, $SQL, $MAILER, $WEBHOOK;
+    return new UnityUser(UnityHTTPD::getPostData("uid"), $LDAP, $SQL, $MAILER, $WEBHOOK);
+};
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     UnityHTTPD::validatePostCSRFToken();
-    if (isset($_POST["uid"])) {
-        $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
-    }
-
     switch ($_POST["form_type"]) {
         case "req":
+            $form_user = $getUserFromPost();
             if ($_POST["action"] == "Approve") {
                 $group = $form_user->getPIGroup();
                 $group->approveGroup($OPERATOR);
@@ -27,21 +29,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $group = $form_user->getPIGroup();
                 $group->denyGroup($OPERATOR);
             }
-
             break;
         case "reqChild":
+            $form_user = $getUserFromPost();
             $parent_group = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $WEBHOOK);
             if ($_POST["action"] == "Approve") {
                 $parent_group->approveUser($form_user);
             } elseif ($_POST["action"] == "Deny") {
                 $parent_group->denyUser($form_user);
             }
-
             break;
         case "remUserChild":
+            $form_user = $getUserFromPost();
             $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $WEBHOOK);
             $parent->removeUser($form_user);
-
             break;
     }
 }

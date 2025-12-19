@@ -6,29 +6,30 @@ use UnityWebPortal\lib\exceptions\EntryNotFoundException;
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
 
+$getPIGroupFromPost = function () {
+    global $LDAP, $SQL, $MAILER, $WEBHOOK;
+    $gid = UnityHTTPD::getPostData("pi");
+    if (substr($gid, 0, 3) !== "pi_" && str_contains($gid, "@")) {
+        try {
+            $gid = UnityGroup::ownerMail2GID($gid);
+        } catch (EntryNotFoundException) {
+            // oh well, we tried
+        }
+    }
+    $pi_group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+    if (!$pi_group->exists()) {
+        UnityHTTPD::messageError("This PI Doesn't Exist", $gid);
+        UnityHTTPD::redirect();
+    }
+    return $pi_group;
+};
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     UnityHTTPD::validatePostCSRFToken();
     if (isset($_POST["form_type"])) {
-        if (isset($_POST["pi"])) {
-            $pi_groupname = $_POST["pi"];
-            if (substr($pi_groupname, 0, 3) !== "pi_" && str_contains($pi_groupname, "@")) {
-                try {
-                    $pi_groupname = UnityGroup::ownerMail2GID($pi_groupname);
-                } catch (EntryNotFoundException) {
-                }
-            }
-            $pi_account = new UnityGroup($pi_groupname, $LDAP, $SQL, $MAILER, $WEBHOOK);
-            if (!$pi_account->exists()) {
-                UnityHTTPD::messageError(
-                    "Invalid Group Membership Request",
-                    "This PI doesn't exist"
-                );
-                UnityHTTPD::redirect();
-            }
-        }
-
         switch ($_POST["form_type"]) {
             case "addPIform":
+                $pi_account = $getPIGroupFromPost();
                 if (!isset($_POST["tos"]) || $_POST["tos"] != "agree") {
                     UnityHTTPD::badRequest("user did not agree to terms of service");
                 }
@@ -52,10 +53,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 UnityHTTPD::redirect();
                 break;
             case "removePIForm":
+                $pi_account = $getPIGroupFromPost();
                 $pi_account->removeUser($USER);
                 UnityHTTPD::redirect();
                 break;
             case "cancelPIForm":
+                $pi_account = $getPIGroupFromPost();
                 $pi_account->cancelGroupJoinRequest($USER);
                 UnityHTTPD::redirect();
                 break;

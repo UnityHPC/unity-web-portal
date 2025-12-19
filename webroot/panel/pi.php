@@ -13,20 +13,19 @@ if (!$USER->isPI()) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     UnityHTTPD::validatePostCSRFToken();
-    if (isset($_POST["uid"])) {
-        $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
-    }
-
     switch ($_POST["form_type"]) {
         case "userReq":
+            $uid = UnityHTTPD::getPostData("uid");
+            $form_user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
             if ($_POST["action"] == "Approve") {
                 $group->approveUser($form_user);
             } elseif ($_POST["action"] == "Deny") {
                 $group->denyUser($form_user);
             }
-
             break;
         case "remUser":
+            $uid = UnityHTTPD::getPostData("uid");
+            $form_user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
             // remove user button clicked
             $group->removeUser($form_user);
 
