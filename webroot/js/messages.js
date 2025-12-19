@@ -18,8 +18,8 @@ $(document).ready(function () {
                 'title': button.data('title'),
                 'body': button.data('body')
             },
-            error: function () {
-                console.log(`failed to delete message ${JSON.stringify(button.data())}`);
+            error: function (result) {
+                $("#messages").append(result.responseText);
             }
         });
         hideClearAllMessagesButtonIfAllMessagesAlreadyCleared();
