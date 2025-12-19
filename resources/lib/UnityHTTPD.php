@@ -98,7 +98,11 @@ class UnityHTTPD
             self::alert("$user_message_title -- $user_message_body");
             echo "<h1>$user_message_title</h1><p>$user_message_body</p>";
             // display_errors should not be enabled in production
-            if (!is_null($error) && ini_get("display_errors") === "1") {
+            if (
+                !is_null($error) &&
+                ini_get("display_errors") === "1" &&
+                property_exists($error, "xdebug_message")
+            ) {
                 echo "<table>";
                 echo $error->xdebug_message;
                 echo "</table>";
