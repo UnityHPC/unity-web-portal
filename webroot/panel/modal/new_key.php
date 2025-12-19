@@ -76,7 +76,10 @@ use UnityWebPortal\lib\UnityHTTPD;
                 $("input[type=hidden][name=gen_key]").val(result.public);
                 downloadFile(result.private, "privkey." + type); // Force download of private key
                 $("#newKeyform").submit();
-            }
+            },
+            error: function (result) {
+                $("#key_generate").append(result.responseText);
+            },
         });
     }
 

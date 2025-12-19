@@ -33,8 +33,10 @@ $("button.btnExpand").click(function () {
     $.ajax({
       url: ajax_url + gid,
       success: function (result) {
-        console.log(result);
         piRow.after(result);
+      },
+      error: function (result) {
+        piRow.after(result.responseText);
       },
     });
 
