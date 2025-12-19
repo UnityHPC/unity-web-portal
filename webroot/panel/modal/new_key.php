@@ -50,6 +50,7 @@ use UnityWebPortal\lib\UnityHTTPD;
         <input type="hidden" name="gen_key" />
         <button type="button" class="btnLin">OpenSSH</button>
         <button type="button" class="btnWin">PuTTY</button>
+        <div id="key_generate_error_output"></div>
     </div>
 
     <div style="display: none;" id="key_github">
@@ -77,9 +78,10 @@ use UnityWebPortal\lib\UnityHTTPD;
                 downloadFile(result.private, "privkey." + type); // Force download of private key
                 $("#newKeyform").submit();
             },
-            error: function() {
-                console.log("Something went wrong...");
-            }
+            error: function (result) {
+                $("#key_generate_error_output").html(result.responseText);
+                $("#key_generate_error_output").show();
+            },
         });
     }
 
