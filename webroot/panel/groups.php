@@ -51,17 +51,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 $pi_account->newUserRequest($USER);
                 UnityHTTPD::redirect();
-                break;
+                break; /** @phpstan-ignore deadCode.unreachable */
             case "removePIForm":
                 $pi_account = $getPIGroupFromPost();
                 $pi_account->removeUser($USER);
                 UnityHTTPD::redirect();
-                break;
+                break; /** @phpstan-ignore deadCode.unreachable */
             case "cancelPIForm":
                 $pi_account = $getPIGroupFromPost();
                 $pi_account->cancelGroupJoinRequest($USER);
                 UnityHTTPD::redirect();
-                break;
+                break; /** @phpstan-ignore deadCode.unreachable */
         }
     }
 }
