@@ -140,7 +140,14 @@ if (isset($SSO)) {
     echo "<div id='messages'>";
     $messages = UnityHTTPD::getMessages();
     if (count($messages) >= 3) {
-        echo "<button id='clear_all_messages_button'>Clear All Messages</button>";
+        echo "
+          <button
+            id='clear_all_messages_button'
+            onclick=\"$('#messages .message button').click();\"
+          >
+            Clear All Messages
+          </button>
+        ";
     }
     foreach ($messages as [$title, $body, $level]) {
         echo sprintf(
