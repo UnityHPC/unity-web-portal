@@ -234,12 +234,9 @@ class UnityHTTPD
         return $_POST[$key];
     }
 
-    public static function getOptionalQueryParameter(string $key): ?string
+    public static function getOptionalPostData(string $key): ?string
     {
-        if (!array_key_exists($key, $_GET)) {
-            return null;
-        }
-        return $_GET[$key];
+        return @$_POST[$key];
     }
 
     public static function getQueryParameter(string $key): string
@@ -248,6 +245,11 @@ class UnityHTTPD
             self::badRequest("\$_GET has no array key '$key'");
         }
         return $_GET[$key];
+    }
+
+    public static function getOptionalQueryParameter(string $key): ?string
+    {
+        return @$_GET[$key];
     }
 
     public static function getUploadedFileContents(
