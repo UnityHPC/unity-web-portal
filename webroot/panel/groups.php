@@ -8,17 +8,17 @@ use UnityWebPortal\lib\UnityHTTPD;
 
 $getPIGroupFromPost = function () {
     global $LDAP, $SQL, $MAILER, $WEBHOOK;
-    $gid = UnityHTTPD::getPostData("pi");
-    if (substr($gid, 0, 3) !== "pi_" && str_contains($gid, "@")) {
+    $gid_or_mail = UnityHTTPD::getPostData("pi");
+    if (substr($gid_or_mail, 0, 3) !== "pi_" && str_contains($gid_or_mail, "@")) {
         try {
-            $gid = UnityGroup::ownerMail2GID($gid);
+            $gid_or_mail = UnityGroup::ownerMail2GID($gid_or_mail);
         } catch (EntryNotFoundException) {
             // oh well, we tried
         }
     }
-    $pi_group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+    $pi_group = new UnityGroup($gid_or_mail, $LDAP, $SQL, $MAILER, $WEBHOOK);
     if (!$pi_group->exists()) {
-        UnityHTTPD::messageError("This PI Doesn't Exist", $gid);
+        UnityHTTPD::messageError("This PI Doesn't Exist", $gid_or_mail);
         UnityHTTPD::redirect();
     }
     return $pi_group;
