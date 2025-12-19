@@ -11,16 +11,12 @@ if (!$USER->isPI()) {
     UnityHTTPD::forbidden("not a PI", "You are not a PI.");
 }
 
-$getUserFromPost = function () {
-    global $LDAP, $SQL, $MAILER, $WEBHOOK;
-    return new UnityUser(UnityHTTPD::getPostData("uid"), $LDAP, $SQL, $MAILER, $WEBHOOK);
-};
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     UnityHTTPD::validatePostCSRFToken();
     switch ($_POST["form_type"]) {
         case "userReq":
-            $form_user = $getUserFromPost();
+            $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
             if ($_POST["action"] == "Approve") {
                 $group->approveUser($form_user);
             } elseif ($_POST["action"] == "Deny") {
@@ -28,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             break;
         case "remUser":
-            $form_user = $getUserFromPost();
+            $form_user = new UnityUser($_POST["uid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
             // remove user button clicked
             $group->removeUser($form_user);
 

@@ -226,27 +226,6 @@ class UnityHTTPD
         return false;
     }
 
-    public static function getPostData(string $key): string
-    {
-        if (!array_key_exists($key, $_POST)) {
-            self::badRequest("\$_POST has no array key '$key'");
-        }
-        return $_POST[$key];
-    }
-
-    /* returns null if not found and not $die_if_not_found */
-    public static function getQueryParameter(string $key, bool $die_if_not_found = true): ?string
-    {
-        if (!array_key_exists($key, $_GET)) {
-            if ($die_if_not_found) {
-                self::badRequest("\$_GET has no array key '$key'");
-            } else {
-                return null;
-            }
-        }
-        return $_GET[$key];
-    }
-
     public static function getUploadedFileContents(
         string $filename,
         bool $do_delete_tmpfile_after_read = true,
@@ -382,8 +361,7 @@ class UnityHTTPD
 
     public static function validatePostCSRFToken(): void
     {
-        $token = self::getPostData("csrf_token");
-        if (!CSRFToken::validate($token)) {
+        if (!CSRFToken::validate($_POST["csrf_token"])) {
             $errorid = uniqid();
             self::errorLog("csrf failed to validate", "", errorid: $errorid);
             self::messageError(
