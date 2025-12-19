@@ -228,7 +228,7 @@ class UnityHTTPD
         return false;
     }
 
-    public static function getPostData(string $key): mixed
+    public static function getPostData(string $key): string
     {
         if (!array_key_exists("REQUEST_METHOD", $_SERVER)) {
             throw new RuntimeException('$_SERVER has no array key "REQUEST_METHOD"');
@@ -243,7 +243,7 @@ class UnityHTTPD
     }
 
     /* returns null if not found and not $throw_if_not_found */
-    public static function getQueryParameter(string $key, bool $throw_if_not_found = true): mixed
+    public static function getQueryParameter(string $key, bool $throw_if_not_found = true): ?string
     {
         if (!array_key_exists($key, $_GET)) {
             if ($throw_if_not_found) {
