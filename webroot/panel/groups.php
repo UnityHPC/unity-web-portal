@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         switch ($_POST["form_type"]) {
             case "addPIform":
                 $pi_account = $getPIGroupFromPost();
-                if (!isset($_POST["tos"]) || $_POST["tos"] != "agree") {
+                if ($_POST["tos"] != "agree") {
                     UnityHTTPD::badRequest("user did not agree to terms of service");
                 }
                 if ($pi_account->exists()) {
