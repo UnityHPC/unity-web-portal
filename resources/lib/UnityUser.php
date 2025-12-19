@@ -332,7 +332,7 @@ class UnityUser
     public function getHomeDir(): string
     {
         $this->entry->ensureExists();
-        return $this->entry->getAttribute("homedirectory");
+        return $this->entry->getAttribute("homedirectory")[0];
     }
 
     /**
