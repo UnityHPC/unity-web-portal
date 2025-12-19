@@ -21,3 +21,8 @@ parameters:
       paths:
         - test/functional/InvalidEPPNTest.php
         - test/functional/PageLoadTest.php
+    - messages:
+        - '#Negated boolean expression is always false\.#'
+      paths:
+        - test/functional/PiRemoveUserTest.php
+        - test/phpunit-bootstrap.php
