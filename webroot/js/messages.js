@@ -19,7 +19,7 @@ $(document).ready(function () {
                 'body': button.data('body')
             },
             error: function () {
-                console.log(`failed to delete message ${JSON.stringify(button.data)}`);
+                console.log(`failed to delete message ${JSON.stringify(button.data())}`);
             }
         });
         hideClearAllMessagesButtonIfAllMessagesAlreadyCleared();
