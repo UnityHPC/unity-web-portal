@@ -9,3 +9,15 @@ parameters:
         - '#Variable \$data might not be defined.#'
       paths:
         - resources/mail/*
+    - messages:
+        - '#Method SSHKeyAddTest::addSshKeysPaste\(\) is unused.#'
+        - '#Method SSHKeyAddTest::addSshKeysImport\(\) is unused.#'
+        - '#Method SSHKeyAddTest::addSshKeysGenerate\(\) is unused.#'
+        - '#Method SSHKeyAddTest::addSshKeysGithub\(\) is unused.#'
+      paths:
+        - test/functional/SSHKeyAddTest.php
+    - messages:
+        - '#Call to method PHPUnit\\Framework\\Assert::assertTrue\(\) with true will always evaluate to true.#'
+      paths:
+        - test/functional/InvalidEPPNTest.php
+        - test/functional/PageLoadTest.php
