@@ -1,14 +1,19 @@
+#messages {
+    display: flex;
+    flex-direction: column;
+}
+
+#clear_all_messages_button {
+    align-self: end;
+    margin-bottom: 20px;
+}
+
 .message {
     border-radius: 10px;
     padding: 10px 40px 10px 40px;
     /* needed for button position: absolute */
     position: relative;
     text-align: center;
-    /* width: fit-content; */
-    /* subtract padding from indented width */
-    width: 90% - 80px;
-    margin-left: auto;
-    margin-right: auto;
     margin-bottom: 20px;
     word-wrap: break-word;
 }
