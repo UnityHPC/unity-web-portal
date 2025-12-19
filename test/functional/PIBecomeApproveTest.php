@@ -36,7 +36,7 @@ class PIBecomeApproveTest extends UnityWebPortalTestCase
         switchuser(...$user_to_qualify_args);
         $pi_group = $USER->getPIGroup();
         $this->assertTrue($USER->exists());
-        $this->assertTrue(!$pi_group->exists());
+        $this->assertFalse($pi_group->exists());
         try {
             $this->requestGroupCreation();
             $this->assertRequestedPIGroup(true);

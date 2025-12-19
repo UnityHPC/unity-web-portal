@@ -25,13 +25,6 @@ class PosixGroup
 
     public function equals(PosixGroup $other_group): bool
     {
-        if (!is_a($other_group, self::class)) {
-            throw new Exception(
-                "Unable to check equality because the parameter is not a " .
-                    self::class .
-                    " object",
-            );
-        }
         return $this->getDN() == $other_group->getDN();
     }
 

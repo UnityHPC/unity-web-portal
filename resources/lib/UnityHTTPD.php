@@ -245,9 +245,6 @@ class UnityHTTPD
     /* returns null if not found and not $throw_if_not_found */
     public static function getQueryParameter(string $key, bool $throw_if_not_found = true): mixed
     {
-        if (!is_array($_GET)) {
-            throw new RuntimeException('$_GET is not an array!');
-        }
         if (!array_key_exists($key, $_GET)) {
             if ($throw_if_not_found) {
                 self::badRequest("\$_GET has no array key '$key'");
@@ -263,13 +260,16 @@ class UnityHTTPD
         bool $do_delete_tmpfile_after_read = true,
         string $encoding = "UTF-8",
     ): string {
-        try {
-            $tmpfile_path = $_FILES[$filename]["tmp_name"];
-        } catch (ArrayKeyException $e) {
-            self::badRequest("no such uploaded file", $e, [
-                '$_FILES' => $_FILES,
-            ]);
+        if (!array_key_exists($filename, $_FILES)) {
+            self::badRequest("\$_FILES has no array key '$filename'", data: ['$_FILES' => $_FILES]);
         }
+        if (!array_key_exists("tmp_name", $_FILES[$filename])) {
+            self::badRequest(
+                "\$_FILES[$filename] has no array key 'tmp_name'",
+                data: ['$_FILES' => $_FILES],
+            );
+        }
+        $tmpfile_path = $_FILES[$filename]["tmp_name"];
         $contents = file_get_contents($tmpfile_path);
         if ($contents === false) {
             throw new \Exception("Failed to read file: " . $tmpfile_path);

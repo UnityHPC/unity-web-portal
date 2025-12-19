@@ -21,7 +21,6 @@ class CSRFTokenTest extends TestCase
     public function testGenerateCreatesToken(): void
     {
         $token = CSRFToken::generate();
-        $this->assertIsString($token);
         $this->assertEquals(64, strlen($token));
         $this->assertMatchesRegularExpression('/^[0-9a-f]{64}$/', $token);
     }
