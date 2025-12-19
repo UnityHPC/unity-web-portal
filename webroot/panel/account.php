@@ -14,53 +14,59 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     UnityHTTPD::validatePostCSRFToken();
     switch (UnityHTTPD::getPostData("form_type")) {
         case "addKey":
-            $keys = array();
             switch (UnityHTTPD::getPostData("add_type")) {
                 case "paste":
-                    array_push($keys, UnityHTTPD::getPostData("key"));
+                    $keys = [UnityHTTPD::getPostData("key")];
                     break;
                 case "import":
                     try {
-                        $key = UnityHTTPD::getUploadedFileContents("keyfile");
+                        $keys = [UnityHTTPD::getUploadedFileContents("keyfile")];
                     } catch (EncodingUnknownException | EncodingConversionException $e) {
-                        UnityHTTPD::badRequest("uploaded key has bad encoding", error: $e);
+                        UnityHTTPD::errorLog("uploaded key has bad encoding", "", error: $e);
+                        UnityHTTPD::messageError("SSH Key Not Added: Invalid Encoding", "");
+                        UnityHTTPD::redirect();
                     }
-                    array_push($keys, $key);
                     break;
                 case "generate":
-                    array_push($keys, UnityHTTPD::getPostData("gen_key"));
+                    $keys = [UnityHTTPD::getPostData("gen_key")];
                     break;
                 case "github":
                     $githubUsername = UnityHTTPD::getPostData("gh_user");
-                    $githubKeys = $GITHUB->getSshPublicKeys($githubUsername);
-                    $keys = array_merge($keys, $githubKeys);
+                    $keys = $GITHUB->getSshPublicKeys($githubUsername);
+                    if (count($keys) == 0) {
+                        UnityHTTPD::messageWarning(
+                            "No Keys Added",
+                            "No keys found associated with GitHub account."
+                        );
+                        UnityHTTPD::redirect();
+                    }
                     break;
+                default:
+                    UnityHTTPD::badRequest("invalid add_type");
             }
-            if (!empty($keys)) {
-                $keys = array_map("trim", $keys);
-                $validKeys = array_filter($keys, "testValidSSHKey");
-                $USER->setSSHKeys(array_merge($USER->getSSHKeys(), $validKeys));
-                if (count($keys) != count($validKeys)) {
-                    UnityHTTPD::badRequest(
-                        "one more more invalid SSH keys were not added",
-                        data: [
-                            "keys_valid_added" => $validKeys,
-                            "keys_invalid_not_added" => array_diff($keys, $validKeys),
-                        ],
-                    );
+            $keys = array_map("trim", $keys);
+            foreach ($keys as $key) {
+                $keyShort = shortenString($key, 10, 30);
+                [$is_valid, $explanation] = testValidSSHKey($key);
+                if (!$is_valid) {
+                    UnityHTTPD::messageError("SSH Key Not Added: $explanation", $keyShort);
+                    continue;
+                }
+                $keyWasAdded = $USER->addSSHKey($key, $OPERATOR);
+                if ($keyWasAdded) {
+                    UnityHTTPD::messageSuccess("SSH Key Added", $keyShort);
+                } else {
+                    UnityHTTPD::messageInfo("SSH Key Not Added: Already Exists", $keyShort);
                 }
             }
+            UnityHTTPD::redirect();
             break;
         case "delKey":
-            $keys = $USER->getSSHKeys();
             $index = str2int(UnityHTTPD::getPostData("delIndex"));
-            if ($index >= count($keys)) {
-                break;
-            }
-            unset($keys[$index]);
-            $keys = array_values($keys);
-
-            $USER->setSSHKeys($keys, $OPERATOR);
+            $key = $USER->removeSSHKey($index, $OPERATOR);
+            $keyShort = shortenString($key, 10, 30);
+            UnityHTTPD::messageSuccess("SSH Key Removed", $keyShort);
+            UnityHTTPD::redirect();
             break;
         case "loginshell":
             $USER->setLoginShell($_POST["shellSelect"], $OPERATOR);

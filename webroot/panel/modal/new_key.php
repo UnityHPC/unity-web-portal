@@ -38,6 +38,8 @@ use UnityWebPortal\lib\UnityHTTPD;
     <div id="key_paste">
         <textarea placeholder="ssh-rsa AAARs1..." form="newKeyform" name="key"></textarea>
         <input type="submit" value="Add Key" id="add-key" disabled />
+        <br>
+        <p id="key_invalid_explanation" style="margin-top: 10px;"></p>
     </div>
 
     <div style="display: none;" id="key_import">
@@ -96,21 +98,28 @@ use UnityWebPortal\lib\UnityHTTPD;
 
     $("textarea[name=key]").on("input", function() {
         var key = $(this).val();
+        if (key == "") {
+            $("input[id=add-key]").prop("disabled", true);
+            $("#key_invalid_explanation").text("");
+            return;
+        }
         $.ajax({
             url: "<?php echo getURL("js/ajax/ssh_validate.php"); ?>",
             dataType: "json",
             type: "POST",
-            data: {
-                key: key
-            },
+            data: {key: key},
             success: function(result) {
                 if (result.is_valid) {
                     $("input[id=add-key]").prop("disabled", false);
-                    $("textarea[name=key]").css("box-shadow", "none");
+                    $("#key_invalid_explanation").text("");
                 } else {
                     $("input[id=add-key]").prop("disabled", true);
-                    $("textarea[name=key]").css("box-shadow", "0 0 0 0.3rem rgba(220,53,69,0.25)");
+                    $("#key_invalid_explanation").text(result.explanation);
                 }
+            },
+            error: function(result) {
+                $("input[id=add-key]").prop("disabled", true);
+                $("#key_invalid_explanation").html(result.responseText);
             }
         });
     });
