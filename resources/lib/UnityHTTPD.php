@@ -394,7 +394,13 @@ class UnityHTTPD
     {
         $token = self::getPostData("csrf_token");
         if (!CSRFToken::validate($token)) {
-            self::badRequest("CSRF token validation failed", data: ["token" => $token]);
+            $errorid = uniqid();
+            self::errorLog("csrf failed to validate", "", errorid: $errorid);
+            self::messageError(
+                "Invalid Session Token",
+                "This can happen if you leave your browser open for a long time. Error ID: $errorid",
+            );
+            self::redirect();
         }
     }
 
