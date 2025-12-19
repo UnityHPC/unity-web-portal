@@ -7,6 +7,7 @@ class UnityWebhook
     private string $template_dir = __DIR__ . "/../mail";
     private string $override_template_dir = __DIR__ . "/../../deployment/mail_overrides";
     private string $url = CONFIG["webhook"]["url"];
+    private string $Subject; // set by template
 
     public function htmlToMarkdown(string $html): string
     {
