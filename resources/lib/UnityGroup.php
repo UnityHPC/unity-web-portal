@@ -250,7 +250,6 @@ class UnityGroup extends PosixGroup
         }
         if ($this->SQL->accDeletionRequestExists($new_user->uid)) {
             throw new Exception("user '$new_user' requested account deletion");
-            return;
         }
         $this->addRequest($new_user->uid);
         if ($send_mail) {

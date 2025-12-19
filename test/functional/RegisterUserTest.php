@@ -26,9 +26,9 @@ class RegisterUserTest extends UnityWebPortalTestCase
         $user_entry = $LDAP->getUserEntry($USER->uid);
         $user_group_entry = $LDAP->getGroupEntry($USER->uid);
         $org_entry = $LDAP->getOrgGroupEntry($SSO["org"]);
-        $this->assertTrue(!$user_entry->exists());
-        $this->assertTrue(!$user_group_entry->exists());
-        $this->assertTrue(!$org_entry->exists());
+        $this->assertFalse($user_entry->exists());
+        $this->assertFalse($user_group_entry->exists());
+        $this->assertFalse($org_entry->exists());
         try {
             $this->register();
             $this->assertTrue($user_entry->exists());

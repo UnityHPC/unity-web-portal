@@ -35,14 +35,6 @@ class UnityUser
 
     public function equals(UnityUser $other_user): bool
     {
-        if (!is_a($other_user, self::class)) {
-            throw new Exception(
-                "Unable to check equality because the parameter is not a " .
-                    self::class .
-                    " object",
-            );
-        }
-
         return $this->uid == $other_user->uid;
     }
 
@@ -411,18 +403,6 @@ class UnityUser
      */
     public function isInGroup(string $uid, UnityGroup $group): bool
     {
-        if (gettype($group) == "string") {
-            $group_checked = new UnityGroup(
-                $group,
-                $this->LDAP,
-                $this->SQL,
-                $this->MAILER,
-                $this->WEBHOOK,
-            );
-        } else {
-            $group_checked = $group;
-        }
-
-        return in_array($uid, $group_checked->getMemberUIDs());
+        return in_array($uid, $group->getMemberUIDs());
     }
 }

@@ -76,7 +76,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
         $this->assertTrue($USER->exists());
         $this->assertTrue($pi_group->exists());
         $this->assertGroupMembers($pi_group, [$pi_uid]);
-        $this->assertTrue(!$pi_group->memberUIDExists($USER->uid));
+        $this->assertFalse($pi_group->memberUIDExists($USER->uid));
         $this->assertRequestedMembership(false, $gid);
         try {
             $this->requestGroupMembership($pi_group->gid);
@@ -103,7 +103,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $this->approveUserByPI($approve_uid);
             switchUser(...$user_to_approve_args);
 
-            $this->assertTrue(!$pi_group->requestExists($USER));
+            $this->assertFalse($pi_group->requestExists($USER));
             $this->assertRequestedMembership(false, $gid);
             $this->assertTrue($pi_group->memberUIDExists($USER->uid));
             $this->assertTrue($USER->getFlag(UserFlag::QUALIFIED));
@@ -116,7 +116,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             // }
             // $this->assertTrue($third_request_failed);
             $this->assertRequestedMembership(false, $gid);
-            $this->assertTrue(!$pi_group->requestExists($USER));
+            $this->assertFalse($pi_group->requestExists($USER));
         } finally {
             switchUser(...$user_to_approve_args);
             ensureUserNotInPIGroup($pi_group);
@@ -136,7 +136,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
         $this->assertTrue($USER->exists());
         $this->assertTrue($pi_group->exists());
         $this->assertGroupMembers($pi_group, [$pi_uid]);
-        $this->assertTrue(!$pi_group->memberUIDExists($USER->uid));
+        $this->assertFalse($pi_group->memberUIDExists($USER->uid));
         $this->assertRequestedMembership(false, $gid);
         try {
             $this->requestGroupMembership($pi_group->gid);
@@ -163,7 +163,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $this->approveUserByAdmin($gid, $approve_uid);
             switchUser(...$user_to_approve_args);
 
-            $this->assertTrue(!$pi_group->requestExists($USER));
+            $this->assertFalse($pi_group->requestExists($USER));
             $this->assertRequestedMembership(false, $gid);
             $this->assertTrue($pi_group->memberUIDExists($USER->uid));
             $this->assertTrue($USER->getFlag(UserFlag::QUALIFIED));
@@ -176,7 +176,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             // }
             // $this->assertTrue($third_request_failed);
             $this->assertRequestedMembership(false, $gid);
-            $this->assertTrue(!$pi_group->requestExists($USER));
+            $this->assertFalse($pi_group->requestExists($USER));
         } finally {
             switchUser(...$user_to_approve_args);
             ensureUserNotInPIGroup($pi_group);
