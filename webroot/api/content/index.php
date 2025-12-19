@@ -6,6 +6,6 @@ header('Content-type: text/plain');
 
 require_once __DIR__ . "/../../../resources/autoload.php";
 
-$CHAR_WRAP = digits2int(UnityHTTPD::getQueryParameter("line_wrap", false) ?? "80");
-$content_name = UnityHTTPD::getQueryParameter("content_name");
+$CHAR_WRAP = digits2int($_GET["line_wrap"] ?? "80");
+$content_name = $_GET["content_name"];
 echo $SQL->getPage($content_name)["content"];
