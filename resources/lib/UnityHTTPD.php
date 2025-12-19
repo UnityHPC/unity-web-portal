@@ -242,11 +242,11 @@ class UnityHTTPD
         return $_POST[$key];
     }
 
-    /* returns null if not found and not $throw_if_not_found */
-    public static function getQueryParameter(string $key, bool $throw_if_not_found = true): ?string
+    /* returns null if not found and not $die_if_not_found */
+    public static function getQueryParameter(string $key, bool $die_if_not_found = true): ?string
     {
         if (!array_key_exists($key, $_GET)) {
-            if ($throw_if_not_found) {
+            if ($die_if_not_found) {
                 self::badRequest("\$_GET has no array key '$key'");
             } else {
                 return null;
