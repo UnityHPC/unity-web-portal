@@ -48,7 +48,7 @@ class PIMemberRequestTest extends UnityWebPortalTestCase
             $this->requestMembership("asdlkjasldkj");
             $this->assertMessageExists(
                 UnityHTTPDMessageLevel::ERROR,
-                "/^This PI doesn't exist$/",
+                "/^This PI Doesn't Exist$/",
                 "/.*/",
             );
             $this->requestMembership($pi_group->getOwner()->getMail());
