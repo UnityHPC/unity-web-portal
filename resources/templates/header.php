@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // UnityHTTPD::validatePostCSRFToken();
     if (
         ($_SESSION["is_admin"] ?? false) == true
-        && ($_POST["form_type"] ?? null) == "clearView"
+        && (UnityHTTPD::getPostData("form_type") ?? null) == "clearView"
     ) {
         unset($_SESSION["viewUser"]);
         UnityHTTPD::redirect(getURL("admin/user-mgmt.php"));
