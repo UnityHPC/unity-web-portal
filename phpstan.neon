@@ -26,3 +26,7 @@ parameters:
       paths:
         - test/functional/PiRemoveUserTest.php
         - test/phpunit-bootstrap.php
+    - messages:
+        - '#Property UnityWebPortal\\lib\\UnityWebhook::\$Subject is never written, only read\.#'
+      paths:
+        - resources/lib/UnityWebhook.php
