@@ -226,6 +226,7 @@ class UnityHTTPD
         return false;
     }
 
+    /* if key is not found, dies */
     public static function getPostData(string $key): string
     {
         if (!array_key_exists($key, $_POST)) {
@@ -239,6 +240,7 @@ class UnityHTTPD
         return @$_POST[$key];
     }
 
+    /* if key is not found, dies */
     public static function getQueryParameter(string $key): string
     {
         if (!array_key_exists($key, $_GET)) {
