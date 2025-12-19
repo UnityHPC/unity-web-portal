@@ -17,6 +17,9 @@ $(document).ready(function () {
                 'level': button.data('level'),
                 'title': button.data('title'),
                 'body': button.data('body')
+            },
+            error: function () {
+                console.log(`failed to delete message ${JSON.stringify(button.data)}`);
             }
         });
         hideClearAllMessagesButtonIfAllMessagesAlreadyCleared();
