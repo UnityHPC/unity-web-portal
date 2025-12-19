@@ -37,7 +37,6 @@ $("button.btnExpand").click(function () {
       },
       error: function (result) {
         piRow.after(result.responseText);
-        $("div.modalBody").html();
       },
     });
 
