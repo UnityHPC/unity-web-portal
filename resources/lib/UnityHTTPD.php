@@ -230,12 +230,6 @@ class UnityHTTPD
 
     public static function getPostData(string $key): string
     {
-        if (!array_key_exists("REQUEST_METHOD", $_SERVER)) {
-            throw new RuntimeException('$_SERVER has no array key "REQUEST_METHOD"');
-        }
-        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-            self::badRequest('$_SERVER["REQUEST_METHOD"] != "POST"');
-        }
         if (!array_key_exists($key, $_POST)) {
             self::badRequest("\$_POST has no array key '$key'");
         }
