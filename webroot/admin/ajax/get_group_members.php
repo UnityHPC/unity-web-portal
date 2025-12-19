@@ -10,8 +10,7 @@ if (!$USER->getFlag(UserFlag::ADMIN)) {
     UnityHTTPD::forbidden("not an admin", "You are not an admin.");
 }
 
-$gid = UnityHTTPD::getQueryParameter("gid");
-$group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+$group = new UnityGroup($_GET["gid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
 $members = $group->getGroupMembersAttributes(["gecos", "mail"]);
 $requests = $group->getRequests();
 

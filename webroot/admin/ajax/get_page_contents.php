@@ -9,7 +9,6 @@ if (!$USER->getFlag(UserFlag::ADMIN)) {
     UnityHTTPD::forbidden("not an admin", "You are not an admin.");
 }
 
-$pageid = UnityHTTPD::getQueryParameter("pageid");
-$page = $SQL->getPage($pageid);
+$page = $SQL->getPage($_GET["pageid"]);
 header('Content-Type: application/json; charset=utf-8');
 echo jsonEncode(["content" => $page["content"]]);
