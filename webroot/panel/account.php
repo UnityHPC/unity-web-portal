@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI)) {
                 UnityHTTPD::badRequest("already requested to be PI");
             }
-            if (!isset($_POST["tos"]) || $_POST["tos"] != "agree") {
+            if ($_POST["tos"] != "agree") {
                 UnityHTTPD::badRequest("user did not agree to terms of service");
             }
             $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
