@@ -54,18 +54,8 @@ $("#tableSearch").keyup(function () {
   });
 });
 
-function setColumnVisibility(stylesheet, table_id, column_index, is_visible) {
-  const selectorText = `#${table_id} tr > :nth-child(${column_index})`;
-  const rule = `${selectorText} { display: none !important; }`;
-  if (is_visible) {
-    for (let i = stylesheet.cssRules.length - 1; i >= 0; i--) {
-      if (stylesheet.cssRules[i].selectorText === selectorText) {
-        stylesheet.deleteRule(i);
-      }
-    }
-  } else {
-    stylesheet.insertRule(rule);
-  }
+function setColumnVisibility(table_id, column_index, is_visible) {
+  $(`#${table_id} tr > :nth-child(${column_index})`).toggle(is_visible);
 }
 
 $("table.column-toggle").each(function () {
@@ -75,8 +65,6 @@ $("table.column-toggle").each(function () {
     console.log("error: table does not have id attribute");
     return;
   }
-  const stylesheet = document.createElement('style');
-  document.head.appendChild(stylesheet);
   const div = $(`<div style="margin-bottom: 10px;"></div>`);
   table.before(div);
   table.find('th').each((index, th) => {
@@ -85,12 +73,12 @@ $("table.column-toggle").each(function () {
     var checkbox;
     if (th.classList.contains("hidden-by-default")) {
       checkbox = $('<input type="checkbox" class="col-toggle">');
-      setColumnVisibility(stylesheet.sheet, id, index + 1, false)
+      setColumnVisibility(id, index + 1, false);
     } else {
       checkbox = $('<input type="checkbox" class="col-toggle" checked>');
     }
     checkbox.on('change', function () {
-      setColumnVisibility(stylesheet.sheet, id, index + 1, this.checked)
+      setColumnVisibility(id, index + 1, this.checked);
     });
     label.append(checkbox);
     label.append(headerText);
