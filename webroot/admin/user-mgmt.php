@@ -59,7 +59,8 @@ require $LOC_HEADER;
         $uid = htmlspecialchars($attributes["uid"][0]);
         $gecos = htmlspecialchars($attributes["gecos"][0]);
         $org = htmlspecialchars($attributes["o"][0]);
-        $mail = htmlspecialchars($attributes["mail"][0]);
+        $mail_link = "mailto:" . urlencode($attributes["mail"][0]);
+        $mail_display = htmlspecialchars($attributes["mail"][0]);
         if ($SQL->accDeletionRequestExists($uid)) {
             echo "<tr style='color:grey; font-style: italic'>";
         } else {
@@ -68,7 +69,7 @@ require $LOC_HEADER;
         echo "<td>$gecos</td>";
         echo "<td>$uid</td>";
         echo "<td>$org</td>";
-        echo "<td><a href='mailto:$mail'>$mail</a></td>";
+        echo "<td><a href='$mail_link'>$mail_display</a></td>";
         echo "<td>";
         if (count($UID2PIGIDs[$uid]) > 0) {
             echo "<table>";

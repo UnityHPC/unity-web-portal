@@ -99,11 +99,12 @@ if (count($req_filtered) > 0) {
         );
         $requested_owner = $requested_account->getOwner();
         $full_name = $requested_owner->getFirstname() . " " . $requested_owner->getLastname();
-        $mail = $requested_owner->getMail();
+        $mail_link = "mailto:" . urlencode($requested_owner->getMail());
+        $mail_display = htmlspecialchars($requested_owner->getMail());
         echo "<tr class='pending_request'>";
         echo "<td>$full_name</td>";
         echo "<td>" . $requested_account->gid . "</td>";
-        echo "<td><a href='mailto:$mail'>$mail</a></td>";
+        echo "<td><a href='$mail_link'>$mail_display</a></td>";
         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
         echo "<td>";
         $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
@@ -146,23 +147,25 @@ echo "<table>";
 foreach ($PIGroupGIDs as $gid) {
     $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
     $owner = $group->getOwner();
-    $full_name = $owner->getFirstname() . " " . $owner->getLastname();
     if ($USER->uid == $owner->uid) {
         continue;
     }
-
+    $gecos = htmlspecialchars($owner->getFullname());
+    $gid = htmlspecialchars($group->gid);
+    $mail_link = "mailto:" . urlencode($owner->getMail());
+    $mail_display = htmlspecialchars($owner->getMail());
     echo "<tr class='expandable'>";
-    echo "<td><button class='btnExpand'>&#9654;</button>$full_name</td>";
-    echo "<td>" . $group->gid . "</td>";
-    echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
+    echo "<td><button class='btnExpand'>&#9654;</button>$gecos</td>";
+    echo "<td>$gid</td>";
+    echo "<td><a href='$mail_link'>$mail_display</a></td>";
     $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
         "<td>
     <form action='' method='POST'
-    onsubmit='return confirm(\"Are you sure you want to leave the PI group " . $group->gid . "?\")'>
+    onsubmit='return confirm(\"Are you sure you want to leave the PI group " . $gid . "?\")'>
     $CSRFTokenHiddenFormInput
     <input type='hidden' name='form_type' value='removePIForm'>
-    <input type='hidden' name='pi' value='" . $group->gid . "'>
+    <input type='hidden' name='pi' value='" . $gid . "'>
     <input type='submit' value='Leave Group'>
     </form>
     </td>";

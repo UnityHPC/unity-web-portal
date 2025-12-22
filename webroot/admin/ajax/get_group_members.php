@@ -28,11 +28,12 @@ foreach ($members as $uid => $attributes) {
     }
     $uid_escaped = htmlspecialchars($uid);
     $fullname = htmlspecialchars($attributes["gecos"][0]);
-    $mail = htmlspecialchars($attributes["mail"][0]);
+    $mail_link = "mailto:" . urlencode($attributes["mail"][0]);
+    $mail_display = htmlspecialchars($attributes["mail"][0]);
     $gid_escaped = htmlspecialchars($group->gid);
     echo "<td>$fullname</td>";
     echo "<td>$uid_escaped</td>";
-    echo "<td><a href='mailto:$mail'>$mail</a></td>";
+    echo "<td><a href='$mail_link'>$mail_display</a></td>";
     echo "<td>";
     $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo "
@@ -63,11 +64,12 @@ foreach ($requests as $i => [$user, $timestamp]) {
     }
     $name = htmlspecialchars($user->getFullName());
     $uid_escaped = htmlspecialchars($user->uid);
-    $email = htmlspecialchars($user->getMail());
+    $mail_link = "mailto:" . urlencode($user->getMail());
+    $mail_display = htmlspecialchars($user->getMail());
     $gid_escaped = htmlspecialchars($group->gid);
     echo "<td>$name</td>";
     echo "<td>$uid_escaped</td>";
-    echo "<td><a href='mailto:$email'>$email</a></td>";
+    echo "<td><a href='$mail_link'>$mail_display</a></td>";
     echo "<td>";
     $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
