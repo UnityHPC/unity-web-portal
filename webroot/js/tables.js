@@ -76,6 +76,7 @@ $("table.column-toggle").each(function () {
     return;
   }
   const stylesheet = document.createElement('style');
+  document.head.appendChild(stylesheet);
   const div = $(`<div style="margin-bottom: 10px;"></div>`);
   table.before(div);
   table.find('th').each((index, th) => {
@@ -95,5 +96,4 @@ $("table.column-toggle").each(function () {
     label.append(headerText);
     div.append(label);
   });
-  document.head.appendChild(stylesheet);
 });
