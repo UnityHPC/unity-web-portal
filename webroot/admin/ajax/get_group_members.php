@@ -26,12 +26,12 @@ foreach ($members as $uid => $attributes) {
     } else {
         echo "<tr class='expanded $i'>";
     }
-    $_uid = htmlspecialchars($uid);
+    $uid_escaped = htmlspecialchars($uid);
     $fullname = htmlspecialchars($attributes["gecos"][0]);
     $mail = htmlspecialchars($attributes["mail"][0]);
-    $gid = htmlspecialchars($group->gid);
+    $gid_escaped = htmlspecialchars($group->gid);
     echo "<td>$fullname</td>";
-    echo "<td>$_uid</td>";
+    echo "<td>$uid_escaped</td>";
     echo "<td><a href='mailto:$mail'>$mail</a></td>";
     echo "<td>";
     $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
@@ -40,13 +40,13 @@ foreach ($members as $uid => $attributes) {
             action=''
             method='POST'
             onsubmit='
-                return confirm(\"Are you sure you want to remove $_uid from this group?\");
+                return confirm(\"Are you sure you want to remove $uid_escaped from this group?\");
             '
         >
         $CSRFTokenHiddenFormInput
         <input type='hidden' name='form_type' value='remUserChild'>
-        <input type='hidden' name='uid' value='$_uid'>
-        <input type='hidden' name='pi' value='$gid'>
+        <input type='hidden' name='uid' value='$uid_escaped'>
+        <input type='hidden' name='pi' value='$gid_escaped'>
         <input type='submit' value='Remove'>
         </form>
     ";
@@ -62,21 +62,21 @@ foreach ($requests as $i => [$user, $timestamp]) {
         echo "<tr class='expanded $i'>";
     }
     $name = htmlspecialchars($user->getFullName());
-    $uid = htmlspecialchars($user->uid);
+    $uid_escaped = htmlspecialchars($user->uid);
     $email = htmlspecialchars($user->getMail());
-    $gid = htmlspecialchars($group->gid);
+    $gid_escaped = htmlspecialchars($group->gid);
     echo "<td>$name</td>";
-    echo "<td>$uid</td>";
+    echo "<td>$uid_escaped</td>";
     echo "<td><a href='mailto:$email'>$email</a></td>";
     echo "<td>";
     $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
         "<form action='' method='POST'
-    onsubmit='return confirm(\"Are you sure you want to approve $uid ?\");'>
+    onsubmit='return confirm(\"Are you sure you want to approve $uid_escaped ?\");'>
     $CSRFTokenHiddenFormInput
     <input type='hidden' name='form_type' value='reqChild'>
-    <input type='hidden' name='uid' value='$uid'>
-    <input type='hidden' name='pi' value='$gid'>
+    <input type='hidden' name='uid' value='$uid_escaped'>
+    <input type='hidden' name='pi' value='$gid_escaped'>
     <input type='submit' name='action' value='Approve'>
     <input type='submit' name='action' value='Deny'></form>";
     echo "</td>";
