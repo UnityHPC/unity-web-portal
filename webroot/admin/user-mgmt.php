@@ -28,7 +28,7 @@ require $LOC_HEADER;
 <!-- <input type="text" id="tableSearch" placeholder="Search..."> -->
 
 <table class="searchable longTable sortable filterable">
-    <tr class="key">
+    <tr>
         <input
             type="text"
             style="margin-right:5px;"
@@ -36,12 +36,12 @@ require $LOC_HEADER;
             id="common-filter"
             class="filterSearch"
         >
-        <td id="name"><span class="filter">⫧ </span>Name</td>
-        <td id="uid"><span class="filter">⫧ </span>UID</td>
-        <td id="org"><span class="filter">⫧ </span>Org</td>
-        <td id="mail"><span class="filter">⫧ </span>Mail</td>
-        <td id="groups"><span class="filter">⫧ </span>Groups</td>
-        <td>Actions</td>
+        <th id="name"><span class="filter">⫧ </span>Name</th>
+        <th id="uid"><span class="filter">⫧ </span>UID</th>
+        <th id="org"><span class="filter">⫧ </span>Org</th>
+        <th id="mail"><span class="filter">⫧ </span>Mail</th>
+        <th id="groups"><span class="filter">⫧ </span>Groups</th>
+        <th>Actions</th>
     </tr>
 
     <?php

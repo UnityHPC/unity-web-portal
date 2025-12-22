@@ -57,12 +57,12 @@ require $LOC_HEADER;
 
 <h5>Pending PI Requests</h5>
 <table class="searchable">
-    <tr class="key">
-        <td>Name</td>
-        <td>Unity ID</td>
-        <td>Mail</td>
-        <td>Requested On</td>
-        <td>Actions</td>
+    <tr>
+        <th>Name</th>
+        <th>Unity ID</th>
+        <th>Mail</th>
+        <th>Requested On</th>
+        <th>Actions</th>
     </tr>
 
     <?php
@@ -100,7 +100,7 @@ require $LOC_HEADER;
 <h5>List of PIs</h5>
 
 <table class="searchable longTable sortable filterable">
-    <tr class="key">
+    <tr>
         <input
             type="text"
             style="margin-right:5px;"
@@ -108,10 +108,10 @@ require $LOC_HEADER;
             id="common-filter"
             class="filterSearch"
         >
-        <td id="name"><span class="filter">⫧ </span>Name</td>
-        <td id="unityID"><span class="filter">⫧ </span>Unity ID</td>
-        <td id="mail"><span class="filter">⫧ </span>Mail</td>
-        <td>Actions</td>
+        <th id="name"><span class="filter">⫧ </span>Name</th>
+        <th id="unityID"><span class="filter">⫧ </span>Unity ID</th>
+        <th id="mail"><span class="filter">⫧ </span>Mail</th>
+        <th>Actions</th>
     </tr>
 
     <?php
