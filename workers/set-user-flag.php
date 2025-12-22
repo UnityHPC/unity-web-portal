@@ -14,7 +14,7 @@ if (sizeof($argv) != 4 or in_array($argv, ["-h", "--help"])) {
             implode("\n", [
                 "Usage: set-user-flag.php uid flag flag_value",
                 "choices for flag: %s",
-                "choices for value: 0 or 1",
+                "choices for value: [\"0\", \"1\"]",
                 "",
             ]),
             jsonEncode($flag_choices),
@@ -36,7 +36,7 @@ switch ($value_str) {
         $value = true;
         break;
     default:
-        print "invalid value: '$value_str'. valid values: 0 or 1";
+        print "invalid value: '$value_str'. valid values are 0 or 1";
         exit(1);
 }
 $user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
