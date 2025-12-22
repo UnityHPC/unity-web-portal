@@ -70,12 +70,11 @@ $("table.column-toggle").each(function () {
   table.find('th').each((index, th) => {
     const headerText = th.textContent.replace('⫧', '').trim();
     const label = $('<label></label>');
-    var checkbox;
+    const checkbox = $('<input type="checkbox" class="col-toggle">');
     if (th.classList.contains("hidden-by-default")) {
-      checkbox = $('<input type="checkbox" class="col-toggle">');
       setColumnVisibility(id, index + 1, false);
     } else {
-      checkbox = $('<input type="checkbox" class="col-toggle" checked>');
+      checkbox.prop("checked", true);
     }
     checkbox.on('change', function () {
       setColumnVisibility(id, index + 1, this.checked);
