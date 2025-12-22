@@ -55,10 +55,11 @@ $("#tableSearch").keyup(function () {
 });
 
 function setColumnVisibility(stylesheet, table_id, column_index, is_visible) {
-  const rule = `#${table_id} tr > :nth-child(${column_index}) { display: none !important; }`;
+  const selectorText = `#${table_id} tr > :nth-child(${column_index})`;
+  const rule = `${selectorText} { display: none !important; }`;
   if (is_visible) {
     for (let i = stylesheet.cssRules.length - 1; i >= 0; i--) {
-      if (stylesheet.cssRules[i].selectorText === `#${table_id} tr > :nth-child(${column_index})`) {
+      if (stylesheet.cssRules[i].selectorText === selectorText) {
         stylesheet.deleteRule(i);
       }
     }
