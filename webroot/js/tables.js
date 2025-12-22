@@ -55,20 +55,25 @@ $("#tableSearch").keyup(function () {
 });
 
 // Column toggle functionality for tables with the "column-toggle" class
-$("table.column-toggle").each(function () {
+$("table.column-toggle").each(function (tableIndex) {
   const table = $(this);
+
+  // Generate unique IDs for this table
+  const tableId = 'columnToggleTable' + tableIndex;
+  const styleId = 'columnToggleStyles' + tableIndex;
+  const containerId = 'columnToggle' + tableIndex;
+
+  // Add a unique class to this table for targeting
+  table.addClass(tableId);
 
   // Create and append a style element for this table's column visibility rules
   const columnToggleStyle = document.createElement('style');
-  columnToggleStyle.id = 'columnToggleStyles';
+  columnToggleStyle.id = styleId;
   document.head.appendChild(columnToggleStyle);
 
-  // Create container for column toggle checkboxes if it doesn't exist
-  let toggleContainer = $('#columnToggle');
-  if (toggleContainer.length === 0) {
-    toggleContainer = $('<div id="columnToggle" style="margin-bottom: 10px;"></div>');
-    table.before(toggleContainer);
-  }
+  // Create container for column toggle checkboxes
+  const toggleContainer = $('<div id="' + containerId + '" style="margin-bottom: 10px;"></div>');
+  table.before(toggleContainer);
 
   // Extract column headers from the first row
   const headers = table.find('tr').first().find('th, td').map(function () {
@@ -83,12 +88,12 @@ $("table.column-toggle").each(function () {
     const checkbox = $('<input type="checkbox" class="col-toggle" checked>');
 
     checkbox.on('change', function () {
-      const rule = `table.column-toggle tr > :nth-child(${col}) { display: none !important; }`;
+      const rule = `table.${tableId} tr > :nth-child(${col}) { display: none !important; }`;
       const styles = columnToggleStyle.sheet;
       if (this.checked) {
         // Remove the hide rule when checked (show the column)
         for (let i = styles.cssRules.length - 1; i >= 0; i--) {
-          if (styles.cssRules[i].selectorText === `table.column-toggle tr > :nth-child(${col})`) {
+          if (styles.cssRules[i].selectorText === `table.${tableId} tr > :nth-child(${col})`) {
             styles.deleteRule(i);
           }
         }
