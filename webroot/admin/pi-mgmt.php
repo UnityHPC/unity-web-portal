@@ -69,8 +69,8 @@ require $LOC_HEADER;
     $requests = $SQL->getRequests(UnitySQL::REQUEST_BECOME_PI);
 
     foreach ($requests as $request) {
+        $request_user = new UnityUser($request["uid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
         $uid = htmlspecialchars($request["uid"]);
-        $request_user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
         $gecos = htmlspecialchars($request_user->getFullname());
         $mail = htmlspecialchars($request_user->getMail());
         echo "<tr>";
