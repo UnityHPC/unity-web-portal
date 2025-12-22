@@ -93,7 +93,7 @@ $("table.column-toggle").each(function (tableIndex) {
     });
 
     label.append(checkbox);
-    label.append(' ' + headerText);
+    label.append(headerText);
     toggleContainer.append(label);
   });
 });
