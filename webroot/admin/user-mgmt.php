@@ -56,25 +56,24 @@ require $LOC_HEADER;
     );
     usort($user_attributes, fn ($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
     foreach ($user_attributes as $attributes) {
-        $uid = $attributes["uid"][0];
+        $uid = htmlspecialchars($attributes["uid"][0]);
+        $gecos = htmlspecialchars($attributes["gecos"][0]);
+        $org = htmlspecialchars($attributes["o"][0]);
+        $mail = htmlspecialchars($attributes["mail"][0]);
         if ($SQL->accDeletionRequestExists($uid)) {
             echo "<tr style='color:grey; font-style: italic'>";
         } else {
             echo "<tr>";
         }
-        echo "<td>" . $attributes["gecos"][0] . "</td>";
-        echo "<td>" . $uid . "</td>";
-        echo "<td>" . $attributes["o"][0] . "</td>";
-        echo "
-            <td>
-                <a href='mailto:" . $attributes["mail"][0] . "'>" . $attributes["mail"][0] . "</a>
-            </td>
-        ";
+        echo "<td>$gecos</td>";
+        echo "<td>$uid</td>";
+        echo "<td>$org</td>";
+        echo "<td><a href='mailto:$mail'>$mail</a></td>";
         echo "<td>";
         if (count($UID2PIGIDs[$uid]) > 0) {
             echo "<table>";
             foreach ($UID2PIGIDs[$uid] as $gid) {
-                echo "<tr><td>$gid</td></tr>";
+                echo "<tr><td>" . htmlspecialchars($gid) . "</td></tr>";
             }
             echo "</table>";
         }

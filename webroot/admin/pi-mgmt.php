@@ -69,14 +69,14 @@ require $LOC_HEADER;
     $requests = $SQL->getRequests(UnitySQL::REQUEST_BECOME_PI);
 
     foreach ($requests as $request) {
-        $uid = $request["uid"];
+        $uid = htmlspecialchars($request["uid"]);
         $request_user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
-        $name = $request_user->getFullname();
-        $email = $request_user->getMail();
+        $gecos = htmlspecialchars($request_user->getFullname());
+        $mail = htmlspecialchars($request_user->getMail());
         echo "<tr>";
-        echo "<td>$name</td>";
+        echo "<td>$gecos</td>";
         echo "<td>$uid</td>";
-        echo "<td><a href='mailto:$email'>$email</a></td>";
+        echo "<td><a href='mailto:$mail'>$mail</a></td>";
         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
         echo "<td>";
         $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
@@ -123,10 +123,12 @@ require $LOC_HEADER;
     );
     usort($owner_attributes, fn($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
     foreach ($owner_attributes as $attributes) {
-        $mail = $attributes["mail"][0];
+        $gecos = htmlspecialchars($attributes["gecos"][0]);
+        $gid = htmlspecialchars(UnityGroup::OwnerUID2GID($attributes["uid"][0]));
+        $mail = htmlspecialchars($attributes["mail"][0]);
         echo "<tr class='expandable'>";
-        echo "<td><button class='btnExpand'>&#9654;</button>" . $attributes["gecos"][0] . "</td>";
-        echo "<td>" . UnityGroup::OwnerUID2GID($attributes["uid"][0]) . "</td>";
+        echo "<td><button class='btnExpand'>&#9654;</button>$gecos</td>";
+        echo "<td>$gid</td>";
         echo "<td><a href='mailto:$mail'>$mail</a></td>";
         echo "</tr>";
     }

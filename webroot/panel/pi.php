@@ -57,9 +57,9 @@ if (count($requests) > 0) {
     echo "<table>";
 
     foreach ($requests as [$user, $timestamp]) {
-        $uid = $user->uid;
-        $name = $user->getFullName();
-        $email = $user->getMail();
+        $uid = htmlspecialchars($user->uid);
+        $name = htmlspecialchars($user->getFullName());
+        $email = htmlspecialchars($user->getMail());
         $date = date("jS F, Y", strtotime($timestamp));
         echo "<tr>";
         echo "<td>$name</td>";
