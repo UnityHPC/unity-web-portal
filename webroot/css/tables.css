@@ -6,9 +6,10 @@ table {
   max-width: 100%;
 }
 
-table.longTable {
+/* allow long table to scroll horizontally */
+/* table.longTable {
   width: 100%;
-}
+} */
 
 table.longTable tr:not(:last-child) {
   border-bottom: 1px solid var(--light_borders);
