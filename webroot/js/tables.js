@@ -56,8 +56,10 @@ $("#tableSearch").keyup(function () {
 
 $("table.column-toggle").each(function (tableIndex) {
   const table = $(this);
-  if (typeof table.attr("id") === "undefined") {
+  const id = $(this).attr("id");
+  if (typeof id === "undefined") {
     console.log("error: table does not have id attribute");
+    return;
   }
 
   const columnToggleStyle = document.createElement('style');
@@ -77,11 +79,11 @@ $("table.column-toggle").each(function (tableIndex) {
     const checkbox = $('<input type="checkbox" class="col-toggle" checked>');
 
     checkbox.on('change', function () {
-      const rule = `#${table.attr("id")} tr > :nth-child(${col}) { display: none !important; }`;
+      const rule = `#${id} tr > :nth-child(${col}) { display: none !important; }`;
       const styles = columnToggleStyle.sheet;
       if (this.checked) {
         for (let i = styles.cssRules.length - 1; i >= 0; i--) {
-          if (styles.cssRules[i].selectorText === `#${table.attr("id")} tr > :nth-child(${col})`) {
+          if (styles.cssRules[i].selectorText === `#${id} tr > :nth-child(${col})`) {
             styles.deleteRule(i);
           }
         }
