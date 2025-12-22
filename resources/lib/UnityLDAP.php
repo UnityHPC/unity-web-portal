@@ -41,10 +41,10 @@ class UnityLDAP extends LDAPConn
 
     // Instance vars for various ldapEntry objects
     private LDAPEntry $baseOU;
-    private LDAPEntry $userOU;
-    private LDAPEntry $groupOU;
-    private LDAPEntry $pi_groupOU;
-    private LDAPEntry $org_groupOU;
+    public LDAPEntry $userOU;
+    public LDAPEntry $groupOU;
+    public LDAPEntry $pi_groupOU;
+    public LDAPEntry $org_groupOU;
 
     public array $userFlagGroups;
 
@@ -61,26 +61,6 @@ class UnityLDAP extends LDAPConn
             $dn = CONFIG["ldap"]["user_flag_groups"][$flag->value];
             $this->userFlagGroups[$flag->value] = new PosixGroup(new LDAPEntry($this->conn, $dn));
         }
-    }
-
-    public function getUserOU(): LDAPEntry
-    {
-        return $this->userOU;
-    }
-
-    public function getGroupOU(): LDAPEntry
-    {
-        return $this->groupOU;
-    }
-
-    public function getPIGroupOU(): LDAPEntry
-    {
-        return $this->pi_groupOU;
-    }
-
-    public function getOrgGroupOU(): LDAPEntry
-    {
-        return $this->org_groupOU;
     }
 
     public function getDefUserShell(): string
