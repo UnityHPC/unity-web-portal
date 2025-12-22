@@ -69,7 +69,7 @@ $("table.column-toggle").each(function (tableIndex) {
   const toggleContainer = $(`<div id="columnToggle${tableIndex}" style="margin-bottom: 10px;"></div>`);
   table.before(toggleContainer);
 
-  const headers = table.find('tr').first().find('th, td').map(function () {
+  const headers = table.find('tr').first().find('th').map(function () {
     return $(this).text().replace('⫧', '').trim();
   }).get();
 
