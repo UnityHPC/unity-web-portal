@@ -54,6 +54,19 @@ $("#tableSearch").keyup(function () {
   });
 });
 
+function setColumnVisibility(stylesheet, table_id, column_index, is_visible) {
+  const rule = `#${table_id} tr > :nth-child(${column_index}) { display: none !important; }`;
+  if (is_visible) {
+    for (let i = stylesheet.cssRules.length - 1; i >= 0; i--) {
+      if (stylesheet.cssRules[i].selectorText === `#${table_id} tr > :nth-child(${column_index})`) {
+        stylesheet.deleteRule(i);
+      }
+    }
+  } else {
+    stylesheet.insertRule(rule);
+  }
+}
+
 $("table.column-toggle").each(function () {
   const table = $(this);
   const id = $(this).attr("id");
@@ -71,22 +84,11 @@ $("table.column-toggle").each(function () {
   const headers = table.find('th').toArray();
   headers.forEach((th, index) => {
     const headerText = th.textContent.replace('⫧', '').trim();
-    const col = index + 1;
     const label = $('<label></label>');
     const checkbox = $('<input type="checkbox" class="col-toggle" checked>');
 
     checkbox.on('change', function () {
-      const rule = `#${id} tr > :nth-child(${col}) { display: none !important; }`;
-      const styles = columnToggleStyle.sheet;
-      if (this.checked) {
-        for (let i = styles.cssRules.length - 1; i >= 0; i--) {
-          if (styles.cssRules[i].selectorText === `#${id} tr > :nth-child(${col})`) {
-            styles.deleteRule(i);
-          }
-        }
-      } else {
-        styles.insertRule(rule);
-      }
+      setColumnVisibility(columnToggleStyle.sheet, id, index + 1, this.checked)
     });
 
     label.append(checkbox);
