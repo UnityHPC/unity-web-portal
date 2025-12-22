@@ -42,6 +42,14 @@ require $LOC_HEADER;
         <th id="mail"><span class="filter">⫧ </span>Mail</th>
         <th id="groups"><span class="filter">⫧ </span>Groups</th>
         <th>Actions</th>
+        <?php
+        foreach (UserFlag::cases() as $flag) {
+            if ($flag != UserFlag::QUALIFIED) {
+                $value = $flag->value;
+                echo "<th id='$value'><span class='filter'>⫧ </span>$value</th>";
+            }
+        }
+        ?>
     </tr>
 
     <?php
@@ -54,6 +62,12 @@ require $LOC_HEADER;
             "mail" => ["(not found)"]
         ]
     );
+    $users_with_flags = [];
+    foreach (UserFlag::cases() as $flag) {
+        if ($flag != UserFlag::QUALIFIED) {
+            $users_with_flags[$flag->value] = $LDAP->userFlagGroups[$flag->value]->getMemberUIDs();
+        }
+    }
     usort($user_attributes, fn ($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
     foreach ($user_attributes as $attributes) {
         $uid = $attributes["uid"][0];
@@ -89,6 +103,15 @@ require $LOC_HEADER;
         <input type='submit' name='action' value='Access'>
         </form>";
         echo "</td>";
+        foreach (UserFlag::cases() as $flag) {
+            echo "<td>";
+            if ($flag != UserFlag::QUALIFIED) {
+                if (in_array($uid, $users_with_flags[$flag->value])) {
+                    echo $flag->value;
+                }
+            }
+            echo "</td>";
+        }
         echo "</tr>";
     }
     ?>
