@@ -75,18 +75,19 @@ $("table.column-toggle").each(function () {
     console.log("error: table does not have id attribute");
     return;
   }
-
   const columnToggleStyle = document.createElement('style');
-  document.head.appendChild(columnToggleStyle);
-
-  const toggleContainer = $(`<div id="columnToggle${id}" style="margin-bottom: 10px;"></div>`);
+  const toggleContainer = $(`<div style="margin-bottom: 10px;"></div>`);
   table.before(toggleContainer);
-
-  const headers = table.find('th').toArray();
-  headers.forEach((th, index) => {
+  table.find('th').toArray().forEach((th, index) => {
     const headerText = th.textContent.replace('⫧', '').trim();
     const label = $('<label></label>');
-    const checkbox = $('<input type="checkbox" class="col-toggle" checked>');
+    var checkbox;
+    if (th.classList.contains("hidden-by-default")) {
+      checkbox = $('<input type="checkbox" class="col-toggle">');
+      setColumnVisibility(columnToggleStyle.sheet, id, index + 1, false)
+    } else {
+      checkbox = $('<input type="checkbox" class="col-toggle" checked>');
+    }
     checkbox.on('change', function () {
       setColumnVisibility(columnToggleStyle.sheet, id, index + 1, this.checked)
     });
@@ -94,4 +95,5 @@ $("table.column-toggle").each(function () {
     label.append(headerText);
     toggleContainer.append(label);
   });
+  document.head.appendChild(columnToggleStyle);
 });
