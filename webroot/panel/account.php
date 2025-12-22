@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break;
         case "delKey":
             $keys = $USER->getSSHKeys();
-            $index = str2int(UnityHTTPD::getPostData("delIndex"));
+            $index = digits2int(UnityHTTPD::getPostData("delIndex"));
             if ($index >= count($keys)) {
                 break;
             }

@@ -93,10 +93,11 @@ function getHyperlink($text, ...$url_components)
 }
 
 /**
+ * negative numbers not allowed
  * extra args (ex: base) are passed along to intval()
  * @throws ValueError
  */
-function str2int(string $x, ...$args): int
+function digits2int(string $x, ...$args): int
 {
     if (ctype_digit($x)) {
         return intval($x, ...$args);
