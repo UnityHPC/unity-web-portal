@@ -78,7 +78,7 @@ $("table.column-toggle").each(function () {
   const stylesheet = document.createElement('style');
   const div = $(`<div style="margin-bottom: 10px;"></div>`);
   table.before(div);
-  table.find('th').toArray().forEach((th, index) => {
+  table.find('th').each((index, th) => {
     const headerText = th.textContent.replace('⫧', '').trim();
     const label = $('<label></label>');
     var checkbox;
