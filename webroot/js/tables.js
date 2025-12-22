@@ -69,10 +69,9 @@ $("table.column-toggle").each(function () {
   const toggleContainer = $(`<div id="columnToggle${id}" style="margin-bottom: 10px;"></div>`);
   table.before(toggleContainer);
 
-  const headers = table.find('th');
-  const headersText = headers.toArray().map((th) => th.textContent.replace('⫧', '').trim());
-
-  headersText.forEach((headerText, index) => {
+  const headers = table.find('th').toArray();
+  headers.forEach((th, index) => {
+    const headerText = th.textContent.replace('⫧', '').trim();
     const col = index + 1;
     const label = $('<label></label>');
     const checkbox = $('<input type="checkbox" class="col-toggle" checked>');
