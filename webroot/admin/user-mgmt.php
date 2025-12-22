@@ -56,7 +56,8 @@ require $LOC_HEADER;
     );
     usort($user_attributes, fn ($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
     foreach ($user_attributes as $attributes) {
-        $uid = htmlspecialchars($attributes["uid"][0]);
+        $uid = $attributes["uid"][0];
+        $uid_escaped = htmlspecialchars($uid);
         $gecos = htmlspecialchars($attributes["gecos"][0]);
         $org = htmlspecialchars($attributes["o"][0]);
         $mail_link = "mailto:" . urlencode($attributes["mail"][0]);
@@ -67,7 +68,7 @@ require $LOC_HEADER;
             echo "<tr>";
         }
         echo "<td>$gecos</td>";
-        echo "<td>$uid</td>";
+        echo "<td>$uid_escaped</td>";
         echo "<td>$org</td>";
         echo "<td><a href='$mail_link'>$mail_display</a></td>";
         echo "<td>";
@@ -82,10 +83,10 @@ require $LOC_HEADER;
         echo "<td>";
         $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         echo "<form class='viewAsUserForm' action='' method='POST'
-        onsubmit='return confirm(\"Are you sure you want to switch to the user $uid?\");'>
+        onsubmit='return confirm(\"Are you sure you want to switch to the user $uid_escaped?\");'>
         $CSRFTokenHiddenFormInput
         <input type='hidden' name='form_type' value='viewAsUser'>
-        <input type='hidden' name='uid' value='$uid'>
+        <input type='hidden' name='uid' value='$uid_escaped'>
         <input type='submit' name='action' value='Access'>
         </form>";
         echo "</td>";
