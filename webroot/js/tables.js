@@ -75,25 +75,25 @@ $("table.column-toggle").each(function () {
     console.log("error: table does not have id attribute");
     return;
   }
-  const columnToggleStyle = document.createElement('style');
-  const toggleContainer = $(`<div style="margin-bottom: 10px;"></div>`);
-  table.before(toggleContainer);
+  const stylesheet = document.createElement('style');
+  const div = $(`<div style="margin-bottom: 10px;"></div>`);
+  table.before(div);
   table.find('th').toArray().forEach((th, index) => {
     const headerText = th.textContent.replace('⫧', '').trim();
     const label = $('<label></label>');
     var checkbox;
     if (th.classList.contains("hidden-by-default")) {
       checkbox = $('<input type="checkbox" class="col-toggle">');
-      setColumnVisibility(columnToggleStyle.sheet, id, index + 1, false)
+      setColumnVisibility(stylesheet.sheet, id, index + 1, false)
     } else {
       checkbox = $('<input type="checkbox" class="col-toggle" checked>');
     }
     checkbox.on('change', function () {
-      setColumnVisibility(columnToggleStyle.sheet, id, index + 1, this.checked)
+      setColumnVisibility(stylesheet.sheet, id, index + 1, this.checked)
     });
     label.append(checkbox);
     label.append(headerText);
-    toggleContainer.append(label);
+    div.append(label);
   });
-  document.head.appendChild(columnToggleStyle);
+  document.head.appendChild(stylesheet);
 });
