@@ -54,7 +54,7 @@ $("#tableSearch").keyup(function () {
   });
 });
 
-$("table.column-toggle").each(function (tableIndex) {
+$("table.column-toggle").each(function () {
   const table = $(this);
   const id = $(this).attr("id");
   if (typeof id === "undefined") {
@@ -63,10 +63,10 @@ $("table.column-toggle").each(function (tableIndex) {
   }
 
   const columnToggleStyle = document.createElement('style');
-  columnToggleStyle.id = 'columnToggleStyles' + tableIndex;
+  columnToggleStyle.id = 'columnToggleStyles' + id;
   document.head.appendChild(columnToggleStyle);
 
-  const toggleContainer = $(`<div id="columnToggle${tableIndex}" style="margin-bottom: 10px;"></div>`);
+  const toggleContainer = $(`<div id="columnToggle${id}" style="margin-bottom: 10px;"></div>`);
   table.before(toggleContainer);
 
   const headers = table.find('tr').first().find('th').map(function () {
