@@ -151,7 +151,7 @@ class UnityHTTPD
     private static function throwableToArray(\Throwable $t): array
     {
         $output = [
-            "type" => gettype($t),
+            "class" => get_class($t),
             "msg" => $t->getMessage(),
             // newlines are bad for error log, but getTrace() is too verbose
             "trace" => explode("\n", $t->getTraceAsString()),
