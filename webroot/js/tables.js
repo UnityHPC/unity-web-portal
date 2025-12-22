@@ -63,7 +63,6 @@ $("table.column-toggle").each(function () {
   }
 
   const columnToggleStyle = document.createElement('style');
-  columnToggleStyle.id = 'columnToggleStyles' + id;
   document.head.appendChild(columnToggleStyle);
 
   const toggleContainer = $(`<div id="columnToggle${id}" style="margin-bottom: 10px;"></div>`);
