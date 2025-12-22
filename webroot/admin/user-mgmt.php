@@ -38,14 +38,14 @@ require $LOC_HEADER;
         >
         <th id="name"><span class="filter">⫧ </span>Name</th>
         <th id="uid"><span class="filter">⫧ </span>UID</th>
-        <th id="org"><span class="filter">⫧ </span>Org</th>
+        <th id="org"><span class="filter hidden-by-default">⫧ </span>Org</th>
         <th id="mail"><span class="filter">⫧ </span>Mail</th>
         <th id="groups"><span class="filter">⫧ </span>Groups</th>
         <th>Actions</th>
         <?php
         foreach (UserFlag::cases() as $flag) {
             $value = $flag->value;
-            echo "<th id='$value'><span class='filter'>⫧ </span>$value</th>";
+            echo "<th id='$value'><span class='filter hidden-by-default'>⫧ </span>$value</th>";
         }
         ?>
     </tr>
