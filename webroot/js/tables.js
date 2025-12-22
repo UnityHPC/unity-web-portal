@@ -87,11 +87,9 @@ $("table.column-toggle").each(function () {
     const headerText = th.textContent.replace('⫧', '').trim();
     const label = $('<label></label>');
     const checkbox = $('<input type="checkbox" class="col-toggle" checked>');
-
     checkbox.on('change', function () {
       setColumnVisibility(columnToggleStyle.sheet, id, index + 1, this.checked)
     });
-
     label.append(checkbox);
     label.append(headerText);
     toggleContainer.append(label);
