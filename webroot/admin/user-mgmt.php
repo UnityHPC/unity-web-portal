@@ -44,17 +44,15 @@ require $LOC_HEADER;
         <th>Actions</th>
         <?php
         foreach (UserFlag::cases() as $flag) {
-            if ($flag != UserFlag::QUALIFIED) {
-                $value = $flag->value;
-                echo "<th id='$value'><span class='filter'>⫧ </span>$value</th>";
-            }
+            $value = $flag->value;
+            echo "<th id='$value'><span class='filter'>⫧ </span>$value</th>";
         }
         ?>
     </tr>
 
     <?php
-    $UID2PIGIDs = $LDAP->getQualifiedUID2PIGIDs();
-    $user_attributes = $LDAP->getQualifiedUsersAttributes(
+    $UID2PIGIDs = $LDAP->getUID2PIGIDs();
+    $user_attributes = $LDAP->getAllUsersAttributes(
         ["uid", "gecos", "o", "mail"],
         default_values: [
             "gecos" => ["(not found)"],
@@ -64,9 +62,7 @@ require $LOC_HEADER;
     );
     $users_with_flags = [];
     foreach (UserFlag::cases() as $flag) {
-        if ($flag != UserFlag::QUALIFIED) {
-            $users_with_flags[$flag->value] = $LDAP->userFlagGroups[$flag->value]->getMemberUIDs();
-        }
+        $users_with_flags[$flag->value] = $LDAP->userFlagGroups[$flag->value]->getMemberUIDs();
     }
     usort($user_attributes, fn ($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
     foreach ($user_attributes as $attributes) {
@@ -85,7 +81,7 @@ require $LOC_HEADER;
             </td>
         ";
         echo "<td>";
-        if (count($UID2PIGIDs[$uid]) > 0) {
+        if (array_key_exists($uid, $UID2PIGIDs) && ($UID2PIGIDs[$uid]) > 0) {
             echo "<table>";
             foreach ($UID2PIGIDs[$uid] as $gid) {
                 echo "<tr><td>$gid</td></tr>";
@@ -105,10 +101,8 @@ require $LOC_HEADER;
         echo "</td>";
         foreach (UserFlag::cases() as $flag) {
             echo "<td>";
-            if ($flag != UserFlag::QUALIFIED) {
-                if (in_array($uid, $users_with_flags[$flag->value])) {
-                    echo $flag->value;
-                }
+            if (in_array($uid, $users_with_flags[$flag->value])) {
+                echo $flag->value;
             }
             echo "</td>";
         }
