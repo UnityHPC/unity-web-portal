@@ -21,7 +21,7 @@ if (sizeof($argv) != 4 or in_array($argv, ["-h", "--help"])) {
 }
 [$_, $uid, $flag_str, $value_str] = $argv;
 if (!in_array($flag, $flag_choices)) {
-    echo sprintf("invalid flag: '%s'. valid choices: %s", $flag, jsonEncode($flag_choices));
+    echo sprintf("invalid flag: '%s'. valid choices: %s\n", $flag, jsonEncode($flag_choices));
     exit(1);
 }
 $flag = UserFlag::from($flag_str);
@@ -33,7 +33,7 @@ switch ($value_str) {
         $value = true;
         break;
     default:
-        print "invalid value: '$value_str'. valid values are 0 or 1";
+        print "invalid value: '$value_str'. valid values are 0 or 1\n";
         exit(1);
 }
 $user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);

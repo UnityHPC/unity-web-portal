@@ -11,7 +11,7 @@ if (sizeof($argv) != 2 or in_array($argv, ["-h", "--help"])) {
 $uid = $argv[1];
 $user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
 if (!$user->exists()) {
-    echo "no such user: '$uid'";
+    echo "no such user: '$uid'\n";
     exit(1);
 }
 $max_flag_strlen = max(array_map(fn($x) => strlen($x->value), UserFlag::cases()));
