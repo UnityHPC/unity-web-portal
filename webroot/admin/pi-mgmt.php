@@ -115,9 +115,11 @@ require $LOC_HEADER;
     </tr>
 
     <?php
-    $owner_attributes = $LDAP->getAllPIGroupOwnerAttributes(
+    $owner_uids = $LDAP->getAllPIGroupOwnerUIDs();
+    $owner_attributes = $LDAP->getUsersAttributes(
+        $owner_uids,
         ["uid", "gecos", "mail"],
-        default_values: ["gecos" => "(not found)", "mail" => "(not found)"]
+        ["gecos" => "(not found)", "mail" => "(not found)"]
     );
     usort($owner_attributes, fn($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
     foreach ($owner_attributes as $attributes) {

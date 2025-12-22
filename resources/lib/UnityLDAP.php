@@ -256,33 +256,12 @@ class UnityLDAP extends LDAPConn
         );
     }
 
-    public function getAllPIGroupOwnerAttributes(
-        array $attributes,
-        array $default_values = [],
-    ): array {
-        // get the PI groups, filter for just the GIDs, then map the GIDs to owner UIDs
-        $owner_uids = array_map(
-            fn($x) => UnityGroup::GID2OwnerUID($x),
-            array_map(fn($x) => $x["cn"][0], $this->pi_groupOU->getChildrenArrayStrict(["cn"])),
+    public function getAllPIGroupOwnerUIDs(): array
+    {
+        return array_map(
+            fn($x) => UnityGroup::GID2OwnerUID($x["cn"][0]),
+            $this->pi_groupOU->getChildrenArrayStrict(["cn"]),
         );
-        $owner_attributes = $this->getQualifiedUsersAttributes($attributes, $default_values);
-        foreach ($owner_attributes as $i => $attributes) {
-            if (!in_array($attributes["uid"][0], $owner_uids)) {
-                unset($owner_attributes[$i]);
-            }
-        }
-        $owner_attributes = array_values($owner_attributes); // reindex
-        $owners_not_found = array_diff(
-            $owner_uids,
-            array_map(fn($x) => $x["uid"][0], $owner_attributes),
-        );
-        if (count($owners_not_found) > 0) {
-            UnityHTTPD::errorLog(
-                "warning",
-                "PI group owners not found: " . \jsonEncode($owners_not_found) . "\n",
-            );
-        }
-        return $owner_attributes;
     }
 
     /**
