@@ -27,7 +27,7 @@ require $LOC_HEADER;
 
 <!-- <input type="text" id="tableSearch" placeholder="Search..."> -->
 
-<table class="searchable longTable sortable filterable column-toggle">
+<table class="searchable longTable sortable filterable column-toggle" id="user-table">
     <tr>
         <input
             type="text"

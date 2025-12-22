@@ -54,51 +54,38 @@ $("#tableSearch").keyup(function () {
   });
 });
 
-// Column toggle functionality for tables with the "column-toggle" class
 $("table.column-toggle").each(function (tableIndex) {
   const table = $(this);
+  if (typeof table.attr("id") === "undefined") {
+    console.log("error: table does not have id attribute");
+  }
 
-  // Generate unique IDs for this table
-  const tableId = 'columnToggleTable' + tableIndex;
-  const styleId = 'columnToggleStyles' + tableIndex;
-  const containerId = 'columnToggle' + tableIndex;
-
-  // Add a unique class to this table for targeting
-  table.addClass(tableId);
-
-  // Create and append a style element for this table's column visibility rules
   const columnToggleStyle = document.createElement('style');
-  columnToggleStyle.id = styleId;
+  columnToggleStyle.id = 'columnToggleStyles' + tableIndex;
   document.head.appendChild(columnToggleStyle);
 
-  // Create container for column toggle checkboxes
-  const toggleContainer = $('<div id="' + containerId + '" style="margin-bottom: 10px;"></div>');
+  const toggleContainer = $(`<div id="columnToggle${tableIndex}" style="margin-bottom: 10px;"></div>`);
   table.before(toggleContainer);
 
-  // Extract column headers from the first row
   const headers = table.find('tr').first().find('th, td').map(function () {
-    // Get text content, removing any filter symbols or extra whitespace
-    return $(this).text().trim().replace(/^[⫧\s]+/, '');
+    return $(this).text().replace('⫧', '').trim();
   }).get();
 
-  // Generate checkbox for each column
   headers.forEach((headerText, index) => {
     const col = index + 1;
     const label = $('<label></label>');
     const checkbox = $('<input type="checkbox" class="col-toggle" checked>');
 
     checkbox.on('change', function () {
-      const rule = `table.${tableId} tr > :nth-child(${col}) { display: none !important; }`;
+      const rule = `#${table.attr("id")} tr > :nth-child(${col}) { display: none !important; }`;
       const styles = columnToggleStyle.sheet;
       if (this.checked) {
-        // Remove the hide rule when checked (show the column)
         for (let i = styles.cssRules.length - 1; i >= 0; i--) {
-          if (styles.cssRules[i].selectorText === `table.${tableId} tr > :nth-child(${col})`) {
+          if (styles.cssRules[i].selectorText === `#${table.attr("id")} tr > :nth-child(${col})`) {
             styles.deleteRule(i);
           }
         }
       } else {
-        // Add the hide rule when unchecked (hide the column)
         styles.insertRule(rule);
       }
     });
