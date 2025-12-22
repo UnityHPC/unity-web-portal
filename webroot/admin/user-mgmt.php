@@ -27,6 +27,21 @@ require $LOC_HEADER;
 
 <!-- <input type="text" id="tableSearch" placeholder="Search..."> -->
 
+<div id="columnToggle" style="margin-bottom: 10px;">
+    <label><input type="checkbox" class="col-toggle" checked> Name</label>
+    <label><input type="checkbox" class="col-toggle" checked> UID</label>
+    <label><input type="checkbox" class="col-toggle" checked> Org</label>
+    <label><input type="checkbox" class="col-toggle" checked> Mail</label>
+    <label><input type="checkbox" class="col-toggle" checked> Groups</label>
+    <label><input type="checkbox" class="col-toggle" checked> Actions</label>
+    <?php
+    foreach (UserFlag::cases() as $flag) {
+        $value = $flag->value;
+        echo "<label><input type='checkbox' class='col-toggle' checked> $value</label>";
+    }
+    ?>
+</div>
+
 <table class="searchable longTable sortable filterable">
     <tr>
         <input
@@ -110,6 +125,29 @@ require $LOC_HEADER;
     }
     ?>
 </table>
+
+<script>
+    const columnToggleStyle = document.createElement('style');
+    columnToggleStyle.id = 'columnToggleStyles';
+    document.head.appendChild(columnToggleStyle);
+    document.querySelectorAll('.col-toggle').forEach((checkbox, index) => {
+        const col = index + 1;
+        checkbox.addEventListener('change', function() {
+            const rule = `tr > :nth-child(${col}) { display: none !important; }`;
+            const styles = columnToggleStyle.sheet;
+            if (this.checked) {
+                for (let i = styles.cssRules.length - 1; i >= 0; i--) {
+                    if (styles.cssRules[i].selectorText === `tr > :nth-child(${col})`) {
+                        styles.deleteRule(i);
+                    }
+                }
+            } else {
+                styles.insertRule(rule);
+            }
+            console.log(JSON.stringify(Array.from(styles.cssRules).map(rule => rule.selectorText)));
+        });
+    });
+</script>
 
 <?php
 require $LOC_FOOTER;
