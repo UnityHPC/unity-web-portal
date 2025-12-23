@@ -223,6 +223,13 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
         $('#pi-table').DataTable(
             {
                 responsive: true,
+                columns: [
+                    null, // name
+                    null, // gid
+                    null, // PI mail
+                    {visible: false}, // members
+                    null, // actions
+                ],
                 layout: {
                     topStart: {
                         buttons: [

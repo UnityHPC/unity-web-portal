@@ -169,6 +169,12 @@ require $LOC_HEADER;
         $('#pi-table').DataTable(
             {
                 responsive: true,
+                columns: [
+                    null, // name
+                    null, // uid
+                    null, // mail
+                    {visible: false}, // members
+                ],
                 layout: {
                     topStart: {
                         buttons: [
