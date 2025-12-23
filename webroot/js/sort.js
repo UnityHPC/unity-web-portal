@@ -5,44 +5,45 @@
   }
   table.querySelectorAll("th").forEach(function (th) {
     th.addEventListener("click", function (e) {
-      if (th.innerHTML !== "Actions") {
-        if (e.target.classList.contains("filter")) {
-          updateQueryStringParameter(
-            window.location.href,
-            "filter",
-            e.target.parentElement.id,
+      if (th.innerHTML === "Actions") {
+        return;
+      }
+      if (e.target.classList.contains("filter")) {
+        updateQueryStringParameter(
+          window.location.href,
+          "filter",
+          e.target.parentElement.id,
+        );
+        updateFilterInput();
+      } else {
+        var column = th.cellIndex;
+        var tbody = table.querySelector("tbody");
+        var rows = Array.from(tbody.querySelectorAll(":scope > tr:nth-child(n+2)"));
+        var order = th.classList.toggle("asc") ? 1 : -1;
+        rows.sort(function (a, b) {
+          return (
+            order *
+            a.cells[column].textContent
+              .trim()
+              .localeCompare(b.cells[column].textContent.trim(), undefined, {
+                numeric: true,
+              })
           );
-          updateFilterInput();
-        } else {
-          var column = th.cellIndex;
-          var tbody = table.querySelector("tbody");
-          var rows = Array.from(tbody.querySelectorAll(":scope > tr:nth-child(n+2)"));
-          var order = th.classList.toggle("asc") ? 1 : -1;
-          rows.sort(function (a, b) {
-            return (
-              order *
-              a.cells[column].textContent
-                .trim()
-                .localeCompare(b.cells[column].textContent.trim(), undefined, {
-                  numeric: true,
-                })
-            );
-          });
-          rows.forEach(function (row) {
-            tbody.appendChild(row);
-          });
-          table.querySelectorAll("th").forEach(function (header) {
-            header.innerHTML = header.innerHTML.replace(/ ▲| ▼/, "");
-          });
-          var orderSymbol = order === 1 ? "&#x25B2;" : "&#x25BC;";
-          th.innerHTML = th.innerHTML + " " + orderSymbol;
-          updateQueryStringParameter(window.location.href, "sort", th.id);
-          updateQueryStringParameter(
-            window.location.href,
-            "order",
-            order === 1 ? "asc" : "desc",
-          );
-        }
+        });
+        rows.forEach(function (row) {
+          tbody.appendChild(row);
+        });
+        table.querySelectorAll("th").forEach(function (header) {
+          header.innerHTML = header.innerHTML.replace(/ ▲| ▼/, "");
+        });
+        var orderSymbol = order === 1 ? "&#x25B2;" : "&#x25BC;";
+        th.innerHTML = th.innerHTML + " " + orderSymbol;
+        updateQueryStringParameter(window.location.href, "sort", th.id);
+        updateQueryStringParameter(
+          window.location.href,
+          "order",
+          order === 1 ? "asc" : "desc",
+        );
       }
     });
   });
