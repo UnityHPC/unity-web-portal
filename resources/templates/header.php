@@ -66,6 +66,13 @@ if (isset($SSO)) {
     }
     ?>
 
+  <?php
+    foreach (["global", "messages"] as $x) {
+        $url = getURL("js/$x.js?v=" . CONFIG["upstream"]["version"]);
+        echo "<script src='$url'></script>";
+    }
+    ?>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="<?php echo CONFIG["site"]["description"] ?>">
 

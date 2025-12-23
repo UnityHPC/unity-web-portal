@@ -29,10 +29,4 @@
 </footer>
 
 </body>
-<?php
-foreach (["global", "messages"] as $x) {
-    $url = getURL("js/$x.js?v=" . CONFIG["upstream"]["version"]);
-    echo "<script src='$url'></script>";
-}
-?>
 </html>
