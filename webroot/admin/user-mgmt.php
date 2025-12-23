@@ -33,11 +33,11 @@ require $LOC_HEADER;
 >
     <thead>
         <tr>
-            <th id="name">Name</th>
-            <th id="uid">UID</th>
-            <th id="org">Org</th>
-            <th id="mail">Mail</th>
-            <th id="groups">Groups</th>
+            <th>Name</th>
+            <th>UID</th>
+            <th>Org</th>
+            <th>Mail</th>
+            <th>Groups</th>
             <th>Actions</th>
         </tr>
     </thead>

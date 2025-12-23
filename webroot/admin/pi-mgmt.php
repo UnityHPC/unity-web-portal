@@ -104,10 +104,10 @@ require $LOC_HEADER;
 <table id="pi-table" class="stripe compact nowrap hover">
     <thead>
         <tr>
-            <th id="name">Name</th>
-            <th id="unityID">Unity ID</th>
-            <th id="mail">Mail</th>
-            <th id="memberuid">Members</th>
+            <th>Name</th>
+            <th>Unity ID</th>
+            <th>Mail</th>
+            <th>Members</th>
         </tr>
     </thead>
     <tbody>
