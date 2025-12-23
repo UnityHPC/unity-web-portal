@@ -52,29 +52,33 @@ function updateFilterInput() {
   }
 }
 
-updateFilterInput();
-
-var filters = document.querySelectorAll("span.filter");
-filters.forEach(function (filter) {
-  filter.addEventListener("click", function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.target.parentElement.id != getQueryVariable("filter")) {
-      updateQueryStringParameter(
-        window.location.href,
-        "filter",
-        e.target.parentElement.id,
-      );
-      updateQueryStringParameter(window.location.href, "value", "");
-      filterRows();
-    } else {
-      updateQueryStringParameter(window.location.href, "filter", "");
-      updateQueryStringParameter(window.location.href, "value", "");
-      filterRows();
-    }
-    updateFilterInput();
+(function () {
+  if (!document.querySelector(".filterSearch")) {
+    return;
+  }
+  updateFilterInput();
+  var filters = document.querySelectorAll("span.filter");
+  filters.forEach(function (filter) {
+    filter.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.target.parentElement.id != getQueryVariable("filter")) {
+        updateQueryStringParameter(
+          window.location.href,
+          "filter",
+          e.target.parentElement.id,
+        );
+        updateQueryStringParameter(window.location.href, "value", "");
+        filterRows();
+      } else {
+        updateQueryStringParameter(window.location.href, "filter", "");
+        updateQueryStringParameter(window.location.href, "value", "");
+        filterRows();
+      }
+      updateFilterInput();
+    });
   });
-});
+})();
 
 function filterRows() {
   var filter = getQueryVariable("filter");
@@ -82,10 +86,9 @@ function filterRows() {
 
   if (filter) {
     var table = document.querySelector("table.filterable");
-    var rows = Array.from(table.querySelectorAll("tr:nth-child(n+2)"));
-    var column = table
-      .querySelector("tr.key")
-      .querySelector("td#" + filter).cellIndex;
+    var tbody = table.querySelector("tbody");
+    var rows = Array.from(tbody.querySelectorAll(":scope > tr:nth-child(n+2)"));
+    var column = table.querySelector("th#" + filter).cellIndex;
     rows.forEach(function (row) {
       if (
         row.cells[column].textContent
