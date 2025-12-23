@@ -30,7 +30,6 @@ require $LOC_HEADER;
 <table
     id="user-table"
     class="stripe compact nowrap hover"
-    style="width: 100%; table-layout: fixed;"
 >
     <thead>
         <tr>
@@ -98,15 +97,7 @@ $('document').ready(() => {
     new DataTable(
         '#user-table',
         {
-            autoWidth: false,
-            columns: [
-                {width: '30%'},
-                {width: '10%'},
-                {width: '10%'},
-                {width: '20%'},
-                {width: '20%'},
-                {width: '10%'},
-            ],
+            responsive: true,
         }
     );
 });
