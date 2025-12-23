@@ -101,7 +101,7 @@ require $LOC_HEADER;
 
 <h5>List of PIs</h5>
 
-<table id="pi-table" class="stripe compact">
+<table id="pi-table" class="stripe compact nowrap hover">
     <thead>
         <tr>
             <th id="name">Name</th>

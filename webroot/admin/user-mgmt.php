@@ -27,7 +27,11 @@ require $LOC_HEADER;
 
 <!-- <input type="text" id="tableSearch" placeholder="Search..."> -->
 
-<table id="user-table" class="stripe compact">
+<table
+    id="user-table"
+    class="stripe compact nowrap hover"
+    style="width: 100%; table-layout: fixed;"
+>
     <thead>
         <tr>
             <th id="name">Name</th>
@@ -90,8 +94,21 @@ require $LOC_HEADER;
     </tbody>
 </table>
 <script>
-    $('document').ready(() => {
-        new DataTable('#user-table');
-    });
+$('document').ready(() => {
+    new DataTable(
+        '#user-table',
+        {
+            autoWidth: false,
+            columns: [
+                {width: '30%'},
+                {width: '10%'},
+                {width: '10%'},
+                {width: '20%'},
+                {width: '20%'},
+                {width: '10%'},
+            ],
+        }
+    );
+});
 </script>
 <?php require $LOC_FOOTER; ?>
