@@ -31,7 +31,7 @@
 </body>
 <?php
 foreach (["filter", "sort", "global", "tables", "messages"] as $x) {
-    $url = getURL("js/$x.js");
+    $url = getURL("js/$x.js?v=" . CONFIG["upstream"]["version"]);
     echo "<script src='$url'></script>";
 }
 ?>
