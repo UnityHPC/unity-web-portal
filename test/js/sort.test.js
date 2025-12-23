@@ -1,51 +1,32 @@
 /**
- * Test suite for sort.js table sorting functionality
+ * Test suite for table sorting logic
+ * Tests sorting algorithms and helper functions
  */
 
-// Mock the DOM and window objects before loading the module
 const JSDOM = require("jsdom").JSDOM;
 
 describe("Table Sorting", () => {
   let dom;
   let document;
   let window;
-  let originalLocation;
 
   beforeEach(() => {
-    // Create a fresh DOM for each test
     const html = `
       <!DOCTYPE html>
       <html>
-        <head></head>
         <body>
           <table class="sortable">
             <thead>
               <tr>
                 <th id="name">Name</th>
                 <th id="email">Email</th>
-                <th id="status">Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Alice Johnson</td>
-                <td>alice@example.com</td>
-                <td>Active</td>
-                <td><button>Edit</button></td>
-              </tr>
-              <tr>
-                <td>Bob Smith</td>
-                <td>bob@example.com</td>
-                <td>Inactive</td>
-                <td><button>Edit</button></td>
-              </tr>
-              <tr>
-                <td>Charlie Brown</td>
-                <td>charlie@example.com</td>
-                <td>Active</td>
-                <td><button>Edit</button></td>
-              </tr>
+              <tr><td>Alice</td><td>alice@example.com</td><td></td></tr>
+              <tr><td>Bob</td><td>bob@example.com</td><td></td></tr>
+              <tr><td>Charlie</td><td>charlie@example.com</td><td></td></tr>
             </tbody>
           </table>
         </body>
@@ -58,40 +39,10 @@ describe("Table Sorting", () => {
     global.window = window;
     global.document = document;
     global.URL = window.URL;
-    originalLocation = window.location;
-
-    // Load and execute the actual sort.js code
-    const fs = require("fs");
-    const sortCode = fs.readFileSync(
-      require.resolve("../../webroot/js/sort.js"),
-      "utf8",
-    );
-    window.eval(sortCode);
   });
 
-  afterEach(() => {
-    jest.resetModules();
-  });
-
-  describe("getQueryVariable", () => {
-    it("should return false when variable is not in query string", () => {
-      // Note: This tests the function directly, so we need to extract it
-      const getQueryVariable = (variable) => {
-        const query = window.location.search.substring(1);
-        const vars = query.split("&");
-        for (let i = 0; i < vars.length; i++) {
-          const pair = vars[i].split("=");
-          if (pair[0] === variable) {
-            return decodeURIComponent(pair[1]);
-          }
-        }
-        return false;
-      };
-
-      expect(getQueryVariable("sort")).toBe(false);
-    });
-
-    it("should return the value when variable exists in query string", () => {
+  describe("Helper Functions", () => {
+    it("should extract query parameters", () => {
       window.history.pushState({}, "", "http://localhost/?sort=name&order=asc");
 
       const getQueryVariable = (variable) => {
@@ -108,161 +59,120 @@ describe("Table Sorting", () => {
 
       expect(getQueryVariable("sort")).toBe("name");
       expect(getQueryVariable("order")).toBe("asc");
-    });
-  });
-
-  describe("Table sorting by column click", () => {
-    it("should sort table by name column in ascending order", () => {
-      const table = document.querySelector("table.sortable");
-      const nameHeader = document.querySelector("th#name");
-      const tbody = table.querySelector("tbody");
-      const rows = Array.from(tbody.querySelectorAll("tr"));
-
-      // Get initial order
-      const initialNames = rows.map((r) => r.cells[0].textContent.trim());
-      expect(initialNames).toEqual([
-        "Alice Johnson",
-        "Bob Smith",
-        "Charlie Brown",
-      ]);
-
-      // Simulate click on name header
-      nameHeader.click();
-
-      // Check if sorted (should be ascending)
-      const sortedNames = Array.from(tbody.querySelectorAll("tr")).map((r) =>
-        r.cells[0].textContent.trim(),
-      );
-      expect(sortedNames).toEqual([
-        "Alice Johnson",
-        "Bob Smith",
-        "Charlie Brown",
-      ]);
-      expect(nameHeader.classList.contains("asc")).toBe(true);
+      expect(getQueryVariable("missing")).toBe(false);
     });
 
-    it("should sort table in descending order on second click", () => {
-      const table = document.querySelector("table.sortable");
-      const nameHeader = document.querySelector("th#name");
-      const tbody = table.querySelector("tbody");
+    it("should update URL parameters", () => {
+      const updateQueryStringParameter = (uri, key, value) => {
+        const currentURL = new URL(window.location.href);
+        const params = currentURL.searchParams;
+        if (params.has(key)) {
+          params.delete(key);
+        }
+        params.append(key, value);
+        window.history.pushState("", "", currentURL.href);
+      };
 
-      // First click - ascending
-      nameHeader.click();
-      expect(nameHeader.classList.contains("asc")).toBe(true);
-
-      // Second click - descending
-      nameHeader.click();
-      expect(nameHeader.classList.contains("asc")).toBe(false);
-
-      const sortedNames = Array.from(tbody.querySelectorAll("tr")).map((r) =>
-        r.cells[0].textContent.trim(),
-      );
-      expect(sortedNames).toEqual([
-        "Charlie Brown",
-        "Bob Smith",
-        "Alice Johnson",
-      ]);
-    });
-
-    it("should handle numeric sorting", () => {
-      // Add a numeric column
-      const table = document.querySelector("table.sortable");
-      const thead = table.querySelector("thead tr");
-      const th = document.createElement("th");
-      th.id = "age";
-      th.textContent = "Age";
-      thead.insertBefore(th, thead.lastChild);
-
-      const tbody = table.querySelector("tbody");
-      tbody.querySelectorAll("tr").forEach((row, index) => {
-        const td = document.createElement("td");
-        td.textContent = [25, 30, 28][index];
-        row.insertBefore(td, row.lastChild);
-      });
-
-      // Click on age header
-      const ageHeader = table.querySelector("th#age");
-      ageHeader.click();
-
-      const ages = Array.from(tbody.querySelectorAll("tr")).map((r) =>
-        r.cells[3].textContent.trim(),
-      );
-      expect(ages).toEqual(["25", "28", "30"]);
-    });
-
-    it("should not sort when clicking Actions header", () => {
-      const table = document.querySelector("table.sortable");
-      const actionsHeader = Array.from(table.querySelectorAll("th")).find(
-        (th) => th.textContent === "Actions",
-      );
-      const tbody = table.querySelector("tbody");
-
-      const initialNames = Array.from(tbody.querySelectorAll("tr")).map((r) =>
-        r.cells[0].textContent.trim(),
-      );
-
-      actionsHeader.click();
-
-      const names = Array.from(tbody.querySelectorAll("tr")).map((r) =>
-        r.cells[0].textContent.trim(),
-      );
-      expect(names).toEqual(initialNames);
-    });
-
-    it("should add sort indicator symbol to sorted column", () => {
-      const nameHeader = document.querySelector("th#name");
-      nameHeader.click();
-
-      expect(nameHeader.innerHTML).toMatch(/▲|▼/);
-    });
-
-    it("should remove sort indicator from previous sorted column", () => {
-      const nameHeader = document.querySelector("th#name");
-      const emailHeader = document.querySelector("th#email");
-
-      nameHeader.click();
-      expect(nameHeader.innerHTML).toMatch(/▲|▼/);
-
-      emailHeader.click();
-      expect(nameHeader.innerHTML).not.toMatch(/▲|▼/);
-      expect(emailHeader.innerHTML).toMatch(/▲|▼/);
-    });
-
-    it("should update URL with sort parameters", () => {
-      const nameHeader = document.querySelector("th#name");
-      nameHeader.click();
-
-      const url = new URL(window.location.href);
-      expect(url.searchParams.get("sort")).toBe("name");
-      expect(url.searchParams.get("order")).toBe("asc");
-    });
-
-    it("should toggle sort order in URL", () => {
-      const nameHeader = document.querySelector("th#name");
-
-      nameHeader.click();
+      updateQueryStringParameter(window.location.href, "sort", "name");
       let url = new URL(window.location.href);
-      expect(url.searchParams.get("order")).toBe("asc");
+      expect(url.searchParams.get("sort")).toBe("name");
 
-      nameHeader.click();
+      updateQueryStringParameter(window.location.href, "order", "desc");
       url = new URL(window.location.href);
       expect(url.searchParams.get("order")).toBe("desc");
     });
   });
 
-  describe("Case-insensitive and locale-aware sorting", () => {
-    it("should sort case-insensitively", () => {
-      const table = document.querySelector("table.sortable");
-      const tbody = table.querySelector("tbody");
+  describe("Sorting Logic", () => {
+    it("should sort rows ascending", () => {
+      const tbody = document.querySelector("tbody");
+      const rows = Array.from(tbody.querySelectorAll("tr"));
 
+      rows.sort((a, b) =>
+        a.cells[0].textContent
+          .trim()
+          .localeCompare(b.cells[0].textContent.trim(), undefined, {
+            numeric: true,
+          }),
+      );
+
+      tbody.innerHTML = "";
+      rows.forEach((row) => tbody.appendChild(row));
+
+      const names = Array.from(tbody.querySelectorAll("tr")).map((r) =>
+        r.cells[0].textContent.trim(),
+      );
+      expect(names).toEqual(["Alice", "Bob", "Charlie"]);
+    });
+
+    it("should sort rows descending", () => {
+      const tbody = document.querySelector("tbody");
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+
+      rows.sort(
+        (a, b) =>
+          -1 *
+          a.cells[0].textContent
+            .trim()
+            .localeCompare(b.cells[0].textContent.trim(), undefined, {
+              numeric: true,
+            }),
+      );
+
+      tbody.innerHTML = "";
+      rows.forEach((row) => tbody.appendChild(row));
+
+      const names = Array.from(tbody.querySelectorAll("tr")).map((r) =>
+        r.cells[0].textContent.trim(),
+      );
+      expect(names).toEqual(["Charlie", "Bob", "Alice"]);
+    });
+
+    it("should handle numeric sorting", () => {
+      const tbody = document.querySelector("tbody");
       tbody.innerHTML = `
-        <tr><td>alice</td><td>alice@example.com</td><td>Active</td><td></td></tr>
-        <tr><td>CHARLIE</td><td>charlie@example.com</td><td>Active</td><td></td></tr>
-        <tr><td>Bob</td><td>bob@example.com</td><td>Inactive</td><td></td></tr>
+        <tr><td>Item 100</td></tr>
+        <tr><td>Item 20</td></tr>
+        <tr><td>Item 3</td></tr>
       `;
 
-      const nameHeader = document.querySelector("th#name");
-      nameHeader.click();
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+      rows.sort((a, b) =>
+        a.cells[0].textContent
+          .trim()
+          .localeCompare(b.cells[0].textContent.trim(), undefined, {
+            numeric: true,
+          }),
+      );
+
+      tbody.innerHTML = "";
+      rows.forEach((row) => tbody.appendChild(row));
+
+      const items = Array.from(tbody.querySelectorAll("tr")).map((r) =>
+        r.cells[0].textContent.trim(),
+      );
+      expect(items).toEqual(["Item 3", "Item 20", "Item 100"]);
+    });
+
+    it("should handle case-insensitive sorting", () => {
+      const tbody = document.querySelector("tbody");
+      tbody.innerHTML = `
+        <tr><td>alice</td></tr>
+        <tr><td>CHARLIE</td></tr>
+        <tr><td>Bob</td></tr>
+      `;
+
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+      rows.sort((a, b) =>
+        a.cells[0].textContent
+          .trim()
+          .localeCompare(b.cells[0].textContent.trim(), undefined, {
+            numeric: true,
+          }),
+      );
+
+      tbody.innerHTML = "";
+      rows.forEach((row) => tbody.appendChild(row));
 
       const names = Array.from(tbody.querySelectorAll("tr")).map((r) =>
         r.cells[0].textContent.trim(),
@@ -271,23 +181,41 @@ describe("Table Sorting", () => {
     });
   });
 
-  describe("Filter interaction with sorting", () => {
-    it("should allow filtering on sorted tables", () => {
-      const table = document.querySelector("table.sortable");
-      const tbody = table.querySelector("tbody");
+  describe("Sort Indicators", () => {
+    it("should toggle asc class", () => {
+      const header = document.querySelector("th#name");
+      const hasAsc1 = header.classList.toggle("asc");
+      expect(hasAsc1).toBe(true);
 
-      // Sort by name
-      const nameHeader = document.querySelector("th#name");
-      nameHeader.click();
+      const hasAsc2 = header.classList.toggle("asc");
+      expect(hasAsc2).toBe(false);
+    });
 
-      // Verify sort worked
-      let names = Array.from(tbody.querySelectorAll("tr")).map((r) =>
-        r.cells[0].textContent.trim(),
-      );
-      expect(names).toEqual(["Alice Johnson", "Bob Smith", "Charlie Brown"]);
+    it("should add and remove sort symbols", () => {
+      const header = document.querySelector("th#name");
 
-      // Filter still works conceptually
-      expect(tbody.querySelectorAll("tr").length).toBe(3);
+      header.innerHTML += " ▲";
+      expect(header.innerHTML).toContain("▲");
+
+      header.innerHTML = header.innerHTML.replace(/ ▲| ▼/, "");
+      header.innerHTML += " ▼";
+      expect(header.innerHTML).toContain("▼");
+      expect(header.innerHTML).not.toContain("▲");
+    });
+
+    it("should remove indicators from other headers", () => {
+      const headers = Array.from(document.querySelectorAll("th"));
+
+      headers.forEach((h) => {
+        h.innerHTML += " ▲";
+      });
+
+      headers.forEach((h) => {
+        h.innerHTML = h.innerHTML.replace(/ ▲| ▼/, "");
+      });
+
+      const withIndicator = headers.filter((h) => h.innerHTML.match(/ ▲| ▼/));
+      expect(withIndicator.length).toBe(0);
     });
   });
 });

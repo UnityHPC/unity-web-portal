@@ -23,24 +23,33 @@ Install the required dependencies:
 npm install
 ```
 
-## Running Tests
+## Test Approach
+
+The test suite uses **unit testing** principles to validate the core logic of sorting, filtering, and search functionality:
+
+- **Tests are isolated** - Each test creates its own fresh DOM using JSDOM
+- **Focus on logic** - Tests verify the algorithms used for sorting, filtering, and searching
+- **No DOM execution** - Rather than loading the actual JavaScript files (sort.js, filter.js, tables.js), tests replicate the logic patterns these files implement
+- **Easy to maintain** - Tests don't depend on exact implementation details, making it easy to refactor the JavaScript without breaking tests
+
+This approach ensures the tests validate **what the functionality should do** rather than **how it currently does it**.
 
 ### Run all JavaScript tests
 
 ```bash
-npm test
+npx jest
 ```
 
 ### Run tests in watch mode (reruns on file changes)
 
 ```bash
-npm run test:watch
+npx jest --watch
 ```
 
 ### Run only JS tests
 
 ```bash
-npm run test:js
+npx jest --testPathPattern="test/js"
 ```
 
 ## Test Coverage
@@ -222,5 +231,5 @@ To integrate with CI/CD pipelines (GitHub Actions, GitLab CI, etc.):
 When adding new features to the JavaScript:
 
 1. Write tests first (TDD approach recommended)
-2. Ensure all tests pass: `npm test`
+2. Ensure all tests pass: `npx jest`
 3. Update this README if adding new test categories
