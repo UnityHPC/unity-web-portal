@@ -98,11 +98,12 @@ if (count($req_filtered) > 0) {
             $WEBHOOK
         );
         $requested_owner = $requested_account->getOwner();
-        $full_name = $requested_owner->getFirstname() . " " . $requested_owner->getLastname();
+        $gecos = htmlspecialchars($requested_owner->getFullname());
         $mail_link = "mailto:" . urlencode($requested_owner->getMail());
         $mail_display = htmlspecialchars($requested_owner->getMail());
+        $gid = htmlspecialchars($requested_account->gid);
         echo "<tr class='pending_request'>";
-        echo "<td>$full_name</td>";
+        echo "<td>$gecos</td>";
         echo "<td>" . $requested_account->gid . "</td>";
         echo "<td><a href='$mail_link'>$mail_display</a></td>";
         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
@@ -110,7 +111,7 @@ if (count($req_filtered) > 0) {
         $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         echo "<form action='' method='POST' id='cancelPI'>
             $CSRFTokenHiddenFormInput
-            <input type='hidden' name='pi' value='$requested_account->gid'>
+            <input type='hidden' name='pi' value='$gid'>
             <input type='hidden' name='form_type' value='cancelPIForm'>
             <input name='cancel' style='margin-top: 10px;' type='submit' value='Cancel Request'/>
             </form>";
@@ -151,21 +152,21 @@ foreach ($PIGroupGIDs as $gid) {
         continue;
     }
     $gecos = htmlspecialchars($owner->getFullname());
-    $gid = htmlspecialchars($group->gid);
+    $gid_escaped = htmlspecialchars($group->gid);
     $mail_link = "mailto:" . urlencode($owner->getMail());
     $mail_display = htmlspecialchars($owner->getMail());
     echo "<tr class='expandable'>";
     echo "<td><button class='btnExpand'>&#9654;</button>$gecos</td>";
-    echo "<td>$gid</td>";
+    echo "<td>$gid_escaped</td>";
     echo "<td><a href='$mail_link'>$mail_display</a></td>";
     $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
         "<td>
     <form action='' method='POST'
-    onsubmit='return confirm(\"Are you sure you want to leave the PI group " . $gid . "?\")'>
+    onsubmit='return confirm(\"Are you sure you want to leave the PI group $gid_escaped?\")'>
     $CSRFTokenHiddenFormInput
     <input type='hidden' name='form_type' value='removePIForm'>
-    <input type='hidden' name='pi' value='" . $gid . "'>
+    <input type='hidden' name='pi' value='$gid_escaped'>
     <input type='submit' value='Leave Group'>
     </form>
     </td>";
