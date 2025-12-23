@@ -1,5 +1,8 @@
 (function () {
   var table = document.querySelector("table.sortable");
+  if (!table) {
+    return;
+  }
   table.querySelectorAll("td").forEach(function (td) {
     td.addEventListener("click", function (e) {
       if (

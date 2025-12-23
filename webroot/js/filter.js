@@ -53,6 +53,9 @@ function updateFilterInput() {
 }
 
 (function () {
+  if (!document.querySelector(".filterSearch")) {
+    return;
+  }
   updateFilterInput();
   var filters = document.querySelectorAll("span.filter");
   filters.forEach(function (filter) {
