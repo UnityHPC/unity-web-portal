@@ -90,8 +90,7 @@ require $LOC_HEADER;
     </tbody>
 </table>
 <script>
-    $('document').ready(function(){
-        requireDataTables();
+    $('document').ready(() => {
         new DataTable('#user-table');
     });
 </script>

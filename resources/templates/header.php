@@ -48,6 +48,14 @@ if (isset($SSO)) {
     crossorigin="anonymous"
   >
   </script>
+  <script
+    src="https://cdn.datatables.net/2.3.6/js/dataTables.min.js"
+    integrity="sha384-UWkoRdMUXnG8Q4NLgaww6X9JWGlDfsKjC6ymI792g6v93zDTOEuOkkYJFzD6pQkR"
+    crossorigin="anonymous"
+  >
+  </script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.min.css">
+  </link>
   <style>
     <?php
     // set global css variables from branding

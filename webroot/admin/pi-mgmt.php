@@ -150,8 +150,7 @@ require $LOC_HEADER;
     // });
 
     // var ajax_url = "<?php echo getURL("admin/ajax/get_group_members.php"); ?>?gid=";
-    $('document').ready(function(){
-        requireDataTables();
+    $('document').ready(() => {
         new DataTable('#pi-request-table');
         new DataTable('#pi-table');
     });
