@@ -31,7 +31,7 @@
           rows.forEach(function (row) {
             tbody.appendChild(row);
           });
-          document.querySelectorAll("th").forEach(function (header) {
+          table.querySelectorAll("th").forEach(function (header) {
             header.innerHTML = header.innerHTML.replace(/ ▲| ▼/, "");
           });
           var orderSymbol = order == 1 ? "&#x25B2;" : "&#x25BC;";
