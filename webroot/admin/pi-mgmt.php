@@ -56,7 +56,7 @@ require $LOC_HEADER;
 <!-- <input type="text" id="tableSearch" placeholder="Search..."> -->
 
 <h5>Pending PI Requests</h5>
-<table id="pi-request-table" class="stripe">
+<table id="pi-request-table" class="stripe compact">
     <thead>
         <tr>
             <th>Name</th>
@@ -101,7 +101,7 @@ require $LOC_HEADER;
 
 <h5>List of PIs</h5>
 
-<table id="pi-table" class="stripe">
+<table id="pi-table" class="stripe compact">
     <thead>
         <tr>
             <th id="name">Name</th>

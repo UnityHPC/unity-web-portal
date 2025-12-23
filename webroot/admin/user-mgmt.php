@@ -27,7 +27,7 @@ require $LOC_HEADER;
 
 <!-- <input type="text" id="tableSearch" placeholder="Search..."> -->
 
-<table id="user-table" class="stripe">
+<table id="user-table" class="stripe compact">
     <thead>
         <tr>
             <th id="name">Name</th>
