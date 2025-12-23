@@ -5,7 +5,7 @@
   }
   table.querySelectorAll("th").forEach(function (th) {
     th.addEventListener("click", function (e) {
-      if (th.innerHTML != "Actions") {
+      if (th.innerHTML !== "Actions") {
         if (e.target.classList.contains("filter")) {
           updateQueryStringParameter(
             window.location.href,
@@ -34,13 +34,13 @@
           table.querySelectorAll("th").forEach(function (header) {
             header.innerHTML = header.innerHTML.replace(/ ▲| ▼/, "");
           });
-          var orderSymbol = order == 1 ? "&#x25B2;" : "&#x25BC;";
+          var orderSymbol = order === 1 ? "&#x25B2;" : "&#x25BC;";
           th.innerHTML = th.innerHTML + " " + orderSymbol;
           updateQueryStringParameter(window.location.href, "sort", th.id);
           updateQueryStringParameter(
             window.location.href,
             "order",
-            order == 1 ? "asc" : "desc",
+            order === 1 ? "asc" : "desc",
           );
         }
       }
@@ -54,7 +54,7 @@ function getQueryVariable(variable) {
   for (var i = 0; i < vars.length; i++) {
     var pair = vars[i].split("=");
 
-    if (pair[0] == variable) {
+    if (pair[0] === variable) {
       return pair[1];
     }
   }
@@ -77,9 +77,9 @@ window.onload = function () {
   if (sort) {
     var sortElement = document.getElementById(sort);
     if (sortElement) {
-      if (order == "asc") {
+      if (order === "asc") {
         sortElement.click();
-      } else if (order == "desc") {
+      } else if (order === "desc") {
         sortElement.click();
         sortElement.click();
       }

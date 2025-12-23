@@ -49,7 +49,7 @@
       href = href.substring(href.lastIndexOf("/") + 1);
     }
 
-    if (url.indexOf(href) == 0) {
+    if (url.indexOf(href) === 0) {
       $(this).addClass("active");
     }
   });
