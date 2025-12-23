@@ -15,7 +15,8 @@
           updateFilterInput();
         } else {
           var column = th.cellIndex;
-          var rows = Array.from(table.querySelectorAll("tr:nth-child(n+2)"));
+          var tbody = table.querySelector("tbody");
+          var rows = Array.from(tbody.querySelectorAll(":scope > tr:nth-child(n+2)"));
           var order = th.classList.toggle("asc") ? 1 : -1;
           rows.sort(function (a, b) {
             return (
@@ -28,7 +29,7 @@
             );
           });
           rows.forEach(function (row) {
-            table.appendChild(row);
+            tbody.appendChild(row);
           });
           document.querySelectorAll("th").forEach(function (header) {
             header.innerHTML = header.innerHTML.replace(/ ▲| ▼/, "");
