@@ -75,6 +75,15 @@ require $LOC_HEADER;
 
 <?php
 $PIGroupGIDs = $USER->getPIGroupGIDs();
+$PIGroupAttributes = $LDAP->getPIGroupsAttributes(
+    $PIGroupGIDs,
+    ["cn", "memberuid"],
+    default_values: ["memberuid" => []]
+);
+$PIGroupMembers = [];
+foreach ($PIGroupAttributes as $attributes) {
+    $PIGroupMembers[$attributes["cn"][0]] = $attributes["memberuid"];
+}
 
 $requests = $SQL->getRequestsByUser($USER->uid);
 
@@ -141,8 +150,19 @@ if (count($PIGroupGIDs) == 0) {
     or request your own PI account on the <a href='$url'>account settings</a> page";
 }
 
-echo "<table>";
-
+echo "
+    <table id='pi-table'>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>GID</th>
+                <th>PI Mail</th>
+                <th>Members</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+";
 foreach ($PIGroupGIDs as $gid) {
     $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
     $owner = $group->getOwner();
@@ -151,24 +171,29 @@ foreach ($PIGroupGIDs as $gid) {
         continue;
     }
 
-    echo "<tr class='expandable'>";
-    echo "<td><button class='btnExpand'>&#9654;</button>$full_name</td>";
-    echo "<td>" . $group->gid . "</td>";
+    echo "<tr>";
+    echo "<td>$full_name</td>";
+    echo "<td>$gid</td>";
     echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
+    echo "<td><ul>";
+    foreach ($PIGroupMembers[$gid] as $memberuid) {
+        echo "<li>$memberuid</li>";
+    }
+    echo "</ul></td>";
     $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
         "<td>
     <form action='' method='POST'
-    onsubmit='return confirm(\"Are you sure you want to leave the PI group " . $group->gid . "?\")'>
+    onsubmit='return confirm(\"Are you sure you want to leave the PI group $gid?\")'>
     $CSRFTokenHiddenFormInput
     <input type='hidden' name='form_type' value='removePIForm'>
-    <input type='hidden' name='pi' value='" . $group->gid . "'>
+    <input type='hidden' name='pi' value='$gid'>
     <input type='submit' value='Leave Group'>
     </form>
     </td>";
     echo "</tr>";
 }
-
+echo "</tbody>";
 echo "</table>";
 ?>
 
@@ -191,17 +216,27 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
     $("button.btnAddPI").click(function () {
         openModal("Add New PI", "<?php echo getURL("panel/modal/new_pi.php"); ?>");
     });
-
-    // tables.js uses ajax_url to populate expandable tables
-    var ajax_url = "<?php echo getURL("panel/ajax/get_group_members.php"); ?>?gid=";
 </script>
 
-<style>
-    @media only screen and (max-width: 1000px) {
-        table td:nth-child(2) {
-            display: none;
-        }
-    }
-</style>
+<script>
+    $('document').ready(() => {
+        $('#pi-table').DataTable(
+            {
+                responsive: true,
+                layout: {
+                    topStart: {
+                        buttons: [
+                            {
+                                extend: 'colvis',
+                                columns: ':not(.noVis)',
+                                popoverTitle: 'Column visibility selector'
+                            }
+                        ]
+                    }
+                }
+            }
+        );
+    });
+</script>
 
 <?php require $LOC_FOOTER; ?>
