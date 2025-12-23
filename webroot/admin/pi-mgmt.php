@@ -169,7 +169,7 @@ require $LOC_HEADER;
                     {
                         //mail
                         responsivePriority: 2,
-                        // render: DataTable.render.ellipsis(30),
+                        render: DataTable.render.ellipsis(30),
                     },
                     {
                         // requested on
