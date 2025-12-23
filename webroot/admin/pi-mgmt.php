@@ -149,24 +149,6 @@ require $LOC_HEADER;
 </table>
 
 <script>
-    // FIXME
-    // $("table tr.tr-pichild").hide(); // Hide the children first (and then the women)
-
-    // $("table tr").click(function () {
-    //     if (!$(this).hasClass("tr-pichild")) {
-    //         var current = $(this).next();
-    //         while (current.hasClass("tr-pichild")) {
-    //             if (current.is(":visible")) {
-    //                 current.hide();
-    //             } else {
-    //                 current.show();
-    //             }
-    //             current = current.next();
-    //         }
-    //     }
-    // });
-
-    // var ajax_url = "<?php echo getURL("admin/ajax/get_group_members.php"); ?>?gid=";
     $('document').ready(() => {
         $('#pi-request-table').DataTable(
             {
