@@ -86,10 +86,8 @@ function filterRows() {
 
   if (filter) {
     var table = document.querySelector("table.filterable");
-    var rows = Array.from(table.querySelectorAll("tr:nth-child(n+2)"));
-    var column = table
-      .querySelector("tr.key")
-      .querySelector("td#" + filter).cellIndex;
+    var rows = Array.from(table.querySelectorAll(":scope > tbody > tr:nth-child(n+2), :scope > tr:nth-child(n+2)"));
+    var column = table.querySelector("th#" + filter).cellIndex;
     rows.forEach(function (row) {
       if (
         row.cells[column].textContent
