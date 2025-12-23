@@ -27,11 +27,11 @@ foreach ($members as $uid => $attributes) {
         echo "<tr class='expanded $i'>";
     }
     $uid_escaped = htmlspecialchars($uid);
-    $fullname = htmlspecialchars($attributes["gecos"][0]);
+    $gecos = htmlspecialchars($attributes["gecos"][0]);
     $mail_link = "mailto:" . urlencode($attributes["mail"][0]);
     $mail_display = htmlspecialchars($attributes["mail"][0]);
     $gid_escaped = htmlspecialchars($group->gid);
-    echo "<td>$fullname</td>";
+    echo "<td>$gecos</td>";
     echo "<td>$uid_escaped</td>";
     echo "<td><a href='$mail_link'>$mail_display</a></td>";
     echo "<td>";
@@ -62,12 +62,12 @@ foreach ($requests as $i => [$user, $timestamp]) {
     } else {
         echo "<tr class='expanded $i'>";
     }
-    $name = htmlspecialchars($user->getFullName());
+    $gecos = htmlspecialchars($user->getFullName());
     $uid_escaped = htmlspecialchars($user->uid);
     $mail_link = "mailto:" . urlencode($user->getMail());
     $mail_display = htmlspecialchars($user->getMail());
     $gid_escaped = htmlspecialchars($group->gid);
-    echo "<td>$name</td>";
+    echo "<td>$gecos</td>";
     echo "<td>$uid_escaped</td>";
     echo "<td><a href='$mail_link'>$mail_display</a></td>";
     echo "<td>";
