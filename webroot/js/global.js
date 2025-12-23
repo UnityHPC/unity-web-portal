@@ -81,3 +81,20 @@ function downloadFile(text, filename) {
   element.click();
   element.remove();
 }
+
+function requireDataTables() {
+  const $script = $('<script>', {
+    src: 'https://cdn.datatables.net/2.3.6/js/dataTables.min.js',
+    async: true,
+    integrity: 'sha384-UWkoRdMUXnG8Q4NLgaww6X9JWGlDfsKjC6ymI792g6v93zDTOEuOkkYJFzD6pQkR',
+    crossorigin: 'anonymous',
+  });
+  $('head').append($script);
+  const $css = $('<link>', {
+    rel: 'stylesheet',
+    href: 'https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.min.css',
+    integrity: 'sha384-iRTWPXZquQySBE9K96fgJXUIrnm8TpdtPAbiCNR+qjpP24qFZw9PHFA91JtWy7Ul',
+    crossorigin: 'anonymous',
+  });
+  $('head').append($css);
+}

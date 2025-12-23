@@ -56,15 +56,17 @@ require $LOC_HEADER;
 <!-- <input type="text" id="tableSearch" placeholder="Search..."> -->
 
 <h5>Pending PI Requests</h5>
-<table class="searchable">
-    <tr>
-        <th>Name</th>
-        <th>Unity ID</th>
-        <th>Mail</th>
-        <th>Requested On</th>
-        <th>Actions</th>
-    </tr>
-
+<table id="pi-request-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Unity ID</th>
+            <th>Mail</th>
+            <th>Requested On</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
     <?php
     $requests = $SQL->getRequests(UnitySQL::REQUEST_BECOME_PI);
 
@@ -94,26 +96,21 @@ require $LOC_HEADER;
         echo "</tr>";
     }
     ?>
-
+    </tbody>
 </table>
 
 <h5>List of PIs</h5>
 
-<table class="searchable longTable sortable filterable">
-    <tr>
-        <input
-            type="text"
-            style="margin-right:5px;"
-            placeholder="Filter by..."
-            id="common-filter"
-            class="filterSearch"
-        >
-        <th id="name"><span class="filter">⫧ </span>Name</th>
-        <th id="unityID"><span class="filter">⫧ </span>Unity ID</th>
-        <th id="mail"><span class="filter">⫧ </span>Mail</th>
-        <th>Actions</th>
-    </tr>
-
+<table id="pi-table">
+    <thead>
+        <tr>
+            <th id="name">Name</th>
+            <th id="unityID">Unity ID</th>
+            <th id="mail">Mail</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
     <?php
     $owner_uids = $LDAP->getAllPIGroupOwnerUIDs();
     $owner_attributes = $LDAP->getUsersAttributes(
@@ -131,26 +128,33 @@ require $LOC_HEADER;
         echo "</tr>";
     }
     ?>
+    </tbody>
 </table>
 
 <script>
-    $("table tr.tr-pichild").hide(); // Hide the children first (and then the women)
+    // FIXME
+    // $("table tr.tr-pichild").hide(); // Hide the children first (and then the women)
 
-    $("table tr").click(function () {
-        if (!$(this).hasClass("tr-pichild")) {
-            var current = $(this).next();
-            while (current.hasClass("tr-pichild")) {
-                if (current.is(":visible")) {
-                    current.hide();
-                } else {
-                    current.show();
-                }
-                current = current.next();
-            }
-        }
+    // $("table tr").click(function () {
+    //     if (!$(this).hasClass("tr-pichild")) {
+    //         var current = $(this).next();
+    //         while (current.hasClass("tr-pichild")) {
+    //             if (current.is(":visible")) {
+    //                 current.hide();
+    //             } else {
+    //                 current.show();
+    //             }
+    //             current = current.next();
+    //         }
+    //     }
+    // });
+
+    // var ajax_url = "<?php echo getURL("admin/ajax/get_group_members.php"); ?>?gid=";
+    $('document').ready(function(){
+        requireDataTables();
+        new DataTable('#pi-request-table');
+        new DataTable('#pi-table');
     });
-
-    var ajax_url = "<?php echo getURL("admin/ajax/get_group_members.php"); ?>?gid=";
 </script>
 
 <?php require $LOC_FOOTER; ?>

@@ -27,23 +27,18 @@ require $LOC_HEADER;
 
 <!-- <input type="text" id="tableSearch" placeholder="Search..."> -->
 
-<table class="searchable longTable sortable filterable">
-    <tr>
-        <input
-            type="text"
-            style="margin-right:5px;"
-            placeholder="Filter by..."
-            id="common-filter"
-            class="filterSearch"
-        >
-        <th id="name"><span class="filter">⫧ </span>Name</th>
-        <th id="uid"><span class="filter">⫧ </span>UID</th>
-        <th id="org"><span class="filter">⫧ </span>Org</th>
-        <th id="mail"><span class="filter">⫧ </span>Mail</th>
-        <th id="groups"><span class="filter">⫧ </span>Groups</th>
-        <th>Actions</th>
-    </tr>
-
+<table id="user-table">
+    <thead>
+        <tr>
+            <th id="name">Name</th>
+            <th id="uid">UID</th>
+            <th id="org">Org</th>
+            <th id="mail">Mail</th>
+            <th id="groups">Groups</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
     <?php
     $UID2PIGIDs = $LDAP->getQualifiedUID2PIGIDs();
     $user_attributes = $LDAP->getQualifiedUsersAttributes(
@@ -92,6 +87,12 @@ require $LOC_HEADER;
         echo "</tr>";
     }
     ?>
+    </tbody>
 </table>
-
+<script>
+    $('document').ready(function(){
+        requireDataTables();
+        new DataTable('#user-table');
+    });
+</script>
 <?php require $LOC_FOOTER; ?>

@@ -60,7 +60,7 @@ if (isset($SSO)) {
   </style>
 
   <?php
-    foreach (["global", "navbar", "modal", "tables", "filters", "messages"] as $x) {
+    foreach (["global", "navbar", "modal", "messages"] as $x) {
         $url = getURL("css/$x.css?v=" . CONFIG["upstream"]["version"]);
         echo "<link rel='stylesheet' type='text/css' href='$url'>";
     }
