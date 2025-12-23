@@ -72,7 +72,7 @@ require $LOC_HEADER;
         ";
         echo "<td>";
         if (count($UID2PIGIDs[$uid]) > 0) {
-            echo "<table>";
+            echo "<table style='margin: 0 0 0 0;'>";
             foreach ($UID2PIGIDs[$uid] as $gid) {
                 echo "<tr><td>$gid</td></tr>";
             }
