@@ -109,15 +109,15 @@ echo "
     <h5>Account Details</h5>
     <table>
         <tr>
-            <th>Username</th>
+            <td>Username</th>
             <td><code>$uid</code></td>
         </tr>
         <tr>
-            <th>Organization</th>
+            <td>Organization</th>
             <td><code>$org</code></td>
         </tr>
         <tr>
-            <th>Email</th>
+            <td>Email</th>
             <td><code>$mail</code></td>
         </tr>
     </table>
