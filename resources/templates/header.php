@@ -36,9 +36,18 @@ if (isset($SSO)) {
 <html>
 
 <head>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
-
+  <script
+    src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"
+    integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq"
+    crossorigin="anonymous"
+  >
+  </script>
+  <script
+    src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"
+    integrity="sha384-3j1XQYihAlsFkhoO7ydWkxt9nNxSBnHwJnSG5hx+8fjlz2xfaFHuwOM6T0umxnz6"
+    crossorigin="anonymous"
+  >
+  </script>
   <style>
     <?php
     // set global css variables from branding
