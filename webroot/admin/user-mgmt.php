@@ -29,7 +29,7 @@ require $LOC_HEADER;
 
 <table
     id="user-table"
-    class="stripe compact nowrap hover"
+    class="stripe compact hover"
 >
     <thead>
         <tr>
