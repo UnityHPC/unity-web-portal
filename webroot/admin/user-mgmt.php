@@ -81,7 +81,7 @@ require $LOC_HEADER;
             </td>
         ";
         echo "<td>";
-        if (array_key_exists($uid, $UID2PIGIDs) && ($UID2PIGIDs[$uid]) > 0) {
+        if (array_key_exists($uid, $UID2PIGIDs) && count($UID2PIGIDs[$uid]) > 0) {
             echo "<table>";
             foreach ($UID2PIGIDs[$uid] as $gid) {
                 echo "<tr><td>$gid</td></tr>";
