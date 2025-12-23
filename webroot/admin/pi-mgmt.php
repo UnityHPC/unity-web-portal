@@ -107,7 +107,6 @@ require $LOC_HEADER;
             <th id="name">Name</th>
             <th id="unityID">Unity ID</th>
             <th id="mail">Mail</th>
-            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
