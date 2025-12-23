@@ -78,7 +78,7 @@ require $LOC_HEADER;
         echo "<tr>";
         echo "<td>$name</td>";
         echo "<td>$uid</td>";
-        echo "<td><a href='mailto:$email'>$email</a></td>";
+        echo "<td>$email</td>";
         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
         echo "<td>";
         $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
@@ -136,7 +136,7 @@ require $LOC_HEADER;
         echo "<tr>";
         echo "<td>$gecos</td>";
         echo "<td>$uid</td>";
-        echo "<td><a href='mailto:$mail'>$mail</a></td>";
+        echo "<td>$mail</td>";
         echo "<td><ul>";
         foreach ($members as $member_uid) {
             echo "<li>$member_uid</li>";
@@ -153,6 +153,31 @@ require $LOC_HEADER;
         $('#pi-request-table').DataTable(
             {
                 responsive: true,
+                columns: [
+                    {
+                        // name
+                        responsivePriority: 2,
+                        render: DataTable.render.ellipsis(40),
+                    },
+                    {
+                        // uid
+                        responsivePriority: 1,
+                        render: DataTable.render.ellipsis(30),
+                    },
+                    {
+                        //mail
+                        responsivePriority: 2,
+                        // render: DataTable.render.ellipsis(30),
+                    },
+                    {
+                        // requested on
+                        responsivePriority: 2,
+                    },
+                    {
+                        // actions
+                        responsivePriority: 1,
+                    },
+                ],
                 layout: {
                     topStart: {
                         buttons: [
@@ -170,10 +195,25 @@ require $LOC_HEADER;
             {
                 responsive: true,
                 columns: [
-                    {responsivePriority: 1}, // name
-                    {responsivePriority: 1}, // uid
-                    {responsivePriority: 1}, // mail
-                    {responsivePriority: 2}, // members (hide first)
+                    {
+                        // name
+                        responsivePriority: 1,
+                        render: DataTable.render.ellipsis(40),
+                    },
+                    {
+                        // uid
+                        responsivePriority: 1,
+                        render: DataTable.render.ellipsis(30),
+                    },
+                    {
+                        //mail
+                        responsivePriority: 1,
+                        render: DataTable.render.ellipsis(30),
+                    },
+                    {
+                        // members (ideally always hidden)
+                        responsivePriority: 2,
+                    },
                 ],
                 layout: {
                     topStart: {

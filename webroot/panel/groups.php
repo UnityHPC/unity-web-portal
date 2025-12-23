@@ -112,7 +112,7 @@ if (count($req_filtered) > 0) {
         echo "<tr class='pending_request'>";
         echo "<td>$full_name</td>";
         echo "<td>" . $requested_account->gid . "</td>";
-        echo "<td><a href='mailto:$mail'>$mail</a></td>";
+        echo "<td>$mail</td>";
         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
         echo "<td>";
         $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
@@ -174,7 +174,7 @@ foreach ($PIGroupGIDs as $gid) {
     echo "<tr>";
     echo "<td>$full_name</td>";
     echo "<td>$gid</td>";
-    echo "<td><a href='mailto:" . $owner->getMail() . "'>" . $owner->getMail() . "</a></td>";
+    echo "<td>" . $owner->getMail() . "</td>";
     echo "<td><ul>";
     foreach ($PIGroupMembers[$gid] as $memberuid) {
         echo "<li>$memberuid</li>";

@@ -63,11 +63,7 @@ require $LOC_HEADER;
         echo "<td>" . $attributes["gecos"][0] . "</td>";
         echo "<td>" . $uid . "</td>";
         echo "<td>" . $attributes["o"][0] . "</td>";
-        echo "
-            <td>
-                <a href='mailto:" . $attributes["mail"][0] . "'>" . $attributes["mail"][0] . "</a>
-            </td>
-        ";
+        echo "<td>". $attributes["mail"][0] . "</td>";
         echo "<td>";
         echo "<ul style='padding-left: 2ch; margin: 0;'>";
         if (count($UID2PIGIDs[$uid]) > 0) {
@@ -98,12 +94,33 @@ $('document').ready(() => {
         {
             responsive: true,
             columns: [
-                {responsivePriority: 2}, // name
-                {responsivePriority: 1}, // uid
-                {responsivePriority: 2}, // org
-                {responsivePriority: 2}, // mail
-                {responsivePriority: 3}, // groups (ideally always hidden)
-                {responsivePriority: 1}, // actions
+                {
+                    // name
+                    responsivePriority: 2,
+                    render: DataTable.render.ellipsis(40),
+                },
+                {
+                    // uid
+                    responsivePriority: 1,
+                    render: DataTable.render.ellipsis(30),
+                },
+                {
+                    //org
+                    responsivePriority: 2,
+                },
+                {
+                    // mail
+                    responsivePriority: 2,
+                    render: DataTable.render.ellipsis(30),
+                },
+                {
+                    // groups (ideally always hidden)
+                    responsivePriority: 3,
+                },
+                {
+                    // actions
+                    responsivePriority: 1,
+                },
             ],
             layout: {
                 topStart: {

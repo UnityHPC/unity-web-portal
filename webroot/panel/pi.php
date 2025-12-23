@@ -64,7 +64,7 @@ if (count($requests) > 0) {
         echo "<tr>";
         echo "<td>$name</td>";
         echo "<td>$uid</td>";
-        echo "<td><a href='mailto:$email'>$email</a></td>";
+        echo "<td>$email</td>";
         echo "<td>$date</td>";
         echo "<td>";
         $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
@@ -116,7 +116,7 @@ foreach ($assocs as $assoc) {
     echo "</td>";
     echo "<td>" . $assoc->getFirstname() . " " . $assoc->getLastname() . "</td>";
     echo "<td>" . $assoc->uid . "</td>";
-    echo "<td><a href='mailto:" . $assoc->getMail() . "'>" . $assoc->getMail() . "</a></td>";
+    echo "<td>" . $assoc->getMail() . "</td>";
     echo "</tr>";
 }
 
