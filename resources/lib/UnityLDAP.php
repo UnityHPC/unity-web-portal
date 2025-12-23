@@ -190,23 +190,14 @@ class UnityLDAP extends LDAPConn
         );
     }
 
-    public function getQualifiedUsersAttributes(
-        array $attributes,
-        array $default_values = [],
-    ): array {
-        $include_uids = $this->userFlagGroups[UserFlag::QUALIFIED->value]->getMemberUIDs();
-        $user_attributes = $this->baseOU->getChildrenArrayStrict(
+    public function getAllUsersAttributes(array $attributes, array $default_values = []): array
+    {
+        return $this->baseOU->getChildrenArrayStrict(
             $attributes,
             true, // recursive
             "(objectClass=posixAccount)",
             $default_values,
         );
-        foreach ($user_attributes as $i => $attributes) {
-            if (!in_array($attributes["uid"][0], $include_uids)) {
-                unset($user_attributes[$i]);
-            }
-        }
-        return array_values($user_attributes); // reindex
     }
 
     public function getAllPIGroups(
@@ -267,11 +258,9 @@ class UnityLDAP extends LDAPConn
     /**
      * Returns an associative array where keys are UIDs and values are arrays of PI GIDs
      */
-    public function getQualifiedUID2PIGIDs(): array
+    public function getUID2PIGIDs(): array
     {
-        // initialize output so each UID is a key with an empty array as its value
-        $uids = $this->userFlagGroups[UserFlag::QUALIFIED->value]->getMemberUIDs();
-        $uid2pigids = array_combine($uids, array_fill(0, count($uids), []));
+        $uid2pigids = [];
         // for each PI group, append that GID to the member list for each of its member UIDs
         foreach (
             $this->getAllPIGroupsAttributes(
@@ -282,14 +271,10 @@ class UnityLDAP extends LDAPConn
         ) {
             $gid = $array["cn"][0];
             foreach ($array["memberuid"] as $uid) {
-                if (array_key_exists($uid, $uid2pigids)) {
-                    array_push($uid2pigids[$uid], $gid);
-                } else {
-                    UnityHTTPD::errorLog(
-                        "warning",
-                        "user '$uid' is a member of a PI group but is not a qualified user!",
-                    );
+                if (!array_key_exists($uid, $uid2pigids)) {
+                    $uid2pigids[$uid] = [];
                 }
+                array_push($uid2pigids[$uid], $gid);
             }
         }
         return $uid2pigids;
