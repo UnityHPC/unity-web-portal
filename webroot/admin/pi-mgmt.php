@@ -107,23 +107,41 @@ require $LOC_HEADER;
             <th id="name">Name</th>
             <th id="unityID">Unity ID</th>
             <th id="mail">Mail</th>
+            <th id="memberuid">Members</th>
         </tr>
     </thead>
     <tbody>
     <?php
-    $owner_uids = $LDAP->getAllPIGroupOwnerUIDs();
-    $owner_attributes = $LDAP->getUsersAttributes(
-        $owner_uids,
+    $pi_groups_attributes = $LDAP->getAllPIGroupsAttributes(["cn", "memberuid"]);
+    $pi_groups_members = [];
+    foreach ($pi_groups_attributes as $owner_attributes) {
+        $pi_groups_members[$owner_attributes["cn"][0]] = $owner_attributes["memberuid"];
+    }
+    $pi_group_gid_to_owner_uid = [];
+    foreach ($pi_groups_attributes as $owner_attributes) {
+        $gid = $owner_attributes["cn"][0];
+        $pi_group_gid_to_owner_uid[$gid] = UnityGroup::GID2OwnerUID($gid);
+    }
+    $pi_group_owners_attributes = $LDAP->getUsersAttributes(
+        array_values($pi_group_gid_to_owner_uid),
         ["uid", "gecos", "mail"],
         default_values: ["gecos" => ["(not found)"], "mail" => ["(not found)"]]
     );
-    usort($owner_attributes, fn($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
-    foreach ($owner_attributes as $attributes) {
-        $mail = $attributes["mail"][0];
-        echo "<tr class='expandable'>";
-        echo "<td><button class='btnExpand'>&#9654;</button>" . $attributes["gecos"][0] . "</td>";
-        echo "<td>" . UnityGroup::OwnerUID2GID($attributes["uid"][0]) . "</td>";
+    foreach ($pi_group_gid_to_owner_uid as $gid => $uid) {
+        $owner_attributes = $pi_group_owners_attributes[$uid];
+        $mail = $owner_attributes["mail"][0];
+        $gecos = $owner_attributes["gecos"][0];
+        $mail = $owner_attributes["mail"][0];
+        $members = $pi_groups_members[$gid];
+        echo "<tr>";
+        echo "<td>$gecos</td>";
+        echo "<td>$uid</td>";
         echo "<td><a href='mailto:$mail'>$mail</a></td>";
+        echo "<td><ul>";
+        foreach ($members as $member_uid) {
+            echo "<li>$member_uid</li>";
+        }
+        echo "</ul></td>";
         echo "</tr>";
     }
     ?>
