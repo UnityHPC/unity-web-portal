@@ -73,6 +73,7 @@ $("table.column-toggle").each(function () {
     const checkbox = $('<input type="checkbox" class="col-toggle">');
     if (th.classList.contains("hidden-by-default")) {
       setColumnVisibility(id, index + 1, false);
+      checkbox.prop("checked", false);
     } else {
       checkbox.prop("checked", true);
     }
