@@ -109,7 +109,7 @@ if (count($req_filtered) > 0) {
         $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         echo "<form action='' method='POST' id='cancelPI'>
             $CSRFTokenHiddenFormInput
-            <input type='hidden' name='pi' value='{$requested_account->gid}'>
+            <input type='hidden' name='pi' value='$requested_account->gid'>
             <input type='hidden' name='form_type' value='cancelPIForm'>
             <input name='cancel' style='margin-top: 10px;' type='submit' value='Cancel Request'/>
             </form>";
