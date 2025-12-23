@@ -4,7 +4,7 @@ function getQueryVariable(variable) {
   for (var i = 0; i < vars.length; i++) {
     var pair = vars[i].split("=");
 
-    if (pair[0] == variable) {
+    if (pair[0] === variable) {
       return pair[1];
     }
   }
@@ -32,7 +32,7 @@ function updateFilterInput() {
     commonFilterInputBox.style.display = "inline-block";
     commonFilterInputBox.style.visibility = "visible";
 
-    if (filter == "uid") {
+    if (filter === "uid") {
       commonFilterInputBox.placeholder =
         "Filter by " + filter.toUpperCase() + "...";
     } else {
@@ -40,7 +40,7 @@ function updateFilterInput() {
         "Filter by " + filter.charAt(0).toUpperCase() + filter.slice(1) + "...";
     }
 
-    if (getQueryVariable("value") != false) {
+    if (getQueryVariable("value") !== false) {
       commonFilterInputBox.value = getQueryVariable("value");
       filterRows();
     }
@@ -62,7 +62,7 @@ function updateFilterInput() {
     filter.addEventListener("click", function (e) {
       e.preventDefault();
       e.stopPropagation();
-      if (e.target.parentElement.id != getQueryVariable("filter")) {
+      if (e.target.parentElement.id !== getQueryVariable("filter")) {
         updateQueryStringParameter(
           window.location.href,
           "filter",
@@ -94,7 +94,7 @@ function filterRows() {
         row.cells[column].textContent
           .trim()
           .toLowerCase()
-          .indexOf(filterValue.toLowerCase()) == -1
+          .indexOf(filterValue.toLowerCase()) === -1
       ) {
         row.style.display = "none";
       } else {
