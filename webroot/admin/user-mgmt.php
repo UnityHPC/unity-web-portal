@@ -66,7 +66,7 @@ require $LOC_HEADER;
             </td>
         ";
         echo "<td>";
-        echo "<ul style='margin: 0;'>";
+        echo "<ul style='padding-left: 2ch; margin: 0;'>";
         if (count($UID2PIGIDs[$uid]) > 0) {
             foreach ($UID2PIGIDs[$uid] as $gid) {
                 echo "<li>$gid</li>";
