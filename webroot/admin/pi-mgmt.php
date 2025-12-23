@@ -170,10 +170,10 @@ require $LOC_HEADER;
             {
                 responsive: true,
                 columns: [
-                    null, // name
-                    null, // uid
-                    null, // mail
-                    {visible: false}, // members
+                    {responsivePriority: 1}, // name
+                    {responsivePriority: 1}, // uid
+                    {responsivePriority: 1}, // mail
+                    {responsivePriority: 2}, // members (hide first)
                 ],
                 layout: {
                     topStart: {
