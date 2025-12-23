@@ -59,6 +59,14 @@ describe("Table Sorting", () => {
     global.document = document;
     global.URL = window.URL;
     originalLocation = window.location;
+
+    // Load and execute the actual sort.js code
+    const fs = require("fs");
+    const sortCode = fs.readFileSync(
+      require.resolve("../../webroot/js/sort.js"),
+      "utf8",
+    );
+    window.eval(sortCode);
   });
 
   afterEach(() => {

@@ -84,13 +84,20 @@ describe("Expandable Tables and Search", () => {
     global.window = window;
     global.document = document;
 
-    // Mock jQuery for event handling tests
+    // Load jQuery
     const jqueryCode = require("fs").readFileSync(
       require.resolve("jquery/dist/jquery.min.js"),
       "utf8",
     );
     dom.window.eval(jqueryCode);
     $ = dom.window.$;
+
+    // Load and execute the actual tables.js code
+    const tablesCode = require("fs").readFileSync(
+      require.resolve("../../webroot/js/tables.js"),
+      "utf8",
+    );
+    dom.window.eval(tablesCode);
   });
 
   describe("Table Search Functionality", () => {

@@ -57,6 +57,14 @@ describe("Table Filtering", () => {
     global.window = window;
     global.document = document;
     global.URL = window.URL;
+
+    // Load and execute the actual filter.js code
+    const fs = require("fs");
+    const filterCode = fs.readFileSync(
+      require.resolve("../../webroot/js/filter.js"),
+      "utf8",
+    );
+    window.eval(filterCode);
   });
 
   describe("getQueryVariable", () => {
