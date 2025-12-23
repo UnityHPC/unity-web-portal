@@ -3,12 +3,9 @@
   if (!table) {
     return;
   }
-  table.querySelectorAll("td").forEach(function (td) {
-    td.addEventListener("click", function (e) {
-      if (
-        td.parentElement.classList.contains("key") &&
-        td.innerHTML != "Actions"
-      ) {
+  table.querySelectorAll("th").forEach(function (th) {
+    th.addEventListener("click", function (e) {
+      if (th.innerHTML != "Actions") {
         if (e.target.classList.contains("filter")) {
           updateQueryStringParameter(
             window.location.href,
@@ -17,9 +14,9 @@
           );
           updateFilterInput();
         } else {
-          var column = td.cellIndex;
+          var column = th.cellIndex;
           var rows = Array.from(table.querySelectorAll("tr:nth-child(n+2)"));
-          var order = td.classList.toggle("asc") ? 1 : -1;
+          var order = th.classList.toggle("asc") ? 1 : -1;
           rows.sort(function (a, b) {
             return (
               order *
@@ -33,15 +30,12 @@
           rows.forEach(function (row) {
             table.appendChild(row);
           });
-          var keys = document.querySelectorAll("tr.key");
-          keys.forEach(function (key) {
-            key.querySelectorAll("td").forEach(function (td) {
-              td.innerHTML = td.innerHTML.replace(/ ▲| ▼/, "");
-            });
+          document.querySelectorAll("th").forEach(function (header) {
+            header.innerHTML = header.innerHTML.replace(/ ▲| ▼/, "");
           });
           var orderSymbol = order == 1 ? "&#x25B2;" : "&#x25BC;";
-          td.innerHTML = td.innerHTML + " " + orderSymbol;
-          updateQueryStringParameter(window.location.href, "sort", td.id);
+          th.innerHTML = th.innerHTML + " " + orderSymbol;
+          updateQueryStringParameter(window.location.href, "sort", th.id);
           updateQueryStringParameter(
             window.location.href,
             "order",
