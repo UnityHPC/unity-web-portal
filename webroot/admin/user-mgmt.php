@@ -66,13 +66,13 @@ require $LOC_HEADER;
             </td>
         ";
         echo "<td>";
+        echo "<ul style='margin: 0;'>";
         if (count($UID2PIGIDs[$uid]) > 0) {
-            echo "<table style='margin: 0 0 0 0;'>";
             foreach ($UID2PIGIDs[$uid] as $gid) {
-                echo "<tr><td>$gid</td></tr>";
+                echo "<li>$gid</li>";
             }
-            echo "</table>";
         }
+        echo "</ul>";
         echo "</td>";
         echo "<td>";
         $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
