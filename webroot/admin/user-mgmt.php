@@ -25,8 +25,8 @@ require $LOC_HEADER;
 <h1>User Management</h1>
 <hr>
 
-<!-- <input type="text" id="tableSearch" placeholder="Search..."> -->
-
+<!-- impose width limit so that the Groups column will be hidden by Responsive -->
+<div style="max-width: 800px">
 <table
     id="user-table"
     class="stripe compact hover"
@@ -88,6 +88,7 @@ require $LOC_HEADER;
     ?>
     </tbody>
 </table>
+</div>
 <script>
 $('document').ready(() => {
     $('#user-table').DataTable(
