@@ -65,11 +65,11 @@ $("table.column-toggle").each(function () {
     console.log("error: table does not have id attribute");
     return;
   }
-  const div = $(`<div style="margin-bottom: 10px;"></div>`);
-  table.before(div);
+  const checkboxTable = $(`<table style="margin-bottom: 10px;"></table>`);
+  const checkboxTableRow = $("<tr></tr>");
   table.find('th').each((index, th) => {
-    const headerText = th.textContent.replace('⫧', '').trim();
-    const label = $('<label></label>');
+    const checkboxTableCell = $("<td></td>");
+    const checkboxLabel = $(`<label>${th.textContent.replace('⫧', '').trim()}</label>`);
     const checkbox = $('<input type="checkbox" class="col-toggle">');
     if (th.classList.contains("hidden-by-default")) {
       setColumnVisibility(id, index + 1, false);
@@ -80,8 +80,10 @@ $("table.column-toggle").each(function () {
     checkbox.on('change', function () {
       setColumnVisibility(id, index + 1, this.checked);
     });
-    label.append(checkbox);
-    label.append(headerText);
-    div.append(label);
+    checkboxLabel.append(checkbox);
+    checkboxTableCell.append(checkboxLabel);
+    checkboxTableRow.append(checkboxTableCell);
   });
+  checkboxTable.append(checkboxTableRow);
+  table.before(checkboxTable);
 });
