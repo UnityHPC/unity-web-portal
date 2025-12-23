@@ -132,7 +132,7 @@ if (isset($SSO)) {
       <div class="modalBody"></div>
     </div>
   </div>
-  <script src="<?php echo getURL("js/modal.js"); ?>"></script>
+  <script src="<?php echo getURL("js/modal.js?v=" . CONFIG["upstream"]["version"]); ?>"></script>
 
   <main>
 
