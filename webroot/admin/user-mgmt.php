@@ -94,10 +94,20 @@ require $LOC_HEADER;
 </table>
 <script>
 $('document').ready(() => {
-    new DataTable(
-        '#user-table',
+    $('#example').DataTable(
         {
             responsive: true,
+            layout: {
+                topStart: {
+                    buttons: [
+                        {
+                            extend: 'colvis',
+                            columns: ':not(.noVis)',
+                            popoverTitle: 'Column visibility selector'
+                        }
+                    ]
+                }
+            }
         }
     );
 });

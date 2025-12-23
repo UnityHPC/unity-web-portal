@@ -56,7 +56,7 @@ require $LOC_HEADER;
 <!-- <input type="text" id="tableSearch" placeholder="Search..."> -->
 
 <h5>Pending PI Requests</h5>
-<table id="pi-request-table" class="stripe compact">
+<table id="pi-request-table" class="stripe compact nowrap hover">
     <thead>
         <tr>
             <th>Name</th>
@@ -150,8 +150,38 @@ require $LOC_HEADER;
 
     // var ajax_url = "<?php echo getURL("admin/ajax/get_group_members.php"); ?>?gid=";
     $('document').ready(() => {
-        new DataTable('#pi-request-table');
-        new DataTable('#pi-table');
+        $('#pi-request-table').DataTable(
+            {
+                responsive: true,
+                layout: {
+                    topStart: {
+                        buttons: [
+                            {
+                                extend: 'colvis',
+                                columns: ':not(.noVis)',
+                                popoverTitle: 'Column visibility selector'
+                            }
+                        ]
+                    }
+                }
+            }
+        );
+        $('#pi-table').DataTable(
+            {
+                responsive: true,
+                layout: {
+                    topStart: {
+                        buttons: [
+                            {
+                                extend: 'colvis',
+                                columns: ':not(.noVis)',
+                                popoverTitle: 'Column visibility selector'
+                            }
+                        ]
+                    }
+                }
+            }
+        );
     });
 </script>
 
