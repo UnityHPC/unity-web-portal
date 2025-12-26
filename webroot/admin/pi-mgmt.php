@@ -129,7 +129,6 @@ require $LOC_HEADER;
     );
     foreach ($pi_group_gid_to_owner_uid as $gid => $uid) {
         $owner_attributes = $pi_group_owners_attributes[$uid];
-        $mail = $owner_attributes["mail"][0];
         $gecos = $owner_attributes["gecos"][0];
         $mail = $owner_attributes["mail"][0];
         $members = $pi_group_gid_to_member_uids[$gid];
