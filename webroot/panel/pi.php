@@ -134,18 +134,16 @@ echo "</table>";
 
 <script>
     $(document).ready(() => {
-        $('#users-table').DataTable(
-            {
-                responsive: true,
-                columns: [
-                    {responsivePriority: 2}, // name
-                    {responsivePriority: 1}, // username
-                    {responsivePriority: 2}, // mail
-                    {responsivePriority: 1}, // actions
-                ],
-                layout: {topStart: {buttons: ['colvis']}}
-            }
-        );
+        $('#users-table').DataTable({
+            responsive: true,
+            columns: [
+                {responsivePriority: 2}, // name
+                {responsivePriority: 1}, // username
+                {responsivePriority: 2}, // mail
+                {responsivePriority: 1}, // actions
+            ],
+            layout: {topStart: {buttons: ['colvis']}}
+        });
     });
 </script>
 

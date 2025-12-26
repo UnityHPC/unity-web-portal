@@ -89,20 +89,18 @@ require $LOC_HEADER;
 
 <script>
 $(document).ready(() => {
-    $('#user-table').DataTable(
-        {
-            responsive: true,
-            columns: [
-                {responsivePriority: 2}, // name
-                {responsivePriority: 1}, // uid
-                {responsivePriority: 2}, //org,
-                {responsivePriority: 2}, // mail
-                {responsivePriority: 3}, // groups (ideally always hidden)
-                {responsivePriority: 1}, // actions
-            ],
-            layout: {topStart: {buttons: ['colvis']}}
-        }
-    );
+    $('#user-table').DataTable({
+        responsive: true,
+        columns: [
+            {responsivePriority: 2}, // name
+            {responsivePriority: 1}, // uid
+            {responsivePriority: 2}, //org,
+            {responsivePriority: 2}, // mail
+            {responsivePriority: 3}, // groups (ideally always hidden)
+            {responsivePriority: 1}, // actions
+        ],
+        layout: {topStart: {buttons: ['colvis']}}
+    });
 });
 </script>
 <?php require $LOC_FOOTER; ?>

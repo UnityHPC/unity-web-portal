@@ -236,32 +236,28 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
 
 <script>
     $(document).ready(() => {
-        $('#pi-table').DataTable(
-            {
-                responsive: true,
-                columns: [
-                    {responsivePriority: 1}, // name
-                    {responsivePriority: 2}, // gid
-                    {responsivePriority: 2}, // PI mail
-                    {responsivePriority: 3, visible: false}, // members
-                    {responsivePriority: 1}, // actions
-                ],
-                layout: {topStart: {buttons: ['colvis']}}
-            }
-        );
-        $('#pi-request-table').DataTable(
-            {
-                responsive: true,
-                columns: [
-                    {responsivePriority: 1}, // owner name
-                    {responsivePriority: 2}, // gid
-                    {responsivePriority: 2}, // PI mail
-                    {responsivePriority: 2}, // requested on
-                    {responsivePriority: 1}, // actions
-                ],
-                layout: {topStart: {buttons: ['colvis']}}
-            }
-        );
+        $('#pi-table').DataTable({
+            responsive: true,
+            columns: [
+                {responsivePriority: 1}, // name
+                {responsivePriority: 2}, // gid
+                {responsivePriority: 2}, // PI mail
+                {responsivePriority: 3, visible: false}, // members
+                {responsivePriority: 1}, // actions
+            ],
+            layout: {topStart: {buttons: ['colvis']}}
+        });
+        $('#pi-request-table').DataTable({
+            responsive: true,
+            columns: [
+                {responsivePriority: 1}, // owner name
+                {responsivePriority: 2}, // gid
+                {responsivePriority: 2}, // PI mail
+                {responsivePriority: 2}, // requested on
+                {responsivePriority: 1}, // actions
+            ],
+            layout: {topStart: {buttons: ['colvis']}}
+        });
     });
 </script>
 
