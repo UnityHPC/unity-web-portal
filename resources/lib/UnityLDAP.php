@@ -273,13 +273,11 @@ class UnityLDAP extends LDAPConn
         $uids = $this->userFlagGroups[UserFlag::QUALIFIED->value]->getMemberUIDs();
         $uid2pigids = array_combine($uids, array_fill(0, count($uids), []));
         // for each PI group, append that GID to the member list for each of its member UIDs
-        foreach (
-            $this->getAllPIGroupsAttributes(
-                ["cn", "memberuid"],
-                default_values: ["memberuid" => []],
-            )
-            as $array
-        ) {
+        $pi_groups_attributes = $this->getAllPIGroupsAttributes(
+            ["cn", "memberuid"],
+            default_values: ["memberuid" => []],
+        );
+        foreach ($pi_groups_attributes as $array) {
             $gid = $array["cn"][0];
             foreach ($array["memberuid"] as $uid) {
                 if (array_key_exists($uid, $uid2pigids)) {

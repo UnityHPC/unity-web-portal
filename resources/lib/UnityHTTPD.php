@@ -390,7 +390,7 @@ class UnityHTTPD
             self::errorLog("csrf failed to validate", "", errorid: $errorid);
             self::messageError(
                 "Invalid Session Token",
-                "This can happen if you leave your browser open for a long time. Error ID: $errorid",
+                "This can happen if you leave your browser open for too long. Error ID: $errorid",
             );
             self::redirect();
         }
