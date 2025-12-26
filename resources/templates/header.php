@@ -61,12 +61,6 @@ if (isset($SSO)) {
     crossorigin="anonymous"
   >
   </script>
-  <script
-    src="https://cdn.datatables.net/plug-ins/2.3.6/dataRender/ellipsis.js"
-    integrity="sha384-Zbvo4zXT5u08LX8lxdqF30bOzLdQDjDt9rhTJaB5jbJ9IBf0CKasQtMAKm7ATsdd"
-    crossorigin="anonymous"
-  >
-  </script>
   </link>
   <style>
     <?php

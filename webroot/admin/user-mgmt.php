@@ -98,12 +98,10 @@ $('document').ready(() => {
                 {
                     // name
                     responsivePriority: 2,
-                    render: DataTable.render.ellipsis(40),
                 },
                 {
                     // uid
                     responsivePriority: 1,
-                    render: DataTable.render.ellipsis(30),
                 },
                 {
                     //org
@@ -112,7 +110,6 @@ $('document').ready(() => {
                 {
                     // mail
                     responsivePriority: 2,
-                    render: DataTable.render.ellipsis(30),
                 },
                 {
                     // groups (ideally always hidden)

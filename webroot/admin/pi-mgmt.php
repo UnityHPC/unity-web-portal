@@ -159,17 +159,14 @@ require $LOC_HEADER;
                     {
                         // name
                         responsivePriority: 2,
-                        render: DataTable.render.ellipsis(40),
                     },
                     {
                         // uid
                         responsivePriority: 1,
-                        render: DataTable.render.ellipsis(30),
                     },
                     {
                         //mail
                         responsivePriority: 2,
-                        render: DataTable.render.ellipsis(30),
                     },
                     {
                         // requested on
@@ -200,17 +197,14 @@ require $LOC_HEADER;
                     {
                         // name
                         responsivePriority: 1,
-                        render: DataTable.render.ellipsis(40),
                     },
                     {
                         // uid
                         responsivePriority: 1,
-                        render: DataTable.render.ellipsis(30),
                     },
                     {
                         //mail
                         responsivePriority: 1,
-                        render: DataTable.render.ellipsis(30),
                     },
                     {
                         // members (ideally always hidden)
