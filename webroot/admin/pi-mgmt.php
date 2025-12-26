@@ -101,8 +101,6 @@ require $LOC_HEADER;
 
 <h5>List of PIs</h5>
 
-<!-- impose size limit on table so that the members column gets hidden by Responsive -->
-<div style="max-width: 700px;">
 <table id="pi-table" class="stripe compact hover">
     <thead>
         <tr>
@@ -146,7 +144,7 @@ require $LOC_HEADER;
     ?>
     </tbody>
 </table>
-</div>
+
 <script>
     $(document).ready(() => {
         $('#pi-request-table').DataTable({
@@ -166,7 +164,7 @@ require $LOC_HEADER;
                 {responsivePriority: 1}, // name
                 {responsivePriority: 1}, // uid
                 {responsivePriority: 1}, // mail,
-                {responsivePriority: 2}, // members (ideally always hidden)
+                {responsivePriority: 2, visible: false}, // members
             ],
             layout: {topStart: {buttons: ['colvis']}}
         });
