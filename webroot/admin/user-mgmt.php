@@ -58,7 +58,7 @@ require $LOC_HEADER;
     foreach ($user_attributes as $attributes) {
         $uid = $attributes["uid"][0];
         if ($SQL->accDeletionRequestExists($uid)) {
-            echo "<tr style='color:grey; font-style: italic'>";
+            echo "<tr style='color:#555555; font-style: italic'>";
         } else {
             echo "<tr>";
         }

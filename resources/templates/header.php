@@ -33,7 +33,7 @@ if (isset($SSO)) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <script
@@ -75,17 +75,17 @@ if (isset($SSO)) {
 
 <body>
 
-  <header>
-    <img id="imgLogo" draggable=false
-    src="<?php echo getURL("assets", CONFIG["site"]["logo"]); ?>">
-    <button class="hamburger vertical-align">
-      <img
-        draggable="false"
-        src="<?php echo getURL("assets/menu.png") ?>"
-        alt="Menu Button"
-      >
-    </button>
-  </header>
+   <header>
+     <img id="imgLogo" draggable=false
+     src="<?php echo getURL("assets", CONFIG["site"]["logo"]); ?>" alt="Unity Logo">
+     <button class="hamburger vertical-align">
+       <img
+         draggable="false"
+         src="<?php echo getURL("assets/menu.png") ?>"
+         alt="Menu Button"
+       >
+     </button>
+   </header>
 
   <nav class="mainNav">
     <?php
