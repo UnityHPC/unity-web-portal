@@ -21,3 +21,4 @@ jobs:
       - uses: actions/setup-node@v6.0.0
       - run: npm install --dev
       - uses: pre-commit/action@v3.0.1
+      - run: npx jest

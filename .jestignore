@@ -1,0 +1,8 @@
+node_modules
+vendor
+coverage
+.git
+deployment
+defaults
+tools
+resources/lib
