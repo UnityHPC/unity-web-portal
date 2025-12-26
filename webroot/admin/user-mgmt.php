@@ -94,7 +94,7 @@ $(document).ready(() => {
         columns: [
             {responsivePriority: 2}, // name
             {responsivePriority: 1}, // uid
-            {responsivePriority: 2}, //org,
+            {responsivePriority: 2}, // org
             {responsivePriority: 2}, // mail
             {responsivePriority: 3}, // groups (ideally always hidden)
             {responsivePriority: 1}, // actions
