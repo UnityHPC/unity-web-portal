@@ -61,7 +61,6 @@ if (isset($SSO)) {
     crossorigin="anonymous"
   >
   </script>
-  </link>
   <style>
     <?php
     // set global css variables from branding
