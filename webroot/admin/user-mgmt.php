@@ -63,7 +63,7 @@ require $LOC_HEADER;
         echo "<td>" . $attributes["gecos"][0] . "</td>";
         echo "<td>" . $uid . "</td>";
         echo "<td>" . $attributes["o"][0] . "</td>";
-        echo "<td>". $attributes["mail"][0] . "</td>";
+        echo "<td>" . $attributes["mail"][0] . "</td>";
         echo "<td>";
         echo "<ul style='padding-left: 2ch; margin: 0;'>";
         if (count($UID2PIGIDs[$uid]) > 0) {
