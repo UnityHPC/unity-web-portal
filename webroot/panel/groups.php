@@ -227,9 +227,9 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
                 responsive: true,
                 columns: [
                     {responsivePriority: 1}, // name
-                    {responsivePriority: 1}, // gid
-                    {responsivePriority: 1}, // PI mail
-                    {responsivePriority: 2}, // members
+                    {responsivePriority: 2}, // gid
+                    {responsivePriority: 2}, // PI mail
+                    {responsivePriority: 3, visible: false}, // members
                     {responsivePriority: 1}, // actions
                 ],
                 layout: {
