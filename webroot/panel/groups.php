@@ -246,17 +246,7 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
                     {responsivePriority: 3, visible: false}, // members
                     {responsivePriority: 1}, // actions
                 ],
-                layout: {
-                    topStart: {
-                        buttons: [
-                            {
-                                extend: 'colvis',
-                                columns: ':not(.noVis)',
-                                popoverTitle: 'Column visibility selector'
-                            }
-                        ]
-                    }
-                }
+                layout: {topStart: {buttons: ['colvis']}}
             }
         );
         $('#pi-request-table').DataTable(
@@ -269,17 +259,7 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
                     {responsivePriority: 2}, // requested on
                     {responsivePriority: 1}, // actions
                 ],
-                layout: {
-                    topStart: {
-                        buttons: [
-                            {
-                                extend: 'colvis',
-                                columns: ':not(.noVis)',
-                                popoverTitle: 'Column visibility selector'
-                            }
-                        ]
-                    }
-                }
+                layout: {topStart: {buttons: ['colvis']}}
             }
         );
     });

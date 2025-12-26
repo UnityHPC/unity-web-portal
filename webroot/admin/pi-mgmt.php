@@ -153,72 +153,25 @@ require $LOC_HEADER;
             {
                 responsive: true,
                 columns: [
-                    {
-                        // name
-                        responsivePriority: 2,
-                    },
-                    {
-                        // uid
-                        responsivePriority: 1,
-                    },
-                    {
-                        //mail
-                        responsivePriority: 2,
-                    },
-                    {
-                        // requested on
-                        responsivePriority: 2,
-                    },
-                    {
-                        // actions
-                        responsivePriority: 1,
-                    },
+                    {responsivePriority: 2}, // name
+                    {responsivePriority: 1}, // uid
+                    {responsivePriority: 2}, // mail
+                    {responsivePriority: 2}, // requested on
+                    {responsivePriority: 1}, // actions
                 ],
-                layout: {
-                    topStart: {
-                        buttons: [
-                            {
-                                extend: 'colvis',
-                                columns: ':not(.noVis)',
-                                popoverTitle: 'Column visibility selector'
-                            }
-                        ]
-                    }
-                }
+                layout: {topStart: {buttons: ['colvis']}}
             }
         );
         $('#pi-table').DataTable(
             {
                 responsive: true,
                 columns: [
-                    {
-                        // name
-                        responsivePriority: 1,
-                    },
-                    {
-                        // uid
-                        responsivePriority: 1,
-                    },
-                    {
-                        //mail
-                        responsivePriority: 1,
-                    },
-                    {
-                        // members (ideally always hidden)
-                        responsivePriority: 2,
-                    },
+                    {responsivePriority: 1}, // name
+                    {responsivePriority: 1}, // uid
+                    {responsivePriority: 1}, // mail,
+                    {responsivePriority: 2}, // members (ideally always hidden)
                 ],
-                layout: {
-                    topStart: {
-                        buttons: [
-                            {
-                                extend: 'colvis',
-                                columns: ':not(.noVis)',
-                                popoverTitle: 'Column visibility selector'
-                            }
-                        ]
-                    }
-                }
+                layout: {topStart: {buttons: ['colvis']}}
             }
         );
     });

@@ -143,17 +143,7 @@ echo "</table>";
                     {responsivePriority: 2}, // mail
                     {responsivePriority: 1}, // actions
                 ],
-                layout: {
-                    topStart: {
-                        buttons: [
-                            {
-                                extend: 'colvis',
-                                columns: ':not(.noVis)',
-                                popoverTitle: 'Column visibility selector'
-                            }
-                        ]
-                    }
-                }
+                layout: {topStart: {buttons: ['colvis']}}
             }
         );
     });
