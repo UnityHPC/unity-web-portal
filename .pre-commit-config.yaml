@@ -29,9 +29,9 @@ repos:
               node_modules/.*|
               resources/lib/phpopenldaper/.*|
               vendor/.*|
-              resources/templates/.*\.php|
+              resources/templates/.*|
               resources/mail/.*|
-              webroot/.*\.php|
+              webroot/.*|
           )$
       - id: phpcbf-impure
         name: PHP Code Beautifier and Fixer (mixed PHP/HTML files)
@@ -97,9 +97,9 @@ repos:
               node_modules/.*|
               resources/lib/phpopenldaper/.*|
               vendor/.*|
-              resources/templates/.*\.php|
+              resources/templates/.*|
               resources/mail/.*|
-              webroot/.*\.php|
+              webroot/.*|
           )$
       - id: phpcs-impure
         name: PHP Code Sniffer (mixed PHP/HTML files)
