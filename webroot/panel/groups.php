@@ -98,8 +98,21 @@ foreach ($requests as $request) {
 }
 
 if (count($req_filtered) > 0) {
-    echo "<h5>Pending Requests</h5>";
-    echo "<table>";
+    echo "";
+    echo "
+        <h5>Pending Requests</h5>
+        <table id='pi-request-table' class='stripe compact hover'>
+            <thead>
+                <tr>
+                    <th>Group Owner Name</th>
+                    <th>Group ID</th>
+                    <th>Group Owner Mail</th>
+                    <th>Requested On</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+    ";
     foreach ($req_filtered as $request) {
         $requested_account = new UnityGroup(
             $request["request_for"],
@@ -127,6 +140,7 @@ if (count($req_filtered) > 0) {
         echo "</td>";
         echo "</tr>";
     }
+    echo "</tbody>";
     echo "</table>";
 
     if (count($PIGroupGIDs) > 0) {
@@ -153,7 +167,7 @@ if (count($PIGroupGIDs) == 0) {
 }
 
 echo "
-    <table id='pi-table'>
+    <table id='pi-table' class='stripe compact hover'>
         <thead>
             <tr>
                 <th>Name</th>
@@ -230,6 +244,29 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
                     {responsivePriority: 2}, // gid
                     {responsivePriority: 2}, // PI mail
                     {responsivePriority: 3, visible: false}, // members
+                    {responsivePriority: 1}, // actions
+                ],
+                layout: {
+                    topStart: {
+                        buttons: [
+                            {
+                                extend: 'colvis',
+                                columns: ':not(.noVis)',
+                                popoverTitle: 'Column visibility selector'
+                            }
+                        ]
+                    }
+                }
+            }
+        );
+        $('#pi-request-table').DataTable(
+            {
+                responsive: true,
+                columns: [
+                    {responsivePriority: 1}, // owner name
+                    {responsivePriority: 2}, // gid
+                    {responsivePriority: 2}, // PI mail
+                    {responsivePriority: 2}, // requested on
                     {responsivePriority: 1}, // actions
                 ],
                 layout: {

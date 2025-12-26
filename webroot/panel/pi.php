@@ -88,10 +88,19 @@ if (count($requests) > 0) {
     }
 }
 
-echo "<h5>Users in Group</h5>";
-
-echo "<table>";
-
+echo "
+    <h5>Users in Group</h5>
+    <table id='users-table' class='stripe compact hover'>
+        <thead>
+            <tr>
+                <th>Actions</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Mail</th>
+            </tr>
+        </thead>
+        <tbody>
+";
 foreach ($assocs as $assoc) {
     if ($assoc->uid == $USER->uid) {
         continue;
@@ -119,8 +128,35 @@ foreach ($assocs as $assoc) {
     echo "<td>" . $assoc->getMail() . "</td>";
     echo "</tr>";
 }
-
+echo "</tbody>";
 echo "</table>";
 ?>
+
+<script>
+    $(document).ready(() => {
+        $('#users-table').DataTable(
+            {
+                responsive: true,
+                columns: [
+                    {responsivePriority: 1}, // actions
+                    {responsivePriority: 2}, // name
+                    {responsivePriority: 1}, // username
+                    {responsivePriority: 2}, // mail
+                ],
+                layout: {
+                    topStart: {
+                        buttons: [
+                            {
+                                extend: 'colvis',
+                                columns: ':not(.noVis)',
+                                popoverTitle: 'Column visibility selector'
+                            }
+                        ]
+                    }
+                }
+            }
+        );
+    });
+</script>
 
 <?php require $LOC_FOOTER; ?>
