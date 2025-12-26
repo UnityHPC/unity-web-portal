@@ -50,22 +50,22 @@ repos:
               resources/mail/user_flag_.*\.php|
           )$
 
-  # - repo: https://github.com/rbubley/mirrors-prettier
-  #   rev: v3.6.2
-  #   hooks:
-  #     - id: prettier
-  #       # exclude impure PHP files
-  #       exclude: |
-  #         (?x)^(
-  #             composer\.json|
-  #             composer\.lock|
-  #             node_modules/.*|
-  #             resources/lib/phpopenldaper/.*|
-  #             vendor/.*|
-  #             resources/templates/.*|
-  #             webroot/.*|
-  #             resources/mail/.*|
-  #         )$
+  - repo: https://github.com/rbubley/mirrors-prettier
+    rev: v3.6.2
+    hooks:
+      - id: prettier
+        # exclude impure PHP files
+        exclude: |
+          (?x)^(
+              composer\.json|
+              composer\.lock|
+              node_modules/.*|
+              resources/lib/phpopenldaper/.*|
+              vendor/.*|
+              resources/templates/.*|
+              webroot/.*|
+              resources/mail/.*|
+          )$
 
   # linters (work required) ########################################################################
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -87,7 +87,7 @@ repos:
       - id: phpcs-pure
         name: PHP Code Sniffer (pure PHP files)
         entry: ./vendor/bin/phpcs
-        args: [--standard=./.phpcs-ruleset-pure.xml, --colors]
+        args: [--standard=./.phpcs-ruleset-pure.xml, --colors, -s]
         language: system
         files: \.php$
         exclude: |
@@ -104,7 +104,7 @@ repos:
       - id: phpcs-impure
         name: PHP Code Sniffer (mixed PHP/HTML files)
         entry: ./vendor/bin/phpcs
-        args: [--standard=./.phpcs-ruleset-impure.xml, --colors]
+        args: [--standard=./.phpcs-ruleset-impure.xml, --colors, -s]
         language: system
         files: |
           (?x)^(
