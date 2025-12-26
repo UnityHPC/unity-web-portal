@@ -93,10 +93,10 @@ echo "
     <table id='users-table' class='stripe compact hover'>
         <thead>
             <tr>
-                <th>Actions</th>
                 <th>Name</th>
                 <th>Username</th>
                 <th>Mail</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -107,6 +107,9 @@ foreach ($assocs as $assoc) {
     }
 
     echo "<tr>";
+    echo "<td>" . $assoc->getFirstname() . " " . $assoc->getLastname() . "</td>";
+    echo "<td>" . $assoc->uid . "</td>";
+    echo "<td>" . $assoc->getMail() . "</td>";
     echo "<td>";
     $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
@@ -123,9 +126,6 @@ foreach ($assocs as $assoc) {
     >
     </form>";
     echo "</td>";
-    echo "<td>" . $assoc->getFirstname() . " " . $assoc->getLastname() . "</td>";
-    echo "<td>" . $assoc->uid . "</td>";
-    echo "<td>" . $assoc->getMail() . "</td>";
     echo "</tr>";
 }
 echo "</tbody>";
@@ -138,10 +138,10 @@ echo "</table>";
             {
                 responsive: true,
                 columns: [
-                    {responsivePriority: 1}, // actions
                     {responsivePriority: 2}, // name
                     {responsivePriority: 1}, // username
                     {responsivePriority: 2}, // mail
+                    {responsivePriority: 1}, // actions
                 ],
                 layout: {
                     topStart: {
