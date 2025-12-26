@@ -2,6 +2,4 @@
 
 namespace UnityWebPortal\lib\exceptions;
 
-class EntryNotFoundException extends \Exception
-{
-}
+class EntryNotFoundException extends \Exception {}

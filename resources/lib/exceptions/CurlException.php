@@ -2,6 +2,4 @@
 
 namespace UnityWebPortal\lib\exceptions;
 
-class CurlException extends \Exception
-{
-}
+class CurlException extends \Exception {}
