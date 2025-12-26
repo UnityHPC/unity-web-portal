@@ -33,5 +33,4 @@ require $LOC_HEADER;
     <?php echo UnityHTTPD::getCSRFTokenHiddenFormInput(); ?>
     <input type='submit' value='Register'>
 </form>
-<?php
-require_once $LOC_FOOTER;
+<?php require $LOC_FOOTER; ?>

@@ -153,5 +153,4 @@ require $LOC_HEADER;
     var ajax_url = "<?php echo getURL("admin/ajax/get_group_members.php"); ?>?gid=";
 </script>
 
-<?php
-require $LOC_FOOTER;
+<?php require $LOC_FOOTER; ?>

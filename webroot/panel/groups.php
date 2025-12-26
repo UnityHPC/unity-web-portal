@@ -204,5 +204,4 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
     }
 </style>
 
-<?php
-require $LOC_FOOTER;
+<?php require $LOC_FOOTER; ?>

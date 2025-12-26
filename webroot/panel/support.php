@@ -12,5 +12,4 @@ require $LOC_HEADER;
 echo $SQL->getPage(CONFIG["page"]["support"])["content"];
 ?>
 
-<?php
-require_once $LOC_FOOTER;
+<?php require $LOC_FOOTER; ?>

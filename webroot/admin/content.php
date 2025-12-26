@@ -75,5 +75,4 @@ require $LOC_HEADER;
     })
 </script>
 
-<?php
-require $LOC_FOOTER;
+<?php require $LOC_FOOTER; ?>

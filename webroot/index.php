@@ -26,5 +26,4 @@ foreach ($notices as $notice) {
 
 ?>
 
-<?php
-require_once $LOC_FOOTER;
+<?php require $LOC_FOOTER; ?>

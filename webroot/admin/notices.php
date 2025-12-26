@@ -157,5 +157,4 @@ foreach ($notices as $notice) {
     });
 </script>
 
-<?php
-require $LOC_FOOTER;
+<?php require $LOC_FOOTER; ?>

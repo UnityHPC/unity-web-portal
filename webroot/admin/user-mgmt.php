@@ -94,5 +94,4 @@ require $LOC_HEADER;
     ?>
 </table>
 
-<?php
-require $LOC_FOOTER;
+<?php require $LOC_FOOTER; ?>

@@ -123,5 +123,4 @@ foreach ($assocs as $assoc) {
 echo "</table>";
 ?>
 
-<?php
-require $LOC_FOOTER;
+<?php require $LOC_FOOTER; ?>

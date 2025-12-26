@@ -346,5 +346,4 @@ if ($hasGroups) {
     }
 </style>
 
-<?php
-require_once $LOC_FOOTER;
+<?php require $LOC_FOOTER; ?>
