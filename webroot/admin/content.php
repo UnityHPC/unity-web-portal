@@ -24,7 +24,7 @@ require $LOC_HEADER;
 
 <form id="pageForm" method="POST" action="">
     <?php echo UnityHTTPD::getCSRFTokenHiddenFormInput(); ?>
-    <select name="pageSel" required>
+    <select name="pageSel" required aria-label="select page">
         <option value="" selected disabled hidden>Select page...</option>
         <?php
         $pages = $SQL->getPages();
