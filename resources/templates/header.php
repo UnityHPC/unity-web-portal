@@ -48,6 +48,19 @@ if (isset($SSO)) {
     crossorigin="anonymous"
   >
   </script>
+  <!-- extensions bundled in download tool: https://datatables.net/download -->
+  <link
+    href="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.3.6/b-3.2.6/b-colvis-3.2.6/cc-1.2.0/r-3.0.7/datatables.min.css"
+    rel="stylesheet"
+    integrity="sha384-5OdHb1YOXl3xvXQf2mDtF0Va2+mAmyyLwR2Djl1QWhyuRwKfAXonjVPgEtuBtbyj"
+    crossorigin="anonymous"
+  >
+  <script
+    src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.3.6/b-3.2.6/b-colvis-3.2.6/cc-1.2.0/r-3.0.7/datatables.min.js"
+    integrity="sha384-PtrI5lvzz976+bUNbgisRBA+9g7BBAwDdhkHgES+loBzpcGpuTiVuSvvFn3Fj3M5"
+    crossorigin="anonymous"
+  >
+  </script>
   <style>
     <?php
     // set global css variables from branding
@@ -60,7 +73,7 @@ if (isset($SSO)) {
   </style>
 
   <?php
-    foreach (["global", "navbar", "modal", "tables", "filters", "messages"] as $x) {
+    foreach (["global", "navbar", "modal", "messages"] as $x) {
         $url = getURL("css/$x.css?v=" . CONFIG["upstream"]["version"]);
         echo "<link rel='stylesheet' type='text/css' href='$url'>";
     }
