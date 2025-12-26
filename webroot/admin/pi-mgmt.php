@@ -115,14 +115,12 @@ require $LOC_HEADER;
     <tbody>
     <?php
     $pi_groups_attributes = $LDAP->getAllPIGroupsAttributes(["cn", "memberuid"]);
-    $pi_groups_members = [];
-    foreach ($pi_groups_attributes as $owner_attributes) {
-        $pi_groups_members[$owner_attributes["cn"][0]] = $owner_attributes["memberuid"];
-    }
+    $pi_group_gid_to_member_uids = [];
     $pi_group_gid_to_owner_uid = [];
-    foreach ($pi_groups_attributes as $owner_attributes) {
-        $gid = $owner_attributes["cn"][0];
+    foreach ($pi_groups_attributes as $group_attributes) {
+        $gid = $group_attributes["cn"][0];
         $pi_group_gid_to_owner_uid[$gid] = UnityGroup::GID2OwnerUID($gid);
+        $pi_group_gid_to_member_uids[$gid] = $group_attributes["memberuid"];
     }
     $pi_group_owners_attributes = $LDAP->getUsersAttributes(
         array_values($pi_group_gid_to_owner_uid),
@@ -134,7 +132,7 @@ require $LOC_HEADER;
         $mail = $owner_attributes["mail"][0];
         $gecos = $owner_attributes["gecos"][0];
         $mail = $owner_attributes["mail"][0];
-        $members = $pi_groups_members[$gid];
+        $members = $pi_group_gid_to_member_uids[$gid];
         echo "<tr>";
         echo "<td>$gecos</td>";
         echo "<td>$uid</td>";
