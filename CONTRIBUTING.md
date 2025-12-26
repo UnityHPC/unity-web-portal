@@ -3,8 +3,9 @@
 ## Conventions
 
 - PHP version 8.3.
-- All pure PHP files are required to be formatted with Prettier.
-- All impure PHP files (mixed into HTML) are required to be linted with PSR-12 and formatted with `phpcbf`.
+- All PHP files are required to be linted with PSR-12 and formatted with `phpcbf`.
+  - Note: Some changes have been made to PSR-12, see `.phpcs-ruleset-pure.php`
+- All pure PHP files are required to be formatted with Prettier as well as above.
 - The maximum line length for any PHP file is 100 characters.
 - Comments should be used sparingly.
 - Empty lines should be used sparingly.
