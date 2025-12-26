@@ -53,7 +53,7 @@ require $LOC_HEADER;
 
 <!-- <input type="text" id="tableSearch" placeholder="Search..."> -->
 
-<h5>Pending PI Requests</h5>
+<h2>Pending PI Requests</h2>
 <table class="searchable">
     <tr class="key">
         <td>Name</td>
@@ -95,7 +95,7 @@ require $LOC_HEADER;
 
 </table>
 
-<h5>List of PIs</h5>
+<h2>List of PIs</h2>
 
 <table class="searchable longTable sortable filterable">
     <tr class="key">

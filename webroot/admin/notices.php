@@ -32,7 +32,7 @@ require $LOC_HEADER;
 <h1>Cluster Notice Management</h1>
 <hr>
 
-<h5>Create/Edit Cluster Notice</h5>
+<h2>Create/Edit Cluster Notice</h2>
 
 <button style='display: none;' class='btnClear'>Create New Notice Instead</button>
 
@@ -41,7 +41,7 @@ require $LOC_HEADER;
     <input type="hidden" name=id>
     <input type="hidden" name="form_type" value="newNotice">
     <input type="text" name="title" placeholder="Notice Title">
-    <input type="date" name="date">
+    <input type="date" name="date" aria-label="date">
     <textarea name="content" id="editor" form="noticeForm"></textarea>
     <input style='display: inline-block;' type="submit" value="Create Notice">
 </form>
@@ -53,7 +53,7 @@ require $LOC_HEADER;
 </div>
 
 <hr>
-<h5>Existing Notices</h5>
+<h2>Existing Notices</h2>
 
 <?php
 
