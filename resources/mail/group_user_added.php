@@ -5,7 +5,7 @@ $this->Subject = "Group Request Approved"; ?>
 
 <p>Hello,</p>
 
-<p>You have been approved to join the PI group <?php echo $data["group"]; ?>.
+<p>You have been approved to join the PI group <?php echo htmlspecialchars($data["group"]); ?>.
 Navigate to the <?php echo getHyperlink("my groups", "panel/groups.php"); ?>
 page to see your PI groups.</p>
 

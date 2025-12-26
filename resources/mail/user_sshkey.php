@@ -10,7 +10,7 @@ You have modified the SSH keys on your Unity account. These public keys are curr
 </p>
 
 <?php foreach ($data["keys"] as $key) {
-    echo "<pre>$key</pre>";
+    echo "<pre>" . htmlspecialchars($key) . "</pre>";
 } ?>
 
 <p>
