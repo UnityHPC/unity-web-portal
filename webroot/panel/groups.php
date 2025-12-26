@@ -221,7 +221,7 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
 </script>
 
 <script>
-    $('document').ready(() => {
+    $(document).ready(() => {
         $('#pi-table').DataTable(
             {
                 responsive: true,

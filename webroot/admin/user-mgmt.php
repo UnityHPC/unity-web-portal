@@ -88,7 +88,7 @@ require $LOC_HEADER;
 </table>
 
 <script>
-$('document').ready(() => {
+$(document).ready(() => {
     $('#user-table').DataTable(
         {
             responsive: true,

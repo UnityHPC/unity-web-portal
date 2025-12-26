@@ -148,7 +148,7 @@ require $LOC_HEADER;
 </table>
 </div>
 <script>
-    $('document').ready(() => {
+    $(document).ready(() => {
         $('#pi-request-table').DataTable(
             {
                 responsive: true,
