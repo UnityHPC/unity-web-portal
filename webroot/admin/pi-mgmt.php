@@ -79,7 +79,7 @@ require $LOC_HEADER;
         echo "<td>$name</td>";
         echo "<td>$uid</td>";
         echo "<td>$email</td>";
-        echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
+        echo "<td>" . $request['timestamp'] . "</td>";
         echo "<td>";
         $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         echo
