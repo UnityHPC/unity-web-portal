@@ -1,11 +1,21 @@
 <?xml version="1.0"?>
 <ruleset name="Unity">
-    <description>PSR12, with max line length = 100 characters</description>
+    <description>
+        PSR12,
+        with max line length = 100 characters,
+        should play nice with prettier/plugin-php
+    </description>
     <rule ref="PSR12" />
     <rule ref="Generic.Files.LineLength">
         <properties>
             <property name="lineLimit" value="100" />
             <property name="absoluteLineLimit" value="100" />
         </properties>
+    </rule>
+    <rule ref="PSR2.Classes.ClassDeclaration.OpenBraceNewLine">
+        <exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine" />
+    </rule>
+    <rule ref="Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore">
+        <exclude name="Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore" />
     </rule>
 </ruleset>

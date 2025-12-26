@@ -2,7 +2,7 @@
 <ruleset name="Unity">
     <description>PSR12, with no max line length</description>
     <rule ref="PSR12" />
-    <rule>
+    <rule ref="Generic.Files.LineLength">
         <exclude name="Generic.Files.LineLength" />
     </rule>
 </ruleset>
