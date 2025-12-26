@@ -74,15 +74,17 @@ require $LOC_HEADER;
 <hr>
 
 <?php
-$PIGroupGIDs = $USER->getPIGroupGIDs();
-$PIGroupAttributes = $LDAP->getPIGroupsAttributes(
-    $PIGroupGIDs,
+$PIGroupGIDs = [];
+$PIGroupAttributes = $LDAP->getPIGroupsAttributesWithMemberUID(
+    $USER->uid,
     ["cn", "memberuid"],
     default_values: ["memberuid" => []]
 );
 $PIGroupMembers = [];
 foreach ($PIGroupAttributes as $attributes) {
-    $PIGroupMembers[$attributes["cn"][0]] = $attributes["memberuid"];
+    $gid = $attributes["cn"][0];
+    $PIGroupMembers[$gid] = $attributes["memberuid"];
+    array_push($PIGroupGIDs, $gid);
 }
 
 $requests = $SQL->getRequestsByUser($USER->uid);

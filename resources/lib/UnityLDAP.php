@@ -353,35 +353,28 @@ class UnityLDAP extends LDAPConn
     }
 
     /**
-     * constructs a filter where $filter_key attribute must be one of $filter_values
-     * and objectClass must be equal to $filter_object_class
-     * returns an array with each filter value as an array key
+     * returns an array with each UID as an array key
      * @throws \UnityWebPortal\lib\exceptions\EntryNotFoundException
      */
-    private function getEntriesAttributes(
-        array $filter_values,
-        string $filter_key,
-        string $filter_object_class,
+    public function getUsersAttributes(
+        array $uids,
         array $attributes,
         array $default_values = [],
     ): array {
-        if (count($filter_values) === 0) {
+        if (count($uids) === 0) {
             return [];
         }
         $attributes = array_map("strtolower", $attributes);
-        if (in_array($filter_key, $attributes)) {
-            $filter_key_attribute_was_requested = true;
+        if (in_array("uid", $attributes)) {
+            $asked_for_uid_attribute = true;
         } else {
-            $filter_key_attribute_was_requested = false;
+            $asked_for_uid_attribute = false;
             array_push($attributes, "uid");
         }
-        $filter_values_escaped = array_map(
-            fn($x) => ldap_escape($x, "", LDAP_ESCAPE_FILTER),
-            $filter_values,
-        );
+        $uids_escaped = array_map(fn($x) => ldap_escape($x, "", LDAP_ESCAPE_FILTER), $uids);
         $filter =
-            "(&(objectClass=$filter_object_class)(|" .
-            implode("", array_map(fn($x) => "($filter_key=$x)", $filter_values_escaped)) .
+            "(&(objectClass=posixAccount)(|" .
+            implode("", array_map(fn($x) => "(uid=$x)", $uids_escaped)) .
             "))";
         $entries = $this->baseOU->getChildrenArrayStrict(
             $attributes,
@@ -391,13 +384,13 @@ class UnityLDAP extends LDAPConn
         );
         $output = [];
         foreach ($entries as $entry) {
-            $filter_value = $entry[$filter_key][0];
-            if (!$filter_key_attribute_was_requested) {
-                unset($entry[$filter_key]);
+            $uid = $entry["uid"][0];
+            if (!$asked_for_uid_attribute) {
+                unset($entry["uid"]);
             }
-            $output[$filter_value] = $entry;
+            $output[$uid] = $entry;
         }
-        $uids_not_found = array_diff($filter_values, array_keys($output));
+        $uids_not_found = array_diff($uids, array_keys($output));
         if (count($uids_not_found) > 0) {
             throw new EntryNotFoundException(jsonEncode($uids_not_found));
         }
@@ -405,25 +398,16 @@ class UnityLDAP extends LDAPConn
         return $output;
     }
 
-    public function getUsersAttributes(
-        array $uids,
+    public function getPIGroupsAttributesWithMemberUID(
+        string $uid,
         array $attributes,
         array $default_values = [],
-    ): array {
-        return $this->getEntriesAttributes(
-            $uids,
-            "uid",
-            "posixAccount",
+    ) {
+        return $this->pi_groupOU->getChildrenArrayStrict(
             $attributes,
-            $default_values,
+            recursive: false,
+            filter: sprintf("(memberuid=%s)", ldap_escape($uid, "", LDAP_ESCAPE_FILTER)),
+            default_values: $default_values,
         );
-    }
-
-    public function getPIGroupsAttributes(
-        array $gids,
-        array $attributes,
-        array $default_values = [],
-    ): array {
-        return $this->getEntriesAttributes($gids, "cn", "posixGroup", $attributes, $default_values);
     }
 }
