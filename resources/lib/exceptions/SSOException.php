@@ -2,4 +2,6 @@
 
 namespace UnityWebPortal\lib\exceptions;
 
-class SSOException extends \Exception {}
+class SSOException extends \Exception
+{
+}

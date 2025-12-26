@@ -1,4 +1,5 @@
 <?php
+
 namespace UnityWebPortal\lib;
 
 class CSRFToken

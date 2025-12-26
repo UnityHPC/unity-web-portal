@@ -7,15 +7,6 @@ use PHPOpenLDAPer\LDAPConn;
 use PHPOpenLDAPer\LDAPEntry;
 use UnityWebPortal\lib\PosixGroup;
 
-enum UserFlag: string
-{
-    case ADMIN = "admin";
-    case GHOST = "ghost";
-    case IDLELOCKED = "idlelocked";
-    case LOCKED = "locked";
-    case QUALIFIED = "qualified";
-}
-
 /**
  * An LDAP connection class which extends LDAPConn tailored for the UnityHPC Platform
  */
@@ -273,13 +264,11 @@ class UnityLDAP extends LDAPConn
         $uids = $this->userFlagGroups[UserFlag::QUALIFIED->value]->getMemberUIDs();
         $uid2pigids = array_combine($uids, array_fill(0, count($uids), []));
         // for each PI group, append that GID to the member list for each of its member UIDs
-        foreach (
-            $this->getAllPIGroupsAttributes(
-                ["cn", "memberuid"],
-                default_values: ["memberuid" => []],
-            )
-            as $array
-        ) {
+        $pi_groups_attributes = $this->getAllPIGroupsAttributes(
+            ["cn", "memberuid"],
+            default_values: ["memberuid" => []],
+        );
+        foreach ($pi_groups_attributes as $array) {
             $gid = $array["cn"][0];
             foreach ($array["memberuid"] as $uid) {
                 if (array_key_exists($uid, $uid2pigids)) {

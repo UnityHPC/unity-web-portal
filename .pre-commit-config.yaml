@@ -16,13 +16,12 @@ repos:
 
   - repo: local
     hooks:
-      - id: phpcbf
-        name: PHP Code Beautifier and Fixer
+      - id: phpcbf-pure
+        name: PHP Code Beautifier and Fixer (pure PHP files)
         entry: ./vendor/bin/phpcbf
-        args: [--standard=./.phpcs-ruleset.xml, --colors]
+        args: [--standard=./.phpcs-ruleset-pure.xml, --colors]
         language: system
         files: \.php$
-        # exclude pure PHP files
         exclude: |
           (?x)^(
               test/.*|
@@ -30,26 +29,43 @@ repos:
               node_modules/.*|
               resources/lib/phpopenldaper/.*|
               vendor/.*|
-              resources/lib/.*|
+              resources/templates/.*\.php|
               resources/mail/.*|
+              webroot/.*\.php|
           )$
-
-  - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.6.2
-    hooks:
-      - id: prettier
-        # exclude impure PHP files
+      - id: phpcbf-impure
+        name: PHP Code Beautifier and Fixer (mixed PHP/HTML files)
+        entry: ./vendor/bin/phpcbf
+        args: [--standard=./.phpcs-ruleset-impure.xml, --colors]
+        language: system
+        files: |
+          (?x)^(
+              resources/templates/.*\.php|
+              resources/mail/.*|
+              webroot/.*\.php|
+          )$
+        # the user_flag_* templates use funky syntax and the formatter ruins them
         exclude: |
           (?x)^(
-              composer\.json|
-              composer\.lock|
-              node_modules/.*|
-              resources/lib/phpopenldaper/.*|
-              vendor/.*|
-              resources/templates/.*|
-              webroot/.*|
-              resources/mail/.*|
+              resources/mail/user_flag_.*\.php|
           )$
+
+  # - repo: https://github.com/rbubley/mirrors-prettier
+  #   rev: v3.6.2
+  #   hooks:
+  #     - id: prettier
+  #       # exclude impure PHP files
+  #       exclude: |
+  #         (?x)^(
+  #             composer\.json|
+  #             composer\.lock|
+  #             node_modules/.*|
+  #             resources/lib/phpopenldaper/.*|
+  #             vendor/.*|
+  #             resources/templates/.*|
+  #             webroot/.*|
+  #             resources/mail/.*|
+  #         )$
 
   # linters (work required) ########################################################################
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -68,13 +84,12 @@ repos:
 
   - repo: local
     hooks:
-      - id: phpcs
-        name: PHP CodeSniffer
+      - id: phpcs-pure
+        name: PHP Code Sniffer (pure PHP files)
         entry: ./vendor/bin/phpcs
+        args: [--standard=./.phpcs-ruleset-pure.xml, --colors]
         language: system
         files: \.php$
-        args: [--standard=./.phpcs-ruleset.xml, --colors]
-        # exclude pure PHP files
         exclude: |
           (?x)^(
               test/.*|
@@ -82,8 +97,25 @@ repos:
               node_modules/.*|
               resources/lib/phpopenldaper/.*|
               vendor/.*|
-              resources/lib/.*|
+              resources/templates/.*\.php|
               resources/mail/.*|
+              webroot/.*\.php|
+          )$
+      - id: phpcs-impure
+        name: PHP Code Sniffer (mixed PHP/HTML files)
+        entry: ./vendor/bin/phpcs
+        args: [--standard=./.phpcs-ruleset-impure.xml, --colors]
+        language: system
+        files: |
+          (?x)^(
+              resources/templates/.*\.php|
+              resources/mail/.*\.php|
+              webroot/.*\.php|
+          )$
+        # the user_flag_* templates use funky syntax and the formatter ruins them
+        exclude: |
+          (?x)^(
+              resources/mail/user_flag_.*\.php|
           )$
       - id: php-l
         name: php -l

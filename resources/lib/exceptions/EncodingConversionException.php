@@ -2,4 +2,6 @@
 
 namespace UnityWebPortal\lib\exceptions;
 
-class EncodingConversionException extends \Exception {}
+class EncodingConversionException extends \Exception
+{
+}

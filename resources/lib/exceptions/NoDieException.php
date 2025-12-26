@@ -2,4 +2,6 @@
 
 namespace UnityWebPortal\lib\exceptions;
 
-class NoDieException extends \Exception {}
+class NoDieException extends \Exception
+{
+}

@@ -7,15 +7,6 @@ use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use UnityWebPortal\lib\exceptions\UnityHTTPDMessageNotFoundException;
 use RuntimeException;
 
-enum UnityHTTPDMessageLevel: string
-{
-    case DEBUG = "debug";
-    case INFO = "info";
-    case SUCCESS = "success";
-    case WARNING = "warning";
-    case ERROR = "error";
-}
-
 class UnityHTTPD
 {
     public static function die(mixed $x = null, bool $show_user = false): never
@@ -390,7 +381,7 @@ class UnityHTTPD
             self::errorLog("csrf failed to validate", "", errorid: $errorid);
             self::messageError(
                 "Invalid Session Token",
-                "This can happen if you leave your browser open for a long time. Error ID: $errorid",
+                "This can happen if you leave your browser open for too long. Error ID: $errorid",
             );
             self::redirect();
         }

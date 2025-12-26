@@ -1,8 +1,8 @@
 <?php
 
 namespace UnityWebPortal\lib;
-use PHPOpenLDAPer\LDAPEntry;
 
+use PHPOpenLDAPer\LDAPEntry;
 use Exception;
 
 /**
@@ -85,7 +85,8 @@ class UnityGroup extends PosixGroup
         if ($send_mail) {
             $this->MAILER->sendMail($this->getOwner()->getMail(), "group_created");
         }
-        $this->getOwner()->setFlag(UserFlag::QUALIFIED, true); // having your own group makes you qualified
+        // having your own group makes you qualified
+        $this->getOwner()->setFlag(UserFlag::QUALIFIED, true);
     }
 
     /**
