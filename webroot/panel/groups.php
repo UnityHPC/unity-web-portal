@@ -75,7 +75,7 @@ require $LOC_HEADER;
 
 <?php
 $PIGroupGIDs = [];
-$PIGroupAttributes = $LDAP->getPIGroupsAttributesWithMemberUID(
+$PIGroupAttributes = $LDAP->getPIGroupAttributesWithMemberUID(
     $USER->uid,
     ["cn", "memberuid"],
     default_values: ["memberuid" => []]
