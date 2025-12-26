@@ -7,6 +7,15 @@ use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use UnityWebPortal\lib\exceptions\UnityHTTPDMessageNotFoundException;
 use RuntimeException;
 
+enum UnityHTTPDMessageLevel: string
+{
+    case DEBUG = "debug";
+    case INFO = "info";
+    case SUCCESS = "success";
+    case WARNING = "warning";
+    case ERROR = "error";
+}
+
 class UnityHTTPD
 {
     public static function die(mixed $x = null, bool $show_user = false): never

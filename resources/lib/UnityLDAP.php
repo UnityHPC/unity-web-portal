@@ -7,6 +7,15 @@ use PHPOpenLDAPer\LDAPConn;
 use PHPOpenLDAPer\LDAPEntry;
 use UnityWebPortal\lib\PosixGroup;
 
+enum UserFlag: string
+{
+    case ADMIN = "admin";
+    case GHOST = "ghost";
+    case IDLELOCKED = "idlelocked";
+    case LOCKED = "locked";
+    case QUALIFIED = "qualified";
+}
+
 /**
  * An LDAP connection class which extends LDAPConn tailored for the UnityHPC Platform
  */

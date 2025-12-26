@@ -4,6 +4,7 @@
         PSR12,
         with max line length = 100 characters,
         should play nice with prettier/plugin-php
+        allows multiple classes in one file
     </description>
     <rule ref="PSR12" />
     <rule ref="Generic.Files.LineLength">
@@ -17,5 +18,8 @@
     </rule>
     <rule ref="Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore">
         <exclude name="Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore" />
+    </rule>
+    <rule ref="PSR1.Classes.ClassDeclaration.MultipleClasses">
+        <exclude name="PSR1.Classes.ClassDeclaration.MultipleClasses" />
     </rule>
 </ruleset>
