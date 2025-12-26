@@ -60,7 +60,7 @@ require $LOC_HEADER;
     <thead>
         <tr>
             <th>Name</th>
-            <th>Unity ID</th>
+            <th>UID</th>
             <th>Mail</th>
             <th>Requested On</th>
             <th>Actions</th>
