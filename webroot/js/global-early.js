@@ -17,7 +17,7 @@ function setupCKEditor(extraPlugins = []) {
     ClassicEditor, Essentials, Bold, Italic, Strikethrough, Underline, BlockQuote, Code, CodeBlock,
     Heading, HorizontalLine, Indent, Link, List, Paragraph, Undo, FontFamily, FontSize
   } = CKEDITOR;
-  plugins = [
+  const plugins = [
     Essentials, Bold, Italic, Strikethrough, Underline, BlockQuote, Code, CodeBlock,
     Heading, HorizontalLine, Indent, Link, List, Paragraph, Undo, FontFamily, FontSize
   ].concat(extraPlugins);
