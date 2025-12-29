@@ -48,11 +48,15 @@ See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for prod
    - `deployment/config/config.ini` should be owned by the apache user (`www-data` on Ubuntu), with mode `0600`
    - Submodules checked out (`git submodule update --checkout --init`)
    - Composer (`apt install composer` on Ubuntu)
+   - NodeJS
    - Dependencies:
      - PHP extensions
        - curl, intl, ldap, mbstring, mysql, pdo, xml (`apt install php-curl php-intl php-ldap php-mbstring php-mysql php-pdo php-xml` on Ubuntu)
-     - Libraries
+     - PHP Libraries
        - `COMPOSER_ALLOW_SUPERUSER=1 composer --no-dev --no-scripts --no-plugins install`
+     - JS Libraries
+       - `npm install`
+       - `npx copy-files-from-to`
    - `httpd` `DocumentRoot` set to `webroot/`
    - `httpd` Authentication
      - Any authentication will do as long as it defines `REMOTE_USER`, `givenName`, `sn`, and `mail`
