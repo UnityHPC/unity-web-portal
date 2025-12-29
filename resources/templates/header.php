@@ -135,6 +135,9 @@ if (isset($SSO)) {
       <div class="modalBody"></div>
     </div>
   </div>
+  <script
+    src="<?php echo getURL("js/modal.js?cache_bust_increment_me=" . CONFIG["upstream"]["version"]) ?>"
+  ></script>
   <main>
 
   <?php

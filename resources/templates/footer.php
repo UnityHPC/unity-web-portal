@@ -30,7 +30,7 @@
 
 </body>
 <?php
-foreach (["filter", "sort", "global-late", "tables", "messages", "modal"] as $x) {
+foreach (["filter", "sort", "global-late", "tables", "messages"] as $x) {
     $url = getURL("js/$x.js?cache_bust_increment_me=" . CONFIG["upstream"]["version"]);
     echo "<script src='$url'></script>";
 }
