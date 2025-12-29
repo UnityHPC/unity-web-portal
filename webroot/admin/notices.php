@@ -79,23 +79,7 @@ foreach ($notices as $notice) {
 ?>
 
 <script>
-    const {ClassicEditor, Image} = CKEDITOR;
-    ClassicEditor
-        .create(document.querySelector('#editor'), {
-            licenseKey: 'GPL',
-            //toolbar: [ 'bold', 'italic', 'link', 'undo', 'redo', 'numberedList', 'bulletedList' ]
-            removePlugins: [Image]
-        })
-        .then(editor => {
-            mainEditor = editor;
-            editor.model.document.on('change:data', () => {
-                $("div.example > div").html(editor.getData());
-            });
-        })
-        .catch(error => {
-            console.error(error)
-        });
-
+    setupCKEditor();
     $('input[name=title]').on('input', function(e) {
         $("div.example > span.noticeTitle").text($(this).val());
     });

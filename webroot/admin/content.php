@@ -46,17 +46,7 @@ require $LOC_HEADER;
 
 
 <script>
-    const {ClassicEditor} = CKEDITOR;
-    ClassicEditor
-        .create(document.querySelector('#editor'), {
-            licenseKey: 'GPL',
-        })
-        .then(editor => {
-            mainEditor = editor;
-        })
-        .catch(error => {
-            console.error(error)
-        });
+    setupCKEditor();
     const url = '<?php echo getURL("admin/ajax/get_page_contents.php"); ?>';
     $("#pageForm > select[name=pageSel]").change(function(e) {
         $.ajax({

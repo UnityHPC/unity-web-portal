@@ -20,6 +20,14 @@
     {
       "from": "node_modules/ckeditor5/dist/browser/ckeditor5.css",
       "to": "webroot/css/ckeditor5-47.3.0.css"
+    },
+    {
+      "from": "node_modules/ckeditor5/dist/browser/ckeditor5-editor.css",
+      "to": "webroot/css/ckeditor5-editor-47.3.0.css"
+    },
+    {
+      "from": "node_modules/ckeditor5/dist/browser/ckeditor5-content.css",
+      "to": "webroot/css/ckeditor5-content-47.3.0.css"
     }
   ]
 }

@@ -49,6 +49,8 @@ if (isset($SSO)) {
   >
   </script>
   <link rel='stylesheet' type='text/css' href='<?php echo getURL("css/ckeditor5-47.3.0.css") ?>' />
+  <link rel='stylesheet' type='text/css' href='<?php echo getURL("css/ckeditor5-editor-47.3.0.css") ?>' />
+  <link rel='stylesheet' type='text/css' href='<?php echo getURL("css/ckeditor5-content-47.3.0.css") ?>' />
   <style>
     <?php
     // set global css variables from branding
@@ -143,7 +145,12 @@ if (isset($SSO)) {
     </div>
   </div>
   <script src="<?php echo getURL("js/modal.js?v=" . CONFIG["upstream"]["version"]); ?>"></script>
-
+  <?php
+    foreach (["global-early", "messages"] as $x) {
+        $url = getURL("js/$x.js?v=" . CONFIG["upstream"]["version"]);
+        echo "<script src='$url'></script>";
+    }
+    ?>
   <main>
 
   <?php
