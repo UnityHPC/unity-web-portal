@@ -17,7 +17,7 @@ function setupCKEditor() {
     ClassicEditor, Essentials, Bold, Italic, Strikethrough, Underline, BlockQuote, Code, CodeBlock,
     Heading, HorizontalLine, Indent, Link, List, Paragraph, Undo, FontFamily, FontSize
   } = CKEDITOR;
-  ClassicEditor.create(document.querySelector('#editor'), {
+  return ClassicEditor.create(document.querySelector('#editor'), {
     licenseKey: 'GPL',
     plugins: [
       Essentials, Bold, Italic, Strikethrough, Underline, BlockQuote, Code, CodeBlock,
@@ -36,5 +36,5 @@ function setupCKEditor() {
       '|',
       'bulletedList', 'numberedList', 'outdent', 'indent'
     ],
-  }).then(editor => { mainEditor = editor; }).catch(error => { console.error(error) });
+  });
 }
