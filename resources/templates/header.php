@@ -48,6 +48,7 @@ if (isset($SSO)) {
     crossorigin="anonymous"
   >
   </script>
+  <link rel='stylesheet' type='text/css' href='<?php echo getURL("css/ckeditor5-47.3.0.css") ?>' />
   <style>
     <?php
     // set global css variables from branding
@@ -62,7 +63,7 @@ if (isset($SSO)) {
   <?php
     foreach (["global", "navbar", "modal", "tables", "filters", "messages"] as $x) {
         $url = getURL("css/$x.css?v=" . CONFIG["upstream"]["version"]);
-        echo "<link rel='stylesheet' type='text/css' href='$url'>";
+        echo "<link rel='stylesheet' type='text/css' href='$url' />";
     }
     ?>
 
