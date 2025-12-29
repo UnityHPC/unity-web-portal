@@ -144,9 +144,8 @@ if (isset($SSO)) {
       <div class="modalBody"></div>
     </div>
   </div>
-  <script src="<?php echo getURL("js/modal.js?v=" . CONFIG["upstream"]["version"]); ?>"></script>
   <?php
-    foreach (["global-early", "messages"] as $x) {
+    foreach (["modal", "global-early"] as $x) {
         $url = getURL("js/$x.js?v=" . CONFIG["upstream"]["version"]);
         echo "<script src='$url'></script>";
     }

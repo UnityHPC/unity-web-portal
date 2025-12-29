@@ -30,7 +30,7 @@
 
 </body>
 <?php
-foreach (["filter", "sort", "tables", "global-late"] as $x) {
+foreach (["filter", "sort", "tables", "messages", "global-late"] as $x) {
     $url = getURL("js/$x.js?v=" . CONFIG["upstream"]["version"]);
     echo "<script src='$url'></script>";
 }
