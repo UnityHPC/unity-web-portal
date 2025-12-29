@@ -22,7 +22,7 @@ deployment/**/*
 .phpunit.result.cache
 
 node_modules
-# min.js files are copied from node_modules using the copy-files-from-to NPM package
+# copied from node_modules using the copy-files-from-to NPM package
 webroot/js/jquery-*.js
 webroot/js/ckeditor5-*.js
 webroot/css/ckeditor5-*.css
