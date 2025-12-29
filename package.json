@@ -15,7 +15,7 @@
     },
     {
       "from": "node_modules/ckeditor5/dist/browser/ckeditor5.umd.js",
-      "to": "webroot/js/ckeditor5.umd.min.js"
+      "to": "webroot/js/ckeditor5.umd.js"
     },
     {
       "from": "node_modules/ckeditor5/dist/browser/ckeditor5.css",
