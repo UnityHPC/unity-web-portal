@@ -80,6 +80,9 @@ foreach ($notices as $notice) {
 
 <script>
     setupCKEditor().then(mainEditor => {
+        mainEditor.model.document.on('change:data', () => {
+            $("div.example > div").html(editor.getData());
+        });
         $('input[name=title]').on('input', function(e) {
             $("div.example > span.noticeTitle").text($(this).val());
         });
