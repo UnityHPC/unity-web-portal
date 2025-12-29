@@ -30,7 +30,7 @@
 
 </body>
 <?php
-foreach (["global-late", "modal", "messages"] as $x) {
+foreach (["global-late", "messages"] as $x) {
     $url = getURL("js/$x.js?cache_bust_increment_me=" . CONFIG["upstream"]["version"]);
     echo "<script src='$url'></script>";
 }
