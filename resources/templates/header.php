@@ -36,19 +36,12 @@ if (isset($SSO)) {
 <html lang="en">
 
 <head>
-  <script
-    src="<?php echo getURL("js/jquery-3.7.1.min.js"); ?>"
-    integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs"
-    crossorigin="anonymous"
-  >
-  </script>
-  <script
-    src="<?php echo getURL("js/ckeditor5-47.3.0.min.js"); ?>"
-    integrity="sha384-vfrZDzuxNDOwwU8jB6WLBRm2Y37beBm82JEKPRi7i0ntHlWOiXcKCD/d9TEJldOb"
-    crossorigin="anonymous"
-  >
-  </script>
-  <link rel='stylesheet' type='text/css' href='<?php echo getURL("css/ckeditor5-47.3.0.css") ?>' />
+  <?php
+    foreach (["jquery.min", "global-early", "ckeditor5.umd"] as $x) {
+        $url = getURL("js/$x.js?cache_bust_increment_me=" . CONFIG["upstream"]["version"]);
+        echo "<script src='$url'></script>";
+    }
+    ?>
   <style>
     <?php
     // set global css variables from branding
@@ -61,8 +54,8 @@ if (isset($SSO)) {
   </style>
 
   <?php
-    foreach (["global", "navbar", "modal", "tables", "filters", "messages"] as $x) {
-        $url = getURL("css/$x.css?v=" . CONFIG["upstream"]["version"]);
+    foreach (["global", "navbar", "modal", "tables", "filters", "messages", "ckeditor5"] as $x) {
+        $url = getURL("css/$x.css?cache_bust_increment_me=" . CONFIG["upstream"]["version"]);
         echo "<link rel='stylesheet' type='text/css' href='$url' />";
     }
     ?>
@@ -142,12 +135,9 @@ if (isset($SSO)) {
       <div class="modalBody"></div>
     </div>
   </div>
-  <?php
-    foreach (["modal", "global-early"] as $x) {
-        $url = getURL("js/$x.js?v=" . CONFIG["upstream"]["version"]);
-        echo "<script src='$url'></script>";
-    }
-    ?>
+  <script
+    src="<?php echo getURL("js/modal.js?cache_bust_increment_me=" . CONFIG["upstream"]["version"]) ?>"
+  ></script>
   <main>
 
   <?php

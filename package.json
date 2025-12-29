@@ -11,15 +11,15 @@
   "copyFiles": [
     {
       "from": "node_modules/jquery/dist/jquery.min.js",
-      "to": "webroot/js/jquery-3.7.1.min.js"
+      "to": "webroot/js/jquery.min.js"
     },
     {
       "from": "node_modules/ckeditor5/dist/browser/ckeditor5.umd.js",
-      "to": "webroot/js/ckeditor5-47.3.0.min.js"
+      "to": "webroot/js/ckeditor5.umd.js"
     },
     {
       "from": "node_modules/ckeditor5/dist/browser/ckeditor5.css",
-      "to": "webroot/css/ckeditor5-47.3.0.css"
+      "to": "webroot/css/ckeditor5.css"
     }
   ]
 }
