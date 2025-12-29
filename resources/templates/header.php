@@ -44,7 +44,7 @@ if (isset($SSO)) {
   </script>
   <script
     src="<?php echo getURL("js/ckeditor5-47.3.0.min.js"); ?>"
-    integrity="sha384-1EW+/yO4UFry8f8ADrlFJVNXV1PtSLk4adKk3Y6pcokGHuH/30GoDZ80amfxCFx+"
+    integrity="sha384-vfrZDzuxNDOwwU8jB6WLBRm2Y37beBm82JEKPRi7i0ntHlWOiXcKCD/d9TEJldOb"
     crossorigin="anonymous"
   >
   </script>

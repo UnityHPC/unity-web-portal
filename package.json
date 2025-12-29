@@ -14,7 +14,7 @@
       "to": "webroot/js/jquery-3.7.1.min.js"
     },
     {
-      "from": "node_modules/ckeditor5/build/ckeditor5-dll.js",
+      "from": "node_modules/ckeditor5/dist/browser/ckeditor5.umd.js",
       "to": "webroot/js/ckeditor5-47.3.0.min.js"
     }
   ]
