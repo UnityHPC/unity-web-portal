@@ -46,27 +46,21 @@ require $LOC_HEADER;
 
 
 <script>
-    ClassicEditor
-        .create(document.querySelector('#editor'), {})
-        .then(editor => {
-            mainEditor = editor;
-        })
-        .catch(error => {
-            console.error(error)
-        });
     const url = '<?php echo getURL("admin/ajax/get_page_contents.php"); ?>';
-    $("#pageForm > select[name=pageSel]").change(function(e) {
-        $.ajax({
-            url: `${url}?pageid=` + $(this).val(),
-            dataType: "json",
-            success: function(result) {
-                mainEditor.setData(result.content);
-            },
-            error: function(result) {
-                mainEditor.setData(result.responseText);
-            },
+    setupCKEditor().then(mainEditor => {
+        $("#pageForm > select[name=pageSel]").change(function(e) {
+            $.ajax({
+                url: `${url}?pageid=` + $(this).val(),
+                dataType: "json",
+                success: function(result) {
+                    mainEditor.setData(result.content);
+                },
+                error: function(result) {
+                    mainEditor.setData(result.responseText);
+                },
+            });
         });
-    });
+    }).catch(error => { console.error(error) });
 
     $("#pageForm").on("submit", function(e) {
         if (!confirm("Are you sure you want to edit this page?")) {

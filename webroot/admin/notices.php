@@ -79,76 +79,65 @@ foreach ($notices as $notice) {
 ?>
 
 <script>
-    ClassicEditor
-        .create(document.querySelector('#editor'), {
-            //toolbar: [ 'bold', 'italic', 'link', 'undo', 'redo', 'numberedList', 'bulletedList' ]
-            removePlugins: ['image']
-        })
-        .then(editor => {
-            mainEditor = editor;
-            editor.model.document.on('change:data', () => {
-                $("div.example > div").html(editor.getData());
-            });
-        })
-        .catch(error => {
-            console.error(error)
+    setupCKEditor().then(mainEditor => {
+        mainEditor.model.document.on('change:data', () => {
+            $("div.example > div").html(mainEditor.getData());
+        });
+        $('input[name=title]').on('input', function(e) {
+            $("div.example > span.noticeTitle").text($(this).val());
         });
 
-    $('input[name=title]').on('input', function(e) {
-        $("div.example > span.noticeTitle").text($(this).val());
-    });
+        $('input[name=date]').on('input', function(e) {
+            $("div.example > span.noticeDate").text($(this).val());
+        });
 
-    $('input[name=date]').on('input', function(e) {
-        $("div.example > span.noticeDate").text($(this).val());
-    });
+        $('button.btnEdit').on('click', function(e) {
+            let cur_id = $("#noticeForm > input[name=id]").val();
+            let cur_title = $("#noticeForm > input[name=title]").val();
+            let cur_date = $("#noticeForm > input[name=date]").val();
+            let cur_text = mainEditor.getData();
+            var hasUnsavedWork =
+                cur_id != "" ||
+                cur_title != "" ||
+                cur_date != "" ||
+                cur_text != "";
 
-    $('button.btnEdit').on('click', function(e) {
-        let cur_id = $("#noticeForm > input[name=id]").val();
-        let cur_title = $("#noticeForm > input[name=title]").val();
-        let cur_date = $("#noticeForm > input[name=date]").val();
-        let cur_text = mainEditor.getData();
-        var hasUnsavedWork =
-            cur_id != "" ||
-            cur_title != "" ||
-            cur_date != "" ||
-            cur_text != "";
+            if (hasUnsavedWork) {
+                if (!confirm("Are you sure you want to clear your unsaved work?")) {
+                    return;
+                }
+            }
 
-        if (hasUnsavedWork) {
-            if (!confirm("Are you sure you want to clear your unsaved work?")) {
+            var id = $(this).parent().attr("data-id");
+            var title = $(this).siblings("span.noticeTitle").text();
+            var date = $(this).siblings("span.noticeDate").text();
+            var text = $(this).siblings("div.noticeText").html();
+
+            $("#noticeForm > input[name=id]").val(id);
+            $("#noticeForm > input[name=title]").val(title);
+            $("#noticeForm > input[name=date]").val(date);
+            $("#noticeForm > input[name=form_type").val("editNotice")
+            mainEditor.setData(text);
+
+            $("#noticeForm > input[type=submit]").val("Edit Notice");
+            $("button.btnClear").show();
+        });
+
+        $('button.btnClear').on('click', function(e) {
+            if (!confirm("Are you sure you want to clear this edit?")) {
                 return;
             }
-        }
 
-        var id = $(this).parent().attr("data-id");
-        var title = $(this).siblings("span.noticeTitle").text();
-        var date = $(this).siblings("span.noticeDate").text();
-        var text = $(this).siblings("div.noticeText").html();
+            $("#noticeForm > input[name=id]").val("");
+            $("#noticeForm > input[name=title]").val("");
+            $("#noticeForm > input[name=date]").val("");
+            $("#noticeForm > input[name=form_type").val("newNotice")
+            mainEditor.setData("");
 
-        $("#noticeForm > input[name=id]").val(id);
-        $("#noticeForm > input[name=title]").val(title);
-        $("#noticeForm > input[name=date]").val(date);
-        $("#noticeForm > input[name=form_type").val("editNotice")
-        mainEditor.setData(text);
-
-        $("#noticeForm > input[type=submit]").val("Edit Notice");
-        $("button.btnClear").show();
-    });
-
-    $('button.btnClear').on('click', function(e) {
-        if (!confirm("Are you sure you want to clear this edit?")) {
-            return;
-        }
-
-        $("#noticeForm > input[name=id]").val("");
-        $("#noticeForm > input[name=title]").val("");
-        $("#noticeForm > input[name=date]").val("");
-        $("#noticeForm > input[name=form_type").val("newNotice")
-        mainEditor.setData("");
-
-        $("#noticeForm > input[type=submit]").val("Create Notice");
-        $(this).hide();
-    });
-
+            $("#noticeForm > input[type=submit]").val("Create Notice");
+            $(this).hide();
+        });
+    }).catch(error => { console.error(error) });
     $("#noticeForm").on("submit", function(e) {
         if (!confirm("Are you sure you want to add/edit notice?")) {
             e.preventDefault();
