@@ -12,17 +12,18 @@ function downloadFile(text, filename) {
   element.remove();
 }
 
-function setupCKEditor() {
+function setupCKEditor(extraPlugins = []) {
   const {
     ClassicEditor, Essentials, Bold, Italic, Strikethrough, Underline, BlockQuote, Code, CodeBlock,
     Heading, HorizontalLine, Indent, Link, List, Paragraph, Undo, FontFamily, FontSize
   } = CKEDITOR;
+  plugins = [
+    Essentials, Bold, Italic, Strikethrough, Underline, BlockQuote, Code, CodeBlock,
+    Heading, HorizontalLine, Indent, Link, List, Paragraph, Undo, FontFamily, FontSize
+  ].concat(extraPlugins);
   return ClassicEditor.create(document.querySelector('#editor'), {
     licenseKey: 'GPL',
-    plugins: [
-      Essentials, Bold, Italic, Strikethrough, Underline, BlockQuote, Code, CodeBlock,
-      Heading, HorizontalLine, Indent, Link, List, Paragraph, Undo, FontFamily, FontSize
-    ],
+    plugins: plugins,
     toolbar: [
       'undo', 'redo',
       '|',

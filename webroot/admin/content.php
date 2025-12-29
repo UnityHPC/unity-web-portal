@@ -47,7 +47,8 @@ require $LOC_HEADER;
 
 <script>
     const url = '<?php echo getURL("admin/ajax/get_page_contents.php"); ?>';
-    setupCKEditor().then(mainEditor => {
+    const {Title} = CKEDITOR;
+    setupCKEditor(extraPlugins=[Title]).then(mainEditor => {
         $("#pageForm > select[name=pageSel]").change(function(e) {
             $.ajax({
                 url: `${url}?pageid=` + $(this).val(),
