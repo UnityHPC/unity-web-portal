@@ -67,7 +67,7 @@ if (isset($SSO)) {
         $url = getURL("css/$x.css?cache_bust_increment_me=" . CONFIG["upstream"]["version"]);
         echo "<link rel='stylesheet' type='text/css' href='$url' />";
     }
-  ?>
+    ?>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="<?php echo CONFIG["site"]["description"] ?>">
