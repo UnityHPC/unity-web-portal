@@ -79,10 +79,12 @@ foreach ($notices as $notice) {
 ?>
 
 <script>
+    const {ClassicEditor, Image} = CKEDITOR;
     ClassicEditor
         .create(document.querySelector('#editor'), {
+            licenseKey: 'GPL',
             //toolbar: [ 'bold', 'italic', 'link', 'undo', 'redo', 'numberedList', 'bulletedList' ]
-            removePlugins: ['image']
+            removePlugins: [Image]
         })
         .then(editor => {
             mainEditor = editor;

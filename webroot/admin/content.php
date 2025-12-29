@@ -46,8 +46,11 @@ require $LOC_HEADER;
 
 
 <script>
+    const {ClassicEditor} = CKEDITOR;
     ClassicEditor
-        .create(document.querySelector('#editor'), {})
+        .create(document.querySelector('#editor'), {
+            licenseKey: 'GPL',
+        })
         .then(editor => {
             mainEditor = editor;
         })
