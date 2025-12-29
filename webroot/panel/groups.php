@@ -98,7 +98,6 @@ foreach ($requests as $request) {
 }
 
 if (count($req_filtered) > 0) {
-    echo "";
     echo "
         <h2>Pending Requests</h2>
         <table id='pi-request-table' class='stripe compact hover'>
