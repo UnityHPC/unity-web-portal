@@ -37,7 +37,7 @@ if (isset($SSO)) {
 
 <head>
   <?php
-    foreach (["global-early", "jquery.min", "ckeditor5.umd"] as $x) {
+    foreach (["jquery.min", "global-early", "ckeditor5.umd"] as $x) {
         $url = getURL("js/$x.js?cache_bust_increment_me=" . CONFIG["upstream"]["version"]);
         echo "<script src='$url'></script>";
     }
