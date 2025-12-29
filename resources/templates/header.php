@@ -37,14 +37,14 @@ if (isset($SSO)) {
 
 <head>
   <script
-    src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"
-    integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq"
+    src="<?php echo getURL("js/jquery-3.7.1.min.js"); ?>"
+    integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs"
     crossorigin="anonymous"
   >
   </script>
   <script
-    src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"
-    integrity="sha384-3j1XQYihAlsFkhoO7ydWkxt9nNxSBnHwJnSG5hx+8fjlz2xfaFHuwOM6T0umxnz6"
+    src="<?php echo getURL("js/ckeditor5-47.3.0.min.js"); ?>"
+    integrity="sha384-1EW+/yO4UFry8f8ADrlFJVNXV1PtSLk4adKk3Y6pcokGHuH/30GoDZ80amfxCFx+"
     crossorigin="anonymous"
   >
   </script>

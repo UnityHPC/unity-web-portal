@@ -5,6 +5,17 @@
   },
   "dependencies": {
     "ckeditor5": "^47.3.0",
+    "copy-files-from-to": "^3.13.0",
     "jquery": "^3.7.1"
-  }
+  },
+  "copyFiles": [
+    {
+      "from": "node_modules/jquery/dist/jquery.min.js",
+      "to": "webroot/js/jquery-3.7.1.min.js"
+    },
+    {
+      "from": "node_modules/ckeditor5/build/ckeditor5-dll.js",
+      "to": "webroot/js/ckeditor5-47.3.0.min.js"
+    }
+  ]
 }
