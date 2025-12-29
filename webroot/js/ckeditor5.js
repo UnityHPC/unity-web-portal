@@ -1,0 +1,1 @@
+../../node_modules/ckeditor5/dist/ckeditor5.js
