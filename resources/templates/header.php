@@ -49,8 +49,6 @@ if (isset($SSO)) {
   >
   </script>
   <link rel='stylesheet' type='text/css' href='<?php echo getURL("css/ckeditor5-47.3.0.css") ?>' />
-  <link rel='stylesheet' type='text/css' href='<?php echo getURL("css/ckeditor5-editor-47.3.0.css") ?>' />
-  <link rel='stylesheet' type='text/css' href='<?php echo getURL("css/ckeditor5-content-47.3.0.css") ?>' />
   <style>
     <?php
     // set global css variables from branding
