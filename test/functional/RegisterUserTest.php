@@ -8,8 +8,11 @@ class RegisterUserTest extends UnityWebPortalTestCase
     public static function provider()
     {
         return [
-            getNonExistentUserAndExpectedUIDGIDNoCustomMapping(),
-            getNonExistentUserAndExpectedUIDGIDWithCustomMapping(),
+            // defaults/config.ini.default: ldap.offset_UIDGID=1000000
+            // test/custom_user_mappings/test.csv has reservations for 1000000-1000004
+            [["NonExistent"], 1000005],
+            // test/custom_user_mappings/test.csv: {user2001: 555}
+            [["CustomMapped555"], 555],
         ];
     }
 
@@ -22,7 +25,7 @@ class RegisterUserTest extends UnityWebPortalTestCase
     public function testRegisterUserAndCreateOrg($user_to_register_args, $expected_uid_gid)
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
-        switchuser(...$user_to_register_args);
+        $this->switchUser(...$user_to_register_args);
         $user_entry = $LDAP->getUserEntry($USER->uid);
         $user_group_entry = $LDAP->getGroupEntry($USER->uid);
         $org_entry = $LDAP->getOrgGroupEntry($SSO["org"]);

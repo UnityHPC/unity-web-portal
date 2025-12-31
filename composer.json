@@ -8,7 +8,8 @@
         "phpunit/phpunit": ">=12",
         "robiningelbrecht/phpunit-coverage-tools": "<2",
         "squizlabs/php_codesniffer": "*",
-        "phpstan/phpstan": "^2.1"
+        "phpstan/phpstan": "^2.1",
+        "rawr/phpunit-data-provider": "^3.3"
     },
     "config": {
         "platform": {

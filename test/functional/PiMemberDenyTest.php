@@ -8,10 +8,11 @@ class PIMemberDenyTest extends UnityWebPortalTestCase
 {
     static $requestUid;
 
-    public static function setUpBeforeClass(): void
+    public function setUp(): void
     {
+        parent::setUp();
         global $USER;
-        switchUser(...getNormalUser());
+        $this->switchUser("Normal");
         self::$requestUid = $USER->uid;
     }
 
@@ -27,7 +28,7 @@ class PIMemberDenyTest extends UnityWebPortalTestCase
     public function testDenyRequest()
     {
         global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
-        switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
+        $this->switchUser("IsPIHasNoMembersNoMemberRequests");
         $pi = $USER;
         $piGroup = $USER->getPIGroup();
         $this->assertTrue($piGroup->exists());

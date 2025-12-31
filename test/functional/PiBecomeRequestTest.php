@@ -7,7 +7,7 @@ class PIBecomeRequestTest extends UnityWebPortalTestCase
     public function testRequestBecomePi()
     {
         global $USER, $SQL;
-        switchUser(...getBlankUser());
+        $this->switchUser("Blank");
         $this->assertFalse($USER->isPI());
         $this->assertNumberPiBecomeRequests(0);
         try {
@@ -43,7 +43,7 @@ class PIBecomeRequestTest extends UnityWebPortalTestCase
     public function testRequestBecomePiUserRequestedAccountDeletion()
     {
         global $USER, $SQL;
-        switchUser(...getUserNotPiNotRequestedBecomePiRequestedAccountDeletion());
+        $this->switchUser("NotPiNotRequestedBecomePiRequestedAccountDeletion");
         $this->assertFalse($USER->isPI());
         $this->assertNumberPiBecomeRequests(0);
         $this->assertTrue($SQL->accDeletionRequestExists($USER->uid));

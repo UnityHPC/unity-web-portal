@@ -6,10 +6,11 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
 {
     static $initialKeys;
 
-    public static function setUpBeforeClass(): void
+    public function setUp(): void
     {
+        parent::setUp();
         global $USER;
-        switchUser(...getUserWithOneKey());
+        $this->switchUser("WithOneKey");
         self::$initialKeys = $USER->getSSHKeys();
     }
 

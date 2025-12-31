@@ -5,7 +5,7 @@ class AccountDeletionRequestTest extends UnityWebPortalTestCase
     public function testRequestAccountDeletionUserHasNoGroups()
     {
         global $USER, $SQL;
-        switchUser(...getBlankUser());
+        $this->switchUser("Blank");
         $this->assertEmpty($USER->getPIGroupGIDs());
         $this->assertNumberAccountDeletionRequests(0);
         try {
@@ -27,7 +27,7 @@ class AccountDeletionRequestTest extends UnityWebPortalTestCase
     {
         // FIXME this should be an error
         global $USER, $SQL;
-        switchUser(...getUserHasNotRequestedAccountDeletionHasGroup());
+        $this->switchUser("HasNotRequestedAccountDeletionHasGroup");
         $this->assertNotEmpty($USER->getPIGroupGIDs());
         $this->assertNumberAccountDeletionRequests(0);
         try {
@@ -45,13 +45,11 @@ class AccountDeletionRequestTest extends UnityWebPortalTestCase
     public function testRequestAccountDeletionUserHasRequest()
     {
         global $USER, $SQL;
-        $pi_args = getUserIsPIHasNoMembersNoMemberRequests();
-        switchUser(...$pi_args);
+        $this->switchUser("IsPIHasNoMembersNoMemberRequests");
         $pi = $USER;
         $pi_group = $USER->getPIGroup();
         $this->assertEqualsCanonicalizing([$pi->uid], $pi_group->getMemberUIDs());
-        $user_args = getBlankUser();
-        switchUser(...$user_args);
+        $this->switchUser("Blank");
         $this->assertEmpty($USER->getPIGroupGIDs());
         $this->assertNumberAccountDeletionRequests(0);
         $this->assertNumberRequests(0);
@@ -73,7 +71,7 @@ class AccountDeletionRequestTest extends UnityWebPortalTestCase
     public function testRequestAccountDeletionCancel()
     {
         global $USER;
-        switchUser(...getBlankUser());
+        $this->switchUser("Blank");
         $this->assertEmpty($USER->getPIGroupGIDs());
         $this->assertNumberAccountDeletionRequests(0);
         $this->assertNumberRequests(0);

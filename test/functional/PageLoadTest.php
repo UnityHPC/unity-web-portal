@@ -6,28 +6,24 @@ class PageLoadTest extends UnityWebPortalTestCase
 {
     public static function provider()
     {
-        $admin = getAdminUser();
-        $nonexistent_user = getNonExistentUser();
-        $normal_user = getNormalUser();
-        $pi = getUserIsPIHasNoMembersNoMemberRequests();
         return [
-            [$admin, __DIR__ . "/../../webroot/admin/pi-mgmt.php"],
-            [$admin, __DIR__ . "/../../webroot/admin/user-mgmt.php"],
-            [$admin, __DIR__ . "/../../webroot/admin/content.php"],
-            [$admin, __DIR__ . "/../../webroot/admin/notices.php"],
-            [$nonexistent_user, __DIR__ . "/../../webroot/panel/new_account.php"],
-            [$normal_user, __DIR__ . "/../../webroot/panel/account.php"],
-            [$normal_user, __DIR__ . "/../../webroot/panel/groups.php"],
-            [$normal_user, __DIR__ . "/../../webroot/panel/support.php"],
-            [$pi, __DIR__ . "/../../webroot/panel/pi.php"],
+            ["Admin", __DIR__ . "/../../webroot/admin/pi-mgmt.php"],
+            ["Admin", __DIR__ . "/../../webroot/admin/user-mgmt.php"],
+            ["Admin", __DIR__ . "/../../webroot/admin/content.php"],
+            ["Admin", __DIR__ . "/../../webroot/admin/notices.php"],
+            ["NonExistent", __DIR__ . "/../../webroot/panel/new_account.php"],
+            ["Normal", __DIR__ . "/../../webroot/panel/account.php"],
+            ["Normal", __DIR__ . "/../../webroot/panel/groups.php"],
+            ["Normal", __DIR__ . "/../../webroot/panel/support.php"],
+            ["IsPIHasNoMembersNoMemberRequests", __DIR__ . "/../../webroot/panel/pi.php"],
         ];
     }
 
     #[DataProvider("provider")]
-    public function testLoadPage($user, $path)
+    public function testLoadPage($nickname, $path)
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
-        switchuser(...$user);
+        $this->switchUser($nickname);
         http_get($path);
         $this->assertTrue(true); // assert there were no errors
     }

@@ -28,6 +28,7 @@ require_once __DIR__ . "/../resources/lib/exceptions/EncodingConversionException
 require_once __DIR__ . "/../resources/lib/exceptions/UnityHTTPDMessageNotFoundException.php";
 
 use UnityWebPortal\lib\CSRFToken;
+use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UserFlag;
@@ -64,41 +65,6 @@ $HTTP_HEADER_TEST_INPUTS = [
     "Hello\x00World",
     mbConvertEncoding("Hello, World!", "UTF-16"),
 ];
-
-function switchUser(
-    string $eppn,
-    string $given_name,
-    string $sn,
-    string $mail,
-    ?string $session_id = null,
-): void {
-    global $LDAP,
-        $SQL,
-        $MAILER,
-        $WEBHOOK,
-        $GITHUB,
-        $SITE,
-        $SSO,
-        $USER,
-        $SEND_PIMESG_TO_ADMINS,
-        $LOC_HEADER,
-        $LOC_FOOTER;
-    session_write_close();
-    if (is_null($session_id)) {
-        session_id(str_replace(["_", "@", "."], "-", uniqid($eppn . "_")));
-    } else {
-        session_id($session_id);
-    }
-    // session_start will be called on the first post()
-    $_SERVER["REMOTE_USER"] = $eppn;
-    $_SERVER["REMOTE_ADDR"] = "127.0.0.1";
-    $_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
-    $_SERVER["eppn"] = $eppn;
-    $_SERVER["givenName"] = $given_name;
-    $_SERVER["sn"] = $sn;
-    include __DIR__ . "/../resources/autoload.php";
-    ensure(!is_null($USER));
-}
 
 function http_post(
     string $phpfile,
@@ -234,107 +200,39 @@ function ensurePIGroupDoesNotExist()
     }
 }
 
-function getNormalUser()
-{
-    return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
-}
-
-function getNormalUser2()
-{
-    return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
-}
-
-function getUserHasNotRequestedAccountDeletionHasGroup()
-{
-    return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
-}
-
-/* a blank user has no requests, no PI group, and has not requested account deletion */
-function getBlankUser()
-{
-    return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
-}
-
-function getUserHasNoSshKeys()
-{
-    return ["user3@org1.test", "foo", "bar", "user3@org1.test"];
-}
-
-function getUserNotPiNotRequestedBecomePiRequestedAccountDeletion()
-{
-    return ["user4@org1.test", "foo", "bar", "user4@org1.test"];
-}
-
-function getUserWithOneKey()
-{
-    return ["user5@org2.test", "foo", "bar", "user5@org2.test"];
-}
-
-function getUserIsPIHasNoMembersNoMemberRequests()
-{
-    return ["user5@org2.test", "foo", "bar", "user5@org2.test"];
-}
-
-function getUserIsPIHasAtLeastOneMember()
-{
-    return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
-}
-
-function getNonExistentUser()
-{
-    return ["user2001@org998.test", "foo", "bar", "user2001@org998.test"];
-}
-
-function getUnqualifiedUser()
-{
-    return ["user2005@org1.test", "foo", "bar", "user2005@org1.test"];
-}
-
-function getNonexistentUsersWithExistentOrg()
-{
-    return [
-        ["user2003@org1.test", "foo", "bar", "user2003@org1.test"],
-        ["user2004@org1.test", "foo", "bar", "user2004@org1.test"],
-    ];
-}
-
-function getNonExistentUserAndExpectedUIDGIDNoCustomMapping()
-{
-    // defaults/config.ini.default: ldap.offset_UIDGID=1000000
-    // test/custom_user_mappings/test.csv has reservations for 1000000-1000004
-    return [["user2002@org998.test", "foo", "bar", "user2002@org998.test"], 1000005];
-}
-
-function getNonExistentUserAndExpectedUIDGIDWithCustomMapping()
-{
-    // test/custom_user_mappings/test.csv: {user2001: 555}
-    return [["user2001@org998.test", "foo", "bar", "user2001@org998.test"], 555];
-}
-
-function getMultipleValueAttributesAndExpectedSSO()
-{
-    return [
-        [
-            "REMOTE_USER" => "user2003@org1.test",
-            "givenName" => "foo;foo",
-            "sn" => "bar;bar",
-            "mail" => "user2003@org1.test;user2003@org1.test",
-        ],
-        [
-            "firstname" => "foo",
-            "lastname" => "bar",
-            "mail" => "user2003@org1.test",
-        ],
-    ];
-}
-
-function getAdminUser()
-{
-    return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
-}
-
 class UnityWebPortalTestCase extends TestCase
 {
+    private array $uid_to_latest_session_id = [];
+    // FIXME these names are wrong
+    private static array $UID2ATTRIBUTES = [
+        "user1_org1_test" => ["user1@org1.test", "foo", "bar", "user1@org1.test"],
+        "user2_org1_test" => ["user2@org1.test", "foo", "bar", "user2@org1.test"],
+        "user3_org1_test" => ["user3@org1.test", "foo", "bar", "user3@org1.test"],
+        "user4_org1_test" => ["user4@org1.test", "foo", "bar", "user4@org1.test"],
+        "user5_org2_test" => ["user5@org2.test", "foo", "bar", "user5@org2.test"],
+        "user2001_org998_test" => ["user2001@org998.test", "foo", "bar", "user2001@org998.test"],
+        "user2002_org998_test" => ["user2002@org998.test", "foo", "bar", "user2002@org998.test"],
+        "user2003_org998_test" => ["user2003@org1.test", "foo", "bar", "user2001@org1.test"],
+        "user2004_org998_test" => ["user2004@org1.test", "foo", "bar", "user2001@org1.test"],
+        "user2005_org1_test" => ["user2005@org1.test", "foo", "bar", "user2005@org1.test"],
+    ];
+    private static array $NICKNAME2UID = [
+        "Admin" => "user1_org1_test",
+        // a blank user has no requests, no PI group, and has not requested account deletion
+        "Blank" => "user2_org1_test",
+        "CustomMapped555" => "user2002_org998_test",
+        "HasNoSshKeys" => "user3_org1_test",
+        "HasNotRequestedAccountDeletionHasGroup" => "user1_org1_test",
+        "IsPIHasAtLeastOneMember" => "user1_org1_test",
+        "IsPIHasNoMembersNoMemberRequests" => "user5_org2_test",
+        "NonExistent" => "user2001_org998_test",
+        "Normal" => "user2_org1_test",
+        // TODO remove this user and use blank user instead
+        "NotPiNotRequestedBecomePiRequestedAccountDeletion" => "user4_org1_test",
+        "Unqualified" => "user2005_org1_test",
+        "WithOneKey" => "user5_org2_test",
+    ];
+
     public function assertMessageExists(
         UnityHTTPDMessageLevel $level,
         string $title_regex,
@@ -444,5 +342,47 @@ class UnityWebPortalTestCase extends TestCase
     public function assertNumberRequests(int $x)
     {
         $this->assertEquals($x, $this->getNumberRequests());
+    }
+
+    function switchUser(string $nickname, bool $reuse_last_session = true): void
+    {
+        global $LDAP,
+            $SQL,
+            $MAILER,
+            $WEBHOOK,
+            $GITHUB,
+            $SITE,
+            $SSO,
+            $USER,
+            $SEND_PIMESG_TO_ADMINS,
+            $LOC_HEADER,
+            $LOC_FOOTER;
+        if (!array_key_exists($nickname, self::$NICKNAME2UID)) {
+            throw new ArrayKeyException($nickname);
+        }
+        $uid = self::$NICKNAME2UID[$nickname];
+        if (!array_key_exists($uid, self::$UID2ATTRIBUTES)) {
+            throw new ArrayKeyException($uid);
+        }
+        [$eppn, $given_name, $sn, $mail] = self::$UID2ATTRIBUTES[$uid];
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+        if (!$reuse_last_session || !array_key_exists($nickname, $this->uid_to_latest_session_id)) {
+            $session_id = str_replace(["_", "@", "."], "-", uniqid($eppn . "_"));
+            $this->uid_to_latest_session_id[$uid] = $session_id;
+            session_id($session_id);
+        } else {
+            session_id($this->uid_to_latest_session_id[$uid]);
+        }
+        // session_start will be called on the first post()
+        $_SERVER["REMOTE_USER"] = $eppn;
+        $_SERVER["REMOTE_ADDR"] = "127.0.0.1";
+        $_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
+        $_SERVER["eppn"] = $eppn;
+        $_SERVER["givenName"] = $given_name;
+        $_SERVER["sn"] = $sn;
+        include __DIR__ . "/../resources/autoload.php";
+        ensure(!is_null($USER));
     }
 }

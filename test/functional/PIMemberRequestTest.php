@@ -26,7 +26,7 @@ class PIMemberRequestTest extends UnityWebPortalTestCase
     public function testRequestMembership()
     {
         global $USER, $SQL;
-        switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
+        $this->switchUser("IsPIHasNoMembersNoMemberRequests");
         $pi = $USER;
         $pi_group = $USER->getPIGroup();
         $gid = $pi_group->gid;
@@ -34,7 +34,7 @@ class PIMemberRequestTest extends UnityWebPortalTestCase
         $this->assertTrue($pi_group->exists());
         $this->assertEqualsCanonicalizing([$pi], $pi_group->getGroupMembers());
         $this->assertEqualsCanonicalizing([], $SQL->getRequests($gid));
-        switchUser(...getBlankUser());
+        $this->switchUser("Blank");
         $uid = $USER->uid;
         $this->assertFalse($USER->isPI());
         $this->assertFalse($SQL->requestExists($uid, UnitySQL::REQUEST_BECOME_PI));
