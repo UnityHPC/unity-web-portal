@@ -237,6 +237,13 @@ function ensurePIGroupDoesNotExist()
     }
 }
 
+function callPrivateMethod($obj, $name, ...$args)
+{
+    $class = new \ReflectionClass($obj);
+    $method = $class->getMethod($name);
+    return $method->invokeArgs($obj, $args);
+}
+
 function getNormalUser()
 {
     return ["user2@org1.test", "foo", "bar", "user2@org1.test"];
