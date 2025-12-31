@@ -60,14 +60,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 }
             }
             UnityHTTPD::redirect();
-            break;
+            break; /** @phpstan-ignore deadCode.unreachable */
         case "delKey":
             $key = UnityHTTPD::getPostData("delKey");
             $USER->removeSSHKey($key, $OPERATOR);
             $keyShort = shortenString($key, 10, 30);
             UnityHTTPD::messageSuccess("SSH Key Removed", $keyShort);
             UnityHTTPD::redirect();
-            break;
+            break; /** @phpstan-ignore deadCode.unreachable */
         case "loginshell":
             $USER->setLoginShell($_POST["shellSelect"], $OPERATOR);
             break;
@@ -220,19 +220,19 @@ if (count($sshPubKeys) == 0) {
     echo "<p>You do not have any SSH public keys, press the button below to add one.</p>";
 }
 
-for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {
+foreach ($sshPubKeys as $key) {
     $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
     "<div class='key-box'>
-        <textarea spellcheck='false' readonly aria-label='key box'>" . $sshPubKeys[$i] . "</textarea>
+        <textarea spellcheck='false' readonly aria-label='key box'>$key</textarea>
         <form
-            action='' id='del-" . $i . "'
+            action=''
             onsubmit='return confirm(\"Are you sure you want to delete this SSH key?\");'
             method='POST'
             aria-label='delete key'
         >
             $CSRFTokenHiddenFormInput
-            <input type='hidden' name='delIndex' value='$i' />
+            <input type='hidden' name='delKey' value='$key' />
             <input type='hidden' name='form_type' value='delKey' />
             <input type='submit' value='&times;' />
         </form>
