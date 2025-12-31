@@ -65,7 +65,7 @@ class UnityGroup extends PosixGroup
     /**
      * This method will create the group (this is what is executed when an admin approved the group)
      */
-    public function approveGroup(?UnityUser $operator = null, bool $send_mail = true): void
+    public function approveGroup(bool $send_mail = true): void
     {
         $uid = $this->getOwner()->uid;
         $request = $this->SQL->getRequest($uid, UnitySQL::REQUEST_BECOME_PI);
@@ -86,7 +86,7 @@ class UnityGroup extends PosixGroup
     /**
      * This method is executed when an admin denys the PI group request
      */
-    public function denyGroup(?UnityUser $operator = null, bool $send_mail = true): void
+    public function denyGroup(bool $send_mail = true): void
     {
         $request = $this->SQL->getRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         $this->SQL->removeRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
