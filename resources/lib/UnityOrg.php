@@ -40,21 +40,4 @@ class UnityOrg extends PosixGroup
         $this->entry->setAttribute("gidnumber", strval($nextGID));
         $this->entry->write();
     }
-
-    public function getOrgMembers(): array
-    {
-        $members = $this->getMemberUIDs();
-        $out = [];
-        foreach ($members as $member) {
-            $user_obj = new UnityUser(
-                $member,
-                $this->LDAP,
-                $this->SQL,
-                $this->MAILER,
-                $this->WEBHOOK,
-            );
-            array_push($out, $user_obj);
-        }
-        return $out;
-    }
 }
