@@ -298,19 +298,6 @@ function getNonexistentUsersWithExistentOrg()
     ];
 }
 
-function getNonExistentUserAndExpectedUIDGIDNoCustomMapping()
-{
-    // defaults/config.ini.default: ldap.offset_UIDGID=1000000
-    // test/custom_user_mappings/test.csv has reservations for 1000000-1000004
-    return [["user2002@org998.test", "foo", "bar", "user2002@org998.test"], 1000005];
-}
-
-function getNonExistentUserAndExpectedUIDGIDWithCustomMapping()
-{
-    // test/custom_user_mappings/test.csv: {user2001: 555}
-    return [["user2001@org998.test", "foo", "bar", "user2001@org998.test"], 555];
-}
-
 function getAdminUser()
 {
     return ["user1@org1.test", "foo", "bar", "user1@org1.test"];
