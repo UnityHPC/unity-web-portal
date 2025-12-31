@@ -36,9 +36,10 @@ class UnityOrg extends PosixGroup
     {
         \ensure(!$this->entry->exists());
         $nextGID = $this->LDAP->getNextOrgGIDNumber();
-        $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
-        $this->entry->setAttribute("gidnumber", strval($nextGID));
-        $this->entry->write();
+        $this->entry->create([
+            "objectclass" => UnityLDAP::POSIX_GROUP_CLASS,
+            "gidnumber" => strval($nextGID),
+        ]);
     }
 
     public function getOrgMembers(): array
