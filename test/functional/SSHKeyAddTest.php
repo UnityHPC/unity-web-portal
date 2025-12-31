@@ -100,7 +100,7 @@ class SSHKeyAddTest extends UnityWebPortalTestCase
     public function testAddSshKeys(string $methodName, int $expectedKeysAdded, array $keys)
     {
         global $USER;
-        switchUser(...getUserHasNoSshKeys());
+        $this->switchUser("HasNoSshKeys");
         $numKeysBefore = $this->getKeyCount();
         $this->assertEquals(0, $numKeysBefore);
         try {

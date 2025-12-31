@@ -2,14 +2,15 @@
 
 use UnityWebPortal\lib\UserFlag;
 
+// TODO use DataProvider
 class ViewAsUserTest extends UnityWebPortalTestCase
 {
-    public function _testViewAsUser(array $beforeUser, array $afterUser)
+    public function _testViewAsUser(string $beforeNickname, string $afterNickname)
     {
         global $USER;
-        switchUser(...$afterUser);
+        $this->switchUser($afterNickname);
         $afterUid = $USER->uid;
-        switchUser(...$beforeUser);
+        $this->switchUser($beforeNickname);
         // $this->assertTrue($USER->getFlag(UserFlag::ADMIN));
         $beforeUid = $USER->uid;
         // $this->assertNotEquals($afterUid, $beforeUid);
@@ -39,26 +40,26 @@ class ViewAsUserTest extends UnityWebPortalTestCase
 
     public function testViewAsUser()
     {
-        $this->_testViewAsUser(getAdminUser(), getNormalUser());
+        $this->_testViewAsUser("Admin", "Normal");
     }
 
     public function testViewAsNonExistentUser()
     {
-        $this->_testViewAsUser(getAdminUser(), getNonExistentUser());
+        $this->_testViewAsUser("Admin", "NonExistent");
     }
 
     public function testViewAsSelf()
     {
-        $this->_testViewAsUser(getAdminUser(), getAdminUser());
+        $this->_testViewAsUser("Admin", "Admin");
     }
 
     public function testNonAdminViewAsAdmin()
     {
         global $USER;
-        switchUser(...getAdminUser());
+        $this->switchUser("Admin");
         $adminUid = $USER->uid;
         $this->assertTrue($USER->getFlag(UserFlag::ADMIN));
-        switchUser(...getNormalUser());
+        $this->switchUser("Normal");
         http_post(__DIR__ . "/../../webroot/admin/user-mgmt.php", [
             "form_type" => "viewAsUser",
             "uid" => $adminUid,

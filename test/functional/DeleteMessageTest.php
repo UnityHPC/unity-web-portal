@@ -8,7 +8,7 @@ class DeleteMessageTest extends TestCase
 {
     public function testDeleteMessage(): void
     {
-        switchUser(...getBlankUser());
+        $this->switchUser("Blank");
         $initial = UnityHTTPD::getMessages();
         $this->assertEmpty($initial);
         UnityHTTPD::messageDebug("foo1", "bar1");

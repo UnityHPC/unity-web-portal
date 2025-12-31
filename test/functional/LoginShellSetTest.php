@@ -9,7 +9,7 @@ class LoginShellSetTest extends UnityWebPortalTestCase
     public static function setUpBeforeClass(): void
     {
         global $USER;
-        switchUser(...getNormalUser());
+        $this->switchUser("Normal");
         self::$_initialLoginShell = $USER->getLoginShell();
     }
 

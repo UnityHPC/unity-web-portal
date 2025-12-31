@@ -16,7 +16,7 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
     public function testRemoveUser()
     {
         global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
-        switchUser(...getUserIsPIHasAtLeastOneMember());
+        $this->switchUser("IsPIHasAtLeastOneMember");
         $pi = $USER;
         $piUid = $USER->uid;
         $piGroup = $USER->getPIGroup();
@@ -52,7 +52,7 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
     public function testRemovePIFromTheirOwnGroup()
     {
         global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
-        switchUser(...getUserIsPIHasAtLeastOneMember());
+        $this->switchUser("IsPIHasAtLeastOneMember");
         $pi = $USER;
         $piGroup = $USER->getPIGroup();
         $this->assertTrue($piGroup->exists());

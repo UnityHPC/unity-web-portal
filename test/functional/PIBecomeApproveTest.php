@@ -32,8 +32,7 @@ class PIBecomeApproveTest extends UnityWebPortalTestCase
     public function testApprovePI()
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
-        $user_to_qualify_args = getUnqualifiedUser();
-        switchuser(...$user_to_qualify_args);
+        $this->switchUser("Unqualified");
         $pi_group = $USER->getPIGroup();
         $this->assertTrue($USER->exists());
         $this->assertFalse($pi_group->exists());
@@ -57,9 +56,9 @@ class PIBecomeApproveTest extends UnityWebPortalTestCase
             $this->assertRequestedPIGroup(true);
 
             $approve_uid = $SSO["user"];
-            switchUser(...getAdminUser());
+            $this->switchUser("Admin");
             $this->approveGroup($approve_uid);
-            switchUser(...$user_to_qualify_args);
+            $this->switchUser("Unqualified");
 
             $this->assertRequestedPIGroup(false);
             $this->assertTrue($pi_group->exists());
@@ -74,7 +73,7 @@ class PIBecomeApproveTest extends UnityWebPortalTestCase
             // $this->assertTrue($third_request_failed);
             $this->assertRequestedPIGroup(false);
         } finally {
-            switchUser(...$user_to_qualify_args);
+            $this->switchUser("Unqualified");
             ensurePIGroupDoesNotExist();
         }
     }
