@@ -211,7 +211,7 @@ class UnityWebPortalTestCase extends TestCase
         "user4_org1_test" => ["user4@org1.test", "foo", "bar", "user4@org1.test"],
         "user5_org2_test" => ["user5@org2.test", "foo", "bar", "user5@org2.test"],
         "user2001_org998_test" => ["user2001@org998.test", "foo", "bar", "user2001@org998.test"],
-        "user2002_org998_test" => ["user2002_org998.test", "foo", "bar", "user2002@org998.test"],
+        "user2002_org998_test" => ["user2002@org998.test", "foo", "bar", "user2002@org998.test"],
         "user2003_org998_test" => ["user2003@org1.test", "foo", "bar", "user2001@org1.test"],
         "user2004_org998_test" => ["user2004@org1.test", "foo", "bar", "user2001@org1.test"],
         "user2005_org1_test" => ["user2005@org1.test", "foo", "bar", "user2005@org1.test"],
@@ -220,6 +220,7 @@ class UnityWebPortalTestCase extends TestCase
         "Admin" => "user1_org1_test",
         // a blank user has no requests, no PI group, and has not requested account deletion
         "Blank" => "user2_org1_test",
+        "CustomMapped555" => "user2002_org998_test",
         "HasNoSshKeys" => "user3_org1_test",
         "HasNotRequestedAccountDeletionHasGroup" => "user1_org1_test",
         "IsPIHasAtLeastOneMember" => "user1_org1_test",

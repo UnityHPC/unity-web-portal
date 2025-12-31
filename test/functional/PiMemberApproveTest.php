@@ -77,8 +77,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
     public function testApproveNonexistentRequest($approveUserFunc)
     {
         global $USER;
-        $user_args = getNormalUser2();
-        $this->switchUser(...$user_args);
+        $this->switchUser("Normal");
         $user = $USER;
         $uid = $USER->uid;
         $this->switchUser("IsPIHasNoMembersNoMemberRequests");
@@ -93,7 +92,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $this->expectException(Exception::class); // FIXME more specific exception type
             $approveUserFunc($uid, $piGroup->gid);
         } finally {
-            $this->switchUser(...$user_args);
+            $this->switchUser("Normal");
             ensureUserNotInPIGroup($piGroup);
         }
     }

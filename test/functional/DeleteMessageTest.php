@@ -1,10 +1,9 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UnityHTTPDMessageLevel;
 
-class DeleteMessageTest extends TestCase
+class DeleteMessageTest extends UnityWebPortalTestCase
 {
     public function testDeleteMessage(): void
     {

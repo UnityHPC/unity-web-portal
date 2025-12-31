@@ -45,8 +45,7 @@ class AccountDeletionRequestTest extends UnityWebPortalTestCase
     public function testRequestAccountDeletionUserHasRequest()
     {
         global $USER, $SQL;
-        $pi_args = getUserIsPIHasNoMembersNoMemberRequests();
-        $this->switchUser(...$pi_args);
+        $this->switchUser("IsPIHasNoMembersNoMemberRequests");
         $pi = $USER;
         $pi_group = $USER->getPIGroup();
         $this->assertEqualsCanonicalizing([$pi->uid], $pi_group->getMemberUIDs());
