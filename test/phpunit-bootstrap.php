@@ -227,8 +227,6 @@ class UnityWebPortalTestCase extends TestCase
         "IsPIHasNoMembersNoMemberRequests" => "user5_org2_test",
         "NonExistent" => "user2001_org998_test",
         "Normal" => "user2_org1_test",
-        // TODO Normal and Normal2 should be different users?
-        "Normal2" => "user2_org1_test",
         // TODO remove this user and use blank user instead
         "NotPiNotRequestedBecomePiRequestedAccountDeletion" => "user4_org1_test",
         "Unqualified" => "user2005_org1_test",
