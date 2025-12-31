@@ -362,7 +362,7 @@ class UnityWebPortalTestCase extends TestCase
             throw new ArrayKeyException($nickname);
         }
         $uid = self::$NICKNAME2UID[$nickname];
-        if (!array_key_exists($uid, self::$UID2ATTRIBUTES[$uid])) {
+        if (!array_key_exists($uid, self::$UID2ATTRIBUTES)) {
             throw new ArrayKeyException($uid);
         }
         [$eppn, $given_name, $sn, $mail] = self::$UID2ATTRIBUTES[$uid];
