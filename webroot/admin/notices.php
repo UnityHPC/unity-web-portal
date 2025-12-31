@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     UnityHTTPD::validatePostCSRFToken();
     switch ($_POST["form_type"]) {
         case "newNotice":
-            $SQL->addNotice($_POST["title"], $_POST["date"], $_POST["content"], $USER);
+            $SQL->addNotice($_POST["title"], $_POST["date"], $_POST["content"]);
 
             break;
         case "editNotice":
