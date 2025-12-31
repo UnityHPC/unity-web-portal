@@ -58,7 +58,7 @@ class UnitySSOTest extends UnityWebPortalTestCase
             unset($_SERVER["mail"]);
             $sso = UnitySSO::getSSO();
         } finally {
-            $_PREVIOUS_SERVER = $_SERVER;
+            $_SERVER = $PREVIOUS_SERVER;
         }
         $this->assertEquals("foobar@baz", $sso["mail"]);
     }
@@ -80,7 +80,7 @@ class UnitySSOTest extends UnityWebPortalTestCase
             $sso = UnitySSO::getSSO();
             $this->assertEquals($expectedUID, $sso["user"]);
         } finally {
-            $_PREVIOUS_SERVER = $_SERVER;
+            $_SERVER = $PREVIOUS_SERVER;
         }
     }
 
@@ -96,7 +96,7 @@ class UnitySSOTest extends UnityWebPortalTestCase
             $sso = UnitySSO::getSSO();
             $this->assertEquals($expectedOrg, $sso["org"]);
         } finally {
-            $_PREVIOUS_SERVER = $_SERVER;
+            $_SERVER = $PREVIOUS_SERVER;
         }
     }
 
@@ -121,7 +121,7 @@ class UnitySSOTest extends UnityWebPortalTestCase
             $_SERVER["mail"] = "foo";
             $sso = UnitySSO::getSSO();
         } finally {
-            $_PREVIOUS_SERVER = $_SERVER;
+            $_SERVER = $PREVIOUS_SERVER;
         }
     }
 }
