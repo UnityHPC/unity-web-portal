@@ -59,7 +59,6 @@ class UnitySQL
         );
         $stmt->bindParam(":uid", $requestor);
         $stmt->bindParam(":request_for", $dest);
-
         $stmt->execute();
     }
 
@@ -69,7 +68,6 @@ class UnitySQL
             "DELETE FROM " . self::TABLE_REQS . " WHERE request_for=:request_for",
         );
         $stmt->bindParam(":request_for", $dest);
-
         $stmt->execute();
     }
 
@@ -115,9 +113,7 @@ class UnitySQL
             "SELECT * FROM " . self::TABLE_REQS . " WHERE request_for=:request_for",
         );
         $stmt->bindParam(":request_for", $dest);
-
         $stmt->execute();
-
         return $stmt->fetchAll();
     }
 
@@ -125,9 +121,7 @@ class UnitySQL
     {
         $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid");
         $stmt->bindParam(":uid", $user);
-
         $stmt->execute();
-
         return $stmt->fetchAll();
     }
 
@@ -135,16 +129,11 @@ class UnitySQL
     {
         $stmt = $this->conn->prepare("DELETE FROM " . self::TABLE_REQS . " WHERE uid=:uid");
         $stmt->bindParam(":uid", $user);
-
         $stmt->execute();
     }
 
-    public function addNotice(
-        string $title,
-        string $date,
-        string $content,
-        UnityUser $operator,
-    ): void {
+    public function addNotice(string $title, string $date, string $content): void
+    {
         $table = self::TABLE_NOTICES;
         $stmt = $this->conn->prepare(
             "INSERT INTO $table (date, title, message) VALUES (:date, :title, :message)",
@@ -152,10 +141,8 @@ class UnitySQL
         $stmt->bindParam(":date", $date);
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":message", $content);
-
         $stmt->execute();
-
-        $this->addLog($operator->uid, $_SERVER["REMOTE_ADDR"], "added_cluster_notice", $operator);
+        $this->addLog("added_cluster_notice", "");
     }
 
     public function editNotice(string $id, string $title, string $date, string $content): void
@@ -168,7 +155,6 @@ class UnitySQL
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":message", $content);
         $stmt->bindParam(":id", $id);
-
         $stmt->execute();
     }
 
@@ -176,7 +162,6 @@ class UnitySQL
     {
         $stmt = $this->conn->prepare("DELETE FROM " . self::TABLE_NOTICES . " WHERE id=:id");
         $stmt->bindParam(":id", $id);
-
         $stmt->execute();
     }
 
@@ -184,9 +169,7 @@ class UnitySQL
     {
         $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_NOTICES . " WHERE id=:id");
         $stmt->bindParam(":id", $id);
-
         $stmt->execute();
-
         return $stmt->fetchAll()[0];
     }
 
@@ -196,7 +179,6 @@ class UnitySQL
             "SELECT * FROM " . self::TABLE_NOTICES . " ORDER BY date DESC",
         );
         $stmt->execute();
-
         return $stmt->fetchAll();
     }
 
@@ -204,7 +186,6 @@ class UnitySQL
     {
         $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_PAGES);
         $stmt->execute();
-
         return $stmt->fetchAll();
     }
 
@@ -212,41 +193,32 @@ class UnitySQL
     {
         $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_PAGES . " WHERE page=:id");
         $stmt->bindParam(":id", $id);
-
         $stmt->execute();
-
         return $stmt->fetchAll()[0];
     }
 
-    public function editPage(string $id, string $content, UnityUser $operator): void
+    public function editPage(string $id, string $content): void
     {
         $stmt = $this->conn->prepare(
             "UPDATE " . self::TABLE_PAGES . " SET content=:content WHERE page=:id",
         );
         $stmt->bindParam(":id", $id);
         $stmt->bindParam(":content", $content);
-
         $stmt->execute();
-
-        $this->addLog($operator->uid, $_SERVER["REMOTE_ADDR"], "edited_page", $operator);
+        $this->addLog("edited_page", "");
     }
 
-    public function addLog(
-        string $operator,
-        string $operator_ip,
-        string $action_type,
-        string $recipient,
-    ): void {
+    public function addLog(string $action_type, string $recipient): void
+    {
         $table = self::TABLE_AUDIT_LOG;
         $stmt = $this->conn->prepare(
             "INSERT INTO $table (operator, operator_ip, action_type, recipient)
             VALUE (:operator, :operator_ip, :action_type, :recipient)",
         );
-        $stmt->bindParam(":operator", $operator);
-        $stmt->bindParam(":operator_ip", $operator_ip);
+        $stmt->bindValue(":operator", $_SESSION["OPERATOR"] ?? "");
+        $stmt->bindValue(":operator_ip", $_SESSION["OPERATOR_IP"] ?? "");
         $stmt->bindParam(":action_type", $action_type);
         $stmt->bindParam(":recipient", $recipient);
-
         $stmt->execute();
     }
 
@@ -256,7 +228,6 @@ class UnitySQL
             "INSERT INTO " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " (uid) VALUE (:uid)",
         );
         $stmt->bindParam(":uid", $uid);
-
         $stmt->execute();
     }
 
@@ -266,9 +237,7 @@ class UnitySQL
             "SELECT * FROM " . self::TABLE_ACCOUNT_DELETION_REQUESTS . " WHERE uid=:uid",
         );
         $stmt->bindParam(":uid", $uid);
-
         $stmt->execute();
-
         return count($stmt->fetchAll()) > 0;
     }
 

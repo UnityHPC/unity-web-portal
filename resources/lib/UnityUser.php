@@ -86,7 +86,7 @@ class UnityUser
             $org->addMemberUID($this->uid);
         }
 
-        $this->SQL->addLog($this->uid, $_SERVER["REMOTE_ADDR"], "user_added", $this->uid);
+        $this->SQL->addLog("user_added", $this->uid);
     }
 
     public function getFlag(UserFlag $flag): bool
@@ -167,13 +167,10 @@ class UnityUser
     /**
      * Sets the firstname of the account and the corresponding ldap entry if it exists
      */
-    public function setFirstname(string $firstname, ?UnityUser $operator = null): void
+    public function setFirstname(string $firstname): void
     {
         $this->entry->setAttribute("givenname", $firstname);
-        $operator = is_null($operator) ? $this->uid : $operator->uid;
-
-        $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "firstname_changed", $this->uid);
-
+        $this->SQL->addLog("firstname_changed", $this->uid);
         $this->entry->write();
     }
 
@@ -189,13 +186,10 @@ class UnityUser
     /**
      * Sets the lastname of the account and the corresponding ldap entry if it exists
      */
-    public function setLastname(string $lastname, $operator = null): void
+    public function setLastname(string $lastname): void
     {
         $this->entry->setAttribute("sn", $lastname);
-        $operator = is_null($operator) ? $this->uid : $operator->uid;
-
-        $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "lastname_changed", $this->uid);
-
+        $this->SQL->addLog("lastname_changed", $this->uid);
         $this->entry->write();
     }
 
@@ -217,13 +211,10 @@ class UnityUser
     /**
      * Sets the mail in the account and the ldap entry
      */
-    public function setMail(string $email, ?UnityUser $operator = null): void
+    public function setMail(string $email): void
     {
         $this->entry->setAttribute("mail", $email);
-        $operator = is_null($operator) ? $this->uid : $operator->uid;
-
-        $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "email_changed", $this->uid);
-
+        $this->SQL->addLog("email_changed", $this->uid);
         $this->entry->write();
     }
 
@@ -239,16 +230,13 @@ class UnityUser
     /**
      * Sets the SSH keys on the account and the corresponding entry
      */
-    public function setSSHKeys($keys, $operator = null, bool $send_mail = true): void
+    public function setSSHKeys($keys, bool $send_mail = true): void
     {
-        $operator = is_null($operator) ? $this->uid : $operator->uid;
         $keys_filt = array_values(array_unique($keys));
         \ensure($this->entry->exists());
         $this->entry->setAttribute("sshpublickey", $keys_filt);
         $this->entry->write();
-
-        $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "sshkey_modify", $this->uid);
-
+        $this->SQL->addLog("sshkey_modify", $this->uid);
         if ($send_mail) {
             $this->MAILER->sendMail($this->getMail(), "user_sshkey", [
                 "keys" => $this->getSSHKeys(),
@@ -269,11 +257,8 @@ class UnityUser
     /**
      * Sets the login shell for the account
      */
-    public function setLoginShell(
-        string $shell,
-        ?UnityUser $operator = null,
-        bool $send_mail = true,
-    ): void {
+    public function setLoginShell(string $shell, bool $send_mail = true): void
+    {
         // ldap schema syntax is "IA5 String (1.3.6.1.4.1.1466.115.121.1.26)"
         if (!mb_check_encoding($shell, "ASCII")) {
             throw new Exception("non ascii characters are not allowed in a login shell!");
@@ -287,11 +272,7 @@ class UnityUser
         \ensure($this->entry->exists());
         $this->entry->setAttribute("loginshell", $shell);
         $this->entry->write();
-
-        $operator = is_null($operator) ? $this->uid : $operator->uid;
-
-        $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "loginshell_changed", $this->uid);
-
+        $this->SQL->addLog("loginshell_changed", $this->uid);
         if ($send_mail) {
             $this->MAILER->sendMail($this->getMail(), "user_loginshell", [
                 "new_shell" => $this->getLoginShell(),
@@ -308,14 +289,12 @@ class UnityUser
         return $this->entry->getAttribute("loginshell")[0];
     }
 
-    public function setHomeDir(string $home, ?UnityUser $operator = null): void
+    public function setHomeDir(string $home): void
     {
         \ensure($this->entry->exists());
         $this->entry->setAttribute("homedirectory", $home);
         $this->entry->write();
-        $operator = is_null($operator) ? $this->uid : $operator->uid;
-
-        $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "homedir_changed", $this->uid);
+        $this->SQL->addLog("homedir_changed", $this->uid);
     }
 
     /**

@@ -60,10 +60,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             unset($keys[$index]);
             $keys = array_values($keys);
 
-            $USER->setSSHKeys($keys, $OPERATOR);
+            $USER->setSSHKeys($keys);
             break;
         case "loginshell":
-            $USER->setLoginShell($_POST["shellSelect"], $OPERATOR);
+            $USER->setLoginShell($_POST["shellSelect"]);
             break;
         case "pi_request":
             if ($USER->isPI()) {

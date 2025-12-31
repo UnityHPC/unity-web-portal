@@ -24,10 +24,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $form_user = $getUserFromPost();
             if ($_POST["action"] == "Approve") {
                 $group = $form_user->getPIGroup();
-                $group->approveGroup($OPERATOR);
+                $group->approveGroup();
             } elseif ($_POST["action"] == "Deny") {
                 $group = $form_user->getPIGroup();
-                $group->denyGroup($OPERATOR);
+                $group->denyGroup();
             }
             break;
         case "reqChild":

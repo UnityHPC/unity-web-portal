@@ -65,7 +65,7 @@ class UnityGroup extends PosixGroup
     /**
      * This method will create the group (this is what is executed when an admin approved the group)
      */
-    public function approveGroup(?UnityUser $operator = null, bool $send_mail = true): void
+    public function approveGroup(bool $send_mail = true): void
     {
         $uid = $this->getOwner()->uid;
         $request = $this->SQL->getRequest($uid, UnitySQL::REQUEST_BECOME_PI);
@@ -75,13 +75,7 @@ class UnityGroup extends PosixGroup
         \ensure($this->getOwner()->exists());
         $this->init();
         $this->SQL->removeRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
-        $operator = is_null($operator) ? $this->getOwner()->uid : $operator->uid;
-        $this->SQL->addLog(
-            $operator,
-            $_SERVER["REMOTE_ADDR"],
-            "approved_group",
-            $this->getOwner()->uid,
-        );
+        $this->SQL->addLog("approved_group", $this->getOwner()->uid);
         if ($send_mail) {
             $this->MAILER->sendMail($this->getOwner()->getMail(), "group_created");
         }
@@ -92,20 +86,14 @@ class UnityGroup extends PosixGroup
     /**
      * This method is executed when an admin denys the PI group request
      */
-    public function denyGroup(?UnityUser $operator = null, bool $send_mail = true): void
+    public function denyGroup(bool $send_mail = true): void
     {
         $request = $this->SQL->getRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         $this->SQL->removeRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         if ($this->exists()) {
             return;
         }
-        $operator = is_null($operator) ? $this->getOwner()->uid : $operator->uid;
-        $this->SQL->addLog(
-            $operator,
-            $_SERVER["REMOTE_ADDR"],
-            "denied_group",
-            $this->getOwner()->uid,
-        );
+        $this->SQL->addLog("denied_group", $this->getOwner()->uid);
         if ($send_mail) {
             $this->MAILER->sendMail($this->getOwner()->getMail(), "group_denied");
         }
