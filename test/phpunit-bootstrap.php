@@ -366,7 +366,7 @@ class UnityWebPortalTestCase extends TestCase
             throw new ArrayKeyException($uid);
         }
         [$eppn, $given_name, $sn, $mail] = self::$UID2ATTRIBUTES[$uid];
-        if (session_status() !== PHP_SESSION_ACTIVE) {
+        if (session_status() === PHP_SESSION_ACTIVE) {
             session_write_close();
         }
         if (!$reuse_last_session || !array_key_exists($nickname, $this->uid_to_latest_session_id)) {
