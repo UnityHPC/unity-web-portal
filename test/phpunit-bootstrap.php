@@ -311,23 +311,6 @@ function getNonExistentUserAndExpectedUIDGIDWithCustomMapping()
     return [["user2001@org998.test", "foo", "bar", "user2001@org998.test"], 555];
 }
 
-function getMultipleValueAttributesAndExpectedSSO()
-{
-    return [
-        [
-            "REMOTE_USER" => "user2003@org1.test",
-            "givenName" => "foo;foo",
-            "sn" => "bar;bar",
-            "mail" => "user2003@org1.test;user2003@org1.test",
-        ],
-        [
-            "firstname" => "foo",
-            "lastname" => "bar",
-            "mail" => "user2003@org1.test",
-        ],
-    ];
-}
-
 function getAdminUser()
 {
     return ["user1@org1.test", "foo", "bar", "user1@org1.test"];

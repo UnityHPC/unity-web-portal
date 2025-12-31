@@ -9,17 +9,19 @@ class UnitySSOTest extends UnityWebPortalTestCase
     public function testMultipleAttributeValues()
     {
         $PREVIOUS_SERVER = $_SERVER;
-        $two_vars = getMultipleValueAttributesAndExpectedSSO();
-        $attributes = $two_vars[0];
-        $expectedSSO = $two_vars[1];
         try {
-            $_SERVER = array_merge($_SERVER, $attributes);
+            $_SERVER = array_merge($_SERVER, [
+                "REMOTE_USER" => "user2003@org1.test",
+                "givenName" => "foo;foo",
+                "sn" => "bar;bar",
+                "mail" => "user2003@org1.test;user2003@org1.test",
+            ]);
             $sso = UnitySSO::getSSO();
-            $this->assertEquals($expectedSSO["firstname"], $sso["firstname"]);
-            $this->assertEquals($expectedSSO["lastname"], $sso["lastname"]);
-            $this->assertEquals($expectedSSO["mail"], $sso["mail"]);
+            $this->assertEquals("foo", $sso["firstname"]);
+            $this->assertEquals("bar", $sso["lastname"]);
+            $this->assertEquals("user2003@org1.test", $sso["mail"]);
         } finally {
-            $_PREVIOUS_SERVER = $_SERVER;
+            $_SERVER = $PREVIOUS_SERVER;
         }
     }
 
