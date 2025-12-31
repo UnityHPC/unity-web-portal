@@ -33,6 +33,7 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
     {
         global $USER;
         try {
+            $this->expectException(ArrayKeyException::class);
             $this->deleteKey($key);
             $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
         } finally {
@@ -45,6 +46,7 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
         global $USER;
         try {
             $key = self::$initialKeys[0];
+            $this->assertNotNull($key);
             $this->deleteKey($key);
             $this->assertEquals([], $USER->getSSHKeys());
         } finally {
