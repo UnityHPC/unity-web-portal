@@ -6,30 +6,23 @@
 - All PHP files are required to be linted with PSR-12 and formatted with `phpcbf`.
   - Note: Some changes have been made to PSR-12, see `.phpcs-ruleset-pure.php`
 - All pure PHP files are required to be formatted with Prettier as well as above.
-- The maximum line length for any PHP file is 100 characters.
+- The maximum line length for any pure PHP file is 100 characters.
 - Comments should be used sparingly.
 - Empty lines should be used sparingly.
-- No code should fail quietly, instead exceptions should be thrown.
-  PHP builtin functions that fail quietly (ex: `json_encode`) should be replaced with a wrapper in `resources/utils.php`.
 - No code should call `die()` or `exit()`, instead `UnityHTTPD::die()`.
-  This will avoid the premature death of our automated testing processes.
+  - This will avoid the premature death of our automated testing processes.
 - No code should call `assert()`, instead `\ensure()`.
-  This will enforce conditions even in production.
-- No code should call `json_encode()`, instead `\jsonEncode()`.
-  This will throw errors and escape slashes by default.
-- No code should call `json_decode()`, instead `\jsonDecode()`.
-  This will throw an exception rather than returning `null`.
-- No code should call `mb_convert_encoding()`, instead `\mbConvertEncoding()`.
-  This will throw an exception rather than returning `false`.
-- No code should call `mb_detect_encoding()`, instead `\mbDetectEncoding()`.
-  This will enable strict mode and throw an exception rather than returning `false`.
-- No code should call `intval()`, instead `\str2int()`.
-  This will enable strict mode and throw an exception rather than issuing a warning.
+  - This will enforce conditions even in production.
+- No code should fail quietly, instead exceptions should be thrown. PHP builtin functions that fail quietly (ex: `json_encode`) should be replaced with a wrapper in `resources/utils.php`. Current wrappers:
+  - `json_encode` -> `jsonEncode`
+  - `json_decode` -> `jsonDecode`
+  - `mb_convert_encoding` -> `mbConvertEncoding`
+  - `mb_detect_encoding` -> `mbDetectEncoding`
+  - `intval` -> `digits2int`
 - `UnityHTTPD`'s user-facing error functionality (ex: `badRequest`) should only be called from `webroot/**/*.php`.
   `resources/**/*.php` should throw exceptions instead.
 - all pages under `webroot/admin/` must check for `$USER->getFlag(UserFlag::ADMIN)` and call `UnityHTTPD::forbidden()` if not admin.
-
-This repository will automatically check PRs for linting compliance.
+- All these conventions should be enforced with `pre-commit` / github CI if possible
 
 ## Development Environment
 
