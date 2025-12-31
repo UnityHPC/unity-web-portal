@@ -68,4 +68,9 @@ class PosixGroup
     {
         return in_array($uid, $this->getMemberUIDs());
     }
+
+    public function overwriteMemberUIDs(array $uids): void
+    {
+        $this->entry->setAttribute("memberuid", $uids);
+    }
 }

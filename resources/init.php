@@ -72,6 +72,20 @@ if (isset($_SERVER["REMOTE_USER"])) {
     $_SESSION["is_pi"] = $USER->isPI();
 
     $SQL->addLog("user_login", $OPERATOR->uid);
+
+    if ($USER->getFlag(UserFlag::LOCKED)) {
+        UnityHTTPD::forbidden("locked", "Your account is locked.");
+    }
+
+    if ($OPERATOR == $USER && $USER->getFlag(UserFlag::IDLELOCKED)) {
+        $USER->setFlag(UserFlag::IDLELOCKED, false);
+        UnityHTTPD::messageSuccess(
+            "Account Unlocked",
+            "Your account was previously locked due to inactivity.",
+        );
+    }
+
+    $USER->updateIsQualified(); // in case manual changes have been made to PI groups
 }
 
 $LOC_HEADER = __DIR__ . "/templates/header.php";

@@ -60,7 +60,7 @@ class UnityUser
         $id = $this->LDAP->getNextUIDGIDNumber($this->uid);
         \ensure(!$ldapGroupEntry->exists());
         $ldapGroupEntry->create([
-            "objectclass" => UnityLDAP::POSIX_GROUP_CLASS,
+            "objectclass" => ["posixGroup", "top"],
             "gidnumber" => strval($id),
         ]);
         \ensure(!$this->entry->exists());
@@ -344,7 +344,7 @@ class UnityUser
      */
     public function isPI(): bool
     {
-        return $this->getPIGroup()->exists();
+        return $this->getPIGroup()->exists() && !$this->getPIGroup()->getIsDefunct();
     }
 
     public function getPIGroup(): UnityGroup
@@ -374,7 +374,7 @@ class UnityUser
      */
     public function getPIGroupGIDs(): array
     {
-        return $this->LDAP->getPIGroupGIDsWithMemberUID($this->uid);
+        return $this->LDAP->getNonDefunctPIGroupGIDsWithMemberUID($this->uid);
     }
 
     /**
@@ -416,5 +416,15 @@ class UnityUser
     public function isInGroup(string $uid, UnityGroup $group): bool
     {
         return in_array($uid, $group->getMemberUIDs());
+    }
+
+    public function updateIsQualified(bool $send_mail = true)
+    {
+        $this->setFlag(
+            UserFlag::QUALIFIED,
+            count($this->getPIGroupGIDs()) !== 0,
+            doSendMail: $send_mail,
+            doSendMailAdmin: false,
+        );
     }
 }

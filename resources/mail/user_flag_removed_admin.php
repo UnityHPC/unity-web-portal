@@ -1,9 +1,9 @@
 <?php use UnityWebPortal\lib\UserFlag; ?>
 <?php switch ($data["flag"]):
 case UserFlag::QUALIFIED: ?>
-<?php $this->Subject = "User Dequalified"; ?>
+<?php $this->Subject = "User Disqualified"; ?>
 <p>Hello,</p>
-<p>User "<?php echo $data["user"] ?>" has been dequalified. </p>
+<p>User "<?php echo $data["user"] ?>" has been disqualified. </p>
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>

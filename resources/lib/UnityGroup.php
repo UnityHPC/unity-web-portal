@@ -40,7 +40,7 @@ class UnityGroup extends PosixGroup
     public function requestGroup(?bool $send_mail_to_admins = null, bool $send_mail = true): void
     {
         $send_mail_to_admins ??= CONFIG["mail"]["send_pimesg_to_admins"];
-        if ($this->exists()) {
+        if ($this->exists() && !$this->getIsDefunct()) {
             return;
         }
         if ($this->SQL->accDeletionRequestExists($this->getOwner()->uid)) {
@@ -63,6 +63,44 @@ class UnityGroup extends PosixGroup
         }
     }
 
+    public function disband(bool $send_mail = true): void
+    {
+        $this->SQL->addLog("disband_pi_group", $this->gid);
+        $memberuids = $this->getMemberUIDs();
+        if ($send_mail) {
+            $member_attributes = $this->LDAP->getUsersAttributes($memberuids, ["mail"]);
+            $member_mails = array_map(fn($x) => $x["mail"][0], $member_attributes);
+            $this->MAILER->sendMail($member_mails, "group_disband", ["group_name" => $this->gid]);
+        }
+        $this->setIsDefunct(true);
+        if (count($memberuids) > 0) {
+            $this->entry->setAttribute("memberuid", []);
+        }
+        // TODO optimmize
+        // updateIsQualified() makes one LDAP query for each member
+        // if user is no longer in any PI group, disqualify them
+        foreach ($memberuids as $uid) {
+            $user = new UnityUser($uid, $this->LDAP, $this->SQL, $this->MAILER, $this->WEBHOOK);
+            $user->updateIsQualified($send_mail);
+        }
+    }
+
+    private function reinstate(bool $send_mail = true)
+    {
+        $this->SQL->addLog("reinstate_pi_group", $this->gid);
+        if ($send_mail) {
+            $this->MAILER->sendMail($this->getOwner()->getMail(), "group_reinstate", [
+                "group_name" => $this->gid,
+            ]);
+        }
+        $this->setIsDefunct(false);
+        $owner_uid = $this->getOwner()->uid;
+        if (!$this->memberUIDExists($owner_uid)) {
+            $this->addMemberUID($owner_uid);
+        }
+        $this->getOwner()->updateIsQualified($send_mail);
+    }
+
     /**
      * This method will create the group (this is what is executed when an admin approved the group)
      */
@@ -70,18 +108,21 @@ class UnityGroup extends PosixGroup
     {
         $uid = $this->getOwner()->uid;
         $request = $this->SQL->getRequest($uid, UnitySQL::REQUEST_BECOME_PI);
-        if ($this->exists()) {
-            return;
-        }
         \ensure($this->getOwner()->exists());
-        $this->init();
+        if (!$this->entry->exists()) {
+            $this->init();
+        } elseif ($this->getIsDefunct()) {
+            $this->reinstate();
+        } else {
+            throw new Exception("cannot approve group that already exists and is not defunct");
+        }
         $this->SQL->removeRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         $this->SQL->addLog("approved_group", $this->getOwner()->uid);
         if ($send_mail) {
             $this->MAILER->sendMail($this->getOwner()->getMail(), "group_created");
         }
         // having your own group makes you qualified
-        $this->getOwner()->setFlag(UserFlag::QUALIFIED, true);
+        $this->getOwner()->updateIsQualified($send_mail);
     }
 
     /**
@@ -126,42 +167,6 @@ class UnityGroup extends PosixGroup
         }
     }
 
-    // /**
-    //  * This method will delete the group, either by admin action or PI action
-    //  */
-    // public function removeGroup($send_mail = true)
-    // {
-    //     // remove any pending requests
-    //     // this will silently fail if the request doesn't exist (which is what we want)
-    //     $this->SQL->removeRequests($this->gid);
-
-    //     // we don't need to do anything extra if the group is already deleted
-    //     if (!$this->exists()) {
-    //         return;
-    //     }
-
-    //     // first, we must record the users in the group currently
-    //     $users = $this->getGroupMembers();
-
-    //     // now we delete the ldap entry
-    //     $this->entry->ensureExists();
-    //     $this->entry->delete();
-
-    //     // Logs the change
-    //     $this->SQL->addLog("removed_group", $this->gid);
-
-    //     // send email to every user of the now deleted PI group
-    //     if ($send_mail) {
-    //         foreach ($users as $user) {
-    //             $this->MAILER->sendMail(
-    //                 $user->getMail(),
-    //                 "group_disband",
-    //                 array("group_name" => $this->gid)
-    //             );
-    //         }
-    //     }
-    // }
-
     /**
      * This method is executed when a user is approved to join the group
      * (either by admin or the group owner)
@@ -188,13 +193,7 @@ class UnityGroup extends PosixGroup
                 "org" => $new_user->getOrg(),
             ]);
         }
-        // being in a group makes you qualified
-        $new_user->setFlag(
-            UserFlag::QUALIFIED,
-            true,
-            doSendMail: $send_mail,
-            doSendMailAdmin: false,
-        );
+        $new_user->updateIsQualified($send_mail); // being in a group makes you qualified
     }
 
     public function denyUser(UnityUser $new_user, bool $send_mail = true): void
@@ -246,6 +245,8 @@ class UnityGroup extends PosixGroup
                 "org" => $new_user->getOrg(),
             ]);
         }
+        // if user is no longer in any PI group, disqualify them
+        $new_user->updateIsQualified($send_mail);
     }
 
     public function newUserRequest(UnityUser $new_user, bool $send_mail = true): void
@@ -329,7 +330,7 @@ class UnityGroup extends PosixGroup
         \ensure(!$this->entry->exists());
         $nextGID = $this->LDAP->getNextPIGIDNumber();
         $this->entry->create([
-            "objectclass" => UnityLDAP::POSIX_GROUP_CLASS,
+            "objectclass" => ["unityClusterPIGroup", "posixGroup", "top"],
             "gidnumber" => strval($nextGID),
             "memberuid" => [$owner->uid],
         ]);
@@ -384,5 +385,41 @@ class UnityGroup extends PosixGroup
             $attributes,
             $default_values,
         );
+    }
+
+    public function getIsDefunct(): bool
+    {
+        $value = $this->entry->getAttribute("isDefunct");
+        switch (count($value)) {
+            case 0:
+                return false;
+            case 1:
+                switch ($value[0]) {
+                    case "TRUE":
+                        return true;
+                    case "FALSE":
+                        return false;
+                    default:
+                        throw new \RuntimeException(
+                            sprintf(
+                                "unexpected value for isDefunct: '%s'. expected 'TRUE' or 'FALSE'.",
+                                $value[0],
+                            ),
+                        );
+                }
+            default:
+                throw new \RuntimeException(
+                    sprintf(
+                        "expected value of length 0 or 1, found value %s of length %s",
+                        jsonEncode($value),
+                        count($value),
+                    ),
+                );
+        }
+    }
+
+    public function setIsDefunct(bool $new_value): void
+    {
+        $this->entry->setAttribute("isDefunct", $new_value ? "TRUE" : "FALSE");
     }
 }
