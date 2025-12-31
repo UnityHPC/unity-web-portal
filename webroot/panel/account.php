@@ -62,8 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             UnityHTTPD::redirect();
             break;
         case "delKey":
-            $index = digits2int(UnityHTTPD::getPostData("delIndex"));
-            $key = $USER->removeSSHKey($index, $OPERATOR);
+            $key = UnityHTTPD::getPostData("delKey");
+            $USER->removeSSHKey($key, $OPERATOR);
             $keyShort = shortenString($key, 10, 30);
             UnityHTTPD::messageSuccess("SSH Key Removed", $keyShort);
             UnityHTTPD::redirect();

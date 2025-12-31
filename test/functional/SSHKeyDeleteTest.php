@@ -14,47 +14,26 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
         self::$initialKeys = $USER->getSSHKeys();
     }
 
-    private function deleteKey(string $index): void
+    private function deleteKey(string $key): void
     {
         http_post(__DIR__ . "/../../webroot/panel/account.php", [
             "form_type" => "delKey",
-            "delIndex" => $index,
+            "delKey" => $key,
         ]);
     }
 
-    public static function getGarbageIndexArgs()
+    public static function getGarbageKeys()
     {
         global $HTTP_HEADER_TEST_INPUTS;
-        $http_header_test_inputs_no_ints = array_filter(
-            $HTTP_HEADER_TEST_INPUTS,
-            fn($x) => !ctype_digit($x),
-        );
-        $http_header_test_inputs_no_ints_2d = array_map(
-            fn($x) => [$x],
-            $http_header_test_inputs_no_ints,
-        );
-        return array_merge([["-1"], ["0.5"]], $http_header_test_inputs_no_ints_2d);
+        return array_map(fn($x) => [$x], $HTTP_HEADER_TEST_INPUTS);
     }
 
-    #[DataProvider("getGarbageIndexArgs")]
-    public function testDeleteKeyGarbageInput(string $index)
+    #[DataProvider("getGarbageKeys")]
+    public function testDeleteKeyGarbageInput(string $key)
     {
         global $USER;
         try {
-            $this->expectException(ValueError::class);
-            $this->deleteKey($index);
-            $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
-        } finally {
-            callPrivateMethod($USER, "setSSHKeys", self::$initialKeys, $USER);
-        }
-    }
-
-    public function testDeleteKeyIndexTooLarge()
-    {
-        global $USER;
-        try {
-            $this->expectException(ArrayKeyException::class);
-            $this->deleteKey("99");
+            $this->deleteKey($key);
             $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
         } finally {
             callPrivateMethod($USER, "setSSHKeys", self::$initialKeys, $USER);
@@ -65,7 +44,8 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
     {
         global $USER;
         try {
-            $this->deleteKey("0");
+            $key = self::$initialKeys[0];
+            $this->deleteKey($key);
             $this->assertEquals([], $USER->getSSHKeys());
         } finally {
             callPrivateMethod($USER, "setSSHKeys", self::$initialKeys, $USER);

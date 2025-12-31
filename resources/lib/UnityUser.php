@@ -256,23 +256,21 @@ class UnityUser
     }
 
     /**
-     *  @return string the removed key
      *  @throws ArrayKeyException
      */
     public function removeSSHKey(
-        int $index,
+        string $key,
         ?UnityUser $operator = null,
         bool $send_mail = true,
-    ): string {
-        $keys = $this->getSSHKeys();
-        if (!array_key_exists($index, $keys)) {
-            throw new ArrayKeyException($index);
+    ): void {
+        $keys_before = $this->getSSHKeys();
+        $keys_after = $keys_before;
+        if (($i = array_search($key, $keys_before)) !== false) {
+            unset($keys_after[$i]);
+        } else {
+            throw new ArrayKeyException($key);
         }
-        $key = $keys[$index];
-        unset($keys[$index]);
-        $keys = array_values($keys);
-        $this->setSSHKeys($keys, $operator, $send_mail);
-        return $key;
+        $this->setSSHKeys($keys_after, $operator, $send_mail);
     }
 
     /**
