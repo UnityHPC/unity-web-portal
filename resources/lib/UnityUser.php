@@ -56,36 +56,31 @@ class UnityUser
         $ldapGroupEntry = $this->getGroupEntry();
         $id = $this->LDAP->getNextUIDGIDNumber($this->uid);
         \ensure(!$ldapGroupEntry->exists());
-        $ldapGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
-        $ldapGroupEntry->setAttribute("gidnumber", strval($id));
-        $ldapGroupEntry->write();
-
+        $ldapGroupEntry->setAttributes([
+            "objectclass" => UnityLDAP::POSIX_GROUP_CLASS,
+            "gidnumber" => strval($id),
+        ]);
         \ensure(!$this->entry->exists());
-        $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_ACCOUNT_CLASS);
-        $this->entry->setAttribute("uid", $this->uid);
-        $this->entry->setAttribute("givenname", $firstname);
-        $this->entry->setAttribute("sn", $lastname);
-        $this->entry->setAttribute(
-            "gecos",
-            \transliterator_transliterate("Latin-ASCII", "$firstname $lastname"),
-        );
-        $this->entry->setAttribute("mail", $email);
-        $this->entry->setAttribute("o", $org);
-        $this->entry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
-        $this->entry->setAttribute("loginshell", $this->LDAP->getDefUserShell());
-        $this->entry->setAttribute("uidnumber", strval($id));
-        $this->entry->setAttribute("gidnumber", strval($id));
-        $this->entry->write();
-
+        $this->entry->setAttributes([
+            "objectclass" => UnityLDAP::POSIX_ACCOUNT_CLASS,
+            "uid" => $this->uid,
+            "givenname" => $firstname,
+            "sn" => $lastname,
+            "gecos" => \transliterator_transliterate("Latin-ASCII", "$firstname $lastname"),
+            "mail" => $email,
+            "o" => $org,
+            "homedirectory" => self::HOME_DIR . $this->uid,
+            "loginshell" => $this->LDAP->getDefUserShell(),
+            "uidnumber" => strval($id),
+            "gidnumber" => strval($id),
+        ]);
         $org = $this->getOrgGroup();
         if (!$org->exists()) {
             $org->init();
         }
-
         if (!$org->memberUIDExists($this->uid)) {
             $org->addMemberUID($this->uid);
         }
-
         $this->SQL->addLog($this->uid, $_SERVER["REMOTE_ADDR"], "user_added", $this->uid);
     }
 
@@ -155,7 +150,6 @@ class UnityUser
     public function setOrg(UnityOrg $org): void
     {
         $this->entry->setAttribute("o", $org);
-        $this->entry->write();
     }
 
     public function getOrg(): string
@@ -173,8 +167,6 @@ class UnityUser
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "firstname_changed", $this->uid);
-
-        $this->entry->write();
     }
 
     /**
@@ -195,8 +187,6 @@ class UnityUser
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "lastname_changed", $this->uid);
-
-        $this->entry->write();
     }
 
     /**
@@ -223,8 +213,6 @@ class UnityUser
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "email_changed", $this->uid);
-
-        $this->entry->write();
     }
 
     /**
@@ -245,7 +233,6 @@ class UnityUser
         $keys_filt = array_values(array_unique($keys));
         \ensure($this->entry->exists());
         $this->entry->setAttribute("sshpublickey", $keys_filt);
-        $this->entry->write();
 
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "sshkey_modify", $this->uid);
 
@@ -286,7 +273,6 @@ class UnityUser
         }
         \ensure($this->entry->exists());
         $this->entry->setAttribute("loginshell", $shell);
-        $this->entry->write();
 
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
@@ -312,7 +298,6 @@ class UnityUser
     {
         \ensure($this->entry->exists());
         $this->entry->setAttribute("homedirectory", $home);
-        $this->entry->write();
         $operator = is_null($operator) ? $this->uid : $operator->uid;
 
         $this->SQL->addLog($operator, $_SERVER["REMOTE_ADDR"], "homedir_changed", $this->uid);
