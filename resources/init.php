@@ -59,6 +59,9 @@ if (isset($_SERVER["REMOTE_USER"])) {
     $OPERATOR = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     $_SESSION["is_admin"] = $OPERATOR->getFlag(UserFlag::ADMIN);
 
+    $_SESSION["OPERATOR"] = $SSO["user"];
+    $_SESSION["OPERATOR_IP"] = $_SERVER["REMOTE_ADDR"];
+
     if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
         $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     } else {
@@ -69,7 +72,7 @@ if (isset($_SERVER["REMOTE_USER"])) {
     $_SESSION["is_pi"] = $USER->isPI();
     $SEND_PIMESG_TO_ADMINS = CONFIG["mail"]["send_pimesg_to_admins"];
 
-    $SQL->addLog($OPERATOR->uid, $_SERVER["REMOTE_ADDR"], "user_login", $OPERATOR->uid);
+    $SQL->addLog("user_login", $OPERATOR->uid);
 }
 
 $LOC_HEADER = __DIR__ . "/templates/header.php";

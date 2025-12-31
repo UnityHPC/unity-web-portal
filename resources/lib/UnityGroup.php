@@ -75,13 +75,7 @@ class UnityGroup extends PosixGroup
         \ensure($this->getOwner()->exists());
         $this->init();
         $this->SQL->removeRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
-        $operator = is_null($operator) ? $this->getOwner()->uid : $operator->uid;
-        $this->SQL->addLog(
-            $operator,
-            $_SERVER["REMOTE_ADDR"],
-            "approved_group",
-            $this->getOwner()->uid,
-        );
+        $this->SQL->addLog("approved_group", $this->getOwner()->uid);
         if ($send_mail) {
             $this->MAILER->sendMail($this->getOwner()->getMail(), "group_created");
         }
@@ -99,13 +93,7 @@ class UnityGroup extends PosixGroup
         if ($this->exists()) {
             return;
         }
-        $operator = is_null($operator) ? $this->getOwner()->uid : $operator->uid;
-        $this->SQL->addLog(
-            $operator,
-            $_SERVER["REMOTE_ADDR"],
-            "denied_group",
-            $this->getOwner()->uid,
-        );
+        $this->SQL->addLog("denied_group", $this->getOwner()->uid);
         if ($send_mail) {
             $this->MAILER->sendMail($this->getOwner()->getMail(), "group_denied");
         }
