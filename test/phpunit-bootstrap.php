@@ -225,6 +225,7 @@ class UnityWebPortalTestCase extends TestCase
         "HasNoSshKeys" => "user3_org1_test",
         "HasOneSshKey" => "user5_org2_test",
         "NonExistent" => "user2001_org998_test",
+        "Normal" => "user4_org1_test",
         "NormalPI" => "user1_org1_test",
     ];
 
@@ -271,6 +272,20 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertFalse($USER->exists());
                 $this->assertFalse($LDAP->getUserEntry($USER->uid)->exists());
                 $this->assertFalse($LDAP->getGroupEntry($USER->uid)->exists());
+                break;
+            case "Normal":
+                $this->assertTrue($USER->exists());
+                $this->assertFalse($USER->isPI());
+                $this->assertGreaterThanOrEqual(1, count($USER->getPIGroupGIDs()));
+                $this->assertFalse($USER->hasRequestedAccountDeletion());
+                $this->assertEqualsCanonicalizing([], $SQL->getRequestsByUser($USER->uid));
+                $this->assertFalse($USER->getFlag(UserFlag::GHOST));
+                $this->assertFalse($USER->getFlag(UserFlag::IDLELOCKED));
+                $this->assertFalse($USER->getFlag(UserFlag::LOCKED));
+                $this->assertTrue($USER->getFlag(UserFlag::QUALIFIED));
+                $this->assertTrue($LDAP->getUserEntry($USER->uid)->exists());
+                $this->assertTrue($LDAP->getGroupEntry($USER->uid)->exists());
+                $this->assertTrue($LDAP->getOrgGroupEntry($USER->getOrg())->exists());
                 break;
             case "NormalPI":
                 $this->assertTrue($USER->isPI());

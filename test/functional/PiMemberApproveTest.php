@@ -72,17 +72,6 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $this->assertRequestedMembership(false, $gid);
             $this->assertTrue($pi_group->memberUIDExists($USER->uid));
             $this->assertTrue($USER->getFlag(UserFlag::QUALIFIED));
-
-            // TODO move this to PiMemberRequestTest
-            // $third_request_failed = false;
-            // try {
-            $pi_group->newUserRequest($USER);
-            // } catch(Exception) {
-            //     $third_request_failed = true;
-            // }
-            // $this->assertTrue($third_request_failed);
-            $this->assertRequestedMembership(false, $gid);
-            $this->assertFalse($pi_group->requestExists($USER));
         } finally {
             $this->switchUser("Blank", validate: false);
             ensureUserNotInPIGroup($pi_group);
