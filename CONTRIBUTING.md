@@ -134,9 +134,9 @@ Note: `phpunit` can misbehave when using `expectException` and `try`/`finally`, 
 
 ### creating the conditions for a test
 
-Selecting users for tests happens with the `get...User...` family of functions from `phpunit-bootstrap.php`.
-Since this family of functions is growing large and their names long and complicated, it is better to start with a simpler state and create the desired conditions manually.
-For example, rather than using `getUserWithOneKey`, use `getUserHasNoSSHKeys` and add one key for them.
+There are many user conditions available which are selected using the `$nickname` argument to the `switchUser` function.
+Examples: `"Blank"`, `"NormalPI"`, `"EmptyPIGroupOwner"`.
+See `phpunit-bootstrap.php` for more information.
 
 The LDAP entries available in the dev environment are defined in `tools/docker-dev/identity/bootstrap.ldif`.
 These entries may be subject to change.

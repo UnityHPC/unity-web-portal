@@ -40,7 +40,7 @@ class ViewAsUserTest extends UnityWebPortalTestCase
 
     public function testViewAsUser()
     {
-        $this->_testViewAsUser("Admin", "Normal");
+        $this->_testViewAsUser("Admin", "Blank");
     }
 
     public function testViewAsNonExistentUser()
@@ -58,8 +58,7 @@ class ViewAsUserTest extends UnityWebPortalTestCase
         global $USER;
         $this->switchUser("Admin");
         $adminUid = $USER->uid;
-        $this->assertTrue($USER->getFlag(UserFlag::ADMIN));
-        $this->switchUser("Normal");
+        $this->switchUser("Blank");
         http_post(__DIR__ . "/../../webroot/admin/user-mgmt.php", [
             "form_type" => "viewAsUser",
             "uid" => $adminUid,

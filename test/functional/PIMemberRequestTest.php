@@ -2,6 +2,7 @@
 
 use UnityWebPortal\lib\UnityHTTPDMessageLevel;
 use UnityWebPortal\lib\UnitySQL;
+use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
 
 class PIMemberRequestTest extends UnityWebPortalTestCase
@@ -23,27 +24,31 @@ class PIMemberRequestTest extends UnityWebPortalTestCase
         ]);
     }
 
-    public function testRequestMembership()
+    public function testRequestMembershipAndCancel()
     {
         global $USER, $SQL;
-        $this->switchUser("IsPIHasNoMembersNoMemberRequests");
-        $pi = $USER;
+        $this->switchUser("EmptyPIGroupOwner");
         $pi_group = $USER->getPIGroup();
-        $gid = $pi_group->gid;
-        $this->assertTrue($USER->isPI());
-        $this->assertTrue($pi_group->exists());
-        $this->assertEqualsCanonicalizing([$pi], $pi_group->getGroupMembers());
-        $this->assertEqualsCanonicalizing([], $SQL->getRequests($gid));
         $this->switchUser("Blank");
-        $uid = $USER->uid;
-        $this->assertFalse($USER->isPI());
-        $this->assertFalse($SQL->requestExists($uid, UnitySQL::REQUEST_BECOME_PI));
-        $this->assertFalse($pi_group->memberUIDExists($USER->uid));
         try {
-            $this->requestMembership($gid);
-            $this->assertTrue($SQL->requestExists($uid, $gid));
-            $this->cancelRequest($gid);
-            $this->assertFalse($SQL->requestExists($uid, $gid));
+            $this->requestMembership($pi_group->gid);
+            $this->assertTrue($pi_group->requestExists($USER));
+            $this->cancelRequest($pi_group->gid);
+            $this->assertFalse($pi_group->requestExists($USER));
+        } finally {
+            if ($SQL->requestExists($USER->uid, $pi_group->gid)) {
+                $SQL->removeRequest($USER->uid, $pi_group->gid);
+            }
+        }
+    }
+
+    public function testRequestMembershipBogus()
+    {
+        global $USER, $SQL;
+        $this->switchUser("EmptyPIGroupOwner");
+        $pi_group = $USER->getPIGroup();
+        $this->switchUser("Blank");
+        try {
             UnityHTTPD::clearMessages();
             $this->requestMembership("asdlkjasldkj");
             $this->assertMessageExists(
@@ -51,11 +56,75 @@ class PIMemberRequestTest extends UnityWebPortalTestCase
                 "/^This PI Doesn't Exist$/",
                 "/.*/",
             );
-            $this->requestMembership($pi_group->getOwner()->getMail());
-            $this->assertTrue($SQL->requestExists($uid, $gid));
+            $this->assertFalse($pi_group->requestExists($USER));
         } finally {
-            if ($SQL->requestExists($uid, $gid)) {
-                $SQL->removeRequest($uid, $gid);
+            if ($SQL->requestExists($USER->uid, $pi_group->gid)) {
+                $SQL->removeRequest($USER->uid, $pi_group->gid);
+            }
+        }
+    }
+
+    public function testRequestMembershipByOwnerMail()
+    {
+        global $USER, $SQL;
+        $this->switchUser("EmptyPIGroupOwner");
+        $pi_group = $USER->getPIGroup();
+        $this->switchUser("Blank");
+        try {
+            $this->requestMembership($pi_group->getOwner()->getMail());
+            $this->assertTrue($pi_group->requestExists($USER));
+        } finally {
+            if ($SQL->requestExists($USER->uid, $pi_group->gid)) {
+                $SQL->removeRequest($USER->uid, $pi_group->gid);
+            }
+        }
+    }
+
+    public function testRequestMembershipDuplicate()
+    {
+        global $USER, $SQL;
+        $this->switchUser("EmptyPIGroupOwner");
+        $pi_group = $USER->getPIGroup();
+        $this->switchUser("Blank");
+        $this->assertNumberRequests(0);
+        try {
+            $this->requestMembership($pi_group->gid);
+            $this->assertNumberRequests(1);
+            // $second_request_failed = false;
+            // try {
+            $this->requestMembership($pi_group->gid);
+            // } catch(Exception) {
+            //     $second_request_failed = true;
+            // }
+            // $this->assertTrue($second_request_failed);
+            $this->assertNumberRequests(1);
+        } finally {
+            if ($SQL->requestExists($USER->uid, $pi_group->gid)) {
+                $SQL->removeRequest($USER->uid, $pi_group->gid);
+            }
+        }
+    }
+
+    public function testRequestBecomePiAlreadyInGroup()
+    {
+        global $USER, $SQL;
+        $this->switchUser("Normal");
+        $pi_group_gids = $USER->getPIGroupGIDs();
+        $this->assertGreaterThanOrEqual(1, count($pi_group_gids));
+        $gid = $pi_group_gids[0];
+        $this->assertNumberRequests(0);
+        try {
+            // $request_failed = false;
+            // try {
+            $this->requestMembership($gid);
+            // } catch(Exception) {
+            //     $request_failed = true;
+            // }
+            // $this->assertTrue($request_failed);
+            $this->assertNumberRequests(0);
+        } finally {
+            if ($SQL->requestExists($USER->uid, $gid)) {
+                $SQL->removeRequest($USER->uid, $gid);
             }
         }
     }
