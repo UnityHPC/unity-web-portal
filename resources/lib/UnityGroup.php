@@ -146,6 +146,9 @@ class UnityGroup extends PosixGroup
     //     $this->entry->ensureExists();
     //     $this->entry->delete();
 
+    //     // Logs the change
+    //     $this->SQL->addLog("removed_group", $this->gid);
+
     //     // send email to every user of the now deleted PI group
     //     if ($send_mail) {
     //         foreach ($users as $user) {
@@ -168,6 +171,10 @@ class UnityGroup extends PosixGroup
         \ensure($new_user->exists());
         $this->addMemberUID($new_user->uid);
         $this->SQL->removeRequest($new_user->uid, $this->gid);
+        $this->SQL->addLog(
+            "approved_user",
+            jsonEncode(["user" => $new_user->uid, "group" => $this->gid]),
+        );
         if ($send_mail) {
             $this->MAILER->sendMail($new_user->getMail(), "group_user_added", [
                 "group" => $this->gid,
@@ -189,6 +196,10 @@ class UnityGroup extends PosixGroup
         $request = $this->SQL->getRequest($new_user->uid, $this->gid);
         // remove request, this will fail silently if the request doesn't exist
         $this->SQL->removeRequest($new_user->uid, $this->gid);
+        $this->SQL->addLog(
+            "denied_user",
+            jsonEncode(["user" => $new_user->uid, "group" => $this->gid]),
+        );
         if ($send_mail) {
             $this->MAILER->sendMail($new_user->getMail(), "group_user_denied", [
                 "group" => $this->gid,
@@ -213,6 +224,10 @@ class UnityGroup extends PosixGroup
         }
         // remove request, this will fail silently if the request doesn't exist
         $this->removeMemberUID($new_user->uid);
+        $this->SQL->addLog(
+            "removed_user",
+            jsonEncode(["user" => $new_user->uid, "group" => $this->gid]),
+        );
         if ($send_mail) {
             $this->MAILER->sendMail($new_user->getMail(), "group_user_removed", [
                 "group" => $this->gid,
