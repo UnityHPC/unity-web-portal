@@ -36,10 +36,11 @@ code {
 
 a {
   color: var(--accent);
+  text-decoration: none;
 }
 
 a:hover {
-  color: var(--accent_2);
+  text-decoration: underline;
 }
 
 h1 {

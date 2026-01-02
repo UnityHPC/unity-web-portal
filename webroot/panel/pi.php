@@ -86,7 +86,7 @@ if (count($requests) > 0) {
     }
 }
 
-echo "<h2>Users in Group</h2>";
+echo "<h5>Users in Group</h5>";
 
 echo "<table>";
 

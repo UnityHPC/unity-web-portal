@@ -105,7 +105,7 @@ $mail = $USER->getMail();
 echo "
     <h1>Account Settings</h1>
     <hr>
-    <h2>Account Details</h2>
+    <h5>Account Details</h5>
     <table>
         <tr>
             <th>Username</th>
@@ -121,7 +121,7 @@ echo "
         </tr>
     </table>
     <hr>
-    <h2>Account Status</h2>
+    <h5>Account Status</h5>
 ";
 
 $isPI = $USER->isPI();
@@ -205,7 +205,7 @@ if (!$isPI) {
     }
     echo "</form>";
 }
-echo "<hr><h2>SSH Keys</h2>";
+echo "<hr><h5>SSH Keys</h5>";
 
 $sshPubKeys = $USER->getSSHKeys();
 
@@ -217,12 +217,11 @@ for ($i = 0; $sshPubKeys != null && $i < count($sshPubKeys); $i++) {
     $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
     "<div class='key-box'>
-        <textarea spellcheck='false' readonly aria-label='key box'>" . $sshPubKeys[$i] . "</textarea>
+        <textarea spellcheck='false' readonly>" . $sshPubKeys[$i] . "</textarea>
         <form
             action='' id='del-" . $i . "'
             onsubmit='return confirm(\"Are you sure you want to delete this SSH key?\");'
             method='POST'
-            aria-label='delete key'
         >
             $CSRFTokenHiddenFormInput
             <input type='hidden' name='delIndex' value='$i' />
@@ -236,11 +235,11 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 echo "
     <button type='button' class='plusBtn btnAddKey'><span>&#43;</span></button>
     <hr>
-    <h2>Login Shell</h2>
+    <h5>Login Shell</h5>
     <form action='' method='POST'>
       $CSRFTokenHiddenFormInput
       <input type='hidden' name='form_type' value='loginshell' />
-      <select id='loginSelector' class='code' name='shellSelect' aria-label='Login Shell'>
+      <select id='loginSelector' class='code' name='shellSelect'>
 ";
 foreach (CONFIG["loginshell"]["shell"] as $shell) {
     echo "<option>$shell</option>";
@@ -251,7 +250,7 @@ echo "
       <input id='submitLoginShell' type='submit' value='Set Login Shell' />
     </form>
     <hr>
-    <h2>Account Deletion</h2>
+    <h5>Account Deletion</h5>
 ";
 
 if ($hasGroups) {

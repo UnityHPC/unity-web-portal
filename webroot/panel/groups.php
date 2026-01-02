@@ -84,7 +84,7 @@ foreach ($requests as $request) {
 }
 
 if (count($req_filtered) > 0) {
-    echo "<h2>Pending Requests</h2>";
+    echo "<h5>Pending Requests</h5>";
     echo "<table>";
     foreach ($req_filtered as $request) {
         $requested_account = new UnityGroup(
@@ -120,7 +120,7 @@ if (count($req_filtered) > 0) {
     }
 }
 
-echo "<h2>Current Groups</h2>";
+echo "<h5>Current Groups</h5>";
 
 if ($USER->isPI() && count($PIGroupGIDs) == 1) {
     $url = getURL("panel/pi.php");
