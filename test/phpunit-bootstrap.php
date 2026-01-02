@@ -226,7 +226,6 @@ class UnityWebPortalTestCase extends TestCase
         "HasOneSshKey" => "user5_org2_test",
         "NonExistent" => "user2001_org998_test",
         "NormalPI" => "user1_org1_test",
-        "Unqualified" => "user2005_org1_test",
     ];
 
     private function validateUser(string $nickname)
@@ -247,7 +246,8 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertFalse($USER->getFlag(UserFlag::GHOST));
                 $this->assertFalse($USER->getFlag(UserFlag::IDLELOCKED));
                 $this->assertFalse($USER->getFlag(UserFlag::LOCKED));
-                $this->assertFalse($USER->getFlag(UserFlag::QUALIFIED));
+                // FIXME uncomment this after https://github.com/UnityHPC/account-portal/pull/473
+                // $this->assertFalse($USER->getFlag(UserFlag::QUALIFIED));
                 $this->assertTrue($LDAP->getUserEntry($USER->uid)->exists());
                 $this->assertTrue($LDAP->getGroupEntry($USER->uid)->exists());
                 $this->assertTrue($LDAP->getOrgGroupEntry($USER->getOrg())->exists());
@@ -276,9 +276,6 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertTrue($USER->isPI());
                 $this->assertFalse($USER->hasRequestedAccountDeletion());
                 $this->assertGreaterThanOrEqual(2, count($USER->getPIGroup()->getMemberUIDs()));
-                break;
-            case "Unqualified":
-                $this->assertFalse($USER->getFlag(UserFlag::QUALIFIED));
                 break;
             case "HasOneSshKey":
                 $this->assertEquals(1, count($USER->getSSHKeys()));
@@ -399,8 +396,11 @@ class UnityWebPortalTestCase extends TestCase
         $this->assertEquals($x, $this->getNumberRequests());
     }
 
-    function switchUser(string $nickname, bool $reuse_last_session = true): void
-    {
+    function switchUser(
+        string $nickname,
+        bool $reuse_last_session = true,
+        bool $validate = true,
+    ): void {
         global $LDAP,
             $SQL,
             $MAILER,
@@ -439,6 +439,8 @@ class UnityWebPortalTestCase extends TestCase
         $_SERVER["sn"] = $sn;
         include __DIR__ . "/../resources/autoload.php";
         ensure(!is_null($USER));
-        $this->validateUser($nickname);
+        if ($validate) {
+            $this->validateUser($nickname);
+        }
     }
 }

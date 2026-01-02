@@ -98,7 +98,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
         $pi_uid = $USER->uid;
         $pi_group = $USER->getPIGroup();
         $gid = $pi_group->gid;
-        $this->switchUser("Unqualified");
+        $this->switchUser("Blank");
         try {
             $requestMembershipFunc($USER, $pi_group);
             $this->assertRequestedMembership(true, $gid);
@@ -122,7 +122,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $approve_uid = $SSO["user"];
             $this->switchUser("EmptyPIGroupOwner");
             $approveRequestFunc($approve_uid, $gid);
-            $this->switchUser("Unqualified");
+            $this->switchUser("Blank");
 
             $this->assertFalse($pi_group->requestExists($USER));
             $this->assertRequestedMembership(false, $gid);
@@ -139,7 +139,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $this->assertRequestedMembership(false, $gid);
             $this->assertFalse($pi_group->requestExists($USER));
         } finally {
-            $this->switchUser("Unqualified");
+            $this->switchUser("Blank");
             ensureUserNotInPIGroup($pi_group);
             $this->assertGroupMembers($pi_group, [$pi_uid]);
         }
