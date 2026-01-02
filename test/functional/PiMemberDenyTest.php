@@ -16,13 +16,13 @@ class PIMemberDenyTest extends UnityWebPortalTestCase
     private function denyRequestByAdmin(string $uid)
     {
         global $USER;
-        $pi_uid = $USER->uid;
+        $gid = $USER->getPIGroup()->gid;
         $this->switchUser("Admin");
         try {
             http_post(__DIR__ . "/../../webroot/admin/pi-mgmt.php", [
                 "form_type" => "reqChild",
                 "action" => "Deny",
-                "pi" => $pi_uid,
+                "pi" => $gid,
                 "uid" => $uid,
             ]);
         } finally {
