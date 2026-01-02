@@ -12,12 +12,12 @@ $hasGroups = count($USER->getPIGroupGIDs()) > 0;
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     UnityHTTPD::validatePostCSRFToken();
-    switch (UnityHTTPD::getPostData("form_type")) {
+    switch ($_POST["form_type"]) {
         case "addKey":
             $keys = array();
-            switch (UnityHTTPD::getPostData("add_type")) {
+            switch ($_POST["add_type"]) {
                 case "paste":
-                    array_push($keys, UnityHTTPD::getPostData("key"));
+                    array_push($keys, $_POST["key"]);
                     break;
                 case "import":
                     try {
@@ -28,10 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     array_push($keys, $key);
                     break;
                 case "generate":
-                    array_push($keys, UnityHTTPD::getPostData("gen_key"));
+                    array_push($keys, $_POST["gen_key"]);
                     break;
                 case "github":
-                    $githubUsername = UnityHTTPD::getPostData("gh_user");
+                    $githubUsername = $_POST["gh_user"];
                     $githubKeys = $GITHUB->getSshPublicKeys($githubUsername);
                     $keys = array_merge($keys, $githubKeys);
                     break;
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break;
         case "delKey":
             $keys = $USER->getSSHKeys();
-            $index = digits2int(UnityHTTPD::getPostData("delIndex"));
+            $index = digits2int($_POST["delIndex"]);
             if ($index >= count($keys)) {
                 break;
             }
