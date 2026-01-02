@@ -85,7 +85,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $this->expectException(Exception::class); // FIXME more specific exception type
             $approveUserFunc($uid, $piGroup->gid);
         } finally {
-            $this->switchUser("Blank");
+            $this->switchUser("Blank", validate: false);
             ensureUserNotInPIGroup($piGroup);
         }
     }
@@ -120,9 +120,9 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $this->assertRequestedMembership(true, $gid);
 
             $approve_uid = $SSO["user"];
-            $this->switchUser("EmptyPIGroupOwner");
+            $this->switchUser("EmptyPIGroupOwner", validate: false);
             $approveRequestFunc($approve_uid, $gid);
-            $this->switchUser("Blank");
+            $this->switchUser("Blank", validate: false);
 
             $this->assertFalse($pi_group->requestExists($USER));
             $this->assertRequestedMembership(false, $gid);
@@ -139,7 +139,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $this->assertRequestedMembership(false, $gid);
             $this->assertFalse($pi_group->requestExists($USER));
         } finally {
-            $this->switchUser("Blank");
+            $this->switchUser("Blank", validate: false);
             ensureUserNotInPIGroup($pi_group);
             $this->assertGroupMembers($pi_group, [$pi_uid]);
         }
