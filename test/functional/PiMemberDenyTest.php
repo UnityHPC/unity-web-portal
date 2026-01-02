@@ -1,7 +1,42 @@
 <?php
+use PHPUnit\Framework\Attributes\DataProvider;
+use TRegx\PhpUnit\DataProviders\DataProvider as TRegxDataProvider;
+
 class PIMemberDenyTest extends UnityWebPortalTestCase
 {
-    public function testDenyRequest()
+    private function denyRequestByPI(string $uid)
+    {
+        http_post(__DIR__ . "/../../webroot/panel/pi.php", [
+            "form_type" => "userReq",
+            "action" => "Deny",
+            "uid" => $uid,
+        ]);
+    }
+
+    private function denyRequestByAdmin(string $uid)
+    {
+        global $USER;
+        $pi_uid = $USER->uid;
+        $this->switchUser("Admin");
+        try {
+            http_post(__DIR__ . "/../../webroot/admin/pi-mgmt.php", [
+                "form_type" => "reqChild",
+                "action" => "Deny",
+                "pi" => $pi_uid,
+                "uid" => $uid,
+            ]);
+        } finally {
+            $this->switchBackUser();
+        }
+    }
+
+    public static function provider()
+    {
+        return TRegxDataProvider::list("denyRequestByPI", "denyRequestByAdmin");
+    }
+
+    #[DataProvider("provider")]
+    public function testDenyRequest(string $methodName)
     {
         global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
         $this->switchUser("Blank");
@@ -14,11 +49,7 @@ class PIMemberDenyTest extends UnityWebPortalTestCase
         try {
             $piGroup->newUserRequest($requestedUser);
             $this->assertNotEmpty($piGroup->getRequests());
-            http_post(__DIR__ . "/../../webroot/panel/pi.php", [
-                "form_type" => "userReq",
-                "action" => "Deny",
-                "uid" => $requestedUser->uid,
-            ]);
+            call_user_func([PIMemberDenyTest::class, $methodName], $requestedUser->uid);
             $this->assertEmpty($piGroup->getRequests());
             $this->assertEqualsCanonicalizing([$pi->uid], $piGroup->getMemberUIDs());
         } finally {

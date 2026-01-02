@@ -22,12 +22,17 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
                 ]);
             },
             function ($uid, $gid) {
-                http_post(__DIR__ . "/../../webroot/admin/pi-mgmt.php", [
-                    "form_type" => "reqChild",
-                    "action" => "Approve",
-                    "pi" => $gid,
-                    "uid" => $uid,
-                ]);
+                $this->switchUser("Admin");
+                try {
+                    http_post(__DIR__ . "/../../webroot/admin/pi-mgmt.php", [
+                        "form_type" => "reqChild",
+                        "action" => "Approve",
+                        "pi" => $gid,
+                        "uid" => $uid,
+                    ]);
+                } finally {
+                    $this->switchBackUser();
+                }
             },
         );
     }

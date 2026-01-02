@@ -37,18 +37,6 @@ dn: cn=web_admins,dc=unityhpc,dc=test
 cn: web_admins
 gidnumber: 500
 memberuid: user1_org1_test
-memberuid: user3_org1_test
-memberuid: user4_org1_test
-memberuid: user5_org2_test
-memberuid: user6_org1_test
-memberuid: user7_org1_test
-memberuid: user8_org1_test
-memberuid: user9_org3_test
-memberuid: user10_org1_test
-memberuid: user11_org1_test
-memberuid: user12_org1_test
-memberuid: user13_org1_test
-memberuid: user14_org3_test
 objectclass: posixGroup
 objectclass: top
 

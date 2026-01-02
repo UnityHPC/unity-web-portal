@@ -62,9 +62,10 @@ The password is always `password`. `tools/docker-dev/web/htpasswd` contains all 
 Notable users:
 
 - `user1@org1.test` - admin, PI
-- `user2@org1.test` - not admin, not PI
-- `user2000@org2.test` - does not yet have an account
-- `user2005@org1.test` - regsitered but not qualified (not a PI or in a PI group)
+- `user2@org1.test` - blank user
+- `user4@org1.test` - normal user in PI group
+- `user5@org2.test` - PI with no group members
+- `user2000@org2.test` - user never before seen
 
 ### Changes to Dev Environment
 

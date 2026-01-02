@@ -203,6 +203,8 @@ function ensurePIGroupDoesNotExist()
 
 class UnityWebPortalTestCase extends TestCase
 {
+    private ?string $last_user_nickname = null;
+    private ?string $current_user_nickname = null;
     private array $uid_to_latest_session_id = [];
     // FIXME these names are wrong
     private static array $UID2ATTRIBUTES = [
@@ -445,6 +447,8 @@ class UnityWebPortalTestCase extends TestCase
         } else {
             session_id($this->uid_to_latest_session_id[$uid]);
         }
+        $this->last_user_nickname = $this->current_user_nickname;
+        $this->current_user_nickname = $nickname;
         // session_start will be called on the first post()
         $_SERVER["REMOTE_USER"] = $eppn;
         $_SERVER["REMOTE_ADDR"] = "127.0.0.1";
@@ -457,5 +461,10 @@ class UnityWebPortalTestCase extends TestCase
         if ($validate) {
             $this->validateUser($nickname);
         }
+    }
+
+    function switchBackUser()
+    {
+        $this->switchUser($this->last_user_nickname);
     }
 }
