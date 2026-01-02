@@ -26,11 +26,14 @@ foreach ($members as $uid => $attributes) {
     } else {
         echo "<tr class='expanded $i'>";
     }
-    $fullname = $attributes["gecos"][0];
-    $mail = $attributes["mail"][0];
-    echo "<td>$fullname</td>";
-    echo "<td>$uid</td>";
-    echo "<td><a href='mailto:$mail'>$mail</a></td>";
+    $uid_escaped = htmlspecialchars($uid);
+    $gecos = htmlspecialchars($attributes["gecos"][0]);
+    $mail_link = "mailto:" . urlencode($attributes["mail"][0]);
+    $mail_display = htmlspecialchars($attributes["mail"][0]);
+    $gid_escaped = htmlspecialchars($group->gid);
+    echo "<td>$gecos</td>";
+    echo "<td>$uid_escaped</td>";
+    echo "<td><a href='$mail_link'>$mail_display</a></td>";
     echo "<td>";
     $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo "
@@ -38,13 +41,13 @@ foreach ($members as $uid => $attributes) {
             action=''
             method='POST'
             onsubmit='
-                return confirm(\"Are you sure you want to remove $uid from this group?\");
+                return confirm(\"Are you sure you want to remove $uid_escaped from this group?\");
             '
         >
         $CSRFTokenHiddenFormInput
         <input type='hidden' name='form_type' value='remUserChild'>
-        <input type='hidden' name='uid' value='$uid'>
-        <input type='hidden' name='pi' value='$group->gid'>
+        <input type='hidden' name='uid' value='$uid_escaped'>
+        <input type='hidden' name='pi' value='$gid_escaped'>
         <input type='submit' value='Remove'>
         </form>
     ";
@@ -59,20 +62,23 @@ foreach ($requests as $i => [$user, $timestamp]) {
     } else {
         echo "<tr class='expanded $i'>";
     }
-    $name = $user->getFullName();
-    $email = $user->getMail();
-    echo "<td>$name</td>";
-    echo "<td>$user->uid</td>";
-    echo "<td><a href='mailto:$email'>$email</a></td>";
+    $gecos = htmlspecialchars($user->getFullName());
+    $uid_escaped = htmlspecialchars($user->uid);
+    $mail_link = "mailto:" . urlencode($user->getMail());
+    $mail_display = htmlspecialchars($user->getMail());
+    $gid_escaped = htmlspecialchars($group->gid);
+    echo "<td>$gecos</td>";
+    echo "<td>$uid_escaped</td>";
+    echo "<td><a href='$mail_link'>$mail_display</a></td>";
     echo "<td>";
     $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
         "<form action='' method='POST'
-    onsubmit='return confirm(\"Are you sure you want to approve $user->uid ?\");'>
+    onsubmit='return confirm(\"Are you sure you want to approve $uid_escaped ?\");'>
     $CSRFTokenHiddenFormInput
     <input type='hidden' name='form_type' value='reqChild'>
-    <input type='hidden' name='uid' value='$user->uid'>
-    <input type='hidden' name='pi' value='$group->gid'>
+    <input type='hidden' name='uid' value='$uid_escaped'>
+    <input type='hidden' name='pi' value='$gid_escaped'>
     <input type='submit' name='action' value='Approve'>
     <input type='submit' name='action' value='Deny'></form>";
     echo "</td>";

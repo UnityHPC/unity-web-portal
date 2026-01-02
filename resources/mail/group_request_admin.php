@@ -8,13 +8,13 @@ $this->Subject = "PI Group Request"; ?>
 <p>A user has requested a PI account. User details are below:</p>
 
 <p>
-    <strong>Username</strong> <?php echo $data["user"]; ?>
+    <strong>Username</strong> <?php echo htmlspecialchars($data["user"]); ?>
     <br>
-    <strong>Organization</strong> <?php echo $data["org"]; ?>
+    <strong>Organization</strong> <?php echo htmlspecialchars($data["org"]); ?>
     <br>
-    <strong>Name</strong> <?php echo $data["name"]; ?>
+    <strong>Name</strong> <?php echo htmlspecialchars($data["name"]); ?>
     <br>
-    <strong>Email</strong> <?php echo $data["email"]; ?>
+    <strong>Email</strong> <?php echo htmlspecialchars($data["email"]); ?>
 </p>
 
 <p>

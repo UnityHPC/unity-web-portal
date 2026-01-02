@@ -23,12 +23,14 @@ foreach ($members as $uid => $attributes) {
     } else {
         echo "<tr class='expanded $i'>";
     }
-    $fullname = $attributes["gecos"][0];
-    $mail = $attributes["mail"][0];
-    echo "<td>$fullname</td>";
-    echo "<td>$uid</td>";
-    echo "<td><a href='mailto:$mail'>$mail</a></td>";
-    echo "<td><input type='hidden' name='uid' value='$uid'></td>";
+    $uid_escaped = htmlspecialchars($uid);
+    $gecos = htmlspecialchars($attributes["gecos"][0]);
+    $mail_link = "mailto:" . urlencode($attributes["mail"][0]);
+    $mail_display = htmlspecialchars($attributes["mail"][0]);
+    echo "<td>$gecos</td>";
+    echo "<td>$uid_escaped</td>";
+    echo "<td><a href='$mail_link'>$mail_display</a></td>";
+    echo "<td><input type='hidden' name='uid' value='$uid_escaped'></td>";
     echo "</tr>";
     $i++;
 }
