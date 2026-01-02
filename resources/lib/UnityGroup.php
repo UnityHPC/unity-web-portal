@@ -139,46 +139,65 @@ class UnityGroup extends PosixGroup
     // /**
     //  * This method will delete the group, either by admin action or PI action
     //  */
-    // public function removeGroup($send_mail = true)
-    // {
-    //     // remove any pending requests
-    //     // this will silently fail if the request doesn't exist (which is what we want)
-    //     $this->SQL->removeRequests($this->gid);
+    /**
+     public function removeGroup($send_mail = true, ?UnityUser $operator = null)
+     {
+         // remove any pending requests
+         // this will silently fail if the request doesn't exist (which is what we want)
+         $this->SQL->removeRequests($this->gid);
 
-    //     // we don't need to do anything extra if the group is already deleted
-    //     if (!$this->exists()) {
-    //         return;
-    //     }
+         // we don't need to do anything extra if the group is already deleted
+         if (!$this->exists()) {
+             return;
+         }
 
-    //     // first, we must record the users in the group currently
-    //     $users = $this->getGroupMembers();
+         // first, we must record the users in the group currently
+         $users = $this->getGroupMembers();
 
-    //     // now we delete the ldap entry
-    //     $this->entry->ensureExists();
-    //     $this->entry->delete();
+         // now we delete the ldap entry
+         $this->entry->ensureExists();
+         $this->entry->delete();
 
-    //     // send email to every user of the now deleted PI group
-    //     if ($send_mail) {
-    //         foreach ($users as $user) {
-    //             $this->MAILER->sendMail(
-    //                 $user->getMail(),
-    //                 "group_disband",
-    //                 array("group_name" => $this->gid)
-    //             );
-    //         }
-    //     }
-    // }
+         // logs the change
+         $operator = is_null($operator) ? $this->getOwner()->uid : $operator-> uid;
+         $this->SQL->addLog(
+             $operator,
+             $_SERVER["REMOTE_ADDR"],
+             "remove_group",
+             $this->gid);
+
+         // send email to every user of the now deleted PI group
+         if ($send_mail) {
+             foreach ($users as $user) {
+                 $this->MAILER->sendMail(
+                     $user->getMail(),
+                     "group_disband",
+                     array("group_name" => $this->gid)
+                 );
+             }
+         }
+     }
 
     /**
      * This method is executed when a user is approved to join the group
      * (either by admin or the group owner)
      */
-    public function approveUser(UnityUser $new_user, bool $send_mail = true): void
-    {
+    public function approveUser(
+        UnityUser $new_user,
+        bool $send_mail = true,
+        ?UnityUser $operator = null,
+    ): void {
         $request = $this->SQL->getRequest($new_user->uid, $this->gid);
         \ensure($new_user->exists());
         $this->addMemberUID($new_user->uid);
         $this->SQL->removeRequest($new_user->uid, $this->gid);
+        $operator = is_null($operator) ? $this->getOwner()->uid : $operator->uid;
+        $this->SQL->addLog(
+            $operator,
+            $_SERVER["REMOTE_ADDR"],
+            "approve_user",
+            jsonEncode(["user" => $new_user->uid, "group" => $this->gid]),
+        );
         if ($send_mail) {
             $this->MAILER->sendMail($new_user->getMail(), "group_user_added", [
                 "group" => $this->gid,
@@ -194,11 +213,21 @@ class UnityGroup extends PosixGroup
         $new_user->setIsQualified(true); // being in a group makes you qualified
     }
 
-    public function denyUser(UnityUser $new_user, bool $send_mail = true): void
-    {
+    public function denyUser(
+        UnityUser $new_user,
+        bool $send_mail = true,
+        ?UnityUser $operator = null,
+    ): void {
         $request = $this->SQL->getRequest($new_user->uid, $this->gid);
         // remove request, this will fail silently if the request doesn't exist
         $this->SQL->removeRequest($new_user->uid, $this->gid);
+        $operator = is_null($operator) ? $this->getOwner()->uid : $operator->uid;
+        $this->SQL->addLog(
+            $operator,
+            $_SERVER["REMOTE_ADDR"],
+            "deny_user",
+            jsonEncode(["user" => $new_user->uid, "group" => $this->gid]),
+        );
         if ($send_mail) {
             $this->MAILER->sendMail($new_user->getMail(), "group_user_denied", [
                 "group" => $this->gid,
@@ -213,8 +242,11 @@ class UnityGroup extends PosixGroup
         }
     }
 
-    public function removeUser(UnityUser $new_user, bool $send_mail = true): void
-    {
+    public function removeUser(
+        UnityUser $new_user,
+        bool $send_mail = true,
+        ?UnityUser $operator = null,
+    ): void {
         if (!$this->memberUIDExists($new_user->uid)) {
             return;
         }
@@ -223,6 +255,13 @@ class UnityGroup extends PosixGroup
         }
         // remove request, this will fail silently if the request doesn't exist
         $this->removeMemberUID($new_user->uid);
+        $operator = is_null($operator) ? $this->getOwner()->uid : $operator->uid;
+        $this->SQL->addLog(
+            $operator,
+            $_SERVER["REMOTE_ADDR"],
+            "remove_user",
+            jsonEncode(["user" => $new_user->uid, "group" => $this->gid]),
+        );
         if ($send_mail) {
             $this->MAILER->sendMail($new_user->getMail(), "group_user_removed", [
                 "group" => $this->gid,

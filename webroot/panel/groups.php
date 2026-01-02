@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 UnityHTTPD::redirect();
                 break;
             case "removePIForm":
-                $pi_account->removeUser($USER);
+                $pi_account->removeUser($USER, true, $USER);
                 UnityHTTPD::redirect();
                 break;
             case "cancelPIForm":
