@@ -16,7 +16,7 @@ class PIMemberDenyTest extends UnityWebPortalTestCase
             $this->assertNotEmpty($piGroup->getRequests());
             http_post(__DIR__ . "/../../webroot/panel/pi.php", [
                 "form_type" => "userReq",
-                "action" => "deny",
+                "action" => "Deny",
                 "uid" => $requestedUser->uid,
             ]);
             $this->assertEmpty($piGroup->getRequests());
