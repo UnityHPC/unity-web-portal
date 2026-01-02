@@ -463,8 +463,8 @@ class UnityWebPortalTestCase extends TestCase
         }
     }
 
-    function switchBackUser()
+    function switchBackUser(bool $validate = false)
     {
-        $this->switchUser($this->last_user_nickname);
+        $this->switchUser($this->last_user_nickname, validate: $validate);
     }
 }
