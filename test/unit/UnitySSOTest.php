@@ -33,7 +33,7 @@ class UnitySSOTest extends UnityWebPortalTestCase
             unset($_SERVER["REMOTE_USER"]);
             $sso = UnitySSO::getSSO();
         } finally {
-            $_PREVIOUS_SERVER = $_SERVER;
+            $_SERVER = $PREVIOUS_SERVER;
         }
     }
 
@@ -45,7 +45,7 @@ class UnitySSOTest extends UnityWebPortalTestCase
             $_SERVER["REMOTE_USER"] = "";
             $sso = UnitySSO::getSSO();
         } finally {
-            $_PREVIOUS_SERVER = $_SERVER;
+            $_SERVER = $PREVIOUS_SERVER;
         }
     }
 
