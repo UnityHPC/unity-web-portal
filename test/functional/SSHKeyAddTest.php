@@ -104,7 +104,7 @@ class SSHKeyAddTest extends UnityWebPortalTestCase
         $numKeysBefore = $this->getKeyCount();
         $this->assertEquals(0, $numKeysBefore);
         try {
-            call_user_func([SSHKeyAddTest::class, $methodName], $keys);
+            call_user_func([self::class, $methodName], $keys);
             // $method($keys);
             $numKeysAfter = $this->getKeyCount();
             $this->assertEquals($expectedKeysAdded, $numKeysAfter - $numKeysBefore);

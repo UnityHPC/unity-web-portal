@@ -8,32 +8,39 @@ use TRegx\PhpUnit\DataProviders\DataProvider as TRegxDataProvider;
 
 class PIMemberApproveTest extends UnityWebPortalTestCase
 {
-    // two different ways to accept a user into a PI group
-    public static function approveUserProvider(): TRegxDataProvider
+    private function approveUserByPI(string $uid, string $gid)
     {
-        return TRegxDataProvider::list(
-            function ($uid, $gid) {
-                global $USER;
-                assert($USER->getPIGroup()->gid === $gid, "signed in user must be the group owner");
-                http_post(__DIR__ . "/../../webroot/panel/pi.php", [
-                    "form_type" => "userReq",
-                    "action" => "Approve",
-                    "uid" => $uid,
-                ]);
-            },
-            function ($uid, $gid) {
-                http_post(__DIR__ . "/../../webroot/admin/pi-mgmt.php", [
-                    "form_type" => "reqChild",
-                    "action" => "Approve",
-                    "pi" => $gid,
-                    "uid" => $uid,
-                ]);
-            },
-        );
+        global $USER;
+        assert($USER->getPIGroup()->gid === $gid, "signed in user must be the group owner");
+        http_post(__DIR__ . "/../../webroot/panel/pi.php", [
+            "form_type" => "userReq",
+            "action" => "Approve",
+            "uid" => $uid,
+        ]);
     }
 
-    #[DataProvider("approveUserProvider")]
-    public function testApproveNonexistentRequest($approveUserFunc)
+    private function approveUserByAdmin(string $uid, string $gid)
+    {
+        $this->switchUser("Admin");
+        try {
+            http_post(__DIR__ . "/../../webroot/admin/pi-mgmt.php", [
+                "form_type" => "reqChild",
+                "action" => "Approve",
+                "pi" => $gid,
+                "uid" => $uid,
+            ]);
+        } finally {
+            $this->switchBackUser();
+        }
+    }
+
+    public static function provider(): TRegxDataProvider
+    {
+        return TRegxDataProvider::list("approveUserByPI", "approveUserByAdmin");
+    }
+
+    #[DataProvider("provider")]
+    public function testApproveNonexistentRequest($methodName)
     {
         global $USER;
         $this->switchUser("Blank");
@@ -42,15 +49,15 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
         $piGroup = $USER->getPIGroup();
         try {
             $this->expectException(Exception::class); // FIXME more specific exception type
-            $approveUserFunc($uid, $piGroup->gid);
+            call_user_func([self::class, $methodName], $uid, $piGroup->gid);
         } finally {
             $this->switchUser("Blank", validate: false);
             ensureUserNotInPIGroup($piGroup);
         }
     }
 
-    #[DataProvider("approveUserProvider")]
-    public function testApproveMember($func)
+    #[DataProvider("provider")]
+    public function testApproveMember($methodName)
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
         $this->switchUser("EmptyPIGroupOwner");
@@ -65,7 +72,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
 
             $approve_uid = $SSO["user"];
             $this->switchUser("EmptyPIGroupOwner", validate: false);
-            $func($approve_uid, $gid);
+            call_user_func([self::class, $methodName], $approve_uid, $gid);
             $this->switchUser("Blank", validate: false);
 
             $this->assertFalse($pi_group->requestExists($USER));
