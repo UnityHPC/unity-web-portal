@@ -225,7 +225,6 @@ class UnityWebPortalTestCase extends TestCase
         "HasNoSshKeys" => "user3_org1_test",
         "HasOneSshKey" => "user5_org2_test",
         "NonExistent" => "user2001_org998_test",
-        "Normal" => "user2_org1_test",
         "NormalPI" => "user1_org1_test",
         "Unqualified" => "user2005_org1_test",
     ];

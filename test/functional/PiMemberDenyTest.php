@@ -12,7 +12,7 @@ class PIMemberDenyTest extends UnityWebPortalTestCase
     {
         parent::setUp();
         global $USER;
-        $this->switchUser("Normal");
+        $this->switchUser("Blank");
         self::$requestUid = $USER->uid;
     }
 

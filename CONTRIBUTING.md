@@ -135,7 +135,7 @@ Note: `phpunit` can misbehave when using `expectException` and `try`/`finally`, 
 ### creating the conditions for a test
 
 There are many user conditions available which are selected using the `$nickname` argument to the `switchUser` function.
-Examples: `"Normal"`, `"Blank"`, `"NormalPI"`, `"EmptyPIGroupOwner"`.
+Examples: `"Blank"`, `"NormalPI"`, `"EmptyPIGroupOwner"`.
 See `phpunit-bootstrap.php` for more information.
 
 The LDAP entries available in the dev environment are defined in `tools/docker-dev/identity/bootstrap.ldif`.

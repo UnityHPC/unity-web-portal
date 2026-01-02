@@ -12,9 +12,9 @@ class PageLoadTest extends UnityWebPortalTestCase
             ["Admin", __DIR__ . "/../../webroot/admin/content.php"],
             ["Admin", __DIR__ . "/../../webroot/admin/notices.php"],
             ["NonExistent", __DIR__ . "/../../webroot/panel/new_account.php"],
-            ["Normal", __DIR__ . "/../../webroot/panel/account.php"],
-            ["Normal", __DIR__ . "/../../webroot/panel/groups.php"],
-            ["Normal", __DIR__ . "/../../webroot/panel/support.php"],
+            ["Blank", __DIR__ . "/../../webroot/panel/account.php"],
+            ["Blank", __DIR__ . "/../../webroot/panel/groups.php"],
+            ["Blank", __DIR__ . "/../../webroot/panel/support.php"],
             ["EmptyPIGroupOwner", __DIR__ . "/../../webroot/panel/pi.php"],
         ];
     }
