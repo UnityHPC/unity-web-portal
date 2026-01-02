@@ -218,20 +218,75 @@ class UnityWebPortalTestCase extends TestCase
     ];
     private static array $NICKNAME2UID = [
         "Admin" => "user1_org1_test",
-        // a blank user has no requests, no PI group, and has not requested account deletion
         "Blank" => "user2_org1_test",
+        "EmptyPIGroupOwner" => "user5_org2_test",
         "CustomMapped555" => "user2002_org998_test",
         "HasNoSshKeys" => "user3_org1_test",
-        "HasNotRequestedAccountDeletionHasGroup" => "user1_org1_test",
-        "IsPIHasAtLeastOneMember" => "user1_org1_test",
-        "IsPIHasNoMembersNoMemberRequests" => "user5_org2_test",
+        "HasOneSshKey" => "user5_org2_test",
         "NonExistent" => "user2001_org998_test",
         "Normal" => "user2_org1_test",
-        // TODO remove this user and use blank user instead
-        "NotPiNotRequestedBecomePiRequestedAccountDeletion" => "user4_org1_test",
+        "NormalPI" => "user1_org1_test",
         "Unqualified" => "user2005_org1_test",
-        "WithOneKey" => "user5_org2_test",
     ];
+
+    private function validateUser(string $nickname)
+    {
+        global $USER, $SQL, $LDAP;
+        $this->assertEquals(self::$NICKNAME2UID[$nickname], $USER->uid);
+        switch ($nickname) {
+            case "Admin":
+                $this->assertTrue($USER->getFlag(UserFlag::ADMIN));
+                break;
+            case "Blank":
+                $this->assertTrue($USER->exists());
+                $this->assertFalse($USER->isPI());
+                $this->assertEqualsCanonicalizing([], $USER->getPIGroupGIDs());
+                $this->assertFalse($USER->hasRequestedAccountDeletion());
+                $this->assertEqualsCanonicalizing([], $SQL->getRequestsByUser($USER->uid));
+                $this->assertFalse($USER->getFlag(UserFlag::ADMIN));
+                $this->assertFalse($USER->getFlag(UserFlag::GHOST));
+                $this->assertFalse($USER->getFlag(UserFlag::IDLELOCKED));
+                $this->assertFalse($USER->getFlag(UserFlag::LOCKED));
+                $this->assertFalse($USER->getFlag(UserFlag::QUALIFIED));
+                $this->assertTrue($LDAP->getUserEntry($USER->uid)->exists());
+                $this->assertTrue($LDAP->getGroupEntry($USER->uid)->exists());
+                $this->assertTrue($LDAP->getOrgGroupEntry($USER->getOrg())->exists());
+                break;
+            case "CustomMapped555":
+                $this->assertFalse($USER->exists());
+                $this->assertFalse($LDAP->getUserEntry($USER->uid)->exists());
+                $this->assertFalse($LDAP->getGroupEntry($USER->uid)->exists());
+                break;
+            case "EmptyPIGroupOwner":
+                $this->assertTrue($USER->isPI());
+                $this->assertFalse($USER->hasRequestedAccountDeletion());
+                $pi_group = $USER->getPIGroup();
+                $this->assertEqualsCanonicalizing([$USER->uid], $pi_group->getMemberUIDs());
+                $this->assertEqualsCanonicalizing([], $pi_group->getRequests());
+                break;
+            case "HasNoSshKeys":
+                $this->assertEqualsCanonicalizing([], $USER->getSSHKeys());
+                break;
+            case "NonExistent":
+                $this->assertFalse($USER->exists());
+                $this->assertFalse($LDAP->getUserEntry($USER->uid)->exists());
+                $this->assertFalse($LDAP->getGroupEntry($USER->uid)->exists());
+                break;
+            case "NormalPI":
+                $this->assertTrue($USER->isPI());
+                $this->assertFalse($USER->hasRequestedAccountDeletion());
+                $this->assertGreaterThanOrEqual(2, count($USER->getPIGroup()->getMemberUIDs()));
+                break;
+            case "Unqualified":
+                $this->assertFalse($USER->getFlag(UserFlag::QUALIFIED));
+                break;
+            case "HasOneSshKey":
+                $this->assertEquals(1, count($USER->getSSHKeys()));
+                break;
+            default:
+                throw new ArrayKeyException($nickname);
+        }
+    }
 
     public function assertMessageExists(
         UnityHTTPDMessageLevel $level,

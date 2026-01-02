@@ -34,8 +34,6 @@ class PIBecomeApproveTest extends UnityWebPortalTestCase
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
         $this->switchUser("Unqualified");
         $pi_group = $USER->getPIGroup();
-        $this->assertTrue($USER->exists());
-        $this->assertFalse($pi_group->exists());
         try {
             $this->requestGroupCreation();
             $this->assertRequestedPIGroup(true);

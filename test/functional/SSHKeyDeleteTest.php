@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\Attributes\DataProvider;
+use TRegx\PhpUnit\DataProviders\DataProvider as TRegxDataProvider;
 
 class SSHKeyDeleteTest extends UnityWebPortalTestCase
 {
@@ -10,7 +11,7 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
     {
         parent::setUp();
         global $USER;
-        $this->switchUser("WithOneKey");
+        $this->switchUser("HasOneSshKey");
         self::$initialKeys = $USER->getSSHKeys();
     }
 
@@ -29,11 +30,7 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
             $HTTP_HEADER_TEST_INPUTS,
             fn($x) => !ctype_digit($x),
         );
-        $http_header_test_inputs_no_ints_2d = array_map(
-            fn($x) => [$x],
-            $http_header_test_inputs_no_ints,
-        );
-        return array_merge([["-1"], ["0.5"]], $http_header_test_inputs_no_ints_2d);
+        return TRegxDataProvider::list("-1", "0.5", $http_header_test_inputs_no_ints);
     }
 
     #[DataProvider("getGarbageIndexArgs")]

@@ -15,7 +15,7 @@ class PageLoadTest extends UnityWebPortalTestCase
             ["Normal", __DIR__ . "/../../webroot/panel/account.php"],
             ["Normal", __DIR__ . "/../../webroot/panel/groups.php"],
             ["Normal", __DIR__ . "/../../webroot/panel/support.php"],
-            ["IsPIHasNoMembersNoMemberRequests", __DIR__ . "/../../webroot/panel/pi.php"],
+            ["EmptyPIGroupOwner", __DIR__ . "/../../webroot/panel/pi.php"],
         ];
     }
 

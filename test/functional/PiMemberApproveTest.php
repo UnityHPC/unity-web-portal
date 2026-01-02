@@ -78,16 +78,9 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
     {
         global $USER;
         $this->switchUser("Normal");
-        $user = $USER;
         $uid = $USER->uid;
-        $this->switchUser("IsPIHasNoMembersNoMemberRequests");
-        $piUID = $USER->uid;
+        $this->switchUser("EmptyPIGroupOwner");
         $piGroup = $USER->getPIGroup();
-        $this->assertTrue($piGroup->exists());
-        $this->assertGroupMembers($piGroup, [$piUID]);
-        $this->assertEmpty($piGroup->getRequests());
-        $this->assertFalse($piGroup->memberUIDExists($user->uid));
-        $this->assertEmpty($piGroup->getRequests());
         try {
             $this->expectException(Exception::class); // FIXME more specific exception type
             $approveUserFunc($uid, $piGroup->gid);
@@ -101,16 +94,11 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
     public function testApproveMember($requestMembershipFunc, $approveRequestFunc)
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
-        $this->switchUser("IsPIHasNoMembersNoMemberRequests");
+        $this->switchUser("EmptyPIGroupOwner");
         $pi_uid = $USER->uid;
         $pi_group = $USER->getPIGroup();
         $gid = $pi_group->gid;
         $this->switchUser("Unqualified");
-        $this->assertTrue($USER->exists());
-        $this->assertTrue($pi_group->exists());
-        $this->assertGroupMembers($pi_group, [$pi_uid]);
-        $this->assertFalse($pi_group->memberUIDExists($USER->uid));
-        $this->assertRequestedMembership(false, $gid);
         try {
             $requestMembershipFunc($USER, $pi_group);
             $this->assertRequestedMembership(true, $gid);
@@ -132,7 +120,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $this->assertRequestedMembership(true, $gid);
 
             $approve_uid = $SSO["user"];
-            $this->switchUser("IsPIHasNoMembersNoMemberRequests");
+            $this->switchUser("EmptyPIGroupOwner");
             $approveRequestFunc($approve_uid, $gid);
             $this->switchUser("Unqualified");
 

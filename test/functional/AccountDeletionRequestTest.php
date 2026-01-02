@@ -6,7 +6,6 @@ class AccountDeletionRequestTest extends UnityWebPortalTestCase
     {
         global $USER, $SQL;
         $this->switchUser("Blank");
-        $this->assertEmpty($USER->getPIGroupGIDs());
         $this->assertNumberAccountDeletionRequests(0);
         try {
             http_post(__DIR__ . "/../../webroot/panel/account.php", [
@@ -27,8 +26,7 @@ class AccountDeletionRequestTest extends UnityWebPortalTestCase
     {
         // FIXME this should be an error
         global $USER, $SQL;
-        $this->switchUser("HasNotRequestedAccountDeletionHasGroup");
-        $this->assertNotEmpty($USER->getPIGroupGIDs());
+        $this->switchUser("NormalPI");
         $this->assertNumberAccountDeletionRequests(0);
         try {
             http_post(__DIR__ . "/../../webroot/panel/account.php", [
@@ -45,14 +43,10 @@ class AccountDeletionRequestTest extends UnityWebPortalTestCase
     public function testRequestAccountDeletionUserHasRequest()
     {
         global $USER, $SQL;
-        $this->switchUser("IsPIHasNoMembersNoMemberRequests");
-        $pi = $USER;
+        $this->switchUser("EmptyPIGroupOwner");
         $pi_group = $USER->getPIGroup();
-        $this->assertEqualsCanonicalizing([$pi->uid], $pi_group->getMemberUIDs());
         $this->switchUser("Blank");
-        $this->assertEmpty($USER->getPIGroupGIDs());
         $this->assertNumberAccountDeletionRequests(0);
-        $this->assertNumberRequests(0);
         try {
             $pi_group->newUserRequest($USER);
             $this->assertNumberRequests(1);
@@ -64,7 +58,9 @@ class AccountDeletionRequestTest extends UnityWebPortalTestCase
         } finally {
             $SQL->deleteAccountDeletionRequest($USER->uid);
             $this->assertNumberAccountDeletionRequests(0);
-            ensureUserNotInPIGroup($pi_group);
+            if ($pi_group->requestExists($USER)) {
+                $pi_group->cancelGroupJoinRequest($USER);
+            }
         }
     }
 
@@ -72,9 +68,7 @@ class AccountDeletionRequestTest extends UnityWebPortalTestCase
     {
         global $USER;
         $this->switchUser("Blank");
-        $this->assertEmpty($USER->getPIGroupGIDs());
         $this->assertNumberAccountDeletionRequests(0);
-        $this->assertNumberRequests(0);
         try {
             http_post(__DIR__ . "/../../webroot/panel/account.php", [
                 "form_type" => "account_deletion_request",

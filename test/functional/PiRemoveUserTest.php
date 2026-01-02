@@ -16,14 +16,11 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
     public function testRemoveUser()
     {
         global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
-        $this->switchUser("IsPIHasAtLeastOneMember");
+        $this->switchUser("NormalPI");
         $pi = $USER;
         $piUid = $USER->uid;
         $piGroup = $USER->getPIGroup();
-        $this->assertTrue($piGroup->exists());
         $memberUIDs = $piGroup->getMemberUIDs();
-        // the 0th member of the PI group is the PI
-        $this->assertGreaterThan(1, count($memberUIDs));
         // the ordering of the uids in getGroupMemberUIDs is different each time
         // use a linear search to find a user who is not the PI
         $memberToDelete = null;
@@ -52,11 +49,9 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
     public function testRemovePIFromTheirOwnGroup()
     {
         global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
-        $this->switchUser("IsPIHasAtLeastOneMember");
+        $this->switchUser("NormalPI");
         $pi = $USER;
         $piGroup = $USER->getPIGroup();
-        $this->assertTrue($piGroup->exists());
-        $this->assertTrue($piGroup->memberUIDExists($pi->uid));
         $this->expectException(Exception::class);
         try {
             $this->removeUser($pi->uid);

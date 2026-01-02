@@ -58,7 +58,6 @@ class ViewAsUserTest extends UnityWebPortalTestCase
         global $USER;
         $this->switchUser("Admin");
         $adminUid = $USER->uid;
-        $this->assertTrue($USER->getFlag(UserFlag::ADMIN));
         $this->switchUser("Normal");
         http_post(__DIR__ . "/../../webroot/admin/user-mgmt.php", [
             "form_type" => "viewAsUser",

@@ -26,24 +26,18 @@ class PIMemberRequestTest extends UnityWebPortalTestCase
     public function testRequestMembership()
     {
         global $USER, $SQL;
-        $this->switchUser("IsPIHasNoMembersNoMemberRequests");
-        $pi = $USER;
+        $this->switchUser("EmptyPIGroupOwner");
         $pi_group = $USER->getPIGroup();
         $gid = $pi_group->gid;
-        $this->assertTrue($USER->isPI());
-        $this->assertTrue($pi_group->exists());
-        $this->assertEqualsCanonicalizing([$pi], $pi_group->getGroupMembers());
-        $this->assertEqualsCanonicalizing([], $SQL->getRequests($gid));
         $this->switchUser("Blank");
         $uid = $USER->uid;
-        $this->assertFalse($USER->isPI());
-        $this->assertFalse($SQL->requestExists($uid, UnitySQL::REQUEST_BECOME_PI));
-        $this->assertFalse($pi_group->memberUIDExists($USER->uid));
         try {
+            // normal request
             $this->requestMembership($gid);
             $this->assertTrue($SQL->requestExists($uid, $gid));
             $this->cancelRequest($gid);
             $this->assertFalse($SQL->requestExists($uid, $gid));
+            // bogus request
             UnityHTTPD::clearMessages();
             $this->requestMembership("asdlkjasldkj");
             $this->assertMessageExists(
@@ -51,8 +45,22 @@ class PIMemberRequestTest extends UnityWebPortalTestCase
                 "/^This PI Doesn't Exist$/",
                 "/.*/",
             );
+            // request by mail
             $this->requestMembership($pi_group->getOwner()->getMail());
             $this->assertTrue($SQL->requestExists($uid, $gid));
+            // duplicate request
+            $this->requestMembership($gid);
+            $this->assertTrue($SQL->requestExists($uid, $gid));
+            // $second_request_failed = false;
+            // try {
+            $this->requestMembership($gid);
+            // } catch(Exception) {
+            //     $second_request_failed = true;
+            // }
+            // $this->assertTrue($second_request_failed);
+            $this->assertTrue($SQL->requestExists($uid, $gid));
+            $this->cancelRequest($gid);
+            $this->assertFalse($SQL->requestExists($uid, $gid));
         } finally {
             if ($SQL->requestExists($uid, $gid)) {
                 $SQL->removeRequest($uid, $gid);
