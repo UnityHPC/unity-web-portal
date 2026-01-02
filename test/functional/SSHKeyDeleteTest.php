@@ -30,7 +30,7 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
             $HTTP_HEADER_TEST_INPUTS,
             fn($x) => !ctype_digit($x),
         );
-        return TRegxDataProvider::list("-1", "0.5", $http_header_test_inputs_no_ints);
+        return TRegxDataProvider::list("-1", "0.5", ...$http_header_test_inputs_no_ints);
     }
 
     #[DataProvider("getGarbageIndexArgs")]
