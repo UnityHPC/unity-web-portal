@@ -42,6 +42,8 @@ parameters:
         - '#Negated boolean expression is always false\.#'
       paths:
         - test/functional/PiRemoveUserTest.php
+        - test/functional/LeaveGroupTest.php
+        - test/functional/IdleUnlockTest.php
         - test/phpunit-bootstrap.php
     # $Subject is written by mail templates
     - messages:

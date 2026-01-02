@@ -213,6 +213,9 @@ class UnityWebPortalTestCase extends TestCase
         "user3_org1_test" => ["user3@org1.test", "foo", "bar", "user3@org1.test"],
         "user4_org1_test" => ["user4@org1.test", "foo", "bar", "user4@org1.test"],
         "user5_org2_test" => ["user5@org2.test", "foo", "bar", "user5@org2.test"],
+        "user6_org1_test" => ["user6@org1.test", "foo", "bar", "user6@org1.test"],
+        "user7_org1_test" => ["user7@org1.test", "foo", "bar", "user7@org1.test"],
+        "user8_org1_test" => ["user8@org1.test", "foo", "bar", "user8@org1.test"],
         "user2001_org998_test" => ["user2001@org998.test", "foo", "bar", "user2001@org998.test"],
         "user2002_org998_test" => ["user2002@org998.test", "foo", "bar", "user2002@org998.test"],
         "user2003_org998_test" => ["user2003@org1.test", "foo", "bar", "user2001@org1.test"],
@@ -224,8 +227,11 @@ class UnityWebPortalTestCase extends TestCase
         "Blank" => "user2_org1_test",
         "EmptyPIGroupOwner" => "user5_org2_test",
         "CustomMapped555" => "user2002_org998_test",
+        "Ghost" => "user7_org1_test",
         "HasNoSshKeys" => "user3_org1_test",
         "HasOneSshKey" => "user5_org2_test",
+        "IdleLocked" => "user6_org1_test",
+        "Locked" => "user8_org1_test",
         "NonExistent" => "user2001_org998_test",
         "Normal" => "user4_org1_test",
         "NormalPI" => "user1_org1_test",
@@ -234,6 +240,9 @@ class UnityWebPortalTestCase extends TestCase
     private function validateUser(string $nickname)
     {
         global $USER, $SQL, $LDAP;
+        if (!array_key_exists($nickname, self::$NICKNAME2UID)) {
+            throw new ArrayKeyException($nickname);
+        }
         $this->assertEquals(self::$NICKNAME2UID[$nickname], $USER->uid);
         switch ($nickname) {
             case "Admin":
@@ -267,8 +276,19 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertEqualsCanonicalizing([$USER->uid], $pi_group->getMemberUIDs());
                 $this->assertEqualsCanonicalizing([], $pi_group->getRequests());
                 break;
+            case "Ghost":
+                $this->assertTrue($USER->getFlag(UserFlag::GHOST));
+                break;
             case "HasNoSshKeys":
                 $this->assertEqualsCanonicalizing([], $USER->getSSHKeys());
+                break;
+            case "IdleLocked":
+                // this cannot be validated automatically because the user is already idle
+                // unlocked before this code runs
+                // $this->assertTrue($USER->getFlag(UserFlag::IDLELOCKED));
+                break;
+            case "Locked":
+                $this->assertTrue($USER->getFlag(UserFlag::LOCKED));
                 break;
             case "NonExistent":
                 $this->assertFalse($USER->exists());
@@ -457,10 +477,10 @@ class UnityWebPortalTestCase extends TestCase
         $_SERVER["givenName"] = $given_name;
         $_SERVER["sn"] = $sn;
         include __DIR__ . "/../resources/autoload.php";
-        ensure(!is_null($USER));
         if ($validate) {
             $this->validateUser($nickname);
         }
+        ensure(!is_null($USER));
     }
 
     function switchBackUser(bool $validate = false)
