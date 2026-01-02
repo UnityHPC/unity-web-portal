@@ -49,7 +49,7 @@ class PIMemberDenyTest extends UnityWebPortalTestCase
         try {
             $piGroup->newUserRequest($requestedUser);
             $this->assertNotEmpty($piGroup->getRequests());
-            call_user_func([PIMemberDenyTest::class, $methodName], $requestedUser->uid);
+            call_user_func([self::class, $methodName], $requestedUser->uid);
             $this->assertEmpty($piGroup->getRequests());
             $this->assertEqualsCanonicalizing([$pi->uid], $piGroup->getMemberUIDs());
         } finally {
