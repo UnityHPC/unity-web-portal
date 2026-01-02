@@ -1,47 +1,28 @@
 <?php
-
-use PHPUnit\Framework\Attributes\DataProvider;
-use UnityWebPortal\lib\UnityUser;
-use function PHPUnit\Framework\assertEquals;
-
 class PIMemberDenyTest extends UnityWebPortalTestCase
 {
-    static $requestUid;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        global $USER;
-        $this->switchUser("Blank");
-        self::$requestUid = $USER->uid;
-    }
-
-    private function denyUser(string $uid)
-    {
-        http_post(__DIR__ . "/../../webroot/panel/pi.php", [
-            "form_type" => "userReq",
-            "action" => "approve",
-            "uid" => $uid,
-        ]);
-    }
-
     public function testDenyRequest()
     {
         global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
+        $this->switchUser("Blank");
+        $requestedUser = $USER;
         $this->switchUser("EmptyPIGroupOwner");
         $pi = $USER;
         $piGroup = $USER->getPIGroup();
-        $requestedUser = new UnityUser(self::$requestUid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+        $this->assertEmpty($piGroup->getRequests());
+        $this->assertEqualsCanonicalizing([$pi->uid], $piGroup->getMemberUIDs());
         try {
             $piGroup->newUserRequest($requestedUser);
-            $this->assertFalse($piGroup->memberUIDExists($requestedUser->uid));
-
-            $piGroup->denyUser($requestedUser);
+            $this->assertNotEmpty($piGroup->getRequests());
+            http_post(__DIR__ . "/../../webroot/panel/pi.php", [
+                "form_type" => "userReq",
+                "action" => "deny",
+                "uid" => $requestedUser->uid,
+            ]);
             $this->assertEmpty($piGroup->getRequests());
             $this->assertEqualsCanonicalizing([$pi->uid], $piGroup->getMemberUIDs());
-            $this->assertFalse($piGroup->memberUIDExists($requestedUser->uid));
         } finally {
-            $SQL->removeRequest(self::$requestUid, $piGroup->gid);
+            $SQL->removeRequest($requestedUser->uid, $piGroup->gid);
         }
     }
 }
