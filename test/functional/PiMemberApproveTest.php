@@ -8,14 +8,6 @@ use TRegx\PhpUnit\DataProviders\DataProvider as TRegxDataProvider;
 
 class PIMemberApproveTest extends UnityWebPortalTestCase
 {
-    private function cancelRequestGroupMembership($gid)
-    {
-        http_post(__DIR__ . "/../../webroot/panel/groups.php", [
-            "form_type" => "cancelPIForm",
-            "pi" => $gid,
-        ]);
-    }
-
     // two different ways to accept a user into a PI group
     public static function approveUserProvider(): TRegxDataProvider
     {
@@ -95,6 +87,7 @@ class PIMemberApproveTest extends UnityWebPortalTestCase
             $this->switchUser("Blank", validate: false);
             ensureUserNotInPIGroup($pi_group);
             $this->assertGroupMembers($pi_group, [$pi_uid]);
+            $SQL->removeRequest($USER->uid, $gid);
         }
     }
 }
