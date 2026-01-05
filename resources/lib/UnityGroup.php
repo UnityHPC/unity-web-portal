@@ -43,7 +43,7 @@ class UnityGroup extends PosixGroup
             throw new Exception("requested to create group '$this' that already exists!");
         }
         if ($this->SQL->accDeletionRequestExists($this->getOwner()->uid)) {
-            return;
+            throw new Exception("group owner '$this' requested account deletion");
         }
         $context = [
             "user" => $this->getOwner()->uid,
@@ -72,8 +72,9 @@ class UnityGroup extends PosixGroup
         if ($this->exists()) {
             throw new Exception("group '$this' exists");
         }
-        if ($this->SQL->accDeletionRequestExists($this->getOwner()->getUID())) {
-            throw new Exception("group owner '{$this->getOwner()->getUID()}' requested account deletion");
+        $owner_uid = $this->getOwner()->uid;
+        if ($this->SQL->accDeletionRequestExists($owner_uid)) {
+            throw new Exception("group owner '$owner_uid' requested account deletion");
         }
         \ensure($this->getOwner()->exists());
         $this->init();
@@ -94,7 +95,9 @@ class UnityGroup extends PosixGroup
         $request = $this->SQL->getRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         $this->SQL->removeRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         if ($this->exists()) {
-            throw new Exception("group '$this' creation request cannot be denied, it already exists!");
+            throw new Exception(
+                "group '$this' creation request cannot be denied, it already exists!",
+            );
         }
         $this->SQL->addLog("denied_group", $this->getOwner()->uid);
         if ($send_mail) {
@@ -105,7 +108,10 @@ class UnityGroup extends PosixGroup
     public function cancelGroupRequest(bool $send_mail = true): void
     {
         if (!$this->SQL->requestExists($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI)) {
-            UnitySite::errorLog("warning", "attempt to cancel nonexistent group creation request ($this)");
+            UnityHTTPD::errorLog(
+                "warning",
+                "attempt to cancel nonexistent group creation request ($this)",
+            );
             return;
         }
         $this->SQL->removeRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
@@ -119,7 +125,10 @@ class UnityGroup extends PosixGroup
     public function cancelGroupJoinRequest(UnityUser $user, bool $send_mail = true): void
     {
         if (!$this->requestExists($user)) {
-            UnitySite::errorLog("warning", "attempt to cancel nonexistent group join request ($this)");
+            UnityHTTPD::errorLog(
+                "warning",
+                "attempt to cancel nonexistent group join request ($this)",
+            );
             return;
         }
         $this->SQL->removeRequest($user->uid, $this->gid);
@@ -222,6 +231,10 @@ class UnityGroup extends PosixGroup
     public function removeUser(UnityUser $new_user, bool $send_mail = true): void
     {
         if (!$this->memberUIDExists($new_user->uid)) {
+            UnityHTTPD::errorLog(
+                "warning",
+                "attempted to delete absent user '$new_user' from group '$this'",
+            );
             return;
         }
         if ($new_user->uid == $this->getOwner()->uid) {
@@ -250,11 +263,10 @@ class UnityGroup extends PosixGroup
     public function newUserRequest(UnityUser $new_user, bool $send_mail = true): void
     {
         if ($this->memberUIDExists($new_user->uid)) {
-            UnityHTTPD::errorLog("warning", "user '$new_user' already in group");
-            return;
+            throw new Exception("user '$new_user' already in group");
         }
         if ($this->requestExists($new_user)) {
-            UnityHTTPD::errorLog("warning", "user '$new_user' already requested group membership");
+            throw new Exception("user '$new_user' already requested group membership");
             return;
         }
         if ($this->SQL->accDeletionRequestExists($new_user->uid)) {
