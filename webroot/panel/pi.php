@@ -8,7 +8,7 @@ use UnityWebPortal\lib\UnityHTTPD;
 $group = $USER->getPIGroup();
 
 if (!$USER->isPI()) {
-    UnityHTTPD::forbidden("not a PI");
+    UnityHTTPD::forbidden("not a PI", "You are not a PI.");
 }
 
 $getUserFromPost = function () {

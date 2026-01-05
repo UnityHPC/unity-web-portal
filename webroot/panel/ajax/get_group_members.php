@@ -9,7 +9,7 @@ use UnityWebPortal\lib\UnityHTTPD;
 $gid = UnityHTTPD::getQueryParameter("gid");
 $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
 if (!$group->memberUIDExists($USER->uid)) {
-    UnityHTTPD::forbidden("not a group member");
+    UnityHTTPD::forbidden("not a group member", "You are not a member of this group.");
 }
 $members = $group->getGroupMembersAttributes(["gecos", "mail"]);
 $count = count($members);
