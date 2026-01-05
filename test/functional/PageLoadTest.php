@@ -26,12 +26,7 @@ class PageLoadTest extends UnityWebPortalTestCase
         return $files;
     }
 
-    public static function panelPages()
-    {
-        return TRegxDataProvider::list(...self::findPHPFiles(__DIR__ . "/../../webroot/panel"));
-    }
-
-    public static function adminPages()
+    public static function providerAdmin()
     {
         return TRegxDataProvider::list(...self::findPHPFiles(__DIR__ . "/../../webroot/admin"));
     }
@@ -76,7 +71,7 @@ class PageLoadTest extends UnityWebPortalTestCase
         $this->assertMatchesRegularExpression($regex, $output);
     }
 
-    #[DataProvider("adminPages")]
+    #[DataProvider("providerAdmin")]
     public function testLoadAdminPageNotAnAdmin($path)
     {
         $this->switchUser("Blank");
