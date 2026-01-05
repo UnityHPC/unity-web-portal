@@ -253,7 +253,7 @@ class UnityUser
     /**
      * Sets the SSH keys on the account and the corresponding entry
      */
-    public function setSSHKeys(array $keys, bool $send_mail = true): void
+    private function setSSHKeys(array $keys, bool $send_mail = true): void
     {
         \ensure($this->entry->exists());
         $this->entry->setAttribute("sshpublickey", $keys);
