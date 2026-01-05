@@ -132,7 +132,7 @@ function http_get(string $phpfile, array $get_data = []): string
         include $phpfile;
     } finally {
         unset($_GET);
-        $_PREVIOUS_SERVER = $_SERVER;
+        $_SERVER = $_PREVIOUS_SERVER;
         return ob_get_clean();
     }
 }
