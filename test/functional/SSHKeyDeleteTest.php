@@ -27,7 +27,7 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
     public static function getGarbageKeys()
     {
         global $HTTP_HEADER_TEST_INPUTS;
-        return array_map(fn($x) => [$x], $HTTP_HEADER_TEST_INPUTS);
+        return TRegxDataProvider::list(...$HTTP_HEADER_TEST_INPUTS);
     }
 
     #[DataProvider("getGarbageKeys")]
