@@ -4,6 +4,7 @@ require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UserFlag;
+use UnityWebPortal\lib\CSRFToken;
 
 if (!$USER->getFlag(UserFlag::ADMIN)) {
     UnityHTTPD::forbidden("not an admin", "You are not an admin.");
@@ -54,6 +55,7 @@ require $LOC_HEADER;
             "mail" => ["(not found)"]
         ]
     );
+    $csrf_token = htmlspecialchars(CSRFToken::generate());
     usort($user_attributes, fn ($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
     foreach ($user_attributes as $attributes) {
         $uid = $attributes["uid"][0];
@@ -80,10 +82,9 @@ require $LOC_HEADER;
         }
         echo "</td>";
         echo "<td>";
-        $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         echo "<form class='viewAsUserForm' action='' method='POST'
         onsubmit='return confirm(\"Are you sure you want to switch to the user $uid?\");'>
-        $CSRFTokenHiddenFormInput
+        <input type='hidden' name='csrf_token' value='$csrf_token'>
         <input type='hidden' name='form_type' value='viewAsUser'>
         <input type='hidden' name='uid' value='$uid'>
         <input type='submit' name='action' value='Access'>
