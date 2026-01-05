@@ -267,7 +267,6 @@ class UnityGroup extends PosixGroup
         }
         if ($this->requestExists($new_user)) {
             throw new Exception("user '$new_user' already requested group membership");
-            return;
         }
         if ($this->SQL->accDeletionRequestExists($new_user->uid)) {
             throw new Exception("user '$new_user' requested account deletion");
