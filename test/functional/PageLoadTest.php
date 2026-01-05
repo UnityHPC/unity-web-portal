@@ -20,7 +20,7 @@ class PageLoadTest extends UnityWebPortalTestCase
         // return array_keys(iterator_to_array($regex_iterator)));
         $files = [];
         foreach (new DirectoryIterator($path) as $file) {
-            if (!$file->isDot() && str_ends_with($file->getFilename(), ".php")) {
+            if (str_ends_with($file->getFilename(), ".php")) {
                 array_push($files, join("/", [$path, $file->getFilename()]));
             }
         }
