@@ -7,7 +7,7 @@ use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UserFlag;
 
 if (!$USER->getFlag(UserFlag::ADMIN)) {
-    UnityHTTPD::forbidden("not an admin");
+    UnityHTTPD::forbidden("not an admin", "You are not an admin.");
 }
 
 $gid = UnityHTTPD::getQueryParameter("gid");
