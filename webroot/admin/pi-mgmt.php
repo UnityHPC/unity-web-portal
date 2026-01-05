@@ -9,7 +9,7 @@ use UnityWebPortal\lib\UnitySQL;
 use UnityWebPortal\lib\UserFlag;
 
 if (!$USER->getFlag(UserFlag::ADMIN)) {
-    UnityHTTPD::forbidden("not an admin");
+    UnityHTTPD::forbidden("not an admin", "You are not an admin.");
 }
 
 $getUserFromPost = function () {

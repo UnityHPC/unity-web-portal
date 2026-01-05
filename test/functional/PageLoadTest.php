@@ -7,24 +7,34 @@ class PageLoadTest extends UnityWebPortalTestCase
     public static function provider()
     {
         return [
-            ["Admin", __DIR__ . "/../../webroot/admin/pi-mgmt.php"],
-            ["Admin", __DIR__ . "/../../webroot/admin/user-mgmt.php"],
-            ["Admin", __DIR__ . "/../../webroot/admin/content.php"],
-            ["Admin", __DIR__ . "/../../webroot/admin/notices.php"],
-            ["NonExistent", __DIR__ . "/../../webroot/panel/new_account.php"],
-            ["Blank", __DIR__ . "/../../webroot/panel/account.php"],
-            ["Blank", __DIR__ . "/../../webroot/panel/groups.php"],
-            ["Blank", __DIR__ . "/../../webroot/panel/support.php"],
-            ["EmptyPIGroupOwner", __DIR__ . "/../../webroot/panel/pi.php"],
+            // normal page load
+            ["Admin", "admin/pi-mgmt.php", "/PI Management/"],
+            ["Admin", "admin/user-mgmt.php", "/User Management/"],
+            ["Admin", "admin/content.php", "/Page Content Management/"],
+            ["Admin", "admin/notices.php", "/Cluster Notice Management/"],
+            ["NonExistent", "panel/new_account.php", "/Register New Account/"],
+            ["Blank", "panel/account.php", "/Account Settings/"],
+            ["Blank", "panel/groups.php", "/My Principal Investigators/"],
+            ["Blank", "panel/support.php", "/Support/"],
+            ["EmptyPIGroupOwner", "panel/pi.php", "/My Users/"],
+            // normal user should not be able to access admin pages
+            ["Blank", "admin/pi-mgmt.php", "/You are not an admin/"],
+            ["Blank", "admin/user-mgmt.php", "/You are not an admin/"],
+            ["Blank", "admin/content.php", "/You are not an admin/"],
+            ["Blank", "admin/notices.php", "/You are not an admin/"],
+            // new_account.php should redirect to account.php if account already exists
+            ["Blank", "panel/new_account.php", "/panel\/account\.php/"],
+            // all pages should redirect to new_account.php if account does not exist
+            ["NonExistent", "panel/account.php", "/panel\/new_account\.php/"],
         ];
     }
 
     #[DataProvider("provider")]
-    public function testLoadPage($nickname, $path)
+    public function testLoadPage($nickname, $path, $regex)
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
         $this->switchUser($nickname);
-        http_get($path);
-        $this->assertTrue(true); // assert there were no errors
+        $output = http_get(__DIR__ . "/../../webroot/" . $path);
+        $this->assertMatchesRegularExpression($regex, $output);
     }
 }

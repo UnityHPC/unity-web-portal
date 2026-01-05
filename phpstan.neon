@@ -36,7 +36,6 @@ parameters:
         - '#Call to method PHPUnit\\Framework\\Assert::assertTrue\(\) with true will always evaluate to true.#'
       paths:
         - test/functional/InvalidEPPNTest.php
-        - test/functional/PageLoadTest.php
     # I cannot seem to make this error go away no matter how many functions I add @phpstan-impure to
     - messages:
         - '#Negated boolean expression is always false\.#'

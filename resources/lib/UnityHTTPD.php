@@ -18,20 +18,15 @@ enum UnityHTTPDMessageLevel: string
 
 class UnityHTTPD
 {
-    public static function die(mixed $x = null, bool $show_user = false): never
+    public static function die(?string $x = null): never
     {
-        if (CONFIG["site"]["allow_die"] == false) {
-            if (is_null($x)) {
-                throw new NoDieException();
-            } else {
-                throw new NoDieException($x);
-            }
+        if ($x !== null) {
+            echo $x;
+        }
+        if (CONFIG["site"]["allow_die"]) {
+            die();
         } else {
-            if (!is_null($x) and $show_user) {
-                die($x);
-            } else {
-                die();
-            }
+            throw new NoDieException();
         }
     }
 
@@ -165,6 +160,7 @@ class UnityHTTPD
 
     public static function badRequest(
         string $log_message,
+        string $user_message = "",
         ?\Throwable $error = null,
         ?array $data = null,
     ): never {
@@ -172,7 +168,7 @@ class UnityHTTPD
             "bad request",
             $log_message,
             "Invalid requested action or submitted data.",
-            "",
+            $user_message,
             error: $error,
             http_response_code: 400,
             data: $data,
@@ -181,6 +177,7 @@ class UnityHTTPD
 
     public static function forbidden(
         string $log_message,
+        string $user_message = "",
         ?\Throwable $error = null,
         ?array $data = null,
     ): never {
@@ -188,7 +185,7 @@ class UnityHTTPD
             "forbidden",
             $log_message,
             "Permission denied.",
-            "",
+            $user_message,
             error: $error,
             http_response_code: 403,
             data: $data,
@@ -197,6 +194,7 @@ class UnityHTTPD
 
     public static function internalServerError(
         string $log_message,
+        string $user_message = "",
         ?\Throwable $error = null,
         ?array $data = null,
     ): never {
@@ -204,7 +202,7 @@ class UnityHTTPD
             "internal server error",
             $log_message,
             "An internal server error has occurred.",
-            "",
+            $user_message,
             error: $error,
             http_response_code: 500,
             data: $data,

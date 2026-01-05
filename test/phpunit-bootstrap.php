@@ -109,7 +109,7 @@ function http_post(
     }
 }
 
-function http_get(string $phpfile, array $get_data = []): void
+function http_get(string $phpfile, array $get_data = []): string
 {
     global $LDAP,
         $SQL,
@@ -131,9 +131,9 @@ function http_get(string $phpfile, array $get_data = []): void
     try {
         include $phpfile;
     } finally {
-        ob_get_clean(); // discard output
         unset($_GET);
-        $_PREVIOUS_SERVER = $_SERVER;
+        $_SERVER = $_PREVIOUS_SERVER;
+        return ob_get_clean();
     }
 }
 
