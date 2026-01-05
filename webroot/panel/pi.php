@@ -57,14 +57,15 @@ if (count($requests) > 0) {
     echo "<table>";
 
     foreach ($requests as [$user, $timestamp]) {
-        $uid = $user->uid;
-        $name = $user->getFullName();
-        $email = $user->getMail();
+        $uid = htmlspecialchars($user->uid);
+        $gecos = htmlspecialchars($user->getFullName());
+        $mail_link = "mailto:" . urlencode($user->getMail());
+        $mail_display = htmlspecialchars($user->getMail());
         $date = date("jS F, Y", strtotime($timestamp));
         echo "<tr>";
-        echo "<td>$name</td>";
+        echo "<td>$gecos</td>";
         echo "<td>$uid</td>";
-        echo "<td><a href='mailto:$email'>$email</a></td>";
+        echo "<td><a href='$mail_link'>$mail_display</a></td>";
         echo "<td>$date</td>";
         echo "<td>";
         $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
@@ -96,7 +97,10 @@ foreach ($assocs as $assoc) {
     if ($assoc->uid == $USER->uid) {
         continue;
     }
-
+    $uid = htmlspecialchars($assoc->uid);
+    $gecos = htmlspecialchars($assoc->getFullName());
+    $mail_link = "mailto:" . urlencode($assoc->getMail());
+    $mail_display = htmlspecialchars($assoc->getMail());
     echo "<tr>";
     echo "<td>";
     $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
@@ -114,9 +118,9 @@ foreach ($assocs as $assoc) {
     >
     </form>";
     echo "</td>";
-    echo "<td>" . $assoc->getFirstname() . " " . $assoc->getLastname() . "</td>";
-    echo "<td>" . $assoc->uid . "</td>";
-    echo "<td><a href='mailto:" . $assoc->getMail() . "'>" . $assoc->getMail() . "</a></td>";
+    echo "<td>$gecos</td>";
+    echo "<td>$uid</td>";
+    echo "<td><a href='$mail_link'>$mail_display</a></td>";
     echo "</tr>";
 }
 

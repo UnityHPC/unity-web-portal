@@ -5,9 +5,9 @@ case UserFlag::QUALIFIED: ?>
 <p>Hello,</p>
 <p>Your account on the UnityHPC Platform has been activated. Your account details are below:</p>
 <p>
-<strong>Username</strong> <?php echo $data["user"]; ?>
+<strong>Username</strong> <?php echo htmlspecialchars($data["user"]); ?>
 <br>
-<strong>Organization</strong> <?php echo $data["org"]; ?>
+<strong>Organization</strong> <?php echo htmlspecialchars($data["org"]); ?>
 </p>
 <p>
 See the

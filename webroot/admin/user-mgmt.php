@@ -57,24 +57,25 @@ require $LOC_HEADER;
     usort($user_attributes, fn ($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
     foreach ($user_attributes as $attributes) {
         $uid = $attributes["uid"][0];
+        $uid_escaped = htmlspecialchars($uid);
+        $gecos = htmlspecialchars($attributes["gecos"][0]);
+        $org = htmlspecialchars($attributes["o"][0]);
+        $mail_link = "mailto:" . urlencode($attributes["mail"][0]);
+        $mail_display = htmlspecialchars($attributes["mail"][0]);
         if ($SQL->accDeletionRequestExists($uid)) {
             echo "<tr style='color:#555555; font-style: italic'>";
         } else {
             echo "<tr>";
         }
-        echo "<td>" . $attributes["gecos"][0] . "</td>";
-        echo "<td>" . $uid . "</td>";
-        echo "<td>" . $attributes["o"][0] . "</td>";
-        echo "
-            <td>
-                <a href='mailto:" . $attributes["mail"][0] . "'>" . $attributes["mail"][0] . "</a>
-            </td>
-        ";
+        echo "<td>$gecos</td>";
+        echo "<td>$uid_escaped</td>";
+        echo "<td>$org</td>";
+        echo "<td><a href='$mail_link'>$mail_display</a></td>";
         echo "<td>";
         if (count($UID2PIGIDs[$uid]) > 0) {
             echo "<table style='margin: 0 0 0 0;'>";
             foreach ($UID2PIGIDs[$uid] as $gid) {
-                echo "<tr><td>$gid</td></tr>";
+                echo "<tr><td>" . htmlspecialchars($gid) . "</td></tr>";
             }
             echo "</table>";
         }
@@ -82,10 +83,10 @@ require $LOC_HEADER;
         echo "<td>";
         $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         echo "<form class='viewAsUserForm' action='' method='POST'
-        onsubmit='return confirm(\"Are you sure you want to switch to the user $uid?\");'>
+        onsubmit='return confirm(\"Are you sure you want to switch to the user $uid_escaped?\");'>
         $CSRFTokenHiddenFormInput
         <input type='hidden' name='form_type' value='viewAsUser'>
-        <input type='hidden' name='uid' value='$uid'>
+        <input type='hidden' name='uid' value='$uid_escaped'>
         <input type='submit' name='action' value='Access'>
         </form>";
         echo "</td>";
