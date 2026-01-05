@@ -48,7 +48,7 @@ class PageLoadTest extends UnityWebPortalTestCase
         $output = array_diff($panelPages, $excludePages);
         return TRegxDataProvider::list(...$output);
     }
-    public static function pagesAndRegexes()
+    public static function providerMisc()
     {
         return [
             // normal page load
@@ -68,7 +68,7 @@ class PageLoadTest extends UnityWebPortalTestCase
         ];
     }
 
-    #[DataProvider("pagesAndRegexes")]
+    #[DataProvider("providerMisc")]
     public function testLoadPage($nickname, $path, $regex)
     {
         $this->switchUser($nickname);
