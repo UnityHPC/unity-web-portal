@@ -48,6 +48,7 @@ class PageLoadTest extends UnityWebPortalTestCase
         $output = array_diff($panelPages, $excludePages);
         return TRegxDataProvider::list(...$output);
     }
+
     public static function providerMisc()
     {
         return [
