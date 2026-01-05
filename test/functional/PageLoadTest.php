@@ -1,7 +1,6 @@
 <?php
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use UnityWebPortal\lib\exceptions\NoDieException;
 use TRegx\PhpUnit\DataProviders\DataProvider as TRegxDataProvider;
 
 class PageLoadTest extends UnityWebPortalTestCase
