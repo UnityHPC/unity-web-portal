@@ -42,7 +42,7 @@ class UnityLDAP extends LDAPConn
     // Instance vars for various ldapEntry objects
     private LDAPEntry $baseOU;
     private LDAPEntry $userOU;
-    private LDAPEntry $groupOU;
+    private LDAPEntry $groupOU; /** @phpstan-ignore property.onlyWritten */
     private LDAPEntry $pi_groupOU;
     private LDAPEntry $org_groupOU;
 
