@@ -247,6 +247,7 @@ class UnityUser
         } else {
             throw new ArrayKeyException($key);
         }
+        $keys_after = array_values($keys_after); // reindex
         $this->setSSHKeys($keys_after, $send_mail);
     }
 
