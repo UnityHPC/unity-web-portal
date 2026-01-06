@@ -46,8 +46,8 @@ require $LOC_HEADER;
     </tr>
 
     <?php
-    $UID2PIGIDs = $LDAP->getQualifiedUID2PIGIDs();
-    $user_attributes = $LDAP->getQualifiedUsersAttributes(
+    $UID2PIGIDs = $LDAP->getUID2PIGIDs();
+    $user_attributes = $LDAP->getAllNativeUsersAttributes(
         ["uid", "gecos", "o", "mail"],
         default_values: [
             "gecos" => ["(not found)"],
@@ -73,7 +73,7 @@ require $LOC_HEADER;
             </td>
         ";
         echo "<td>";
-        if (count($UID2PIGIDs[$uid]) > 0) {
+        if (count($UID2PIGIDs[$uid] ?? []) > 0) {
             echo "<table style='margin: 0 0 0 0;'>";
             foreach ($UID2PIGIDs[$uid] as $gid) {
                 echo "<tr><td>$gid</td></tr>";
