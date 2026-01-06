@@ -252,4 +252,11 @@ class UnitySQL
         $stmt->bindParam(":uid", $uid);
         $stmt->execute();
     }
+
+    public function getAllAccountDeletionRequests(): array
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_ACCOUNT_DELETION_REQUESTS);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }
