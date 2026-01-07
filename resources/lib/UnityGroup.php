@@ -37,10 +37,9 @@ class UnityGroup extends PosixGroup
         return $this->gid;
     }
 
-    public function requestGroup(
-        bool $send_mail_to_admins = CONFIG["mail"]["send_pimesg_to_admins"],
-        bool $send_mail = true,
-    ): void {
+    public function requestGroup(?bool $send_mail_to_admins = null, bool $send_mail = true): void
+    {
+        $send_mail_to_admins ??= CONFIG["mail"]["send_pimesg_to_admins"];
         if ($this->exists()) {
             return;
         }
