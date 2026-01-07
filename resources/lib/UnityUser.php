@@ -3,7 +3,10 @@
 namespace UnityWebPortal\lib;
 
 use PHPOpenLDAPer\LDAPEntry;
+use phpseclib3\Crypt\PublicKeyLoader;
 use Exception;
+use phpseclib3\Exception\NoKeyLoadedException;
+use UnityWebPortal\lib\exceptions\ArrayKeyException;
 
 class UnityUser
 {
@@ -220,13 +223,41 @@ class UnityUser
     }
 
     /**
+     * @return bool true if key added, false if key not added because it was already there
+     * be sure to check that the key is actually valid first!
+     */
+    public function addSSHKey(string $key, bool $send_mail = true): bool
+    {
+        if ($this->SSHKeyExists($key)) {
+            return false;
+        }
+        $this->setSSHKeys(array_merge($this->getSSHKeys(), [$key]), $send_mail);
+        return true;
+    }
+
+    /**
+     *  @throws ArrayKeyException
+     */
+    public function removeSSHKey(string $key, bool $send_mail = true): void
+    {
+        $keys_before = $this->getSSHKeys();
+        $keys_after = $keys_before;
+        if (($i = array_search($key, $keys_before)) !== false) {
+            unset($keys_after[$i]);
+        } else {
+            throw new ArrayKeyException($key);
+        }
+        $keys_after = array_values($keys_after); // reindex
+        $this->setSSHKeys($keys_after, $send_mail);
+    }
+
+    /**
      * Sets the SSH keys on the account and the corresponding entry
      */
-    public function setSSHKeys($keys, bool $send_mail = true): void
+    private function setSSHKeys(array $keys, bool $send_mail = true): void
     {
-        $keys_filt = array_values(array_unique($keys));
         \ensure($this->entry->exists());
-        $this->entry->setAttribute("sshpublickey", $keys_filt);
+        $this->entry->setAttribute("sshpublickey", $keys);
         $this->SQL->addLog("sshkey_modify", $this->uid);
         if ($send_mail) {
             $this->MAILER->sendMail($this->getMail(), "user_sshkey", [
@@ -243,6 +274,19 @@ class UnityUser
         $this->entry->ensureExists();
         $result = $this->entry->getAttribute("sshpublickey");
         return $result;
+    }
+
+    /* checks if key exists, ignoring the optional comment suffix */
+    public function SSHKeyExists(string $key): bool
+    {
+        $keyNoSuffix = removeSSHKeyOptionalCommentSuffix($key);
+        foreach ($this->getSSHKeys() as $foundKey) {
+            $foundKeyNoSuffix = removeSSHKeyOptionalCommentSuffix($foundKey);
+            if ($key === $foundKey || $keyNoSuffix === $foundKeyNoSuffix) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

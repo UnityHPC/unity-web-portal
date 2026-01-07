@@ -14,13 +14,52 @@ function ensure(bool $condition, ?string $message = null): void
     }
 }
 
-function testValidSSHKey(string $key_str): bool
+/*
+key must take the form "KEY_TYPE KEY_DATA OPTIONAL_COMMENT"
+*/
+function removeSSHKeyOptionalCommentSuffix(string $key): string
 {
+    $matches = [];
+    if (preg_match("/^(\S+ \S+)/", $key, $matches)) {
+        return $matches[1];
+    } else {
+        throw new \ValueError("invalid SSH key: $key");
+    }
+}
+
+/**
+ *  @return array of length 2: [boolean is_valid, string invalid_explanation]
+ */
+function testValidSSHKey(string $key): array
+{
+    if ($key != trim($key)) {
+        return [false, "Key must not have leading or trailing whitespace"];
+    }
+    if (substr_count($key, "\n") != 0) {
+        return [false, "Key must not span multiple lines"];
+    }
+    $exploded = explode(" ", $key, 2);
+    if (count($exploded) == 1) {
+        return [false, "Key must have at least 2 words"];
+    }
+    $key_type = $exploded[0];
+    if (!in_array($key_type, CONFIG["ldap"]["allowed_ssh_key_types"])) {
+        return [
+            false,
+            sprintf(
+                "Key type '%s' is not allowed. Allowed key types are: %s",
+                shortenString($key_type, 5, 5),
+                jsonEncode(CONFIG["ldap"]["allowed_ssh_key_types"]),
+            ),
+        ];
+    }
     try {
-        PublicKeyLoader::load($key_str);
-        return true;
+        PublicKeyLoader::loadPublicKey($key);
+        return [true, ""];
     } catch (NoKeyLoadedException $e) {
-        return false;
+        // phpseclib internally catches any throwable to make NoKeyLoadedException,
+        // so I am not comfortable sharing the exception message with the user
+        return [false, "Invalid key"];
     }
 }
 
@@ -104,4 +143,19 @@ function digits2int(string $x, ...$args): int
     } else {
         throw new ValueError("not digits: $x");
     }
+}
+
+/* example with 3 leading chars and 3 trailing chars: "foobarbaz" -> "foo...baz" */
+function shortenString(
+    string $x,
+    int $leading_chars,
+    int $trailing_chars,
+    string $ellipsis = "...",
+): string {
+    if ($leading_chars + strlen($ellipsis) + $trailing_chars > strlen($x)) {
+        return $x;
+    }
+    return substr($x, 0, $leading_chars) .
+        $ellipsis .
+        substr($x, -1 * $trailing_chars, $trailing_chars);
 }

@@ -1,6 +1,6 @@
 <?php
 
-require "../../../resources/autoload.php";
+require_once __DIR__ . "/../../../resources/autoload.php";
 
 use phpseclib3\Crypt\EC;
 use UnityWebPortal\lib\UnityHTTPD;

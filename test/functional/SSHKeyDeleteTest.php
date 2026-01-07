@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use TRegx\PhpUnit\DataProviders\DataProvider as TRegxDataProvider;
+use UnityWebPortal\lib\exceptions\ArrayKeyException;
 
 class SSHKeyDeleteTest extends UnityWebPortalTestCase
 {
@@ -15,45 +16,30 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
         self::$initialKeys = $USER->getSSHKeys();
     }
 
-    private function deleteKey(string $index): void
+    private function deleteKey(string $key): void
     {
         http_post(__DIR__ . "/../../webroot/panel/account.php", [
             "form_type" => "delKey",
-            "delIndex" => $index,
+            "delKey" => $key,
         ]);
     }
 
-    public static function getGarbageIndexArgs()
+    public static function getGarbageKeys()
     {
         global $HTTP_HEADER_TEST_INPUTS;
-        $http_header_test_inputs_no_ints = array_filter(
-            $HTTP_HEADER_TEST_INPUTS,
-            fn($x) => !ctype_digit($x),
-        );
-        return TRegxDataProvider::list("-1", "0.5", ...$http_header_test_inputs_no_ints);
+        return TRegxDataProvider::list(...$HTTP_HEADER_TEST_INPUTS);
     }
 
-    #[DataProvider("getGarbageIndexArgs")]
-    public function testDeleteKeyGarbageInput(string $index)
+    #[DataProvider("getGarbageKeys")]
+    public function testDeleteKeyGarbageInput(string $key)
     {
         global $USER;
         try {
-            $this->expectException(ValueError::class);
-            $this->deleteKey($index);
+            $this->expectException(ArrayKeyException::class);
+            $this->deleteKey($key);
             $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
         } finally {
-            $USER->setSSHKeys(self::$initialKeys);
-        }
-    }
-
-    public function testDeleteKeyIndexTooLarge()
-    {
-        global $USER;
-        try {
-            $this->deleteKey("99");
-            $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
-        } finally {
-            $USER->setSSHKeys(self::$initialKeys);
+            callPrivateMethod($USER, "setSSHKeys", self::$initialKeys);
         }
     }
 
@@ -61,10 +47,12 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
     {
         global $USER;
         try {
-            $this->deleteKey("0");
+            $key = self::$initialKeys[0];
+            $this->assertNotNull($key);
+            $this->deleteKey($key);
             $this->assertEquals([], $USER->getSSHKeys());
         } finally {
-            $USER->setSSHKeys(self::$initialKeys);
+            callPrivateMethod($USER, "setSSHKeys", self::$initialKeys);
         }
     }
 }

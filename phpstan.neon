@@ -13,14 +13,6 @@ parameters:
         - resources/mail/*
     # these functions are called with call_user_func
     - messages:
-        - '#Method SSHKeyAddTest::addSshKeysPaste\(\) is unused.#'
-        - '#Method SSHKeyAddTest::addSshKeysImport\(\) is unused.#'
-        - '#Method SSHKeyAddTest::addSshKeysGenerate\(\) is unused.#'
-        - '#Method SSHKeyAddTest::addSshKeysGithub\(\) is unused.#'
-      paths:
-        - test/functional/SSHKeyAddTest.php
-    # these functions are called with call_user_func
-    - messages:
         - '#Method PIMemberApproveTest::approveUserByPI\(\) is unused.#'
         - '#Method PIMemberApproveTest::approveUserByAdmin\(\) is unused.#'
       paths:
