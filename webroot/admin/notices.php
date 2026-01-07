@@ -66,7 +66,6 @@ foreach ($notices as $notice) {
     echo "<span class='noticeDate'>" . date('Y-m-d', strtotime($notice["date"])) . "</span>";
     echo "<div class='noticeText'>" . $notice["message"] . "</div>";
     echo "<button class='btnEdit'>Edit</button>";
-    echo $CSRFTokenHiddenFormInput;
     echo "
     <form style='display: inline-block; margin-left: 10px;' method='POST' action=''>
     $CSRFTokenHiddenFormInput
