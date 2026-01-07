@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/../../../resources/autoload.php";  // Load required libs
 use UnityWebPortal\lib\UnityHTTPD;
+$CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 ?>
 
 <form
@@ -10,7 +11,7 @@ use UnityWebPortal\lib\UnityHTTPD;
     method="POST"
     action="<?php echo getURL("panel/account.php"); ?>"
 >
-    <?php echo UnityHTTPD::getCSRFTokenHiddenFormInput(); ?>
+    <?php echo $CSRFTokenHiddenFormInput; ?>
     <input type='hidden' name='form_type' value='addKey'>
 
     <div class='inline'>
