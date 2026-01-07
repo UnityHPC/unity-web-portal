@@ -6,8 +6,7 @@ use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
 
 
-$gid = UnityHTTPD::getQueryParameter("gid");
-$group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+$group = new UnityGroup($_GET["gid"], $LDAP, $SQL, $MAILER, $WEBHOOK);
 if (!$group->memberUIDExists($USER->uid)) {
     UnityHTTPD::forbidden("not a group member", "You are not a member of this group.");
 }

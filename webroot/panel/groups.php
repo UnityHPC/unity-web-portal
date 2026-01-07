@@ -8,7 +8,7 @@ use UnityWebPortal\lib\UnityHTTPD;
 
 $getPIGroupFromPost = function () {
     global $LDAP, $SQL, $MAILER, $WEBHOOK;
-    $gid_or_mail = UnityHTTPD::getPostData("pi");
+    $gid_or_mail = $_POST["pi"];
     if (substr($gid_or_mail, 0, 3) !== "pi_" && str_contains($gid_or_mail, "@")) {
         try {
             $gid_or_mail = UnityGroup::ownerMail2GID($gid_or_mail);
