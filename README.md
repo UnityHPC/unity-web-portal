@@ -121,7 +121,7 @@ rm "$prod" && ln -s "$old" "$prod"
 
 ### Version-specific update instructions:
 
-### 1.5.0 -> 1.5.1
+### 1.5 -> 1.6
 
 - the `[site]getting_started_url` option should be defined
 - the `[ldap]admin_group` option has been renamed to `[ldap]user_flag_groups[admin]`
