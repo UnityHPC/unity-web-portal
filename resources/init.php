@@ -70,7 +70,6 @@ if (isset($_SERVER["REMOTE_USER"])) {
 
     $_SESSION["user_exists"] = $USER->exists();
     $_SESSION["is_pi"] = $USER->isPI();
-    $SEND_PIMESG_TO_ADMINS = CONFIG["mail"]["send_pimesg_to_admins"];
 
     $SQL->addLog("user_login", $OPERATOR->uid);
 }
