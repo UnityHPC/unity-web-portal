@@ -56,32 +56,28 @@ class UnityUser
         $ldapGroupEntry = $this->getGroupEntry();
         $id = $this->LDAP->getNextUIDGIDNumber($this->uid);
         \ensure(!$ldapGroupEntry->exists());
-        $ldapGroupEntry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
-        $ldapGroupEntry->setAttribute("gidnumber", strval($id));
-        $ldapGroupEntry->write();
-
+        $ldapGroupEntry->create([
+            "objectclass" => UnityLDAP::POSIX_GROUP_CLASS,
+            "gidnumber" => strval($id),
+        ]);
         \ensure(!$this->entry->exists());
-        $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_ACCOUNT_CLASS);
-        $this->entry->setAttribute("uid", $this->uid);
-        $this->entry->setAttribute("givenname", $firstname);
-        $this->entry->setAttribute("sn", $lastname);
-        $this->entry->setAttribute(
-            "gecos",
-            \transliterator_transliterate("Latin-ASCII", "$firstname $lastname"),
-        );
-        $this->entry->setAttribute("mail", $email);
-        $this->entry->setAttribute("o", $org);
-        $this->entry->setAttribute("homedirectory", self::HOME_DIR . $this->uid);
-        $this->entry->setAttribute("loginshell", $this->LDAP->getDefUserShell());
-        $this->entry->setAttribute("uidnumber", strval($id));
-        $this->entry->setAttribute("gidnumber", strval($id));
-        $this->entry->write();
-
+        $this->entry->create([
+            "objectclass" => UnityLDAP::POSIX_ACCOUNT_CLASS,
+            "uid" => $this->uid,
+            "givenname" => $firstname,
+            "sn" => $lastname,
+            "gecos" => \transliterator_transliterate("Latin-ASCII", "$firstname $lastname"),
+            "mail" => $email,
+            "o" => $org,
+            "homedirectory" => self::HOME_DIR . $this->uid,
+            "loginshell" => $this->LDAP->getDefUserShell(),
+            "uidnumber" => strval($id),
+            "gidnumber" => strval($id),
+        ]);
         $org = $this->getOrgGroup();
         if (!$org->exists()) {
             $org->init();
         }
-
         if (!$org->memberUIDExists($this->uid)) {
             $org->addMemberUID($this->uid);
         }
@@ -155,7 +151,6 @@ class UnityUser
     public function setOrg(UnityOrg $org): void
     {
         $this->entry->setAttribute("o", $org);
-        $this->entry->write();
     }
 
     public function getOrg(): string
@@ -171,7 +166,6 @@ class UnityUser
     {
         $this->entry->setAttribute("givenname", $firstname);
         $this->SQL->addLog("firstname_changed", $this->uid);
-        $this->entry->write();
     }
 
     /**
@@ -190,7 +184,6 @@ class UnityUser
     {
         $this->entry->setAttribute("sn", $lastname);
         $this->SQL->addLog("lastname_changed", $this->uid);
-        $this->entry->write();
     }
 
     /**
@@ -215,7 +208,6 @@ class UnityUser
     {
         $this->entry->setAttribute("mail", $email);
         $this->SQL->addLog("email_changed", $this->uid);
-        $this->entry->write();
     }
 
     /**
@@ -235,7 +227,6 @@ class UnityUser
         $keys_filt = array_values(array_unique($keys));
         \ensure($this->entry->exists());
         $this->entry->setAttribute("sshpublickey", $keys_filt);
-        $this->entry->write();
         $this->SQL->addLog("sshkey_modify", $this->uid);
         if ($send_mail) {
             $this->MAILER->sendMail($this->getMail(), "user_sshkey", [
@@ -271,7 +262,6 @@ class UnityUser
         }
         \ensure($this->entry->exists());
         $this->entry->setAttribute("loginshell", $shell);
-        $this->entry->write();
         $this->SQL->addLog("loginshell_changed", $this->uid);
         if ($send_mail) {
             $this->MAILER->sendMail($this->getMail(), "user_loginshell", [
@@ -293,7 +283,6 @@ class UnityUser
     {
         \ensure($this->entry->exists());
         $this->entry->setAttribute("homedirectory", $home);
-        $this->entry->write();
         $this->SQL->addLog("homedir_changed", $this->uid);
     }
 

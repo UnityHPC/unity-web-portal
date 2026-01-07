@@ -322,10 +322,11 @@ class UnityGroup extends PosixGroup
         $owner = $this->getOwner();
         \ensure(!$this->entry->exists());
         $nextGID = $this->LDAP->getNextPIGIDNumber();
-        $this->entry->setAttribute("objectclass", UnityLDAP::POSIX_GROUP_CLASS);
-        $this->entry->setAttribute("gidnumber", strval($nextGID));
-        $this->entry->setAttribute("memberuid", [$owner->uid]);
-        $this->entry->write();
+        $this->entry->create([
+            "objectclass" => UnityLDAP::POSIX_GROUP_CLASS,
+            "gidnumber" => strval($nextGID),
+            "memberuid" => [$owner->uid],
+        ]);
         // TODO if we ever make this project based,
         // we need to update the cache here with the memberuid
     }
