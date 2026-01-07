@@ -73,17 +73,7 @@ function http_post(
     bool $enforce_PRG = true,
     bool $do_generate_csrf_token = true,
 ): void {
-    global $LDAP,
-        $SQL,
-        $MAILER,
-        $WEBHOOK,
-        $GITHUB,
-        $SITE,
-        $SSO,
-        $USER,
-        $SEND_PIMESG_TO_ADMINS,
-        $LOC_HEADER,
-        $LOC_FOOTER;
+    global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "POST";
     $_SERVER["PHP_SELF"] = preg_replace("/.*webroot\//", "/", $phpfile);
@@ -111,17 +101,7 @@ function http_post(
 
 function http_get(string $phpfile, array $get_data = []): string
 {
-    global $LDAP,
-        $SQL,
-        $MAILER,
-        $WEBHOOK,
-        $GITHUB,
-        $SITE,
-        $SSO,
-        $USER,
-        $SEND_PIMESG_TO_ADMINS,
-        $LOC_HEADER,
-        $LOC_FOOTER;
+    global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "GET";
     $_SERVER["PHP_SELF"] = preg_replace("/.*webroot\//", "/", $phpfile);
@@ -433,7 +413,6 @@ class UnityWebPortalTestCase extends TestCase
             $SITE,
             $SSO,
             $USER,
-            $SEND_PIMESG_TO_ADMINS,
             $LOC_HEADER,
             $LOC_FOOTER;
         if (!array_key_exists($nickname, self::$NICKNAME2UID)) {

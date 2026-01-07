@@ -34,6 +34,10 @@ parameters:
       paths:
         - test/functional/PiRemoveUserTest.php
         - test/phpunit-bootstrap.php
+    - messages:
+        - '#If condition is always false\.#'
+      paths:
+        - test/functional/PiBecomeDenyTest.php
     # $Subject is written by mail templates
     - messages:
         - '#Property UnityWebPortal\\lib\\UnityWebhook::\$Subject is never written, only read\.#'
@@ -41,6 +45,6 @@ parameters:
         - resources/lib/UnityWebhook.php
     # init.php sets these when the user is logged in
     - messages:
-        - '#Variable \$(LDAP|SQL|MAILER|WEBHOOK|GITHUB|SSO|OPERATOR|USER|SEND_PIMESG_TO_ADMINS|LOC_HEADER|LOC_FOOTER) might not be defined.#'
+        - '#Variable \$(LDAP|SQL|MAILER|WEBHOOK|GITHUB|SSO|OPERATOR|USER|LOC_HEADER|LOC_FOOTER) might not be defined.#'
       paths:
         - webroot/*

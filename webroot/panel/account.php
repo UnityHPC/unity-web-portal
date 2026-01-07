@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($_POST["tos"] != "agree") {
                 UnityHTTPD::badRequest("user did not agree to terms of service");
             }
-            $USER->getPIGroup()->requestGroup($SEND_PIMESG_TO_ADMINS);
+            $USER->getPIGroup()->requestGroup();
             break;
         case "cancel_pi_request":
             $USER->getPIGroup()->cancelGroupRequest();
