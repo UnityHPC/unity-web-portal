@@ -148,7 +148,7 @@ class UnityUser
         return $this->entry->exists() && $this->getGroupEntry()->exists();
     }
 
-    public function setOrg(UnityOrg $org): void
+    public function setOrg(string $org): void
     {
         $this->entry->setAttribute("o", $org);
     }
