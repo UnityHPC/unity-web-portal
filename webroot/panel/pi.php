@@ -46,49 +46,55 @@ require $LOC_HEADER;
 $requests = $group->getRequests();
 $assocs = $group->getGroupMembers();
 
-if (count($requests) + count($assocs) == 1) {
-    $url = getURL("panel/groups.php");
-    echo "<p>You do not have any users attached to your PI account.
-    Ask your users to request to join your account on the <a href='$url'>My PIs</a> page.</p>";
+
+echo "<h2>Pending Requests</h2>";
+if (count($requests) === 0) {
+    echo "<p>You do not have any pending requests.</p>";
 }
+echo "<table>";
 
-if (count($requests) > 0) {
-    echo "<h5>Pending Requests</h5>";
-    echo "<table>";
+foreach ($requests as [$user, $timestamp]) {
+    $uid = $user->uid;
+    $name = $user->getFullName();
+    $email = $user->getMail();
+    $date = date("jS F, Y", strtotime($timestamp));
+    echo "<tr>";
+    echo "<td>$name</td>";
+    echo "<td>$uid</td>";
+    echo "<td><a href='mailto:$email'>$email</a></td>";
+    echo "<td>$date</td>";
+    echo "<td>";
+    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
+    echo
+        "<form action='' method='POST'>
+    $CSRFTokenHiddenFormInput
+    <input type='hidden' name='form_type' value='userReq'>
+    <input type='hidden' name='uid' value='$uid'>
+    <input type='submit' name='action' value='Approve'
+    onclick='return confirm(\"Are you sure you want to approve $uid?\")'>
+    <input type='submit' name='action' value='Deny'
+    onclick='return confirm(\"Are you sure you want to deny $uid?\")'>
+    </form>";
+    echo "</td>";
+    echo "</tr>";
+}
+echo "</table>";
 
-    foreach ($requests as [$user, $timestamp]) {
-        $uid = $user->uid;
-        $name = $user->getFullName();
-        $email = $user->getMail();
-        $date = date("jS F, Y", strtotime($timestamp));
-        echo "<tr>";
-        echo "<td>$name</td>";
-        echo "<td>$uid</td>";
-        echo "<td><a href='mailto:$email'>$email</a></td>";
-        echo "<td>$date</td>";
-        echo "<td>";
-        $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
-        echo
-            "<form action='' method='POST'>
-        $CSRFTokenHiddenFormInput
-        <input type='hidden' name='form_type' value='userReq'>
-        <input type='hidden' name='uid' value='$uid'>
-        <input type='submit' name='action' value='Approve'
-        onclick='return confirm(\"Are you sure you want to approve $uid?\")'>
-        <input type='submit' name='action' value='Deny'
-        onclick='return confirm(\"Are you sure you want to deny $uid?\")'>
-        </form>";
-        echo "</td>";
-        echo "</tr>";
-    }
-    echo "</table>";
-
-    if (count($assocs) > 0) {
-        echo "<hr>";
-    }
+if (count($assocs) > 0) {
+    echo "<hr>";
 }
 
 echo "<h2>Users in Group</h2>";
+
+if (count($assocs) === 1) {
+    $hyperlink = getHyperlink("My PIs", "panel/groups.php");
+    echo "
+        <p>
+            You do not have any users in your group.
+            Ask your users to request to join your account on the $hyperlink page.
+        </p>
+    ";
+}
 
 echo "<table>";
 
