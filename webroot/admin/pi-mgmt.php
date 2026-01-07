@@ -129,7 +129,7 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
                 <td>$gecos</td>
                 <td>$gid</td>
                 <td>$mail</td>
-                <td />
+                <td></td>
             </tr>
         ";
     }
