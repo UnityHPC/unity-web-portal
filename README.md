@@ -106,6 +106,8 @@ mkdir "$new" && cd "$new"
 git clone "$url" .
 git submodule update --init --checkout
 COMPOSER_ALLOW_SUPERUSER=1 composer --no-dev --no-scripts --no-plugins install
+npm install
+npx copy-files-from-to
 cp --preserve=all "$prod/deployment/config/config.ini" ./deployment/config/config.ini
 rsync -a "$prod/deployment/custom_user_mappings/" ./deployment/custom_user_mappings/
 rsync -a "$prod/deployment/overrides/" ./deployment/overrides/
