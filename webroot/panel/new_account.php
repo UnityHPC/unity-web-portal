@@ -15,6 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // header.php will redirect to this same page again and then this page will redirect to account
 }
 require $LOC_HEADER;
+$CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 ?>
 
 <h1>Register New Account</h1>
@@ -30,7 +31,7 @@ require $LOC_HEADER;
 <p>Your UnityHPC username will be <strong><?php echo $SSO["user"]; ?></strong></p>
 <br>
 <form action="" method="POST">
-    <?php echo UnityHTTPD::getCSRFTokenHiddenFormInput(); ?>
+    <?php echo $CSRFTokenHiddenFormInput; ?>
     <input type='submit' value='Register'>
 </form>
 <?php require $LOC_FOOTER; ?>

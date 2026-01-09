@@ -15,6 +15,8 @@ $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
 $members = $group->getGroupMembersAttributes(["gecos", "mail"]);
 $requests = $group->getRequests();
 
+$CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
+
 $i = 0;
 $count = count($members) + count($requests);
 foreach ($members as $uid => $attributes) {
@@ -32,7 +34,6 @@ foreach ($members as $uid => $attributes) {
     echo "<td>$uid</td>";
     echo "<td><a href='mailto:$mail'>$mail</a></td>";
     echo "<td>";
-    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo "
         <form
             action=''
@@ -65,7 +66,6 @@ foreach ($requests as $i => [$user, $timestamp]) {
     echo "<td>$user->uid</td>";
     echo "<td><a href='mailto:$email'>$email</a></td>";
     echo "<td>";
-    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
         "<form action='' method='POST'
     onsubmit='return confirm(\"Are you sure you want to approve $user->uid ?\");'>

@@ -48,6 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 require $LOC_HEADER;
+$CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 ?>
 
 <h1>PI Management</h1>
@@ -79,7 +80,6 @@ require $LOC_HEADER;
         echo "<td><a href='mailto:$email'>$email</a></td>";
         echo "<td>" . date("jS F, Y", strtotime($request['timestamp'])) . "</td>";
         echo "<td>";
-        $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         echo
             "<form action='' method='POST'>
         $CSRFTokenHiddenFormInput

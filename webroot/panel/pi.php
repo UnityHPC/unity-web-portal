@@ -37,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 require $LOC_HEADER;
+$CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 ?>
 
 <h1>My Users</h1>
@@ -64,7 +65,6 @@ foreach ($requests as [$user, $timestamp]) {
     echo "<td><a href='mailto:$email'>$email</a></td>";
     echo "<td>$date</td>";
     echo "<td>";
-    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
         "<form action='' method='POST'>
     $CSRFTokenHiddenFormInput
@@ -105,7 +105,6 @@ foreach ($assocs as $assoc) {
 
     echo "<tr>";
     echo "<td>";
-    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
         "<form action='' method='POST'>
     $CSRFTokenHiddenFormInput

@@ -105,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 }
 
 require $LOC_HEADER;
+$CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 
 $uid = $USER->uid;
 $org = $USER->getOrg();
@@ -171,7 +172,7 @@ if (!$isPI) {
             id='piReq'
         >
     ";
-    echo UnityHTTPD::getCSRFTokenHiddenFormInput();
+    echo $CSRFTokenHiddenFormInput;
     if ($SQL->accDeletionRequestExists($USER->uid)) {
         echo "<input type='submit' value='Request PI Account' disabled />";
         echo "
@@ -221,7 +222,6 @@ if (count($sshPubKeys) == 0) {
 }
 
 foreach ($sshPubKeys as $key) {
-    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     echo
     "<div class='key-box'>
         <textarea spellcheck='false' readonly aria-label='key box'>$key</textarea>
@@ -239,7 +239,6 @@ foreach ($sshPubKeys as $key) {
     </div>";
 }
 
-$CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 echo "
     <button type='button' class='plusBtn btnAddKey'><span>&#43;</span></button>
     <hr>
@@ -264,7 +263,6 @@ echo "
 if ($hasGroups) {
     echo "<p>You cannot request to delete your account while you are in a PI group.</p>";
 } else {
-    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     if ($SQL->accDeletionRequestExists($USER->uid)) {
         echo "
             <p>Your request has been submitted and is currently pending.</p>
