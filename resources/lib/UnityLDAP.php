@@ -224,7 +224,7 @@ class UnityLDAP extends LDAPConn
             $this->pi_groupOU->getChildrenArrayStrict(
                 ["cn"],
                 false,
-                "(memberuid=" . ldap_escape($uid, LDAP_ESCAPE_FILTER) . ")",
+                "(memberuid=" . ldap_escape($uid, "", LDAP_ESCAPE_FILTER) . ")",
             ),
         );
     }
