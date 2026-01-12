@@ -18,15 +18,15 @@ enum UnityHTTPDMessageLevel: string
 
 class UnityHTTPD
 {
-    public static function die(?string $x = null): never
+    public static function die(?string $msg = null, int $return_code = 0): never
     {
-        if ($x !== null) {
-            echo $x;
+        if ($msg !== null) {
+            echo $msg;
         }
         if (CONFIG["site"]["allow_die"]) {
-            die();
+            exit($return_code);
         } else {
-            throw new NoDieException();
+            throw new NoDieException(strval($return_code));
         }
     }
 
@@ -44,7 +44,7 @@ class UnityHTTPD
             echo "If you're reading this message, then your browser has failed to redirect you " .
                 "to the proper destination. click <a href='$dest'>here</a> to continue.";
         }
-        self::die();
+        self::die(return_code: 0);
     }
 
     /*
@@ -64,6 +64,7 @@ class UnityHTTPD
         string $user_message_body,
         ?\Throwable $error = null,
         int $http_response_code = 200,
+        int $return_code = 0,
         mixed $data = null,
     ): never {
         $errorid = uniqid();
@@ -81,7 +82,7 @@ class UnityHTTPD
         }
         self::errorLog($log_title, $log_message, data: $data, error: $error, errorid: $errorid);
         if (ini_get("html_errors") !== "1") {
-            self::die("$user_message_title -- $user_message_body");
+            self::die("$user_message_title -- $user_message_body", $return_code);
         } elseif (($_SERVER["REQUEST_METHOD"] ?? "") == "POST") {
             self::messageError($user_message_title, $user_message_body);
             self::redirect();
@@ -102,7 +103,7 @@ class UnityHTTPD
                 echo $error->xdebug_message;
                 echo "</table>";
             }
-            self::die();
+            self::die(return_code: $return_code);
         }
     }
 
@@ -171,6 +172,7 @@ class UnityHTTPD
             $user_message,
             error: $error,
             http_response_code: 400,
+            return_code: 1,
             data: $data,
         );
     }
@@ -188,6 +190,7 @@ class UnityHTTPD
             $user_message,
             error: $error,
             http_response_code: 403,
+            return_code: 1,
             data: $data,
         );
     }
@@ -205,6 +208,7 @@ class UnityHTTPD
             $user_message,
             error: $error,
             http_response_code: 500,
+            return_code: 1,
             data: $data,
         );
     }
