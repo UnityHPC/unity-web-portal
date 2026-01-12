@@ -48,7 +48,7 @@ class WorkerRemoveUsersFromGroupTest extends UnityWebPortalTestCase
             print implode("\n", $output);
             // our $LDAP is not aware of changes made by worker subprocess, so throw it out
             unset($GLOBALS["ldapconn"]);
-            $this->switchUser("EmptyPIGroupOwner");
+            $this->switchUser("EmptyPIGroupOwner", validate: false);
             $pi = $USER;
             $pi_group = $USER->getPIGroup();
             $this->assertEqualsCanonicalizing($expected_new_uids, $pi_group->getMemberUIDs());
