@@ -188,22 +188,16 @@ class UnityLDAP extends LDAPConn
         UnityWebhook $UnityWebhook,
     ) {
         $out = [];
-
-        $pi_groups = $this->pi_groupOU->getChildren(true);
-
-        foreach ($pi_groups as $pi_group) {
+        $pi_groups_attributes = $this->pi_groupOU->getChildrenArrayStrict(
+            attributes: ["cn"],
+            recursive: false,
+        );
+        foreach ($pi_groups_attributes as $attributes) {
             array_push(
                 $out,
-                new UnityGroup(
-                    $pi_group->getAttribute("cn")[0],
-                    $this,
-                    $UnitySQL,
-                    $UnityMailer,
-                    $UnityWebhook,
-                ),
+                new UnityGroup($attributes["cn"][0], $this, $UnitySQL, $UnityMailer, $UnityWebhook),
             );
         }
-
         return $out;
     }
 
