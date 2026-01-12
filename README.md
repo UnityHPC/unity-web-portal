@@ -128,6 +128,8 @@ rm "$prod" && ln -s "$old" "$prod"
 - the `[site]getting_started_url` option should be defined
 - the `[ldap]admin_group` option has been renamed to `[ldap]user_flag_groups[admin]`
 - the `[ldap]qualified_user_group` option has been renamed to `[ldap]user_flag_groups[qualified]`
+- the `user_qualified`, `user_dequalified` mail templates have been removed
+- the `user_flag_added`, `user_flag_removed` mail templates have been added (`qualified` is one of the flags)
 
 ### 1.4 -> 1.5
 
