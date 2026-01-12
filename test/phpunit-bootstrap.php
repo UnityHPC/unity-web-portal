@@ -308,7 +308,7 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertFalse($USER->hasRequestedAccountDeletion());
                 $this->assertEqualsCanonicalizing([], $SQL->getRequestsByUser($USER->uid));
                 $this->assertFalse($USER->getFlag(UserFlag::ADMIN));
-                $this->assertFalse($USER->getFlag(UserFlag::GHOST));
+                $this->assertFalse($USER->getFlag(UserFlag::DISABLED));
                 $this->assertFalse($USER->getFlag(UserFlag::IDLELOCKED));
                 $this->assertFalse($USER->getFlag(UserFlag::LOCKED));
                 $this->assertFalse($USER->getFlag(UserFlag::QUALIFIED));
@@ -329,20 +329,20 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertEqualsCanonicalizing([], $pi_group->getRequests());
                 break;
             case "Disabled":
-                $this->assertTrue($USER->getFlag(UserFlag::GHOST));
+                $this->assertTrue($USER->getFlag(UserFlag::DISABLED));
                 break;
             case "DisabledOwnerOfDisabledPIGroup":
-                $this->assertTrue($USER->getFlag(UserFlag::GHOST));
+                $this->assertTrue($USER->getFlag(UserFlag::DISABLED));
                 $this->assertTrue($USER->getPIGroup()->exists());
                 $this->assertTrue($USER->getPIGroup()->getIsDisabled());
                 break;
             case "DisabledNotPI":
-                $this->assertTrue($USER->getFlag(UserFlag::GHOST));
+                $this->assertTrue($USER->getFlag(UserFlag::DISABLED));
                 $this->assertFalse($USER->getPIGroup()->exists());
                 break;
             case "ReenabledOwnerOfDisabledPIGroup":
                 $this->assertTrue($USER->exists());
-                $this->assertFalse($USER->getFlag(UserFlag::GHOST));
+                $this->assertFalse($USER->getFlag(UserFlag::DISABLED));
                 $this->assertFalse($USER->isPI());
                 $this->assertTrue($USER->getPIGroup()->exists());
                 $this->assertTrue($USER->getPIGroup()->getIsDisabled());
@@ -369,7 +369,7 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertGreaterThanOrEqual(1, count($USER->getPIGroupGIDs()));
                 $this->assertFalse($USER->hasRequestedAccountDeletion());
                 $this->assertEqualsCanonicalizing([], $SQL->getRequestsByUser($USER->uid));
-                $this->assertFalse($USER->getFlag(UserFlag::GHOST));
+                $this->assertFalse($USER->getFlag(UserFlag::DISABLED));
                 $this->assertFalse($USER->getFlag(UserFlag::IDLELOCKED));
                 $this->assertFalse($USER->getFlag(UserFlag::LOCKED));
                 $this->assertTrue($USER->getFlag(UserFlag::QUALIFIED));

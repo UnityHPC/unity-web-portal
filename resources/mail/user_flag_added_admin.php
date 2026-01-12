@@ -7,10 +7,10 @@ case UserFlag::QUALIFIED: ?>
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>
-<?php case UserFlag::GHOST: ?>
-<?php $this->Subject = "User Ghosted"; ?>
+<?php case UserFlag::DISABLED: ?>
+<?php $this->Subject = "User Disabled"; ?>
 <p>Hello,</p>
-<p>User "<?php echo $data["user"] ?>" has been marked as ghost. </p>
+<p>User "<?php echo $data["user"] ?>" has been disabled. </p>
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>

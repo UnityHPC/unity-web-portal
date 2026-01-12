@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\Attributes\DataProvider;
+use UnityWebPortal\lib\exceptions\NoDieException;
 use TRegx\PhpUnit\DataProviders\DataProvider as TRegxDataProvider;
 
 class PageLoadTest extends UnityWebPortalTestCase
@@ -57,6 +58,8 @@ class PageLoadTest extends UnityWebPortalTestCase
             ["Blank", "panel/new_account.php", "/panel\/account\.php/", true],
             // non-PI can't access pi.php
             ["Blank", "panel/pi.php", "/You are not a PI./", true],
+            // disabled account technically exists but new_account.php should not redirect
+            ["Disabled", "panel/new_account.php", "/Register New Account/", true],
         ];
     }
 
@@ -82,5 +85,17 @@ class PageLoadTest extends UnityWebPortalTestCase
         $this->switchUser("NonExistent");
         $output = http_get($path, ignore_die: true);
         $this->assertMatchesRegularExpression("/panel\/new_account\.php/", $output);
+    }
+
+    public function testLoadPageLockedUser()
+    {
+        ob_start();
+        try {
+            $this->switchUser("Locked");
+        } catch (NoDieException) {
+            // ignore
+        }
+        $output = ob_get_clean();
+        $this->assertMatchesRegularExpression("/Your account is locked\./", $output);
     }
 }
