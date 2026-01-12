@@ -498,6 +498,9 @@ class UnityWebPortalTestCase extends TestCase
         $_SERVER["REMOTE_USER"] = $eppn;
         $_SERVER["REMOTE_ADDR"] = "127.0.0.1";
         $_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
+        if (array_key_exists("REQUEST_METHOD", $_SERVER)) {
+            unset($_SERVER["REQUEST_METHOD"]);
+        }
         $_SERVER["eppn"] = $eppn;
         $_SERVER["givenName"] = $given_name;
         $_SERVER["sn"] = $sn;
