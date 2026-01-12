@@ -67,12 +67,8 @@ $HTTP_HEADER_TEST_INPUTS = [
     mbConvertEncoding("Hello, World!", "UTF-16"),
 ];
 
-function http_post(
-    string $phpfile,
-    array $post_data,
-    bool $enforce_PRG = true,
-    bool $do_generate_csrf_token = true,
-): void {
+function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_token = true): void
+{
     global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "POST";
@@ -93,10 +89,8 @@ function http_post(
         unset($_POST);
         $_SERVER = $_PREVIOUS_SERVER;
     }
-    if ($enforce_PRG) {
-        // https://en.wikipedia.org/wiki/Post/Redirect/Get
-        ensure($post_did_redirect_or_die, "post did not redirect or die!");
-    }
+    // https://en.wikipedia.org/wiki/Post/Redirect/Get
+    ensure($post_did_redirect_or_die, "post did not redirect or die!");
 }
 
 function http_get(string $phpfile, array $get_data = []): string
