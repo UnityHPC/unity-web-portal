@@ -120,7 +120,7 @@ function http_get(string $phpfile, array $get_data = []): string
 /**
  * runs a worker script
  * @throws RuntimeException
- * @return [return code, output lines]
+ * @return array [return code, output lines]
  */
 function executeWorker(string $basename, string $args = "", bool $doThrowIfNonzero = true): array
 {
