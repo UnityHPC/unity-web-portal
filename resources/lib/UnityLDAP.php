@@ -30,7 +30,8 @@ class UnityLDAP extends LDAPConn
         "ldapPublicKey",
     ];
 
-    public const array POSIX_GROUP_CLASS = ["posixGroup", "top"];
+    // isDisabled unset or set to "FALSE"
+    private static string $NON_DEFUNCT_FILTER = "(|(!(isDisabled=*))(isDisabled=FALSE))";
 
     private string $custom_mappings_path =
         __DIR__ . "/../../" . CONFIG["ldap"]["custom_user_mappings_dir"];
@@ -182,7 +183,7 @@ class UnityLDAP extends LDAPConn
         );
     }
 
-    public function getAllPIGroups(
+    public function getAllNonDisabledPIGroups(
         UnitySQL $UnitySQL,
         UnityMailer $UnityMailer,
         UnityWebhook $UnityWebhook,
@@ -191,6 +192,7 @@ class UnityLDAP extends LDAPConn
         $pi_groups_attributes = $this->pi_groupOU->getChildrenArrayStrict(
             attributes: ["cn"],
             recursive: false,
+            filter: self::$NON_DEFUNCT_FILTER,
         );
         foreach ($pi_groups_attributes as $attributes) {
             array_push(
@@ -201,33 +203,39 @@ class UnityLDAP extends LDAPConn
         return $out;
     }
 
-    public function getAllPIGroupsAttributes(array $attributes, array $default_values = []): array
-    {
+    public function getAllNonDisabledPIGroupsAttributes(
+        array $attributes,
+        array $default_values = [],
+    ): array {
         return $this->pi_groupOU->getChildrenArrayStrict(
             $attributes,
             false, // non-recursive
-            "objectClass=posixGroup",
+            self::$NON_DEFUNCT_FILTER,
             $default_values,
         );
     }
 
-    public function getPIGroupGIDsWithMemberUID(string $uid): array
+    public function getNonDisabledPIGroupGIDsWithMemberUID(string $uid): array
     {
         return array_map(
             fn($x) => $x["cn"][0],
             $this->pi_groupOU->getChildrenArrayStrict(
                 ["cn"],
                 false,
-                "(memberuid=" . ldap_escape($uid, flags: LDAP_ESCAPE_FILTER) . ")",
+                sprintf(
+                    "(&(memberuid=%s)%s)",
+                    ldap_escape($uid, flags: LDAP_ESCAPE_FILTER),
+                    self::$NON_DEFUNCT_FILTER,
+                ),
             ),
         );
     }
 
-    public function getAllPIGroupOwnerUIDs(): array
+    public function getAllNonDisabledPIGroupOwnerUIDs(): array
     {
         return array_map(
             fn($x) => UnityGroup::GID2OwnerUID($x["cn"][0]),
-            $this->pi_groupOU->getChildrenArrayStrict(["cn"]),
+            $this->getAllNonDisabledPIGroupsAttributes(["cn"]),
         );
     }
 
@@ -251,7 +259,7 @@ class UnityLDAP extends LDAPConn
     {
         $uid2pigids = [];
         // for each PI group, append that GID to the member list for each of its member UIDs
-        $pi_groups_attributes = $this->getAllPIGroupsAttributes(
+        $pi_groups_attributes = $this->getAllNonDisabledPIGroupsAttributes(
             ["cn", "memberuid"],
             default_values: ["memberuid" => []],
         );

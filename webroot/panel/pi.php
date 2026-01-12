@@ -33,6 +33,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $group->removeUser($form_user);
 
             break;
+        case "disable":
+            $group->disable();
+            UnityHTTPD::redirect(getURL("panel/account.php"));
+            break; /** @phpstan-ignore deadCode.unreachable */
     }
 }
 
@@ -135,8 +139,23 @@ foreach ($assocs as $assoc) {
     echo "</td>";
     echo "</tr>";
 }
-echo "</tbody>";
-echo "</table>";
+
+echo "
+    </tbody>
+    </table>
+    <hr>
+    <h2>Danger Zone</h2>
+    <form
+        action=''
+        method='POST'
+        onsubmit='return confirm(\"Are you sure you want to disable your PI group?\")'
+    >
+        $CSRFTokenHiddenFormInput
+        <input type='hidden' name='form_type' value='disable'>
+        <input type='submit' value='Disable PI Account'>
+    </form>
+";
+
 ?>
 
 <script>

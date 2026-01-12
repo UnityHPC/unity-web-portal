@@ -44,6 +44,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $parent = new UnityGroup($_POST["pi"], $LDAP, $SQL, $MAILER, $WEBHOOK);
             $parent->removeUser($form_user);
             break;
+        case "disable":
+            $group = new UnityGroup(UnityHTTPD::getPostData("pi"), $LDAP, $SQL, $MAILER, $WEBHOOK);
+            $group->disable();
+            break;
     }
 }
 
@@ -113,7 +117,7 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     </thead>
     <tbody>
     <?php
-    $owner_uids = $LDAP->getAllPIGroupOwnerUIDs();
+    $owner_uids = $LDAP->getAllNonDisabledPIGroupOwnerUIDs();
     $owner_attributes = $LDAP->getUsersAttributes(
         $owner_uids,
         ["uid", "gecos", "mail"],
@@ -129,7 +133,20 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
                 <td>$gecos</td>
                 <td>$gid</td>
                 <td>$mail</td>
-                <td></td>
+                <td>
+                    <form
+                        action=''
+                        method='POST'
+                        onsubmit='
+                            return confirm(\"Are you sure you want to disable group $gid?\")
+                        '
+                    >
+                        $CSRFTokenHiddenFormInput
+                        <input type='hidden' name='form_type' value='disable'>
+                        <input type='hidden' name='pi' value='$gid'>
+                        <input type='submit' value='Disable Group'>
+                    </form>
+                </td>
             </tr>
         ";
     }
