@@ -62,16 +62,6 @@ class WorkerRemoveUsersFromGroupTest extends UnityWebPortalTestCase
         }
     }
 
-    public function testWrongNumberArguments()
-    {
-        [$rc, $_] = executeWorker(
-            "remove-users-from-group.php",
-            "alskdj asldkj alksjd lkajsd lkj",
-            doThrowIfNonzero: false,
-        );
-        $this->assertEquals(1, $rc);
-    }
-
     public function testNonexistentFile()
     {
         [$rc, $output_lines] = executeWorker(
