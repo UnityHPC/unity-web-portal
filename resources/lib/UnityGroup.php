@@ -189,7 +189,12 @@ class UnityGroup extends PosixGroup
             ]);
         }
         // being in a group makes you qualified
-        $new_user->setFlag(UserFlag::QUALIFIED, true, doSendMail: true, doSendMailAdmin: false);
+        $new_user->setFlag(
+            UserFlag::QUALIFIED,
+            true,
+            doSendMail: $send_mail,
+            doSendMailAdmin: false,
+        );
     }
 
     public function denyUser(UnityUser $new_user, bool $send_mail = true): void
