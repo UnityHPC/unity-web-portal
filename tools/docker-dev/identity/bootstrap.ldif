@@ -10432,6 +10432,7 @@ cn: pi_user36_org2_test
 gidnumber: 10206
 memberuid: user36_org2_test
 memberuid: user912_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10504,6 +10505,7 @@ memberuid: user1095_org1_test
 memberuid: user414_org1_test
 memberuid: user1020_org1_test
 memberuid: user1177_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10511,6 +10513,7 @@ dn: cn=pi_user45_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user45_org1_test
 gidnumber: 10243
 memberuid: user45_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10519,6 +10522,7 @@ cn: pi_user51_org3_test
 gidnumber: 10222
 memberuid: user51_org3_test
 memberuid: user934_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10537,6 +10541,7 @@ memberuid: user477_org1_test
 memberuid: user1265_org1_test
 memberuid: user1021_org1_test
 memberuid: user348_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10545,6 +10550,7 @@ cn: pi_user57_org2_test
 gidnumber: 10132
 memberuid: user57_org2_test
 memberuid: user67_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10552,6 +10558,7 @@ dn: cn=pi_user66_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user66_org2_test
 gidnumber: 10199
 memberuid: user66_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10566,6 +10573,7 @@ memberuid: user1073_org1_test
 memberuid: user1257_org1_test
 memberuid: user85_org1_test
 memberuid: user41_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10574,6 +10582,7 @@ cn: pi_user72_org3_test
 gidnumber: 10223
 memberuid: user72_org3_test
 memberuid: user1223_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10582,6 +10591,7 @@ cn: pi_user78_org1_test
 gidnumber: 10157
 memberuid: user78_org1_test
 memberuid: user526_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10589,6 +10599,7 @@ dn: cn=pi_user93_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user93_org1_test
 gidnumber: 10101
 memberuid: user93_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10604,6 +10615,7 @@ memberuid: user747_org1_test
 memberuid: user516_org1_test
 memberuid: user821_org1_test
 memberuid: user1196_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10612,6 +10624,7 @@ cn: pi_user113_org1_test
 gidnumber: 10099
 memberuid: user113_org1_test
 memberuid: user272_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10624,6 +10637,7 @@ memberuid: user791_org2_test
 memberuid: user987_org2_test
 memberuid: user904_org2_test
 memberuid: user839_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10636,6 +10650,7 @@ memberuid: user60_org1_test
 memberuid: user29_org1_test
 memberuid: user46_org1_test
 memberuid: user734_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10645,6 +10660,7 @@ gidnumber: 10063
 memberuid: user135_org1_test
 memberuid: user860_org1_test
 memberuid: user574_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10656,6 +10672,7 @@ memberuid: user512_org3_test
 memberuid: user406_org3_test
 memberuid: user1054_org3_test
 memberuid: user850_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10664,6 +10681,7 @@ cn: pi_user149_org1_test
 gidnumber: 10071
 memberuid: user149_org1_test
 memberuid: user263_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10673,6 +10691,7 @@ gidnumber: 10254
 memberuid: user150_org1_test
 memberuid: user1250_org1_test
 memberuid: user208_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10680,6 +10699,7 @@ dn: cn=pi_user162_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user162_org1_test
 gidnumber: 10228
 memberuid: user162_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10689,6 +10709,7 @@ gidnumber: 10179
 memberuid: user163_org1_test
 memberuid: user300_org1_test
 memberuid: user749_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10696,6 +10717,7 @@ dn: cn=pi_user166_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user166_org2_test
 gidnumber: 10165
 memberuid: user166_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10705,6 +10727,7 @@ gidnumber: 10009
 memberuid: user167_org1_test
 memberuid: user1097_org1_test
 memberuid: user690_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10712,6 +10735,7 @@ dn: cn=pi_user176_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user176_org2_test
 gidnumber: 10216
 memberuid: user176_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10720,6 +10744,7 @@ cn: pi_user181_org1_test
 gidnumber: 10245
 memberuid: user181_org1_test
 memberuid: user909_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10729,6 +10754,7 @@ gidnumber: 10150
 memberuid: user182_org1_test
 memberuid: user752_org1_test
 memberuid: user529_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10740,6 +10766,7 @@ memberuid: user99_org1_test
 memberuid: user1141_org1_test
 memberuid: user236_org1_test
 memberuid: user757_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10747,6 +10774,7 @@ dn: cn=pi_user188_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user188_org1_test
 gidnumber: 10143
 memberuid: user188_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10756,6 +10784,7 @@ gidnumber: 10260
 memberuid: user190_org000000007_test
 memberuid: user211_org000000007_test
 memberuid: user1164_org000000007_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10764,6 +10793,7 @@ cn: pi_user191_org2_test
 gidnumber: 10181
 memberuid: user191_org2_test
 memberuid: user1113_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10782,6 +10812,7 @@ memberuid: user1032_org13_test
 memberuid: user851_org1_test
 memberuid: user576_org1_test
 memberuid: user508_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10789,6 +10820,7 @@ dn: cn=pi_user5_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user5_org2_test
 gidnumber: 10135
 memberuid: user5_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10798,6 +10830,7 @@ gidnumber: 10230
 memberuid: user197_org3_test
 memberuid: user639_org3_test
 memberuid: user748_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10810,6 +10843,7 @@ memberuid: user269_org1_test
 memberuid: user1007_org1_test
 memberuid: user1258_org1_test
 memberuid: user317_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10818,6 +10852,7 @@ cn: pi_user200_org2_test
 gidnumber: 10275
 memberuid: user200_org2_test
 memberuid: user662_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10825,6 +10860,7 @@ dn: cn=pi_user201_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user201_org1_test
 gidnumber: 10010
 memberuid: user201_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10832,6 +10868,7 @@ dn: cn=pi_user205_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user205_org1_test
 gidnumber: 10274
 memberuid: user205_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10844,6 +10881,7 @@ memberuid: user588_org1_test
 memberuid: user384_org1_test
 memberuid: user1081_org1_test
 memberuid: user772_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10851,6 +10889,7 @@ dn: cn=pi_user207_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user207_org1_test
 gidnumber: 10220
 memberuid: user207_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10865,6 +10904,7 @@ memberuid: user566_org1_test
 memberuid: user511_org1_test
 memberuid: user950_org1_test
 memberuid: user894_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10872,6 +10912,7 @@ dn: cn=pi_user214_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user214_org1_test
 gidnumber: 10145
 memberuid: user214_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10887,6 +10928,7 @@ memberuid: user1016_org1_test
 memberuid: user776_org1_test
 memberuid: user1285_org1_test
 memberuid: user472_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10898,6 +10940,7 @@ memberuid: user645_org1_test
 memberuid: user745_org1_test
 memberuid: user230_org1_test
 memberuid: user364_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10905,25 +10948,31 @@ dn: cn=pi_user226_org3_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user226_org3_test
 gidnumber: 10164
 memberuid: user226_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
 dn: cn=pi_user9_org3_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user9_org3_test
 gidnumber: 10094
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
+isDisabled: TRUE
 
 dn: cn=pi_user10_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user10_org1_test
 gidnumber: 2257
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
+isDisabled: TRUE
 
 dn: cn=pi_user242_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user242_org1_test
 gidnumber: 10052
 memberuid: user242_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10932,6 +10981,7 @@ cn: pi_user247_org1_test
 gidnumber: 10126
 memberuid: user247_org1_test
 memberuid: user178_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10943,6 +10993,7 @@ memberuid: user482_org1_test
 memberuid: user254_org1_test
 memberuid: user1239_org1_test
 memberuid: user918_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10950,6 +11001,7 @@ dn: cn=pi_user253_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user253_org1_test
 gidnumber: 10013
 memberuid: user253_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10974,6 +11026,7 @@ memberuid: user767_org1_test
 memberuid: user56_org1_test
 memberuid: user1200_org1_test
 memberuid: user280_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10981,6 +11034,7 @@ dn: cn=pi_user264_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user264_org1_test
 gidnumber: 10073
 memberuid: user264_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10989,6 +11043,7 @@ cn: pi_user266_org1_test
 gidnumber: 10162
 memberuid: user266_org1_test
 memberuid: user111_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -10996,6 +11051,7 @@ dn: cn=pi_user268_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user268_org1_test
 gidnumber: 10239
 memberuid: user268_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11003,6 +11059,7 @@ dn: cn=pi_user274_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user274_org2_test
 gidnumber: 10283
 memberuid: user274_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11014,6 +11071,7 @@ memberuid: user978_org1_test
 memberuid: user155_org1_test
 memberuid: user629_org1_test
 memberuid: user217_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11022,6 +11080,7 @@ cn: pi_user278_org3_test
 gidnumber: 10180
 memberuid: user278_org3_test
 memberuid: user20_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11029,6 +11088,7 @@ dn: cn=pi_user288_org000000007_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user288_org000000007_test
 gidnumber: 10234
 memberuid: user288_org000000007_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11039,6 +11099,7 @@ memberuid: user291_org1_test
 memberuid: user473_org1_test
 memberuid: user110_org1_test
 memberuid: user441_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11046,6 +11107,7 @@ dn: cn=pi_user292_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user292_org2_test
 gidnumber: 10229
 memberuid: user292_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11053,6 +11115,7 @@ dn: cn=pi_user295_org3_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user295_org3_test
 gidnumber: 10277
 memberuid: user295_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11062,6 +11125,7 @@ gidnumber: 10209
 memberuid: user303_org1_test
 memberuid: user365_org1_test
 memberuid: user389_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11069,6 +11133,7 @@ dn: cn=pi_user304_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user304_org1_test
 gidnumber: 10248
 memberuid: user304_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11080,6 +11145,7 @@ memberuid: user58_org1_test
 memberuid: user824_org1_test
 memberuid: user21_org1_test
 memberuid: user447_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11090,6 +11156,7 @@ memberuid: user312_org1_test
 memberuid: user794_org1_test
 memberuid: user1031_org1_test
 memberuid: user556_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11099,6 +11166,7 @@ gidnumber: 10112
 memberuid: user315_org2_test
 memberuid: user392_org2_test
 memberuid: user866_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11107,6 +11175,7 @@ cn: pi_user326_org3_test
 gidnumber: 10173
 memberuid: user326_org3_test
 memberuid: user883_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11116,6 +11185,7 @@ gidnumber: 10136
 memberuid: user329_org1_test
 memberuid: user46_org1_test
 memberuid: user148_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11123,6 +11193,7 @@ dn: cn=pi_user331_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user331_org1_test
 gidnumber: 10227
 memberuid: user331_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11131,6 +11202,7 @@ cn: pi_user336_org1_test
 gidnumber: 10137
 memberuid: user336_org1_test
 memberuid: user478_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11139,6 +11211,7 @@ cn: pi_user338_org1_test
 gidnumber: 10267
 memberuid: user338_org1_test
 memberuid: user1149_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11153,6 +11226,7 @@ memberuid: user570_org1_test
 memberuid: user888_org1_test
 memberuid: user343_org1_test
 memberuid: user535_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11161,6 +11235,7 @@ cn: pi_user345_org1_test
 gidnumber: 10186
 memberuid: user345_org1_test
 memberuid: user1084_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11168,6 +11243,7 @@ dn: cn=pi_user346_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user346_org2_test
 gidnumber: 10246
 memberuid: user346_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11176,6 +11252,7 @@ cn: pi_user347_org2_test
 gidnumber: 10081
 memberuid: user347_org2_test
 memberuid: user24_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11183,6 +11260,7 @@ dn: cn=pi_user354_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user354_org1_test
 gidnumber: 10016
 memberuid: user354_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11197,6 +11275,7 @@ memberuid: user908_org1_test
 memberuid: user434_org1_test
 memberuid: user1180_org1_test
 memberuid: user1024_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11204,6 +11283,7 @@ dn: cn=pi_user372_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user372_org1_test
 gidnumber: 10053
 memberuid: user372_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11217,6 +11297,7 @@ memberuid: user301_org1_test
 memberuid: user401_org1_test
 memberuid: user306_org1_test
 memberuid: user1286_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11225,6 +11306,7 @@ cn: pi_user382_org1_test
 gidnumber: 10219
 memberuid: user382_org1_test
 memberuid: user590_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11232,6 +11314,7 @@ dn: cn=pi_user386_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user386_org1_test
 gidnumber: 10197
 memberuid: user386_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11241,6 +11324,7 @@ gidnumber: 10098
 memberuid: user391_org1_test
 memberuid: user63_org1_test
 memberuid: user874_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11248,6 +11332,7 @@ dn: cn=pi_user393_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user393_org1_test
 gidnumber: 10017
 memberuid: user393_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11256,6 +11341,7 @@ cn: pi_user395_org1_test
 gidnumber: 10122
 memberuid: user395_org1_test
 memberuid: user993_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11264,6 +11350,7 @@ cn: pi_user398_org1_test
 gidnumber: 10169
 memberuid: user398_org1_test
 memberuid: user394_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11274,6 +11361,7 @@ memberuid: user400_org1_test
 memberuid: user712_org1_test
 memberuid: user91_org1_test
 memberuid: user653_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11282,6 +11370,7 @@ cn: pi_user404_org3_test
 gidnumber: 10152
 memberuid: user404_org3_test
 memberuid: user145_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11289,6 +11378,7 @@ dn: cn=pi_user407_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user407_org1_test
 gidnumber: 10238
 memberuid: user407_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11299,6 +11389,7 @@ memberuid: user415_org3_test
 memberuid: user261_org3_test
 memberuid: user14_org3_test
 memberuid: user333_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11307,6 +11398,7 @@ cn: pi_user416_org1_test
 gidnumber: 10279
 memberuid: user416_org1_test
 memberuid: user952_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11315,6 +11407,7 @@ cn: pi_user420_org1_test
 gidnumber: 10147
 memberuid: user420_org1_test
 memberuid: user977_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11323,6 +11416,7 @@ cn: pi_user423_org1_test
 gidnumber: 10252
 memberuid: user423_org1_test
 memberuid: user1211_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11330,6 +11424,7 @@ dn: cn=pi_user424_org3_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user424_org3_test
 gidnumber: 10011
 memberuid: user424_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11345,6 +11440,7 @@ memberuid: user972_org10_test
 memberuid: user251_org2_test
 memberuid: user170_org2_test
 memberuid: user1002_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11355,6 +11451,7 @@ memberuid: user426_org3_test
 memberuid: user112_org3_test
 memberuid: user944_org3_test
 memberuid: user202_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11363,6 +11460,7 @@ cn: pi_user432_org2_test
 gidnumber: 10212
 memberuid: user432_org2_test
 memberuid: user595_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11371,6 +11469,7 @@ cn: pi_user433_org1_test
 gidnumber: 10156
 memberuid: user433_org1_test
 memberuid: user209_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11378,6 +11477,7 @@ dn: cn=pi_user436_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user436_org2_test
 gidnumber: 10236
 memberuid: user436_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11393,6 +11493,7 @@ memberuid: user422_org1_test
 memberuid: user168_org1_test
 memberuid: user759_org1_test
 memberuid: user661_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11403,6 +11504,7 @@ memberuid: user439_org2_test
 memberuid: user412_org2_test
 memberuid: user780_org2_test
 memberuid: user1133_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11413,6 +11515,7 @@ memberuid: user440_org1_test
 memberuid: user89_org1_test
 memberuid: user1080_org1_test
 memberuid: user146_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11422,6 +11525,7 @@ gidnumber: 10263
 memberuid: user442_org1_test
 memberuid: user700_org1_test
 memberuid: user1053_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11443,6 +11547,7 @@ memberuid: user1155_org1_test
 memberuid: user1008_org1_test
 memberuid: user468_org1_test
 memberuid: user240_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11452,6 +11557,7 @@ gidnumber: 10003
 memberuid: user452_org1_test
 memberuid: user316_org1_test
 memberuid: user746_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11461,6 +11567,7 @@ gidnumber: 10118
 memberuid: user453_org1_test
 memberuid: user1210_org1_test
 memberuid: user555_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11476,6 +11583,7 @@ memberuid: user874_org1_test
 memberuid: user963_org1_test
 memberuid: user397_org1_test
 memberuid: user910_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11484,6 +11592,7 @@ cn: pi_user460_org1_test
 gidnumber: 10172
 memberuid: user460_org1_test
 memberuid: user172_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11491,6 +11600,7 @@ dn: cn=pi_user466_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user466_org2_test
 gidnumber: 10166
 memberuid: user466_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11500,6 +11610,7 @@ gidnumber: 10129
 memberuid: user467_org2_test
 memberuid: user723_org2_test
 memberuid: user259_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11508,6 +11619,7 @@ cn: pi_user480_org1_test
 gidnumber: 10168
 memberuid: user480_org1_test
 memberuid: user900_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11546,6 +11658,7 @@ memberuid: user899_org1_test
 memberuid: user924_org1_test
 memberuid: user1295_org1_test
 memberuid: user1061_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11562,6 +11675,7 @@ memberuid: user553_org2_test
 memberuid: user129_org2_test
 memberuid: user669_org2_test
 memberuid: user648_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11593,6 +11707,7 @@ memberuid: user982_org1_test
 memberuid: user75_org1_test
 memberuid: user151_org1_test
 memberuid: user557_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11616,6 +11731,7 @@ memberuid: user895_org1_test
 memberuid: user623_org1_test
 memberuid: user97_org1_test
 memberuid: user953_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11626,6 +11742,7 @@ memberuid: user502_org1_test
 memberuid: user1072_org1_test
 memberuid: user1194_org1_test
 memberuid: user82_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11639,6 +11756,7 @@ memberuid: user716_org2_test
 memberuid: user584_org2_test
 memberuid: user788_org2_test
 memberuid: user170_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11646,6 +11764,7 @@ dn: cn=pi_user513_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user513_org1_test
 gidnumber: 10108
 memberuid: user513_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11655,6 +11774,7 @@ gidnumber: 10251
 memberuid: user517_org1_test
 memberuid: user1253_org1_test
 memberuid: user616_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11662,6 +11782,7 @@ dn: cn=pi_user519_org000000007_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user519_org000000007_test
 gidnumber: 10259
 memberuid: user519_org000000007_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11670,6 +11791,7 @@ cn: pi_user528_org1_test
 gidnumber: 10104
 memberuid: user528_org1_test
 memberuid: user799_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11681,6 +11803,7 @@ memberuid: user1222_org1_test
 memberuid: user16_org1_test
 memberuid: user1131_org1_test
 memberuid: user402_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11688,6 +11811,7 @@ dn: cn=pi_user532_org000000007_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user532_org000000007_test
 gidnumber: 10174
 memberuid: user532_org000000007_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11700,6 +11824,7 @@ memberuid: user353_org1_test
 memberuid: user869_org1_test
 memberuid: user1116_org1_test
 memberuid: user896_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11761,6 +11886,7 @@ memberuid: user1218_org1_test
 memberuid: user1202_org1_test
 memberuid: user1217_org1_test
 memberuid: user960_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11780,6 +11906,7 @@ memberuid: user491_org4_test
 memberuid: user689_org1_test
 memberuid: user12_org1_test
 memberuid: user697_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11788,6 +11915,7 @@ cn: pi_user546_org1_test
 gidnumber: 10193
 memberuid: user546_org1_test
 memberuid: user103_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11796,6 +11924,7 @@ cn: pi_user550_org1_test
 gidnumber: 10187
 memberuid: user550_org1_test
 memberuid: user1107_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11809,6 +11938,7 @@ memberuid: user385_org1_test
 memberuid: user1219_org1_test
 memberuid: user992_org1_test
 memberuid: user1023_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11816,6 +11946,7 @@ dn: cn=pi_user554_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user554_org2_test
 gidnumber: 10241
 memberuid: user554_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11824,6 +11955,7 @@ cn: pi_user559_org1_test
 gidnumber: 10004
 memberuid: user559_org1_test
 memberuid: user509_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11833,6 +11965,7 @@ gidnumber: 10057
 memberuid: user560_org1_test
 memberuid: user875_org1_test
 memberuid: user589_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11842,6 +11975,7 @@ gidnumber: 10054
 memberuid: user561_org1_test
 memberuid: user932_org1_test
 memberuid: user25_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11849,6 +11983,7 @@ dn: cn=pi_user564_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user564_org1_test
 gidnumber: 10123
 memberuid: user564_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11882,6 +12017,7 @@ memberuid: user544_org1_test
 memberuid: user61_org1_test
 memberuid: user846_org1_test
 memberuid: user1167_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11898,6 +12034,7 @@ memberuid: user611_org1_test
 memberuid: user1132_org1_test
 memberuid: user378_org1_test
 memberuid: user143_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11906,6 +12043,7 @@ cn: pi_user575_org1_test
 gidnumber: 10092
 memberuid: user575_org1_test
 memberuid: user863_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11913,6 +12051,7 @@ dn: cn=pi_user580_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user580_org1_test
 gidnumber: 10119
 memberuid: user580_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11920,6 +12059,7 @@ dn: cn=pi_user582_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user582_org1_test
 gidnumber: 10051
 memberuid: user582_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11927,6 +12067,7 @@ dn: cn=pi_user586_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user586_org1_test
 gidnumber: 10020
 memberuid: user586_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11938,6 +12079,7 @@ memberuid: user1104_org1_test
 memberuid: user357_org1_test
 memberuid: user39_org1_test
 memberuid: user281_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11946,6 +12088,7 @@ cn: pi_user592_org2_test
 gidnumber: 10235
 memberuid: user592_org2_test
 memberuid: user410_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11968,6 +12111,7 @@ memberuid: user234_org9_test
 memberuid: user258_org1_test
 memberuid: user728_org9_test
 memberuid: user1147_org9_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11975,6 +12119,7 @@ dn: cn=pi_user608_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user608_org1_test
 gidnumber: 10070
 memberuid: user608_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11987,6 +12132,7 @@ memberuid: user37_org1_test
 memberuid: user1216_org1_test
 memberuid: user583_org1_test
 memberuid: user838_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -11994,6 +12140,7 @@ dn: cn=pi_user626_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user626_org1_test
 gidnumber: 10107
 memberuid: user626_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12001,6 +12148,7 @@ dn: cn=pi_user635_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user635_org1_test
 gidnumber: 10175
 memberuid: user635_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12009,6 +12157,7 @@ cn: pi_user636_org2_test
 gidnumber: 10195
 memberuid: user636_org2_test
 memberuid: user694_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12019,6 +12168,7 @@ memberuid: user641_org1_test
 memberuid: user239_org1_test
 memberuid: user1017_org1_test
 memberuid: user409_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12028,6 +12178,7 @@ gidnumber: 10115
 memberuid: user647_org1_test
 memberuid: user739_org1_test
 memberuid: user800_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12036,6 +12187,7 @@ cn: pi_user656_org1_test
 gidnumber: 10064
 memberuid: user656_org1_test
 memberuid: user80_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12044,6 +12196,7 @@ cn: pi_user659_org1_test
 gidnumber: 10144
 memberuid: user659_org1_test
 memberuid: user265_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12051,6 +12204,7 @@ dn: cn=pi_user663_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user663_org2_test
 gidnumber: 10202
 memberuid: user663_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12062,6 +12216,7 @@ memberuid: user495_org1_test
 memberuid: user319_org1_test
 memberuid: user678_org1_test
 memberuid: user379_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12070,6 +12225,7 @@ cn: pi_user670_org1_test
 gidnumber: 10062
 memberuid: user670_org1_test
 memberuid: user195_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12078,6 +12234,7 @@ cn: pi_user674_org1_test
 gidnumber: 10217
 memberuid: user674_org1_test
 memberuid: user680_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12090,6 +12247,7 @@ memberuid: user62_org1_test
 memberuid: user649_org1_test
 memberuid: user381_org1_test
 memberuid: user1085_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12100,6 +12258,7 @@ memberuid: user677_org1_test
 memberuid: user1294_org1_test
 memberuid: user1161_org1_test
 memberuid: user484_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12125,6 +12284,7 @@ memberuid: user533_org1_test
 memberuid: user524_org1_test
 memberuid: user596_org1_test
 memberuid: user267_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12140,6 +12300,7 @@ memberuid: user352_org1_test
 memberuid: user825_org1_test
 memberuid: user598_org1_test
 memberuid: user618_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12149,6 +12310,7 @@ gidnumber: 10211
 memberuid: user695_org2_test
 memberuid: user705_org2_test
 memberuid: user541_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12158,6 +12320,7 @@ gidnumber: 10075
 memberuid: user699_org1_test
 memberuid: user665_org1_test
 memberuid: user44_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12165,6 +12328,7 @@ dn: cn=pi_user703_org11_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user703_org11_test
 gidnumber: 10207
 memberuid: user703_org11_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12174,6 +12338,7 @@ gidnumber: 10044
 memberuid: user714_org2_test
 memberuid: user760_org2_test
 memberuid: user538_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12183,6 +12348,7 @@ gidnumber: 10200
 memberuid: user717_org2_test
 memberuid: user189_org2_test
 memberuid: user929_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12192,6 +12358,7 @@ gidnumber: 10161
 memberuid: user720_org1_test
 memberuid: user171_org1_test
 memberuid: user470_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12203,6 +12370,7 @@ memberuid: user276_org1_test
 memberuid: user497_org1_test
 memberuid: user811_org1_test
 memberuid: user88_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12211,6 +12379,7 @@ cn: pi_user724_org1_test
 gidnumber: 10045
 memberuid: user724_org1_test
 memberuid: user864_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12219,6 +12388,7 @@ cn: pi_user725_org2_test
 gidnumber: 10198
 memberuid: user725_org2_test
 memberuid: user876_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12227,6 +12397,7 @@ cn: pi_user727_org000000007_test
 gidnumber: 10266
 memberuid: user727_org000000007_test
 memberuid: user1192_org000000007_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12240,6 +12411,7 @@ memberuid: user38_org1_test
 memberuid: user377_org1_test
 memberuid: user224_org1_test
 memberuid: user451_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12251,6 +12423,7 @@ memberuid: user852_org1_test
 memberuid: user971_org1_test
 memberuid: user1139_org1_test
 memberuid: user951_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12304,6 +12477,7 @@ memberuid: user597_org1_test
 memberuid: user139_org1_test
 memberuid: user1026_org1_test
 memberuid: user109_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12311,6 +12485,7 @@ dn: cn=pi_user737_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user737_org1_test
 gidnumber: 10039
 memberuid: user737_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12320,6 +12495,7 @@ gidnumber: 10069
 memberuid: user743_org1_test
 memberuid: user1263_org1_test
 memberuid: user1098_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12329,6 +12505,7 @@ gidnumber: 10022
 memberuid: user744_org1_test
 memberuid: user704_org1_test
 memberuid: user787_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12347,6 +12524,7 @@ memberuid: user627_org1_test
 memberuid: user552_org1_test
 memberuid: user891_org1_test
 memberuid: user1034_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12354,6 +12532,7 @@ dn: cn=pi_user758_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user758_org1_test
 gidnumber: 10278
 memberuid: user758_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12361,6 +12540,7 @@ dn: cn=pi_user764_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user764_org1_test
 gidnumber: 10237
 memberuid: user764_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12382,6 +12562,7 @@ memberuid: user1248_org1_test
 memberuid: user854_org1_test
 memberuid: user984_org1_test
 memberuid: user1157_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12394,6 +12575,7 @@ memberuid: user729_org3_test
 memberuid: user15_org3_test
 memberuid: user417_org3_test
 memberuid: user766_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12402,6 +12584,7 @@ cn: pi_user782_org1_test
 gidnumber: 10059
 memberuid: user782_org1_test
 memberuid: user1162_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12411,6 +12594,7 @@ gidnumber: 10167
 memberuid: user783_org1_test
 memberuid: user1057_org1_test
 memberuid: user991_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12419,6 +12603,7 @@ cn: pi_user784_org1_test
 gidnumber: 10281
 memberuid: user784_org1_test
 memberuid: user228_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12431,6 +12616,7 @@ memberuid: user1160_org1_test
 memberuid: user650_org1_test
 memberuid: user492_org1_test
 memberuid: user1256_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12441,6 +12627,7 @@ memberuid: user786_org1_test
 memberuid: user1146_org1_test
 memberuid: user301_org1_test
 memberuid: user942_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12448,6 +12635,7 @@ dn: cn=pi_user788_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user788_org2_test
 gidnumber: 10191
 memberuid: user788_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12461,6 +12649,7 @@ memberuid: user74_org3_test
 memberuid: user644_org3_test
 memberuid: user231_org3_test
 memberuid: user630_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12468,6 +12657,7 @@ dn: cn=pi_user795_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user795_org1_test
 gidnumber: 10178
 memberuid: user795_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12476,6 +12666,7 @@ cn: pi_user796_org11_test
 gidnumber: 10133
 memberuid: user796_org11_test
 memberuid: user710_org11_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12484,6 +12675,7 @@ cn: pi_user798_org1_test
 gidnumber: 10035
 memberuid: user798_org1_test
 memberuid: user756_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12491,6 +12683,7 @@ dn: cn=pi_user801_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user801_org1_test
 gidnumber: 10271
 memberuid: user801_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12499,6 +12692,7 @@ cn: pi_user803_org1_test
 gidnumber: 10025
 memberuid: user803_org1_test
 memberuid: user1058_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12509,6 +12703,7 @@ memberuid: user805_org3_test
 memberuid: user154_org3_test
 memberuid: user672_org3_test
 memberuid: user673_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12516,6 +12711,7 @@ dn: cn=pi_user809_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user809_org2_test
 gidnumber: 10190
 memberuid: user809_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12528,6 +12724,7 @@ memberuid: user998_org1_test
 memberuid: user581_org1_test
 memberuid: user1142_org1_test
 memberuid: user504_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12535,6 +12732,7 @@ dn: cn=pi_user830_org11_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user830_org11_test
 gidnumber: 10100
 memberuid: user830_org11_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12542,6 +12740,7 @@ dn: cn=pi_user832_org14_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user832_org14_test
 gidnumber: 10268
 memberuid: user832_org14_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12553,6 +12752,7 @@ memberuid: user379_org1_test
 memberuid: user335_org1_test
 memberuid: user701_org1_test
 memberuid: user763_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12560,6 +12760,7 @@ dn: cn=pi_user834_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user834_org2_test
 gidnumber: 10224
 memberuid: user834_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12568,6 +12769,7 @@ cn: pi_user848_org1_test
 gidnumber: 10225
 memberuid: user848_org1_test
 memberuid: user284_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12575,6 +12777,7 @@ dn: cn=pi_user849_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user849_org1_test
 gidnumber: 10160
 memberuid: user849_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12584,6 +12787,7 @@ gidnumber: 10027
 memberuid: user857_org1_test
 memberuid: user1036_org1_test
 memberuid: user708_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12592,6 +12796,7 @@ cn: pi_user859_org1_test
 gidnumber: 10158
 memberuid: user859_org1_test
 memberuid: user96_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12599,6 +12804,7 @@ dn: cn=pi_user865_org000000007_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user865_org000000007_test
 gidnumber: 10221
 memberuid: user865_org000000007_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12606,6 +12812,7 @@ dn: cn=pi_user868_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user868_org1_test
 gidnumber: 10076
 memberuid: user868_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12613,6 +12820,7 @@ dn: cn=pi_user870_org3_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user870_org3_test
 gidnumber: 10233
 memberuid: user870_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12620,6 +12828,7 @@ dn: cn=pi_user872_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user872_org1_test
 gidnumber: 10038
 memberuid: user872_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12627,6 +12836,7 @@ dn: cn=pi_user873_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user873_org2_test
 gidnumber: 10142
 memberuid: user873_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12634,6 +12844,7 @@ dn: cn=pi_user875_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user875_org1_test
 gidnumber: 10185
 memberuid: user875_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12654,6 +12865,7 @@ memberuid: user457_org1_test
 memberuid: user286_org1_test
 memberuid: user884_org1_test
 memberuid: user562_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12661,6 +12873,7 @@ dn: cn=pi_user878_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user878_org2_test
 gidnumber: 10214
 memberuid: user878_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12668,6 +12881,7 @@ dn: cn=pi_user879_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user879_org1_test
 gidnumber: 10037
 memberuid: user879_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12677,6 +12891,7 @@ gidnumber: 10086
 memberuid: user881_org1_test
 memberuid: user1203_org1_test
 memberuid: user220_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12686,6 +12901,7 @@ gidnumber: 10215
 memberuid: user882_org1_test
 memberuid: user941_org1_test
 memberuid: user238_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12695,6 +12911,7 @@ gidnumber: 10029
 memberuid: user885_org1_test
 memberuid: user742_org1_test
 memberuid: user490_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12702,6 +12919,7 @@ dn: cn=pi_user886_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user886_org1_test
 gidnumber: 10121
 memberuid: user886_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12709,6 +12927,7 @@ dn: cn=pi_user890_org3_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user890_org3_test
 gidnumber: 10182
 memberuid: user890_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12716,6 +12935,7 @@ dn: cn=pi_user905_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user905_org1_test
 gidnumber: 10272
 memberuid: user905_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12724,6 +12944,7 @@ cn: pi_user915_org1_test
 gidnumber: 10184
 memberuid: user915_org1_test
 memberuid: user431_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12731,6 +12952,7 @@ dn: cn=pi_user917_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user917_org1_test
 gidnumber: 10280
 memberuid: user917_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12738,6 +12960,7 @@ dn: cn=pi_user928_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user928_org1_test
 gidnumber: 10050
 memberuid: user928_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12745,6 +12968,7 @@ dn: cn=pi_user931_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user931_org1_test
 gidnumber: 10253
 memberuid: user931_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12755,6 +12979,7 @@ memberuid: user933_org2_test
 memberuid: user122_org2_test
 memberuid: user617_org2_test
 memberuid: user1050_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12764,6 +12989,7 @@ gidnumber: 10114
 memberuid: user935_org1_test
 memberuid: user106_org1_test
 memberuid: user115_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12772,6 +12998,7 @@ cn: pi_user936_org1_test
 gidnumber: 10061
 memberuid: user936_org1_test
 memberuid: user831_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12781,6 +13008,7 @@ gidnumber: 10171
 memberuid: user937_org1_test
 memberuid: user1195_org1_test
 memberuid: user356_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12790,6 +13018,7 @@ gidnumber: 10068
 memberuid: user938_org1_test
 memberuid: user907_org1_test
 memberuid: user1153_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12799,6 +13028,7 @@ gidnumber: 10183
 memberuid: user940_org3_test
 memberuid: user299_org3_test
 memberuid: user945_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12809,6 +13039,7 @@ memberuid: user955_org2_test
 memberuid: user802_org2_test
 memberuid: user726_org2_test
 memberuid: user140_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12820,6 +13051,7 @@ memberuid: user31_org1_test
 memberuid: user454_org1_test
 memberuid: user390_org1_test
 memberuid: user1174_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12830,6 +13062,7 @@ memberuid: user962_org1_test
 memberuid: user696_org1_test
 memberuid: user350_org1_test
 memberuid: user624_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12841,6 +13074,7 @@ memberuid: user683_org1_test
 memberuid: user118_org1_test
 memberuid: user981_org1_test
 memberuid: user1159_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12848,6 +13082,7 @@ dn: cn=pi_user968_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user968_org2_test
 gidnumber: 10120
 memberuid: user968_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12860,6 +13095,7 @@ memberuid: user567_org1_test
 memberuid: user455_org1_test
 memberuid: user399_org1_test
 memberuid: user218_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12872,6 +13108,7 @@ memberuid: user408_org2_test
 memberuid: user322_org2_test
 memberuid: user375_org2_test
 memberuid: user985_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12880,6 +13117,7 @@ cn: pi_user1005_org3_test
 gidnumber: 10262
 memberuid: user1005_org3_test
 memberuid: user203_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12888,6 +13126,7 @@ cn: pi_user1009_org1_test
 gidnumber: 10034
 memberuid: user1009_org1_test
 memberuid: user474_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12895,6 +13134,7 @@ dn: cn=pi_user1018_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1018_org2_test
 gidnumber: 10255
 memberuid: user1018_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12905,6 +13145,7 @@ memberuid: user1019_org3_test
 memberuid: user1138_org3_test
 memberuid: user812_org3_test
 memberuid: user646_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12913,6 +13154,7 @@ cn: pi_user1022_org3_test
 gidnumber: 10163
 memberuid: user1022_org3_test
 memberuid: user159_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12924,6 +13166,7 @@ memberuid: user21_org1_test
 memberuid: user161_org1_test
 memberuid: user824_org1_test
 memberuid: user447_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12932,6 +13175,7 @@ cn: pi_user1029_org1_test
 gidnumber: 10148
 memberuid: user1029_org1_test
 memberuid: user903_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12943,6 +13187,7 @@ memberuid: user1061_org1_test
 memberuid: user26_org1_test
 memberuid: user1069_org1_test
 memberuid: user79_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12950,6 +13195,7 @@ dn: cn=pi_user1039_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1039_org1_test
 gidnumber: 10256
 memberuid: user1039_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12959,6 +13205,7 @@ gidnumber: 10030
 memberuid: user1045_org1_test
 memberuid: user740_org1_test
 memberuid: user1154_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12966,6 +13213,7 @@ dn: cn=pi_user1053_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1053_org1_test
 gidnumber: 10258
 memberuid: user1053_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12973,6 +13221,7 @@ dn: cn=pi_user1056_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1056_org2_test
 gidnumber: 10270
 memberuid: user1056_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12988,6 +13237,7 @@ memberuid: user939_org1_test
 memberuid: user19_org1_test
 memberuid: user573_org1_test
 memberuid: user1090_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -12998,6 +13248,7 @@ memberuid: user1076_org1_test
 memberuid: user227_org8_test
 memberuid: user1237_org1_test
 memberuid: user494_org8_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13009,6 +13260,7 @@ memberuid: user709_org2_test
 memberuid: user593_org2_test
 memberuid: user610_org2_test
 memberuid: user525_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13016,6 +13268,7 @@ dn: cn=pi_user1079_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1079_org1_test
 gidnumber: 10159
 memberuid: user1079_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13023,6 +13276,7 @@ dn: cn=pi_user1082_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1082_org1_test
 gidnumber: 10056
 memberuid: user1082_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13030,6 +13284,7 @@ dn: cn=pi_user1101_org14_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1101_org14_test
 gidnumber: 10269
 memberuid: user1101_org14_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13037,6 +13292,7 @@ dn: cn=pi_user1103_org2_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1103_org2_test
 gidnumber: 10240
 memberuid: user1103_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13045,6 +13301,7 @@ cn: pi_user1109_org2_test
 gidnumber: 10192
 memberuid: user1109_org2_test
 memberuid: user520_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13053,6 +13310,7 @@ cn: pi_user1110_org2_test
 gidnumber: 10257
 memberuid: user1110_org2_test
 memberuid: user183_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13065,6 +13323,7 @@ memberuid: user605_org1_test
 memberuid: user1268_org1_test
 memberuid: user506_org1_test
 memberuid: user671_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13072,6 +13331,7 @@ dn: cn=pi_user1118_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1118_org1_test
 gidnumber: 10033
 memberuid: user1118_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13086,6 +13346,7 @@ memberuid: user131_org1_test
 memberuid: user1290_org1_test
 memberuid: user1197_org1_test
 memberuid: user806_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13099,6 +13360,7 @@ memberuid: user1126_org12_test
 memberuid: user1068_org12_test
 memberuid: user686_org12_test
 memberuid: user804_org12_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13106,6 +13368,7 @@ dn: cn=pi_user1128_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1128_org1_test
 gidnumber: 10284
 memberuid: user1128_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13114,6 +13377,7 @@ cn: pi_user1129_org1_test
 gidnumber: 10189
 memberuid: user1129_org1_test
 memberuid: user861_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13121,6 +13385,7 @@ dn: cn=pi_user1130_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1130_org1_test
 gidnumber: 10117
 memberuid: user1130_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13141,6 +13406,7 @@ gidnumber: 10055
 memberuid: user1165_org1_test
 memberuid: user1074_org1_test
 memberuid: user1299_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13148,6 +13414,7 @@ dn: cn=pi_user1171_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1171_org1_test
 gidnumber: 10250
 memberuid: user1171_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13159,6 +13426,7 @@ memberuid: user127_org1_test
 memberuid: user1289_org1_test
 memberuid: user1163_org1_test
 memberuid: user956_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13168,6 +13436,7 @@ gidnumber: 10188
 memberuid: user1176_org1_test
 memberuid: user845_org1_test
 memberuid: user314_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13176,6 +13445,7 @@ cn: pi_user1182_org2_test
 gidnumber: 10128
 memberuid: user1182_org2_test
 memberuid: user1189_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13183,6 +13453,7 @@ dn: cn=pi_user1185_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1185_org1_test
 gidnumber: 10213
 memberuid: user1185_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13190,6 +13461,7 @@ dn: cn=pi_user1187_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1187_org1_test
 gidnumber: 10208
 memberuid: user1187_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13197,6 +13469,7 @@ dn: cn=pi_user13_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user13_org1_test
 gidnumber: 10226
 memberuid: user13_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13205,6 +13478,7 @@ cn: pi_user1191_org2_test
 gidnumber: 10231
 memberuid: user1191_org2_test
 memberuid: user594_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13212,6 +13486,7 @@ dn: cn=pi_user1201_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1201_org1_test
 gidnumber: 10249
 memberuid: user1201_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13220,6 +13495,7 @@ cn: pi_user1227_org1_test
 gidnumber: 10244
 memberuid: user1227_org1_test
 memberuid: user260_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13228,6 +13504,7 @@ cn: pi_user1233_org1_test
 gidnumber: 10273
 memberuid: user1233_org1_test
 memberuid: user465_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13235,6 +13512,7 @@ dn: cn=pi_user1234_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1234_org1_test
 gidnumber: 10282
 memberuid: user1234_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13244,6 +13522,7 @@ gidnumber: 10041
 memberuid: user1235_org3_test
 memberuid: user961_org3_test
 memberuid: user313_org3_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13261,6 +13540,7 @@ memberuid: user77_org2_test
 memberuid: user210_org2_test
 memberuid: user657_org2_test
 memberuid: user69_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13268,6 +13548,7 @@ dn: cn=pi_user1255_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1255_org1_test
 gidnumber: 10146
 memberuid: user1255_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13276,6 +13557,7 @@ cn: pi_user1260_org2_test
 gidnumber: 10043
 memberuid: user1260_org2_test
 memberuid: user1215_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13286,6 +13568,7 @@ memberuid: user1280_org1_test
 memberuid: user1183_org1_test
 memberuid: user1224_org1_test
 memberuid: user1012_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13311,6 +13594,7 @@ memberuid: user47_org1_test
 memberuid: user443_org1_test
 memberuid: user1044_org1_test
 memberuid: user255_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13319,6 +13603,7 @@ cn: pi_user1293_org2_test
 gidnumber: 10265
 memberuid: user1293_org2_test
 memberuid: user537_org2_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
@@ -13326,6 +13611,7 @@ dn: cn=pi_user1298_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user1298_org1_test
 gidnumber: 10210
 memberuid: user1298_org1_test
+objectclass: unityClusterPIGroup
 objectclass: posixGroup
 objectclass: top
 
