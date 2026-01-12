@@ -83,19 +83,33 @@ function http_post(
     }
     $_POST = $post_data;
     ob_start();
-    $post_did_redirect_or_die = false;
+    $died_gracefully = false;
     try {
         include $phpfile;
     } catch (UnityWebPortal\lib\exceptions\NoDieException $e) {
-        $post_did_redirect_or_die = true;
+        if (($rc_str = $e->getMessage()) === "0") {
+            $died_gracefully = true;
+        } else {
+            $output = ob_get_clean();
+            throw new Exception(
+                sprintf(
+                    "%s tried to exit with nonzero return code %s. output: %s",
+                    $phpfile,
+                    $rc_str,
+                    $output,
+                ),
+            );
+        }
     } finally {
-        ob_get_clean(); // discard output
+        if (ob_get_level() > 1) {
+            ob_get_clean(); // discard output
+        }
         unset($_POST);
         $_SERVER = $_PREVIOUS_SERVER;
     }
     if ($enforce_PRG) {
         // https://en.wikipedia.org/wiki/Post/Redirect/Get
-        ensure($post_did_redirect_or_die, "post did not redirect or die!");
+        ensure($died_gracefully, "post did not redirect or die!");
     }
 }
 
