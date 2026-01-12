@@ -49,9 +49,7 @@ class UnityHTTPD
 
     /*
     generates a unique error ID, writes to error log, and then:
-        if "html_errors" is disabled in the PHP config file:
-            prints a message to stdout and dies
-        else, if the user is doing an HTTP POST:
+        if the user is doing an HTTP POST:
             registers a message in the user's session and issues a redirect to display that message
         else:
             prints an HTML message to stdout, sets an HTTP response code, and dies
@@ -80,9 +78,7 @@ class UnityHTTPD
             $user_message_body .= " $suffix";
         }
         self::errorLog($log_title, $log_message, data: $data, error: $error, errorid: $errorid);
-        if (ini_get("html_errors") !== "1") {
-            self::die("$user_message_title -- $user_message_body");
-        } elseif (($_SERVER["REQUEST_METHOD"] ?? "") == "POST") {
+        if (($_SERVER["REQUEST_METHOD"] ?? "") == "POST") {
             self::messageError($user_message_title, $user_message_body);
             self::redirect();
         } else {
