@@ -58,6 +58,67 @@ class WorkerRemoveUsersFromGroupTest extends UnityWebPortalTestCase
                 $user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
                 $pi_group->removeUser($user);
             }
+            unlink($remove_uids_file_path);
+        }
+    }
+
+    public function testWrongNumberArguments()
+    {
+        [$rc, $_] = executeWorker(
+            "remove-users-from-group.php",
+            "alskdj asldkj alksjd lkajsd lkj",
+            doThrowIfNonzero: false,
+        );
+        $this->assertEquals(1, $rc);
+    }
+
+    public function testNonexistentFile()
+    {
+        [$rc, $output_lines] = executeWorker(
+            "remove-users-from-group.php",
+            "pi_user1_org1_test asdlkjasldkj",
+            doThrowIfNonzero: false,
+        );
+        $this->assertEquals(1, $rc);
+        $this->assertStringContainsString("Can't open", implode("\n", $output_lines));
+    }
+
+    public function testRemoveFromNonexistentGroup()
+    {
+        $remove_uids_file = $this->writeLinesToTmpFile(["foo", "bar"]);
+        $remove_uids_file_path = stream_get_meta_data($remove_uids_file)["uri"];
+        [$rc, $output_lines] = executeWorker(
+            "remove-users-from-group.php",
+            "alskdj $remove_uids_file_path",
+            doThrowIfNonzero: false,
+        );
+        $this->assertEquals(1, $rc);
+        $this->assertStringContainsString("No such group", implode("\n", $output_lines));
+        unlink($remove_uids_file_path);
+    }
+
+    public function testRemoveNonexistentUID()
+    {
+        global $USER;
+        $this->switchUser("EmptyPIGroupOwner");
+        $pi_group = $USER->getPIGroup();
+        $members_before = $pi_group->getMemberUIDs();
+        $remove_uids_file = $this->writeLinesToTmpFile(["foo", "bar"]);
+        $remove_uids_file_path = stream_get_meta_data($remove_uids_file)["uri"];
+        try {
+            [$rc, $output_lines] = executeWorker(
+                "remove-users-from-group.php",
+                "$pi_group->gid $remove_uids_file_path",
+                doThrowIfNonzero: false,
+            );
+            $output = implode("\n", $output_lines);
+            $this->assertEquals(0, $rc);
+            $members_after = $pi_group->getMemberUIDs();
+            $this->assertEqualsCanonicalizing($members_before, $members_after);
+            $this->assertStringContainsString("Skipping 'foo'", $output);
+            $this->assertStringContainsString("Skipping 'bar'", $output);
+        } finally {
+            unlink($remove_uids_file_path);
         }
     }
 }
