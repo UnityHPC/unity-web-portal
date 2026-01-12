@@ -1,10 +1,9 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityLDAP;
 
-class WorkerRemoveUsersFromGroupTest extends TestCase
+class WorkerRemoveUsersFromGroupTest extends UnityWebPortalTestCase
 {
     private function writeLinesToTmpFile(array $lines)
     {
@@ -24,12 +23,12 @@ class WorkerRemoveUsersFromGroupTest extends TestCase
     public function testRemoveUsersFromGroup()
     {
         global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
-        switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
+        $this->switchUser("EmptyPIGroupOwner");
         $pi = $USER;
         $pi_group = $USER->getPIGroup();
         $this->assertTrue($pi->isPI());
-        $this->assertEqualsCanonicalizing([$pi->uid], $pi_group->getGroupMemberUIDs(true));
-        $this->assertEqualsCanonicalizing([$pi->uid], $pi_group->getGroupMemberUIDs(false));
+        $this->assertEqualsCanonicalizing([$pi->uid], $pi_group->getMemberUIDs());
+        $this->assertEqualsCanonicalizing([$pi->uid], $pi_group->getMemberUIDs());
         $this->assertEqualsCanonicalizing([], $pi_group->getRequests());
         $uids = getSomeUIDsOfQualifiedUsersNotRequestedAccountDeletion();
         $uids_to_remove = array_slice($uids, 0, 3);
@@ -49,17 +48,11 @@ class WorkerRemoveUsersFromGroupTest extends TestCase
             print implode("\n", $output);
             // our $LDAP is not aware of changes made by worker subprocess, so throw it out
             unset($GLOBALS["ldapconn"]);
-            switchUser(...getUserIsPIHasNoMembersNoMemberRequests());
+            $this->switchUser("EmptyPIGroupOwner");
             $pi = $USER;
             $pi_group = $USER->getPIGroup();
-            $this->assertEqualsCanonicalizing(
-                $expected_new_uids,
-                $pi_group->getGroupMemberUIDs(false),
-            );
-            $this->assertEqualsCanonicalizing(
-                $expected_new_uids,
-                $pi_group->getGroupMemberUIDs(true),
-            );
+            $this->assertEqualsCanonicalizing($expected_new_uids, $pi_group->getMemberUIDs());
+            $this->assertEqualsCanonicalizing($expected_new_uids, $pi_group->getMemberUIDs());
         } finally {
             foreach ($uids as $uid) {
                 $user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
