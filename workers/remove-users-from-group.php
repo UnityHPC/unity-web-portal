@@ -4,8 +4,12 @@ include __DIR__ . "/init.php";
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityGroup;
 
-if (sizeof($argv) != 3 or in_array($argv, ["-h", "--help"])) {
-    _die("Usage: {$argv[0]} group_name filename_of_users_to_remove\n", 1);
+$help = sprintf("Usage: %s group_name filename_of_users_to_remove\n", $argv[0]);
+if (count(array_intersect($argv, ["-h", "--help"])) > 0) {
+    _die($help, 0);
+}
+if (sizeof($argv) != 3) {
+    _die($help, 1);
 }
 
 $gid = $argv[1];
