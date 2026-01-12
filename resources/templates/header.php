@@ -68,7 +68,7 @@ if (isset($SSO)) {
 
 <body>
 
-   <div class="header">
+   <header>
     <img
       id="imgLogo"
       draggable=false
@@ -82,7 +82,7 @@ if (isset($SSO)) {
         alt="Menu Button"
       >
     </button>
-  </div>
+  </header>
 
   <nav class="mainNav">
     <?php

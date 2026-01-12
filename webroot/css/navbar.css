@@ -37,19 +37,19 @@ nav.mainNav a.active {
   background: var(--accent_2);
 }
 
-.header {
+header {
   background: var(--accent);
   height: var(--header-height);
   z-index: 10;
 }
 
-.header > #imgLogo {
+header > #imgLogo {
   height: 65%;
   margin-left: 10px;
   margin-top: 8px;
 }
 
-.header > a.unity-state {
+header > a.unity-state {
   background: var(--accent_foreground);
   color: var(--accent);
   display: block;
@@ -62,17 +62,17 @@ nav.mainNav a.active {
   border-radius: 5px;
 }
 
-.header > a.unity-state:hover {
+header > a.unity-state:hover {
   text-decoration: none;
 }
 
-.header > button.hamburger {
+header > button.hamburger {
   background: var(--accent);
   padding: 0;
   float: right;
 }
 
-.header > button.hamburger > img {
+header > button.hamburger > img {
   height: calc(var(--header-height) * 0.6);
   margin-top: calc(var(--header-height) * 0.2);
   margin-right: calc(var(--header-height) * 0.2);
@@ -81,7 +81,7 @@ nav.mainNav a.active {
 /* MOBILE VIEW */
 
 @media only screen and (max-width: 1000px) {
-  .header {
+  header {
     width: 100%;
   }
 }
@@ -100,7 +100,7 @@ nav.mainNav a.active {
     height: 100%;
   }
 
-  .header > button.hamburger {
+  header > button.hamburger {
     display: none;
   }
 
@@ -112,7 +112,7 @@ nav.mainNav a.active {
     margin-left: var(--navbar-width);
   }
 
-  .header {
+  header {
     width: var(--navbar-width);
     position: fixed;
     top: 0;
