@@ -12,10 +12,10 @@ case UserFlag::QUALIFIED: ?>
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>
-<?php case UserFlag::GHOST: ?>
-<?php $this->Subject = "User Resurrected"; ?>
+<?php case UserFlag::DISABLED: ?>
+<?php $this->Subject = "User Re-Enabled"; ?>
 <p>Hello,</p>
-<p>Your account on the UnityHPC Platform has been resurrected.</p>
+<p>Your account on the UnityHPC Platform has been re-enabled.</p>
 <p>If you believe this to be a mistake, please reply to this email as soon as possible.</p>
 <?php break; ?>
 

@@ -54,8 +54,8 @@ objectclass: posixGroup
 objectclass: top
 memberuid: user6_org1_test
 
-dn: cn=ghost,dc=unityhpc,dc=test
-cn: ghost
+dn: cn=disabled,dc=unityhpc,dc=test
+cn: disabled
 gidnumber: 504
 objectclass: posixGroup
 objectclass: top
