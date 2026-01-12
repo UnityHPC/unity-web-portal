@@ -72,6 +72,8 @@ if (isset($_SERVER["REMOTE_USER"])) {
     $_SESSION["is_pi"] = $USER->isPI();
 
     $SQL->addLog("user_login", $OPERATOR->uid);
+
+    $USER->updateIsQualified(); // in case manual changes have been made to PI groups
 }
 
 $LOC_HEADER = __DIR__ . "/templates/header.php";

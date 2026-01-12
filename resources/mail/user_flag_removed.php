@@ -1,9 +1,13 @@
 <?php use UnityWebPortal\lib\UserFlag; ?>
 <?php switch ($data["flag"]):
 case UserFlag::QUALIFIED: ?>
-<?php $this->Subject = "User Deactivated"; ?>
+<?php $this->Subject = "User Disqualified"; ?>
 <p>Hello,</p>
-<p>Your account on the UnityHPC Platform has been deactivated.</p>
+<p>
+    Your account on the UnityHPC Platform has been disqualified.
+    You should no longer be able to access UnityHPC Platform services.
+</p>
+<p>In order to be qualified, you must be a PI or be a member of at least one PI group.</p>
 <p>If you believe this to be a mistake, please reply to this email as soon as possible.</p>
 <?php break; ?>
 

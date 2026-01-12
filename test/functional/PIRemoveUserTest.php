@@ -1,19 +1,44 @@
 <?php
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use UnityWebPortal\lib\UnityUser;
+use UnityWebPortal\lib\UserFlag;
+use TRegx\PhpUnit\DataProviders\DataProvider as TRegxDataProvider;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class PIRemoveUserTest extends UnityWebPortalTestCase
 {
-    private function removeUser(string $uid)
+    private function removeUserByPI(string $uid, string $gid)
     {
+        global $USER;
+        assert($USER->getPIGroup()->gid === $gid, "signed in user must be the group owner");
         http_post(__DIR__ . "/../../webroot/panel/pi.php", [
             "form_type" => "remUser",
             "uid" => $uid,
         ]);
     }
 
-    public function testRemoveUser()
+    private function removeUserByAdmin(string $uid, string $gid)
+    {
+        global $USER;
+        $this->switchUser("Admin");
+        try {
+            http_post(__DIR__ . "/../../webroot/admin/pi-mgmt.php", [
+                "form_type" => "remUserChild",
+                "pi" => $gid,
+                "uid" => $uid,
+            ]);
+        } finally {
+            $this->switchBackUser();
+        }
+    }
+
+    public static function provider(): TRegxDataProvider
+    {
+        return TRegxDataProvider::list("removeUserByPI", "removeUserByAdmin");
+    }
+
+    #[DataProvider("provider")]
+    public function testRemoveUser($methodName)
     {
         global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
         $this->switchUser("NormalPI");
@@ -34,10 +59,12 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
             }
         }
         $this->assertNotEquals($pi->uid, $memberToDelete->uid);
+        $this->assertTrue($memberToDelete->getFlag(UserFlag::QUALIFIED));
         $this->assertTrue($piGroup->memberUIDExists($memberToDelete->uid));
         try {
-            $this->removeUser($memberToDelete->uid);
+            $this->$methodName($memberToDelete->uid, $piGroup->gid);
             $this->assertFalse($piGroup->memberUIDExists($memberToDelete->uid));
+            $this->assertFalse($memberToDelete->getFlag(UserFlag::QUALIFIED));
         } finally {
             if (!$piGroup->memberUIDExists($memberToDelete->uid)) {
                 $piGroup->newUserRequest($memberToDelete);
@@ -46,7 +73,8 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
         }
     }
 
-    public function testRemovePIFromTheirOwnGroup()
+    #[DataProvider("provider")]
+    public function testRemovePIFromTheirOwnGroup($methodName)
     {
         global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
         $this->switchUser("NormalPI");
@@ -54,7 +82,7 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
         $piGroup = $USER->getPIGroup();
         $this->expectException(Exception::class);
         try {
-            $this->removeUser($pi->uid);
+            $this->$methodName($piGroup->getOwner()->uid, $piGroup->gid);
             $this->assertTrue($piGroup->memberUIDExists($pi->uid));
         } finally {
             if (!$piGroup->memberUIDExists($pi->uid)) {

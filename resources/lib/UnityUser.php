@@ -417,4 +417,14 @@ class UnityUser
     {
         return in_array($uid, $group->getMemberUIDs());
     }
+
+    public function updateIsQualified(bool $send_mail = true)
+    {
+        $this->setFlag(
+            UserFlag::QUALIFIED,
+            count($this->getPIGroupGIDs()) !== 0,
+            doSendMail: $send_mail,
+            doSendMailAdmin: false,
+        );
+    }
 }

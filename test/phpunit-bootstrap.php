@@ -31,6 +31,7 @@ use PHPStan\DependencyInjection\ValidateExcludePathsExtension;
 use UnityWebPortal\lib\CSRFToken;
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use UnityWebPortal\lib\UnityGroup;
+use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UserFlag;
 use UnityWebPortal\lib\UnitySQL;
@@ -228,9 +229,15 @@ function ensureUserNotInPIGroup(UnityGroup $pi_group)
 
 function ensurePIGroupDoesNotExist(string $gid)
 {
-    global $LDAP;
+    global $LDAP, $SQL, $MAILER, $WEBHOOK;
     $pi_group_entry = $LDAP->getPIGroupEntry($gid);
     if ($pi_group_entry->exists()) {
+        $member_uids_before = $pi_group_entry->getAttribute("memberuid");
+        $pi_group_entry->removeAttribute("memberuid");
+        foreach ($member_uids_before as $uid) {
+            $user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+            $user->updateIsQualified();
+        }
         $pi_group_entry->delete();
     }
 }
