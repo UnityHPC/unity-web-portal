@@ -10,3 +10,4 @@ $level = UnityHTTPDMessageLevel::from($level_str);
 $title = base64_decode(UnityHTTPD::getPostData("title"));
 $body = base64_decode(UnityHTTPD::getPostData("body"));
 UnityHTTPD::deleteMessage($level, $title, $body);
+UnityHTTPD::die();
