@@ -11,8 +11,8 @@ $cli->description("Remove users from a group")
     ->arg("users-file-path", "Path to file containing one UID per line", true);
 $args = $cli->parse($argv, true);
 
-$gid = $args["gid"];
-$filename = $args["users-file-path"];
+$gid = $args->getArg("gid");
+$filename = $args->getArg("users-file-path");
 $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
 if (!$group->exists()) {
     _die("No such group '$gid'\n", 1);
