@@ -1,9 +1,7 @@
 #!/usr/bin/env php
 <?php
-$_SERVER["REMOTE_ADDR"] = "127.0.0.1"; // needed for audit log
 $_SERVER["HTTP_HOST"] = "course-creator"; // see deployment/overrides/course-creator
-
-require_once __DIR__ . "/../resources/autoload.php";
+include __DIR__ . "/init.php";
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityOrg;
@@ -42,13 +40,13 @@ $org_gid = cn2org($cn);
 
 $operator = new UnityUser($operator_uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
 if (!$operator->exists()) {
-    die("no such user: '$operator_uid'");
+    _die("no such user: '$operator_uid'", 1);
 }
 
 $course_user = new UnityUser($cn, $LDAP, $SQL, $MAILER, $WEBHOOK);
 if ($course_user->exists()) {
     $course_user_dn = $LDAP->getUserEntry($cn)->getDN();
-    die("course user already exists: '$course_user_dn'");
+    _die("course user already exists: '$course_user_dn'", 1);
 }
 $org = new UnityOrg($org_gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
 if (!$org->exists()) {
@@ -60,7 +58,7 @@ $course_user->init($givenName, $sn, $mail, $org_gid);
 $course_pi_group = $course_user->getPIGroup();
 if ($course_pi_group->exists()) {
     $course_pi_group_dn = $LDAP->getPIGroupEntry($course_pi_group->gid)->getDN();
-    die("course PI group already exists: '$course_pi_group_dn'");
+    _die("course PI group already exists: '$course_pi_group_dn'", 1);
 }
 $course_pi_group->requestGroup(false, false);
 $course_pi_group->approveGroup();
