@@ -1,7 +1,7 @@
 <?php
 use UnityWebPortal\lib\UnitySQL;
 
-class PiBecomeDenyTest extends UnityWebPortalTestCase
+class PIBecomeDenyTest extends UnityWebPortalTestCase
 {
     public function testDenyPiBecomeRequest()
     {
