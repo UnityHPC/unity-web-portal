@@ -11,13 +11,13 @@ parameters:
         - '#Variable \$data might not be defined.#'
       paths:
         - resources/mail/*
-    # these functions are called with call_user_func
+    # these functions are called with $this->$methodName()
     - messages:
         - '#Method PIMemberApproveTest::approveUserByPI\(\) is unused.#'
         - '#Method PIMemberApproveTest::approveUserByAdmin\(\) is unused.#'
       paths:
         - test/functional/PiMemberApproveTest.php
-    # these functions are called with call_user_func
+    # these functions are called with $this->$methodName()
     - messages:
         - '#Method PIMemberDenyTest::denyRequestByPI\(\) is unused.#'
         - '#Method PIMemberDenyTest::denyRequestByAdmin\(\) is unused.#'
