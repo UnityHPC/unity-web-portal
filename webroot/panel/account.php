@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break; /** @phpstan-ignore deadCode.unreachable */
         case "pi_request":
             if ($USER->isPI()) {
-                UnityHTTPD::messageError("Cannot Submit PI Request", "already a PI");
+                UnityHTTPD::messageError("Cannot Submit PI Request", "Already a PI");
                 UnityHTTPD::redirect();
             }
             if ($SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI)) {
