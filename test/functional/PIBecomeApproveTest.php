@@ -79,7 +79,7 @@ class PIBecomeApproveTest extends UnityWebPortalTestCase
     public function testReenableGroup()
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
-        $this->switchUser("ResurrectedOwnerOfDisabledPIGroup");
+        $this->switchUser("ReenabledOwnerOfDisabledPIGroup");
         $this->assertFalse($USER->isPI());
         $user = $USER;
         $pi_group = $USER->getPIGroup();
