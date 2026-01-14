@@ -1,6 +1,5 @@
 <?php
 
-// This email is sent to the group owner when a new request lands for this group
 $this->Subject = "Group Member Request"; ?>
 
 <p>Hello,</p>

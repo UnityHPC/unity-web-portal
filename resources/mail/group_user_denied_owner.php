@@ -1,6 +1,5 @@
 <?php
 
-// this template is sent to the group owner when they deny a user from joining their group
 $this->Subject = "Group Member Denied"; ?>
 
 <p>Hello,</p>

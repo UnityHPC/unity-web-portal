@@ -1,6 +1,5 @@
 <?php
 
-// this template is sent to the requestor of a group which has just been denied
 $this->Subject = "PI Account Denied"; ?>
 
 <p>Hello,</p>

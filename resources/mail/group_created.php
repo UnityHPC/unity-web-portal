@@ -1,6 +1,5 @@
 <?php
 
-// This template is sent to the group owner of the newly approved group
 $this->Subject = "PI Account Approved"; ?>
 
 <p>Hello,</p>

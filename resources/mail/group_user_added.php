@@ -1,6 +1,5 @@
 <?php
 
-// This template is sent to a user when they have been added to a group
 $this->Subject = "Group Request Approved"; ?>
 
 <p>Hello,</p>
