@@ -246,6 +246,7 @@ class UnityWebPortalTestCase extends TestCase
         "user8_org1_test" => ["user8@org1.test", "foo", "bar", "user8@org1.test"],
         "user9_org3_test" => ["user9@org3.test", "foo", "bar", "user9@org3.test"],
         "user10_org1_test" => ["user10@org1.test", "foo", "bar", "user10@org1.test"],
+        "user11_org1_test" => ["user11@org1.test", "foo", "bar", "user11@org1.test"],
         "user2001_org998_test" => ["user2001@org998.test", "foo", "bar", "user2001@org998.test"],
         "user2002_org998_test" => ["user2002@org998.test", "foo", "bar", "user2002@org998.test"],
         "user2003_org998_test" => ["user2003@org1.test", "foo", "bar", "user2001@org1.test"],
@@ -267,7 +268,7 @@ class UnityWebPortalTestCase extends TestCase
         "Locked" => "user8_org1_test",
         "NonExistent" => "user2001_org998_test",
         "Normal" => "user4_org1_test",
-        "NormalPI" => "user1_org1_test",
+        "NormalPI" => "user11_org1_test",
     ];
 
     private function validateUser(string $nickname)
