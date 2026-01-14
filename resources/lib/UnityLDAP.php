@@ -314,11 +314,12 @@ class UnityLDAP extends LDAPConn
     public function getUidFromEmail(string $email): LDAPEntry
     {
         $email = ldap_escape($email, "", LDAP_ESCAPE_FILTER);
-        $cn = $this->search("mail=$email", CONFIG["ldap"]["user_ou"], ["cn"]);
-        if ($cn && count($cn) == 1) {
-            return $cn[0];
+        $entries = $this->userOU->getChildrenArrayStrict(["uid"], true, "(mail=$email)");
+        if (count($entries) == 0) {
+            throw new exceptions\EntryNotFoundException($email);
+        } else {
+            return $entries[0]["uid"][0];
         }
-        throw new exceptions\EntryNotFoundException($email);
     }
 
     /**
