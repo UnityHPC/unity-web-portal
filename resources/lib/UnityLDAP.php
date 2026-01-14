@@ -2,6 +2,8 @@
 
 namespace UnityWebPortal\lib;
 
+use RuntimeException;
+use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use UnityWebPortal\lib\exceptions\EntryNotFoundException;
 use PHPOpenLDAPer\LDAPConn;
 use PHPOpenLDAPer\LDAPEntry;
@@ -35,9 +37,10 @@ class UnityLDAP extends LDAPConn
     private string $custom_mappings_path =
         __DIR__ . "/../../" . CONFIG["ldap"]["custom_user_mappings_dir"];
     private string $def_user_shell = CONFIG["ldap"]["def_user_shell"];
-    private int $offset_UIDGID = CONFIG["ldap"]["offset_UIDGID"];
-    private int $offset_PIGID = CONFIG["ldap"]["offset_PIGID"];
-    private int $offset_ORGGID = CONFIG["ldap"]["offset_ORGGID"];
+    private int $offset_user_uidnumber = CONFIG["ldap"]["offset_user_uidnumber"];
+    private int $offset_user_gidnumber = CONFIG["ldap"]["offset_user_gidnumber"];
+    private int $offset_pi_gidnumber = CONFIG["ldap"]["offset_pi_gidnumber"];
+    private int $offset_org_gidnumber = CONFIG["ldap"]["offset_org_gidnumber"];
 
     // Instance vars for various ldapEntry objects
     private LDAPEntry $baseOU;
@@ -68,40 +71,66 @@ class UnityLDAP extends LDAPConn
         return $this->def_user_shell;
     }
 
-    public function getNextUIDGIDNumber(string $uid): int
+    public function getNextUserUIDNumber(string $uid): int
     {
-        $IDNumsInUse = array_merge($this->getAllUIDNumbersInUse(), $this->getAllGIDNumbersInUse());
+        $IDNumsInUse = $this->getAllUIDNumbersInUse();
         $customIDMappings = $this->getCustomIDMappings();
-        $customMappedID = $customIDMappings[$uid] ?? null;
-        if (!is_null($customMappedID) && !in_array($customMappedID, $IDNumsInUse)) {
-            return $customMappedID;
+        if (array_key_exists($uid, $customIDMappings)) {
+            $customMappedID = $customIDMappings[$uid][0];
+            if (in_array($customMappedID, $IDNumsInUse)) {
+                UnityHTTPD::errorLog(
+                    "warning",
+                    sprintf(
+                        "user '%s' has a custom mapped GIDNumber %s but it's already in use!",
+                        $uid,
+                        $customMappedID,
+                    ),
+                );
+            } else {
+                return $customMappedID;
+            }
         }
-        if (!is_null($customMappedID) && in_array($customMappedID, $IDNumsInUse)) {
-            UnityHTTPD::errorLog(
-                "warning",
-                "user '$uid' has a custom mapped IDNumber $customMappedID but it's already in use!",
-            );
+        $customMappedUIDNumbers = array_map(fn($x) => $x[0], $this->getCustomIDMappings());
+        $IDNumbersToSkip = array_merge($this->getAllGIDNumbersInUse(), $customMappedUIDNumbers);
+        return $this->getNextIDNumber($this->offset_user_uidnumber, $IDNumbersToSkip);
+    }
+
+    public function getNextUserGIDNumber(string $uid): int
+    {
+        $IDNumsInUse = $this->getAllGIDNumbersInUse();
+        $customIDMappings = $this->getCustomIDMappings();
+        if (array_key_exists($uid, $customIDMappings)) {
+            $customMappedID = $customIDMappings[$uid][1];
+            if (in_array($customMappedID, $IDNumsInUse)) {
+                UnityHTTPD::errorLog(
+                    "warning",
+                    sprintf(
+                        "user '%s' has a custom mapped GIDNumber %s but it's already in use!",
+                        $uid,
+                        $customMappedID,
+                    ),
+                );
+            } else {
+                return $customMappedID;
+            }
         }
-        return $this->getNextIDNumber(
-            $this->offset_UIDGID,
-            array_merge($IDNumsInUse, array_values($this->getCustomIDMappings())),
-        );
+        $customMappedGIDNumbers = array_map(fn($x) => $x[1], $this->getCustomIDMappings());
+        $IDNumbersToSkip = array_merge($this->getAllGIDNumbersInUse(), $customMappedGIDNumbers);
+        return $this->getNextIDNumber($this->offset_user_gidnumber, $IDNumbersToSkip);
     }
 
     public function getNextPIGIDNumber(): int
     {
-        return $this->getNextIDNumber(
-            $this->offset_PIGID,
-            array_merge($this->getAllGIDNumbersInUse(), array_values($this->getCustomIDMappings())),
-        );
+        $customMappedGIDNumbers = array_map(fn($x) => $x[1], $this->getCustomIDMappings());
+        $IDNumbersToSkip = array_merge($this->getAllGIDNumbersInUse(), $customMappedGIDNumbers);
+        return $this->getNextIDNumber($this->offset_pi_gidnumber, $IDNumbersToSkip);
     }
 
     public function getNextOrgGIDNumber(): int
     {
-        return $this->getNextIDNumber(
-            $this->offset_ORGGID,
-            array_merge($this->getAllGIDNumbersInUse(), array_values($this->getCustomIDMappings())),
-        );
+        $customMappedGIDNumbers = array_map(fn($x) => $x[1], $this->getCustomIDMappings());
+        $IDNumbersToSkip = array_merge($this->getAllGIDNumbersInUse(), $customMappedGIDNumbers);
+        return $this->getNextIDNumber($this->offset_org_gidnumber, $IDNumbersToSkip);
     }
 
     private function isIDNumberForbidden($id): bool
@@ -142,8 +171,8 @@ class UnityLDAP extends LDAPConn
             }
         }
         $output_map = [];
-        foreach ($output as [$uid, $uidNumber_str]) {
-            $output_map[$uid] = digits2int($uidNumber_str);
+        foreach ($output as [$uid, $uidNumber_str, $gidNumber_str]) {
+            $output_map[$uid] = [digits2int($uidNumber_str), digits2int($gidNumber_str)];
         }
         return $output_map;
     }

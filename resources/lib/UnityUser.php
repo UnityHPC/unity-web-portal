@@ -57,11 +57,12 @@ class UnityUser
         bool $send_mail = true,
     ): void {
         $ldapGroupEntry = $this->getGroupEntry();
-        $id = $this->LDAP->getNextUIDGIDNumber($this->uid);
+        $uidnumber = $this->LDAP->getNextUserUIDNumber($this->uid);
+        $gidnumber = $this->LDAP->getNextUserGIDNumber($this->uid);
         \ensure(!$ldapGroupEntry->exists());
         $ldapGroupEntry->create([
             "objectclass" => UnityLDAP::POSIX_GROUP_CLASS,
-            "gidnumber" => strval($id),
+            "gidnumber" => strval($gidnumber),
         ]);
         \ensure(!$this->entry->exists());
         $this->entry->create([
@@ -74,8 +75,8 @@ class UnityUser
             "o" => $org,
             "homedirectory" => self::HOME_DIR . $this->uid,
             "loginshell" => $this->LDAP->getDefUserShell(),
-            "uidnumber" => strval($id),
-            "gidnumber" => strval($id),
+            "uidnumber" => strval($uidnumber),
+            "gidnumber" => strval($gidnumber),
         ]);
         $org = $this->getOrgGroup();
         if (!$org->exists()) {
