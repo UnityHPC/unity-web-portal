@@ -66,7 +66,7 @@ class UnityHTTPD
     ): never {
         $errorid = uniqid();
         $suffix = sprintf(
-            "Please notify a Unity admin at %s. Error ID: %s.",
+            "For assistance, contact a Unity admin at %s. Error ID: %s.",
             CONFIG["mail"]["support"],
             $errorid,
         );
