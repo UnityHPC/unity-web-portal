@@ -307,24 +307,24 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertEqualsCanonicalizing([$USER->uid], $pi_group->getMemberUIDs());
                 $this->assertEqualsCanonicalizing([], $pi_group->getRequests());
                 break;
-            case "Ghost":
+            case "Disabled":
                 $this->assertTrue($USER->getFlag(UserFlag::GHOST));
                 break;
-            case "GhostOwnerOfDefunctPIGroup":
+            case "DisabledOwnerOfDisabledPIGroup":
                 $this->assertTrue($USER->getFlag(UserFlag::GHOST));
                 $this->assertTrue($USER->getPIGroup()->exists());
-                $this->assertTrue($USER->getPIGroup()->getIsDefunct());
+                $this->assertTrue($USER->getPIGroup()->getIsDisabled());
                 break;
-            case "GhostNotPI":
+            case "DisabledNotPI":
                 $this->assertTrue($USER->getFlag(UserFlag::GHOST));
                 $this->assertFalse($USER->getPIGroup()->exists());
                 break;
-            case "ResurrectedOwnerOfDefunctPIGroup":
+            case "ReenabledOwnerOfDisabledPIGroup":
                 $this->assertTrue($USER->exists());
                 $this->assertFalse($USER->getFlag(UserFlag::GHOST));
                 $this->assertFalse($USER->isPI());
                 $this->assertTrue($USER->getPIGroup()->exists());
-                $this->assertTrue($USER->getPIGroup()->getIsDefunct());
+                $this->assertTrue($USER->getPIGroup()->getIsDisabled());
                 break;
             case "HasNoSshKeys":
                 $this->assertEqualsCanonicalizing([], $USER->getSSHKeys());
