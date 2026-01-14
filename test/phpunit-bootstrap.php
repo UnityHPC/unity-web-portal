@@ -116,9 +116,16 @@ function http_get(string $phpfile, array $get_data = []): string
  * @throws RuntimeException
  * @return array [return code, output lines]
  */
-function executeWorker(string $basename, string $args = "", bool $doThrowIfNonzero = true): array
-{
+function executeWorker(
+    string $basename,
+    string $args = "",
+    bool $doThrowIfNonzero = true,
+    ?string $stdinFilePath = null,
+): array {
     $command = sprintf("%s %s/../workers/%s %s 2>&1", PHP_BINARY, __DIR__, $basename, $args);
+    if ($stdinFilePath !== null) {
+        $command .= " <$stdinFilePath";
+    }
     $output = [];
     $rc = null;
     exec($command, $output, $rc);
@@ -136,39 +143,54 @@ function executeWorker(string $basename, string $args = "", bool $doThrowIfNonze
 }
 
 // delete requests made by that user
+// remove account deletion request made by that user
 // delete user entry
 // delete user group entry
 // remove user from org group
-// remove user from "all users" group
-// does not remove user from PI groups
-function ensureUserDoesNotExist()
+// remove user from all UserFlag groups
+// remove user from all PI groups
+function ensureUserDoesNotExist(string $uid)
 {
-    global $USER, $SQL, $LDAP;
-    $SQL->deleteRequestsByUser($USER->uid);
-    if ($USER->exists()) {
-        $org = $USER->getOrgGroup();
-        if ($org->exists() and $org->memberUIDExists($USER->uid)) {
-            $org->removeMemberUID($USER->uid);
-            ensure(!$org->memberUIDExists($USER->uid));
+    global $SQL, $LDAP;
+    $SQL->deleteRequestsByUser($uid);
+    $SQL->deleteAccountDeletionRequest($uid);
+    $user_entry = $LDAP->getUserEntry($uid);
+    if ($user_entry->exists()) {
+        $org_gid = $user_entry->getAttribute("o")[0];
+        $org_entry = $LDAP->getOrgGroupEntry($org_gid);
+        if ($org_entry->exists()) {
+            $org_members = $org_entry->getAttribute("memberuid");
+            if (in_array($uid, $org_members)) {
+                $org_entry->removeAttributeEntryByValue("memberuid", $uid);
+            }
         }
-        $LDAP->getUserEntry($USER->uid)->delete();
-        ensure(!$USER->exists());
+        $user_entry->delete();
     }
-    if ($USER->getGroupEntry()->exists()) {
-        $USER->getGroupEntry()->delete();
-        ensure(!$USER->getGroupEntry()->exists());
+    $user_group_entry = $LDAP->getGroupEntry($uid);
+    if ($user_group_entry->exists()) {
+        $user_group_entry->delete();
     }
-    $USER->setFlag(UserFlag::QUALIFIED, false);
-    ensure(!$LDAP->userFlagGroups[UserFlag::QUALIFIED->value]->memberUIDExists($USER->uid));
+    foreach (UserFlag::cases() as $flag) {
+        $flag_group = $LDAP->userFlagGroups[$flag->value];
+        if ($flag_group->memberUIDExists($uid)) {
+            $flag_group->removeMemberUID($uid);
+        }
+    }
+    foreach ($LDAP->getPIGroupGIDsWithMemberUID($uid) as $gid) {
+        $pi_group_entry = $LDAP->getPIGroupEntry($gid);
+        $pi_group_members = $pi_group_entry->getAttribute("memberuid");
+        if (in_array($uid, $pi_group_members)) {
+            $pi_group_entry->removeAttributeEntryByValue("memberuid", $uid);
+        }
+    }
 }
 
-function ensureOrgGroupDoesNotExist()
+function ensureOrgGroupDoesNotExist(string $gid)
 {
-    global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
-    $org_group = $LDAP->getOrgGroupEntry($SSO["org"]);
-    if ($org_group->exists()) {
-        $org_group->delete();
-        ensure(!$org_group->exists());
+    global $LDAP;
+    $org_group_entry = $LDAP->getOrgGroupEntry($gid);
+    if ($org_group_entry->exists()) {
+        $org_group_entry->delete();
     }
 }
 
@@ -189,13 +211,12 @@ function ensureUserNotInPIGroup(UnityGroup $pi_group)
     }
 }
 
-function ensurePIGroupDoesNotExist()
+function ensurePIGroupDoesNotExist(string $gid)
 {
-    global $USER, $LDAP;
-    $gid = $USER->getPIGroup()->gid;
-    if ($USER->getPIGroup()->exists()) {
-        $LDAP->getPIGroupEntry($gid)->delete();
-        ensure(!$USER->getPIGroup()->exists());
+    global $LDAP;
+    $pi_group_entry = $LDAP->getPIGroupEntry($gid);
+    if ($pi_group_entry->exists()) {
+        $pi_group_entry->delete();
     }
 }
 
@@ -529,4 +550,19 @@ function getSomeUIDsOfQualifiedUsersNotRequestedAccountDeletion()
         "user10_org1_test",
         "user11_org1_test",
     ];
+}
+
+function writeLinesToTmpFile(array $lines)
+{
+    $file = tmpfile();
+    if (!$file) {
+        throw new RuntimeException("failed to make tmpfile");
+    }
+    $path = stream_get_meta_data($file)["uri"];
+    $contents = implode("\n", $lines);
+    $fwrite = fwrite($file, $contents);
+    if ($fwrite === false) {
+        throw new RuntimeException("failed to write to tmpfile '$path'");
+    }
+    return $file;
 }

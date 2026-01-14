@@ -26,9 +26,11 @@ class RegisterUserTest extends UnityWebPortalTestCase
     {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
         $this->switchUser($nickname);
-        $user_entry = $LDAP->getUserEntry($USER->uid);
-        $user_group_entry = $LDAP->getGroupEntry($USER->uid);
-        $org_entry = $LDAP->getOrgGroupEntry($SSO["org"]);
+        $uid = $USER->uid;
+        $org_gid = $SSO["org"];
+        $user_entry = $LDAP->getUserEntry($uid);
+        $user_group_entry = $LDAP->getGroupEntry($uid);
+        $org_entry = $LDAP->getOrgGroupEntry($org_gid);
         $this->assertFalse($user_entry->exists());
         $this->assertFalse($user_group_entry->exists());
         $this->assertFalse($org_entry->exists());
@@ -40,8 +42,8 @@ class RegisterUserTest extends UnityWebPortalTestCase
             $this->assertEquals($expected_uid_gid, $user_entry->getAttribute("uidnumber")[0]);
             $this->assertEquals($expected_uid_gid, $user_group_entry->getAttribute("gidnumber")[0]);
         } finally {
-            ensureOrgGroupDoesNotExist();
-            ensureUserDoesNotExist();
+            ensureOrgGroupDoesNotExist($org_gid);
+            ensureUserDoesNotExist($uid);
         }
     }
 }
