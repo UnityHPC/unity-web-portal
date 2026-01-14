@@ -311,7 +311,7 @@ class UnityLDAP extends LDAPConn
     /**
      * @throws \UnityWebPortal\lib\exceptions\EntryNotFoundException
      */
-    public function getUidFromEmail(string $email): LDAPEntry
+    public function getUidFromEmail(string $email): string
     {
         $email = ldap_escape($email, "", LDAP_ESCAPE_FILTER);
         $entries = $this->userOU->getChildrenArrayStrict(["uid"], true, "(mail=$email)");
