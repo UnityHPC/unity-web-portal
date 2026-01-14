@@ -17,8 +17,11 @@ class WorkerUnityCourseTest extends UnityWebPortalTestCase
             "user1_org1_test",
         ]);
         $stdin_file_path = stream_get_meta_data($stdin_file)["uri"];
-        [$rc, $output_lines] = executeWorker("unity-course.php", stdinFilePath: $stdin_file_path);
         try {
+            [$rc, $output_lines] = executeWorker(
+                "unity-course.php",
+                stdinFilePath: $stdin_file_path,
+            );
             // error_log(implode("\n", $output_lines));
             // our LDAP conn doesn't know about changes from subprocess
             unset($GLOBALS["ldapconn"]);
@@ -38,6 +41,7 @@ class WorkerUnityCourseTest extends UnityWebPortalTestCase
         } finally {
             ensurePIGroupDoesNotExist("pi_cs123_org1_test");
             ensureUserDoesNotExist("cs123_org1_test");
+            unlink($stdin_file_path);
         }
     }
 }
