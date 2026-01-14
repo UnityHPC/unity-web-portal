@@ -65,6 +65,9 @@ class UnityGroup extends PosixGroup
 
     public function disable(bool $send_mail = true): void
     {
+        if ($this->getIsDisabled()) {
+            throw new Exception("cannot disable an already disabled group");
+        }
         $this->SQL->addLog("disable_pi_group", $this->gid);
         $memberuids = $this->getMemberUIDs();
         if ($send_mail) {
@@ -91,6 +94,9 @@ class UnityGroup extends PosixGroup
 
     private function reenable(bool $send_mail = true)
     {
+        if (!$this->getIsDisabled()) {
+            throw new Exception("cannot re-enable a group that is not disabled");
+        }
         $this->SQL->addLog("reenabled_pi_group", $this->gid);
         if ($send_mail) {
             $this->MAILER->sendMail($this->getOwner()->getMail(), "group_reenabled", [
