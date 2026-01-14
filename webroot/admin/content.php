@@ -11,7 +11,7 @@ if (!$USER->getFlag(UserFlag::ADMIN)) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     UnityHTTPD::validatePostCSRFToken();
-    if (!empty($_POST["pageSel"]) && isset($_POST["content"])) {
+    if (array_key_exists("pageSel", $_POST)) {
         $SQL->editPage(
             UnityHTTPD::getPostData("pageSel"),
             UnityHTTPD::getPostData("content"),
