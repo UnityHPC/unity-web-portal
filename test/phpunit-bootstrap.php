@@ -87,6 +87,7 @@ function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_tok
     } finally {
         ob_get_clean(); // discard output
         unset($_POST);
+        unset($_SERVER["REQUEST_METHOD"]);
         $_SERVER = $_PREVIOUS_SERVER;
     }
     // https://en.wikipedia.org/wiki/Post/Redirect/Get
@@ -106,6 +107,7 @@ function http_get(string $phpfile, array $get_data = []): string
         include $phpfile;
     } finally {
         unset($_GET);
+        unset($_SERVER["REQUEST_METHOD"]);
         $_SERVER = $_PREVIOUS_SERVER;
         return ob_get_clean();
     }
@@ -519,9 +521,6 @@ class UnityWebPortalTestCase extends TestCase
         $_SERVER["REMOTE_USER"] = $eppn;
         $_SERVER["REMOTE_ADDR"] = "127.0.0.1";
         $_SERVER["HTTP_HOST"] = "phpunit"; // used for config override
-        if (array_key_exists("REQUEST_METHOD", $_SERVER)) {
-            unset($_SERVER["REQUEST_METHOD"]);
-        }
         $_SERVER["eppn"] = $eppn;
         $_SERVER["givenName"] = $given_name;
         $_SERVER["sn"] = $sn;
