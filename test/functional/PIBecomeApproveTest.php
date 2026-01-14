@@ -71,8 +71,7 @@ class PIBecomeApproveTest extends UnityWebPortalTestCase
             // $this->assertTrue($third_request_failed);
             $this->assertRequestedPIGroup(false);
         } finally {
-            $this->switchUser("Blank", validate: false);
-            ensurePIGroupDoesNotExist();
+            ensurePIGroupDoesNotExist($pi_group->gid);
         }
     }
 }
