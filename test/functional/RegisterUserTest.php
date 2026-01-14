@@ -27,7 +27,7 @@ class RegisterUserTest extends UnityWebPortalTestCase
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
         $this->switchUser($nickname);
         $uid = $USER->uid;
-        $org_gid = $USER->getOrg();
+        $org_gid = $SSO["org"];
         $user_entry = $LDAP->getUserEntry($uid);
         $user_group_entry = $LDAP->getGroupEntry($uid);
         $org_entry = $LDAP->getOrgGroupEntry($org_gid);
