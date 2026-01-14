@@ -78,7 +78,7 @@ class UnityGroup extends PosixGroup
         if (count($memberuids) > 0) {
             $this->entry->setAttribute("memberuid", []);
         }
-        // TODO optimmize
+        // TODO optimize
         // UnityUser::__construct() makes one LDAP query for each user
         // updateIsQualified() makes one LDAP query for each member
         // if user is no longer in any PI group, disqualify them
