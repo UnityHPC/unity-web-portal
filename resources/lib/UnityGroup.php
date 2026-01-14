@@ -228,7 +228,6 @@ class UnityGroup extends PosixGroup
         if ($new_user->uid == $this->getOwner()->uid) {
             throw new Exception("Cannot delete group owner from group. Disband group instead");
         }
-        // remove request, this will fail silently if the request doesn't exist
         $this->removeMemberUID($new_user->uid);
         $this->SQL->addLog(
             "removed_user",
