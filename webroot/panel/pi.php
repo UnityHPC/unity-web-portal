@@ -34,7 +34,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             break;
         case "disable":
+            if ($group->getIsDisabled()) {
+                UnityHTTPD::messageError("Cannot Disable PI Group", "Group is already disabled");
+                UnityHTTPD::redirect();
+            }
             $group->disable();
+            UnityHTTPD::messageSuccess("Group Disabled", "");
             UnityHTTPD::redirect(getURL("panel/account.php"));
             break; /** @phpstan-ignore deadCode.unreachable */
     }
