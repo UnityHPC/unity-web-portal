@@ -19,6 +19,7 @@ class PIDisableTest extends UnityWebPortalTestCase
                 "form_type" => "disable",
                 "pi" => $pi_group->gid,
             ]);
+            $this->assertFalse($pi_group->getOwner()->isPI());
             $this->assertTrue($pi_group->getIsDisabled());
             $this->assertEmpty($pi_group->getMemberUIDs());
             // FIXME uncomment
@@ -44,6 +45,7 @@ class PIDisableTest extends UnityWebPortalTestCase
         // $this->assertTrue($pi_group->getOwner()->getFlag(UserFlag::QUALIFIED));
         try {
             http_post(__DIR__ . "/../../webroot/panel/pi.php", ["form_type" => "disable"]);
+            $this->assertFalse($pi_group->getOwner()->isPI());
             $this->assertTrue($pi_group->getIsDisabled());
             $this->assertEmpty($pi_group->getMemberUIDs());
             // FIXME uncomment
