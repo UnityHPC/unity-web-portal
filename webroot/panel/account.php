@@ -6,6 +6,7 @@ use UnityWebPortal\lib\UserFlag;
 use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\exceptions\EncodingUnknownException;
 use UnityWebPortal\lib\exceptions\EncodingConversionException;
+use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use UnityWebPortal\lib\UnitySQL;
 
 $hasGroups = count($USER->getPIGroupGIDs()) > 0;
@@ -63,44 +64,78 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             break; /** @phpstan-ignore deadCode.unreachable */
         case "delKey":
             $key = UnityHTTPD::getPostData("delKey");
-            $USER->removeSSHKey($key);
+            try {
+                $USER->removeSSHKey($key);
+            } catch (ArrayKeyException) {
+                UnityHTTPD::messageError("Cannot Remove SSH Key", "Key not found");
+                UnityHTTPD::redirect();
+            }
             $keyShort = shortenString($key, 10, 30);
             UnityHTTPD::messageSuccess("SSH Key Removed", $keyShort);
             UnityHTTPD::redirect();
             break; /** @phpstan-ignore deadCode.unreachable */
         case "loginshell":
-            $USER->setLoginShell($_POST["shellSelect"]);
-            break;
+            $shell = UnityHTTPD::getPostData("shellselect");
+            $USER->setLoginShell($shell);
+            UnityHTTPD::messageSuccess("Login Shell Changed", "");
+            UnityHTTPD::redirect();
+            break; /** @phpstan-ignore deadCode.unreachable */
         case "pi_request":
             if ($USER->isPI()) {
-                UnityHTTPD::badRequest("already a PI");
+                UnityHTTPD::messageError("Cannot Submit PI Request", "already a PI");
+                UnityHTTPD::redirect();
             }
             if ($SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI)) {
-                UnityHTTPD::badRequest("already requested to be PI");
+                UnityHTTPD::messageError("Cannot Submit PI Request", "This request already exists");
+                UnityHTTPD::redirect();
             }
             if ($_POST["tos"] != "agree") {
                 UnityHTTPD::badRequest("user did not agree to terms of service");
             }
             $USER->getPIGroup()->requestGroup();
-            break;
+            UnityHTTPD::messageSuccess("PI Group Requested", "");
+            UnityHTTPD::redirect();
+            break; /** @phpstan-ignore deadCode.unreachable */
         case "cancel_pi_request":
+            if (!$SQL->requestExists($USER->uid, UnitySQL::REQUEST_BECOME_PI)) {
+                UnityHTTPD::messageError("Cannot Cancel PI Request", "No PI request found");
+                UnityHTTPD::redirect();
+            }
             $USER->getPIGroup()->cancelGroupRequest();
-            break;
+            UnityHTTPD::messageSuccess("PI Request Cancelled", "");
+            UnityHTTPD::redirect();
+            break; /** @phpstan-ignore deadCode.unreachable */
         case "account_deletion_request":
             if ($hasGroups) {
-                break;
+                UnityHTTPD::messageError(
+                    "Cannot Request Account Deletion",
+                    "You are a PI or you are a member of at least one PI group"
+                );
+                UnityHTTPD::redirect();
             }
-            // FIXME send an error message if already exists
-            if (!$SQL->accDeletionRequestExists($USER->uid)) {
-                $USER->requestAccountDeletion();
-            }
-            break;
-        case "cancel_account_deletion_request":
-            // FIXME send an error message if doesn't exist
             if ($SQL->accDeletionRequestExists($USER->uid)) {
-                $USER->cancelRequestAccountDeletion();
+                UnityHTTPD::messageError(
+                    "Cannot Request Account Deletion",
+                    "You have already requested this"
+                );
+                UnityHTTPD::redirect();
             }
-            break;
+            $USER->requestAccountDeletion();
+            UnityHTTPD::messageSuccess("Account Deletion Requested", "");
+            UnityHTTPD::redirect();
+            break; /** @phpstan-ignore deadCode.unreachable */
+        case "cancel_account_deletion_request":
+            if (!$SQL->accDeletionRequestExists($USER->uid)) {
+                UnityHTTPD::messageError(
+                    "Cannot Cancel Account Deletion Request",
+                    "No account deletion request found"
+                );
+                UnityHTTPD::redirect();
+            }
+            $USER->cancelRequestAccountDeletion();
+            UnityHTTPD::messageSuccess("Account Deletion Request Cancelled", "");
+            UnityHTTPD::redirect();
+            break; /** @phpstan-ignore deadCode.unreachable */
     }
 }
 
