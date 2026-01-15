@@ -98,7 +98,7 @@ function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_tok
     }
 }
 
-function http_get(string $phpfile, array $get_data = [], bool $expect_die = false): string
+function http_get(string $phpfile, array $get_data = [], bool $ignore_die = false): string
 {
     global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
@@ -111,7 +111,7 @@ function http_get(string $phpfile, array $get_data = [], bool $expect_die = fals
         include $phpfile;
         return ob_get_clean();
     } catch (UnityWebPortal\lib\exceptions\NoDieException $e) {
-        if ($expect_die) {
+        if ($ignore_die) {
             return ob_get_clean();
         } else {
             ob_get_clean(); // discard output

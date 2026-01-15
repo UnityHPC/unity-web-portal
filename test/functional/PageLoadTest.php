@@ -64,10 +64,10 @@ class PageLoadTest extends UnityWebPortalTestCase
     }
 
     #[DataProvider("providerMisc")]
-    public function testLoadPage($nickname, $path, $regex, $expect_die = false)
+    public function testLoadPage($nickname, $path, $regex, $ignore_die = false)
     {
         $this->switchUser($nickname);
-        $output = http_get(__DIR__ . "/../../webroot/" . $path, expect_die: $expect_die);
+        $output = http_get(__DIR__ . "/../../webroot/" . $path, ignore_die: $ignore_die);
         $this->assertMatchesRegularExpression($regex, $output);
     }
 
@@ -75,7 +75,7 @@ class PageLoadTest extends UnityWebPortalTestCase
     public function testLoadAdminPageNotAnAdmin($path)
     {
         $this->switchUser("Blank");
-        $output = http_get($path, expect_die: true);
+        $output = http_get($path, ignore_die: true);
         $this->assertMatchesRegularExpression("/You are not an admin\./", $output);
     }
 
@@ -83,7 +83,7 @@ class PageLoadTest extends UnityWebPortalTestCase
     public function testLoadPageNonexistentUser($path)
     {
         $this->switchUser("NonExistent");
-        $output = http_get($path, expect_die: true);
+        $output = http_get($path, ignore_die: true);
         $this->assertMatchesRegularExpression("/panel\/new_account\.php/", $output);
     }
 }
