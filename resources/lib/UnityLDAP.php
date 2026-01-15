@@ -218,7 +218,7 @@ class UnityLDAP extends LDAPConn
             $this->pi_groupOU->getChildrenArrayStrict(
                 ["cn"],
                 false,
-                "(memberuid=" . ldap_escape($uid, "", LDAP_ESCAPE_FILTER) . ")",
+                "(memberuid=" . ldap_escape($uid, flags: LDAP_ESCAPE_FILTER) . ")",
             ),
         );
     }
@@ -286,25 +286,25 @@ class UnityLDAP extends LDAPConn
 
     public function getUserEntry(string $uid): LDAPEntry
     {
-        $uid = ldap_escape($uid, "", LDAP_ESCAPE_DN);
+        $uid = ldap_escape($uid, flags: LDAP_ESCAPE_DN);
         return $this->getEntry(UnityLDAP::RDN . "=$uid," . CONFIG["ldap"]["user_ou"]);
     }
 
     public function getGroupEntry(string $gid): LDAPEntry
     {
-        $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
+        $gid = ldap_escape($gid, flags: LDAP_ESCAPE_DN);
         return $this->getEntry(UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["group_ou"]);
     }
 
     public function getPIGroupEntry(string $gid): LDAPEntry
     {
-        $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
+        $gid = ldap_escape($gid, flags: LDAP_ESCAPE_DN);
         return $this->getEntry(UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["pigroup_ou"]);
     }
 
     public function getOrgGroupEntry(string $gid): LDAPEntry
     {
-        $gid = ldap_escape($gid, "", LDAP_ESCAPE_DN);
+        $gid = ldap_escape($gid, flags: LDAP_ESCAPE_DN);
         return $this->getEntry(UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["orggroup_ou"]);
     }
 
@@ -313,7 +313,7 @@ class UnityLDAP extends LDAPConn
      */
     public function getUidFromEmail(string $email): string
     {
-        $email = ldap_escape($email, "", LDAP_ESCAPE_FILTER);
+        $email = ldap_escape($email, flags: LDAP_ESCAPE_FILTER);
         $entries = $this->userOU->getChildrenArrayStrict(["uid"], true, "(mail=$email)");
         if (count($entries) == 0) {
             throw new exceptions\EntryNotFoundException($email);
@@ -341,7 +341,7 @@ class UnityLDAP extends LDAPConn
             $asked_for_uid_attribute = false;
             array_push($attributes, "uid");
         }
-        $uids_escaped = array_map(fn($x) => ldap_escape($x, "", LDAP_ESCAPE_FILTER), $uids);
+        $uids_escaped = array_map(fn($x) => ldap_escape($x, flags: LDAP_ESCAPE_FILTER), $uids);
         $filter =
             "(&(objectClass=posixAccount)(|" .
             implode("", array_map(fn($x) => "(uid=$x)", $uids_escaped)) .
