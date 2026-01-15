@@ -91,7 +91,7 @@ class UnityLDAP extends LDAPConn
             }
         }
         $customMappedUIDNumbers = array_map(fn($x) => $x[0], $this->getCustomIDMappings());
-        $IDNumbersToSkip = array_merge($this->getAllGIDNumbersInUse(), $customMappedUIDNumbers);
+        $IDNumbersToSkip = array_merge($this->getAllUIDNumbersInUse(), $customMappedUIDNumbers);
         return $this->getNextIDNumber($this->offset_user_uidnumber, $IDNumbersToSkip);
     }
 
