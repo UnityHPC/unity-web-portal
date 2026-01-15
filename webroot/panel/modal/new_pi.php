@@ -27,63 +27,44 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 </form>
 
 <script>
-    var gid_to_owner_info = null;
+    let ownerInfo = null;
+    const $input = $("input[name=pi]");
+    const $wrapper = $("div.searchWrapper");
+    const $submit = $("#newPIform-submit");
+
     $.ajax({
         url: '<?php echo getURL("panel/ajax/list_pi_groups_owner_info.php") ?>',
-        success: function(result) {
-            gid_to_owner_info = JSON.parse(result);
-        },
-        error: function (result) {
-            console.log(result.responseText);
-        },
+        success: data => ownerInfo = JSON.parse(data),
+        error: result => console.error(result.responseText),
     });
-    function search_pi_groups(x) {
-        x = x.toLowerCase()
-        if (gid_to_owner_info == null) {
-            console.log("gid_to_owner_info is null, returning empty search results...");
-            return [];
-        }
-        if (x === "") {
-            return [];
-        }
-        var output = [];
-        for (const [gid, owner_attributes] of Object.entries(gid_to_owner_info)) {
-            const mail = owner_attributes["mail"];
-            const gecos = owner_attributes["gecos"];
-            if (gid.toLowerCase().includes(x) || gecos.includes(x) || mail.includes(x)) {
-                output.push(gid);
-            }
-        }
-        return output;
-    }
-    var search_box = $("input[type=text][name=pi]");
-    function update_search() {
-        const search = search_box.val();
-        var searchWrapper = $("div.searchWrapper");
-        const gids = search_pi_groups(search);
-        if (gids.length === 0) {
-            searchWrapper.html("");
-            searchWrapper.hide();
-        } else {
-            const html = gids.map(x => `<span>${x}</span>`).join('');
-            searchWrapper.html(html);
-            searchWrapper.show();
-        }
-        const is_match = gids.includes(search);
-        $("#newPIform-submit").prop("disabled", !is_match);
-    }
 
-    $("input[type=text][name=pi]").keyup(function() {
-        update_search();
+    const search = (query) => {
+        if (!ownerInfo || !query) return [];
+        const lower = query.toLowerCase();
+        return Object.entries(ownerInfo)
+            .filter(([gid, { mail, gecos }]) =>
+                gid.toLowerCase().includes(lower) ||
+                gecos.toLowerCase().includes(lower) ||
+                mail.toLowerCase().includes(lower)
+            )
+            .map(([gid]) => gid);
+    };
+
+    const updateSearch = () => {
+        const query = $input.val();
+        const results = search(query);
+        if (results.length === 0) {
+            $wrapper.html("").hide();
+        } else {
+            $wrapper.html(results.map(gid => `<span>${gid}</span>`).join('')).show();
+        }
+        $submit.prop("disabled", !results.includes(query));
+    };
+
+    $input.on("keyup", updateSearch);
+    $wrapper.on("click", "span", function() {
+        $input.val($(this).text());
+        updateSearch();
     });
-    $("div.searchWrapper").on("click", "span", function (event) {
-        search_box.val($(this).html());
-        update_search();
-    });
-    /**
-     * Hides the searchresult box on click anywhere
-     */
-    $(document).click(function() {
-        $("div.searchWrapper").hide();
-    });
+    $(document).on("click", () => $wrapper.hide());
 </script>
