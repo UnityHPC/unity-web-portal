@@ -114,6 +114,7 @@ class PIDisableTest extends UnityWebPortalTestCase
         $pi_group = $USER->getPIGroup();
         $entry = $LDAP->getPIGroupEntry($pi_group->gid);
         $this->assertEquals([], $entry->getAttribute("isDisabled"));
+        $this->switchUser("Admin");
         $this->assertStringContainsString(
             $pi_group->gid,
             http_get(__DIR__ . "/../../webroot/admin/pi-mgmt.php"),
