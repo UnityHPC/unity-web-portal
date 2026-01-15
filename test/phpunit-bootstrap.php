@@ -108,11 +108,9 @@ function http_get(string $phpfile, array $get_data = []): string
     $_GET = $get_data;
     ob_start();
     try {
-        try {
-            include $phpfile;
-        } catch (UnityWebPortal\lib\exceptions\NoDieException $e) {
-            // ignore
-        }
+        include $phpfile;
+        return ob_get_clean();
+    } catch (UnityWebPortal\lib\exceptions\NoDieException $e) {
         return ob_get_clean();
     } catch (Exception $e) {
         ob_get_clean(); //discard output
