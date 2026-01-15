@@ -57,17 +57,17 @@ class PageLoadTest extends UnityWebPortalTestCase
             ["Blank", "panel/support.php", "/Support/"],
             ["EmptyPIGroupOwner", "panel/pi.php", "/My Users/"],
             // new_account.php should redirect to account.php if account already exists
-            ["Blank", "panel/new_account.php", "/panel\/account\.php/"],
+            ["Blank", "panel/new_account.php", "/panel\/account\.php/", true],
             // non-PI can't access pi.php
-            ["Blank", "panel/pi.php", "/You are not a PI./"],
+            ["Blank", "panel/pi.php", "/You are not a PI./", true],
         ];
     }
 
     #[DataProvider("providerMisc")]
-    public function testLoadPage($nickname, $path, $regex)
+    public function testLoadPage($nickname, $path, $regex, $ignore_die = false)
     {
         $this->switchUser($nickname);
-        $output = http_get(__DIR__ . "/../../webroot/" . $path);
+        $output = http_get(__DIR__ . "/../../webroot/" . $path, ignore_die: $ignore_die);
         $this->assertMatchesRegularExpression($regex, $output);
     }
 
@@ -75,7 +75,7 @@ class PageLoadTest extends UnityWebPortalTestCase
     public function testLoadAdminPageNotAnAdmin($path)
     {
         $this->switchUser("Blank");
-        $output = http_get($path);
+        $output = http_get($path, ignore_die: true);
         $this->assertMatchesRegularExpression("/You are not an admin\./", $output);
     }
 
@@ -83,7 +83,7 @@ class PageLoadTest extends UnityWebPortalTestCase
     public function testLoadPageNonexistentUser($path)
     {
         $this->switchUser("NonExistent");
-        $output = http_get($path);
+        $output = http_get($path, ignore_die: true);
         $this->assertMatchesRegularExpression("/panel\/new_account\.php/", $output);
     }
 }
