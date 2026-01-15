@@ -20,11 +20,11 @@ parameters:
     - messages:
         - '#Negated boolean expression is always false\.#'
       paths:
-        - test/functional/PiRemoveUserTest.php
+        - test/functional/PIRemoveUserTest.php
     - messages:
         - '#If condition is always false\.#'
       paths:
-        - test/functional/PiBecomeDenyTest.php
+        - test/functional/PIBecomeDenyTest.php
     # $Subject is written by mail templates
     - messages:
         - '#Property UnityWebPortal\\lib\\UnityWebhook::\$Subject is never written, only read\.#'
