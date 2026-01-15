@@ -1,6 +1,5 @@
 <?php
 
-// This mail get's sent to users when they are removed a PI group
 $this->Subject = "Removed from Group"; ?>
 
 <p>Hello,</p>

@@ -1,6 +1,5 @@
 <?php
 
-// This template is sent to admins when a new group is requested
 $this->Subject = "PI Group Request"; ?>
 
 <p>Hello,</p>

@@ -1,6 +1,5 @@
 <?php
 
-// this template is sent when a user sets their login shell
 $this->Subject = "Login Shell Updated"; ?>
 
 <p>Hello,</p>

@@ -1,6 +1,5 @@
 <?php
 
-// this email is sent to the user who made the request to join the group when they are denied
 $this->Subject = "Group Request Denied"; ?>
 
 <p>Hello,</p>

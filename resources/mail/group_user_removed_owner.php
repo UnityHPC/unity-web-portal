@@ -1,6 +1,5 @@
 <?php
 
-// This template gets sent to the owner of a group when a user is removed from that group
 $this->Subject = "Group Member Removed"; ?>
 
 <p>Hello,</p>

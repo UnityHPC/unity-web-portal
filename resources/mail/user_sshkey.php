@@ -1,6 +1,5 @@
 <?php
 
-// this template is sent when a user modifies an SSH key
 $this->Subject = "SSH Key Modified"; ?>
 
 <p>Hello,</p>
