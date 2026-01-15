@@ -90,7 +90,12 @@ class UnityUser
 
     public function getFlag(UserFlag $flag): bool
     {
-        return $this->LDAP->userFlagGroups[$flag->value]->memberUIDExists($this->uid);
+        foreach ($this->LDAP->userFlagGroups[$flag->value] as $group) {
+            if ($group->memberUIDExists($this->uid)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function setFlag(
@@ -104,7 +109,7 @@ class UnityUser
             return;
         }
         if ($newValue) {
-            $this->LDAP->userFlagGroups[$flag->value]->addMemberUID($this->uid);
+            $this->LDAP->userFlagGroups[$flag->value][0]->addMemberUID($this->uid);
             if ($doSendMail) {
                 $this->MAILER->sendMail($this->getMail(), "user_flag_added", [
                     "user" => $this->uid,
@@ -120,7 +125,7 @@ class UnityUser
                 ]);
             }
         } else {
-            $this->LDAP->userFlagGroups[$flag->value]->removeMemberUID($this->uid);
+            $this->LDAP->userFlagGroups[$flag->value][0]->removeMemberUID($this->uid);
             if ($doSendMail) {
                 $this->MAILER->sendMail($this->getMail(), "user_flag_removed", [
                     "user" => $this->uid,

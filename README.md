@@ -123,6 +123,12 @@ rm "$prod" && ln -s "$old" "$prod"
 
 ### Version-specific update instructions:
 
+### 1.6 -> 1.7
+
+- the `[ldap]user_flag_groups` option has been moved to `[ldap_user_flag_groups]`
+- each user flag group can now optionally be an array
+  - if there are multiple groups for a user flag, all groups are used to check for the flag, but only the 1st group is used to enable/disable a flag for a user
+
 ### 1.5 -> 1.6
 
 - the `[site]getting_started_url` option should be defined
