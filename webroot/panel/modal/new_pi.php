@@ -23,36 +23,63 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
             Terms of Service
         </a>.
     </label>
-    <input type="submit" value="Send Request">
+    <input id="newPIform-submit" type="submit" value="Send Request" disabled>
 </form>
 
 <script>
-    $("input[type=text][name=pi]").keyup(function() {
+    var gid_to_owner_info = null;
+    $.ajax({
+        url: '<?php echo getURL("panel/ajax/list_pi_groups_owner_info.php") ?>',
+        success: function(result) {
+            gid_to_owner_info = JSON.parse(result);
+        },
+        error: function (result) {
+            console.log(result.responseText);
+        },
+    });
+    function search_pi_groups(x) {
+        x = x.toLowerCase()
+        if (gid_to_owner_info == null) {
+            console.log("gid_to_owner_info is null, returning empty search results...");
+            return [];
+        }
+        if (x === "") {
+            return [];
+        }
+        var output = [];
+        for (const [gid, owner_attributes] of Object.entries(gid_to_owner_info)) {
+            const mail = owner_attributes["mail"];
+            const gecos = owner_attributes["gecos"];
+            if (gid.toLowerCase().includes(x) || gecos.includes(x) || mail.includes(x)) {
+                output.push(gid);
+            }
+        }
+        return output;
+    }
+    var search_box = $("input[type=text][name=pi]");
+    function update_search() {
+        const search = search_box.val();
         var searchWrapper = $("div.searchWrapper");
-        const url = '<?php echo getURL("panel/modal/pi_search.php") ?>';
-        $.ajax({
-            url: `${url}?search=` + $(this).val(),
-            success: function(result) {
-                searchWrapper.html(result);
+        const gids = search_pi_groups(search);
+        if (gids.length === 0) {
+            searchWrapper.html("");
+            searchWrapper.hide();
+        } else {
+            const html = gids.map(x => `<span>${x}</span>`).join('');
+            searchWrapper.html(html);
+            searchWrapper.show();
+        }
+        const is_match = gids.includes(search);
+        $("#newPIform-submit").prop("disabled", !is_match);
+    }
 
-                if (result == "") {
-                    searchWrapper.hide();
-                } else {
-                    searchWrapper.show();
-                }
-            },
-            error: function (result) {
-                searchWrapper.html(result.responseText);
-                searchWrapper.show();
-            },
-        });
+    $("input[type=text][name=pi]").keyup(function() {
+        update_search();
     });
-
     $("div.searchWrapper").on("click", "span", function (event) {
-        var textBox = $("input[type=text][name=pi]");
-        textBox.val($(this).html());
+        search_box.val($(this).html());
+        update_search();
     });
-
     /**
      * Hides the searchresult box on click anywhere
      */
