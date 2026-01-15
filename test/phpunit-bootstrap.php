@@ -79,18 +79,22 @@ function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_tok
     }
     $_POST = $post_data;
     ob_start();
-    $post_did_redirect_or_die = false;
     try {
-        include $phpfile;
-    } catch (UnityWebPortal\lib\exceptions\NoDieException $e) {
-        $post_did_redirect_or_die = true;
+        $post_did_redirect_or_die = false;
+        try {
+            include $phpfile;
+        } catch (UnityWebPortal\lib\exceptions\NoDieException $e) {
+            $post_did_redirect_or_die = true;
+        }
+        // https://en.wikipedia.org/wiki/Post/Redirect/Get
+        ensure($post_did_redirect_or_die, "post did not redirect or die!");
+        return ob_get_clean();
+    } catch (Exception $e) {
+        ob_get_clean(); //discard output
+        throw $e;
     } finally {
         unset($_POST);
         $_SERVER = $_PREVIOUS_SERVER;
-        $output = ob_get_clean();
-        // https://en.wikipedia.org/wiki/Post/Redirect/Get
-        ensure($post_did_redirect_or_die, "post did not redirect or die!");
-        return $output; // discard output
     }
 }
 
@@ -104,11 +108,18 @@ function http_get(string $phpfile, array $get_data = []): string
     $_GET = $get_data;
     ob_start();
     try {
-        include $phpfile;
+        try {
+            include $phpfile;
+        } catch (UnityWebPortal\lib\exceptions\NoDieException $e) {
+            // ignore
+        }
+        return ob_get_clean();
+    } catch (Exception $e) {
+        ob_get_clean(); //discard output
+        throw $e;
     } finally {
         unset($_GET);
         $_SERVER = $_PREVIOUS_SERVER;
-        return ob_get_clean();
     }
 }
 
