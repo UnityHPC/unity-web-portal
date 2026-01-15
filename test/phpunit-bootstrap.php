@@ -67,7 +67,7 @@ $HTTP_HEADER_TEST_INPUTS = [
     mbConvertEncoding("Hello, World!", "UTF-16"),
 ];
 
-function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_token = true): void
+function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_token = true): string
 {
     global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
@@ -85,13 +85,13 @@ function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_tok
     } catch (UnityWebPortal\lib\exceptions\NoDieException $e) {
         $post_did_redirect_or_die = true;
     } finally {
-        ob_get_clean(); // discard output
         unset($_POST);
-        unset($_SERVER["REQUEST_METHOD"]);
         $_SERVER = $_PREVIOUS_SERVER;
+        $output = ob_get_clean();
+        // https://en.wikipedia.org/wiki/Post/Redirect/Get
+        ensure($post_did_redirect_or_die, "post did not redirect or die!");
+        return $output; // discard output
     }
-    // https://en.wikipedia.org/wiki/Post/Redirect/Get
-    ensure($post_did_redirect_or_die, "post did not redirect or die!");
 }
 
 function http_get(string $phpfile, array $get_data = []): string
@@ -107,7 +107,6 @@ function http_get(string $phpfile, array $get_data = []): string
         include $phpfile;
     } finally {
         unset($_GET);
-        unset($_SERVER["REQUEST_METHOD"]);
         $_SERVER = $_PREVIOUS_SERVER;
         return ob_get_clean();
     }
@@ -535,6 +534,11 @@ class UnityWebPortalTestCase extends TestCase
     function switchBackUser(bool $validate = false)
     {
         $this->switchUser($this->last_user_nickname, validate: $validate);
+    }
+
+    function setUp(): void
+    {
+        $this->assertArrayNotHasKey("REQUEST_METHOD", $_SERVER);
     }
 }
 

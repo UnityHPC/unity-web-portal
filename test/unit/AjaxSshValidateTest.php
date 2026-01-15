@@ -19,12 +19,10 @@ class AjaxSshValidateTest extends UnityWebPortalTestCase
     #[DataProvider("providerTestSshValidate")]
     public function testSshValidate(bool $is_valid, string $pubkey)
     {
-        // doesn't use http_post because http_post doesn't capture output
-        $_SERVER["REQUEST_METHOD"] = "POST";
-        $_POST["key"] = $pubkey;
-        ob_start();
-        include __DIR__ . "/../../webroot/js/ajax/ssh_validate.php";
-        $output_str = ob_get_clean();
+        $this->switchUser("Normal");
+        $output_str = http_post(__DIR__ . "/../../webroot/js/ajax/ssh_validate.php", [
+            "key" => $pubkey,
+        ]);
         $output = jsonDecode($output_str, true);
         $this->assertEquals($is_valid, $output["is_valid"]);
     }
