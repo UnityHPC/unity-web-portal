@@ -67,7 +67,10 @@ $_SESSION["pi_group_gid_to_owner_gecos_and_mail"] = $pi_group_gid_to_owner_gecos
                         submit.prop("disabled", true);
                     }
                 },
-                error: result => console.error(result.responseText),
+                error: function(result) {
+                    wrapper.text(result.responseText).show();
+                    submit.prop("disabled", true);
+                }
             });
         };
         input.on("keyup", () => updateSearch());
