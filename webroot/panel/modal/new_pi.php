@@ -43,7 +43,6 @@ $_SESSION["pi_group_gid_to_owner_gecos_and_mail"] = $pi_group_gid_to_owner_gecos
 
 <script>
     (function () {
-        let ownerInfo = null;
         const input = $("input[name=pi]");
         const wrapper = $("div.searchWrapper");
         const submit = $("#newPIform-submit");
