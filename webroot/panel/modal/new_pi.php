@@ -63,7 +63,8 @@ $_SESSION["pi_group_gid_to_owner_gecos_and_mail"] = $pi_group_gid_to_owner_gecos
                         submit.prop("disabled", false);
                     } else {
                         submit.prop("disabled", true);
-                        wrapper.html(results.map(gid => `<span>${gid}</span>`).join('')).show();
+                        const html = results.map(gid => `<span>${gid}</span>`).join('');
+                        wrapper.html(html).show();
                     }
                 },
                 error: result => console.error(result.responseText),
