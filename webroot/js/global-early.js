@@ -39,3 +39,10 @@ function setupCKEditor(extraPlugins = []) {
     ],
   });
 }
+
+const dataTablesRenderMailtoLink = function (data, type, row, meta) {
+  if (type === 'display' && data) {
+    return '<a href="mailto:' + data + '">' + data + '</a>';
+  }
+  return data;
+}

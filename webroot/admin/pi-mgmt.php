@@ -144,7 +144,7 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
             columns: [
                 {responsivePriority: 2}, // name
                 {responsivePriority: 1}, // uid
-                {responsivePriority: 2}, // mail
+                {responsivePriority: 2, render: dataTablesRenderMailtoLink}, // mail
                 {responsivePriority: 2, searchable: false}, // requested_on
                 {responsivePriority: 1, searchable: false}, // actions
             ],
@@ -153,7 +153,7 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
             columns: [
                 {className: 'details-control'}, // name
                 {}, // gid
-                {}, // mail
+                {render: dataTablesRenderMailtoLink}, // mail
                 {searchable: false}, // actions
             ]
         });

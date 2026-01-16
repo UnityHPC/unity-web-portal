@@ -96,7 +96,7 @@ $(document).ready(() => {
             {responsivePriority: 2}, // name
             {responsivePriority: 1}, // uid
             {responsivePriority: 2}, // org
-            {responsivePriority: 2}, // mail
+            {responsivePriority: 2, render: dataTablesRenderMailtoLink}, // mail
             {responsivePriority: 3, searchable: false}, // groups
             {responsivePriority: 1, searchable: false}, // actions
         ],
