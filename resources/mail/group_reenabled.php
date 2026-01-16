@@ -1,6 +1,5 @@
 <?php
 
-// This template is sent to the group owner when that group is re-enabled
 $this->Subject = "PI Group Re-Enabled"; ?>
 
 <p>Hello,</p>
