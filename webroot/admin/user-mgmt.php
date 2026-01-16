@@ -38,6 +38,11 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
             <th>Mail</th>
             <th>Groups</th>
             <th>Actions</th>
+            <?php
+            foreach (UserFlag::cases() as $flag) {
+                echo "<th>$flag->value</th>";
+            }
+            ?>
         </tr>
     </thead>
     <tbody>
@@ -51,6 +56,10 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
             "mail" => ["(not found)"]
         ]
     );
+    $users_with_flags = [];
+    foreach (UserFlag::cases() as $flag) {
+        $users_with_flags[$flag->value] = $LDAP->userFlagGroups[$flag->value]->getMemberUIDs();
+    }
     usort($user_attributes, fn ($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
     foreach ($user_attributes as $attributes) {
         $uid = $attributes["uid"][0];
@@ -81,6 +90,12 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         <input type='submit' name='action' value='Access'>
         </form>";
         echo "</td>";
+        foreach (UserFlag::cases() as $flag) {
+            echo sprintf(
+                "<td>%s</td>",
+                in_array($uid, $users_with_flags[$flag->value]) ? $flag->value : ""
+            );
+        }
         echo "</tr>";
     }
     ?>
@@ -99,6 +114,11 @@ $(document).ready(() => {
             {responsivePriority: 2, render: dataTablesRenderMailtoLink}, // mail
             {responsivePriority: 3, searchable: false}, // groups
             {responsivePriority: 1, searchable: false}, // actions
+            <?php
+            foreach (UserFlag::cases() as $flag) {
+                echo "{visible: false}, // $flag->value\n";
+            }
+            ?>
         ],
         layout: {topStart: {buttons: ['colvis']}}
     });
