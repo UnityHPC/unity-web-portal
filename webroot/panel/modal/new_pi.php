@@ -29,7 +29,13 @@ $_SESSION["pi_group_gid_to_owner_gecos_and_mail"] = $pi_group_gid_to_owner_gecos
     <?php echo $CSRFTokenHiddenFormInput; ?>
     <input type="hidden" name="form_type" value="addPIform">
     <div style="position: relative;">
-        <input type="text" id="pi_search" name="pi" placeholder="Search PI by NetID" required>
+        <input
+            type="text"
+            id="pi_search"
+            name="pi"
+            placeholder="Search by GID, Name, or Email"
+            required
+        >
         <div class="searchWrapper" style="display: none;"></div>
     </div>
     <label>
