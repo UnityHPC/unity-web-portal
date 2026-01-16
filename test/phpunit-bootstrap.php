@@ -253,7 +253,7 @@ class UnityWebPortalTestCase extends TestCase
 {
     private ?string $last_user_nickname = null;
     private ?string $current_user_nickname = null;
-    private array $uid_to_latest_session_id = [];
+    private array $nickname_to_latest_session_id = [];
     // FIXME these names are wrong
     private static array $UID2ATTRIBUTES = [
         "user1_org1_test" => ["user1@org1.test", "foo", "bar", "user1@org1.test"],
@@ -529,12 +529,13 @@ class UnityWebPortalTestCase extends TestCase
         if (session_status() === PHP_SESSION_ACTIVE) {
             session_write_close();
         }
-        if (!$reuse_last_session || !array_key_exists($nickname, $this->uid_to_latest_session_id)) {
+        $previous_session_id = $this->nickname_to_latest_session_id[$nickname] ?? null;
+        if (!$reuse_last_session || !$previous_session_id) {
             $session_id = str_replace(["_", "@", "."], "-", uniqid($eppn . "_"));
-            $this->uid_to_latest_session_id[$uid] = $session_id;
+            $this->nickname_to_latest_session_id[$nickname] = $session_id;
             session_id($session_id);
         } else {
-            session_id($this->uid_to_latest_session_id[$uid]);
+            session_id($previous_session_id);
         }
         $this->last_user_nickname = $this->current_user_nickname;
         $this->current_user_nickname = $nickname;
