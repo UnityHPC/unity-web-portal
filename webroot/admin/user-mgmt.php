@@ -114,11 +114,9 @@ $(document).ready(() => {
             {responsivePriority: 2, render: dataTablesRenderMailtoLink}, // mail
             {responsivePriority: 3, searchable: false}, // groups
             {responsivePriority: 1, searchable: false}, // actions
-            <?php
-            foreach (UserFlag::cases() as $flag) {
-                echo "{visible: false}, // $flag->value\n";
-            }
-            ?>
+<?php foreach (UserFlag::cases() as $flag) : ?>
+            {visible: false}, // <?php echo $flag->value . "\n"?>
+<?php endforeach ?>
         ],
         layout: {topStart: {buttons: ['colvis']}}
     });
