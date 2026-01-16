@@ -32,7 +32,7 @@ class UnityLDAP extends LDAPConn
     ];
 
     // isDisabled unset or set to "FALSE"
-    private static string $NON_DEFUNCT_FILTER = "(|(!(isDisabled=*))(isDisabled=FALSE))";
+    private static string $NON_DISABLED_FILTER = "(|(!(isDisabled=*))(isDisabled=FALSE))";
 
     private string $custom_mappings_path =
         __DIR__ . "/../../" . CONFIG["ldap"]["custom_user_mappings_dir"];
@@ -204,7 +204,7 @@ class UnityLDAP extends LDAPConn
         $pi_groups_attributes = $this->pi_groupOU->getChildrenArrayStrict(
             attributes: ["cn"],
             recursive: false,
-            filter: self::$NON_DEFUNCT_FILTER,
+            filter: self::$NON_DISABLED_FILTER,
         );
         foreach ($pi_groups_attributes as $attributes) {
             array_push(
@@ -227,7 +227,7 @@ class UnityLDAP extends LDAPConn
         return $this->pi_groupOU->getChildrenArrayStrict(
             $attributes,
             false, // non-recursive
-            self::$NON_DEFUNCT_FILTER,
+            self::$NON_DISABLED_FILTER,
             $default_values,
         );
     }
@@ -243,7 +243,7 @@ class UnityLDAP extends LDAPConn
                 sprintf(
                     "(&(memberuid=%s)%s)",
                     ldap_escape($uid, flags: LDAP_ESCAPE_FILTER),
-                    self::$NON_DEFUNCT_FILTER,
+                    self::$NON_DISABLED_FILTER,
                 ),
             ),
         );
