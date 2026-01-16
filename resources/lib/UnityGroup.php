@@ -87,11 +87,10 @@ class UnityGroup extends PosixGroup
         // UnityUser::__construct() makes one LDAP query for each user
         // updateIsQualified() makes one LDAP query for each member
         // if user is no longer in any PI group, disqualify them
-        // FIXME uncomment
-        // foreach ($memberuids as $uid) {
-        //     $user = new UnityUser($uid, $this->LDAP, $this->SQL, $this->MAILER, $this->WEBHOOK);
-        //     $user->updateIsQualified($send_mail);
-        // }
+        foreach ($memberuids as $uid) {
+            $user = new UnityUser($uid, $this->LDAP, $this->SQL, $this->MAILER, $this->WEBHOOK);
+            $user->updateIsQualified($send_mail);
+        }
     }
 
     private function reenable(bool $send_mail = true)
@@ -110,8 +109,7 @@ class UnityGroup extends PosixGroup
         if (!$this->memberUIDExists($owner_uid)) {
             $this->addMemberUID($owner_uid);
         }
-        // FIXME uncomment
-        // $this->getOwner()->updateIsQualified($send_mail);
+        $this->getOwner()->updateIsQualified($send_mail);
     }
 
     /**
