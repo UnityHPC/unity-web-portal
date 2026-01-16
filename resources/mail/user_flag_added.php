@@ -1,9 +1,13 @@
 <?php use UnityWebPortal\lib\UserFlag; ?>
 <?php switch ($data["flag"]):
 case UserFlag::QUALIFIED: ?>
-<?php $this->Subject = "User Activated"; ?>
+<?php $this->Subject = "User Qualified"; ?>
 <p>Hello,</p>
-<p>Your account on the UnityHPC Platform has been activated. Your account details are below:</p>
+<p>
+    Your account on the UnityHPC Platform has been qualified.
+    You should now be able to access UnityHPC Platform services.
+    Your account details are below:
+</p>
 <p>
 <strong>Username</strong> <?php echo $data["user"]; ?>
 <br>

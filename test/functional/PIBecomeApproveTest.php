@@ -72,6 +72,7 @@ class PIBecomeApproveTest extends UnityWebPortalTestCase
             $this->assertRequestedPIGroup(false);
         } finally {
             ensurePIGroupDoesNotExist($pi_group->gid);
+            $this->assertFalse($USER->getFlag(UserFlag::QUALIFIED));
         }
     }
 }

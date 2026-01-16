@@ -67,6 +67,9 @@ See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for prod
      - Restricted access to `webroot/admin/`
      - Global access (with valid authentication) to `webroot/`
      - No access anywhere else
+1. Authorization for your other services based on user flag groups
+   - in order to access your services, a user should be in the `qualified` group and should not be in the `locked`, `idlelocked`, or `disabled` groups
+   - (what services you offer) and (how you implement this authorization) are out of scope
 
 ## Configuration
 
@@ -122,6 +125,11 @@ rm "$prod" && ln -s "$old" "$prod"
 ```
 
 ### Version-specific update instructions:
+
+### 1.6 -> 1.7
+
+- the `update-qualified-users-group.php` worker should be executed
+  - this may remove a large number of users from your qualified users group
 
 ### 1.5 -> 1.6
 
