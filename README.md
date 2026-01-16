@@ -131,6 +131,8 @@ rm "$prod" && ln -s "$old" "$prod"
 
 - the `update-qualified-users-group.php` worker should be executed
   - this may remove a large number of users from your qualified users group
+- the `pages` SQL table should be droppped
+  - the `home` page can be copied over to `deployment/templates_overrides/home.php`
 
 ### 1.5 -> 1.6
 
