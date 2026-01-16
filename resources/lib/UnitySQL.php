@@ -315,7 +315,7 @@ class UnitySQL
                 $disable = jsonDecode($record["disable_warning_days_sent"]);
                 return ["idlelock" => $idlelock, "disable" => $disable];
             default:
-                throw new RecordNotUniqueException("uid='$uid'");
+                throw new \Exception("multiple records found with uid='$uid'");
         }
     }
 
