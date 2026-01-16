@@ -38,11 +38,9 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
             <th>Mail</th>
             <th>Groups</th>
             <th>Actions</th>
-            <?php
-            foreach (UserFlag::cases() as $flag) {
-                echo "<th>$flag->value</th>";
-            }
-            ?>
+<?php foreach (UserFlag::cases() as $flag) : ?>
+            <th><?php echo $flag->value; ?></th>
+<?php endforeach ?>
         </tr>
     </thead>
     <tbody>
