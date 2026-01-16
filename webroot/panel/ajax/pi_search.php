@@ -12,16 +12,16 @@ if (!array_key_exists("pi_group_gid_to_owner_gecos_and_mail", $_SESSION)) {
     throw new RuntimeException('$_SESSION["pi_group_gid_to_owner_gecos_and_mail"] does not exist!');
 }
 $pi_group_gid_to_owner_gecos_and_mail = $_SESSION["pi_group_gid_to_owner_gecos_and_mail"];
-$out = array();
+$output = [];
 foreach ($pi_group_gid_to_owner_gecos_and_mail as $gid => [$gecos, $mail]) {
     $search_query = strtolower($search_query);
     $gecos = strtolower($gecos);
     $mail = strtolower($mail);
     if (str_contains($gid, $search_query) || str_contains($gecos, $search_query) || str_contains($mail, $search_query)) {
-        array_push($out, $gid);
-        if (count($out) >= 10) {
+        array_push($output, $gid);
+        if (count($output) >= 10) {
             break;
         }
     }
 }
-echo jsonEncode($out);
+echo jsonEncode($output);
