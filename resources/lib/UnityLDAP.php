@@ -44,7 +44,7 @@ class UnityLDAP extends LDAPConn
     private LDAPEntry $userOU;
     private LDAPEntry $groupOU; /** @phpstan-ignore property.onlyWritten */
     private LDAPEntry $pi_groupOU;
-    private LDAPEntry $org_groupOU;
+    private LDAPEntry $org_groupOU; /** @phpstan-ignore property.onlyWritten */
 
     public array $userFlagGroups;
 
@@ -252,36 +252,6 @@ class UnityLDAP extends LDAPConn
             }
         }
         return $uid2pigids;
-    }
-
-    public function getAllOrgGroups($UnitySQL, $UnityMailer, $UnityWebhook): array
-    {
-        $out = [];
-
-        $org_groups = $this->org_groupOU->getChildren(true);
-
-        foreach ($org_groups as $org_group) {
-            array_push(
-                $out,
-                new UnityOrg(
-                    $org_group->getAttribute("cn")[0],
-                    $this,
-                    $UnitySQL,
-                    $UnityMailer,
-                    $UnityWebhook,
-                ),
-            );
-        }
-
-        return $out;
-    }
-
-    public function getAllOrgGroupsAttributes(array $attributes, array $default_values = []): array
-    {
-        return $this->org_groupOU->getChildrenArrayStrict(
-            $attributes,
-            default_values: $default_values,
-        );
     }
 
     public function getUserEntry(string $uid): LDAPEntry
