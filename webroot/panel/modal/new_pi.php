@@ -59,6 +59,7 @@ $_SESSION["pi_group_gid_to_owner_gecos_and_mail"] = $pi_group_gid_to_owner_gecos
                         wrapper.html("<span>No Results</span>").show();
                         submit.prop("disabled", true);
                     } else if (results.includes(query)) {
+                        // search query exactly matches a PI group GID
                         wrapper.html("").hide();
                         submit.prop("disabled", false);
                     } else {
