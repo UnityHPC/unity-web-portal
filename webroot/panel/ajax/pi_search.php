@@ -3,7 +3,7 @@
 require_once __DIR__ . "/../../../resources/autoload.php";  // Load required libs
 use UnityWebPortal\lib\UnityHTTPD;
 
-$search_query = UnityHTTPD::getQueryParameter("search");
+$search_query = strtolower(UnityHTTPD::getQueryParameter("search"));
 if ($search_query === "") {
     echo "[]";
     UnityHTTPD::die();
@@ -14,7 +14,7 @@ if (!array_key_exists("pi_group_gid_to_owner_gecos_and_mail", $_SESSION)) {
 $pi_group_gid_to_owner_gecos_and_mail = $_SESSION["pi_group_gid_to_owner_gecos_and_mail"];
 $output = [];
 foreach ($pi_group_gid_to_owner_gecos_and_mail as $gid => [$gecos, $mail]) {
-    $search_query = strtolower($search_query);
+    $gid = strtolower($gid);
     $gecos = strtolower($gecos);
     $mail = strtolower($mail);
     if (str_contains($gid, $search_query) || str_contains($gecos, $search_query) || str_contains($mail, $search_query)) {
