@@ -26,6 +26,7 @@ require_once __DIR__ . "/../resources/lib/exceptions/EnsureException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/EncodingUnknownException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/EncodingConversionException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/UnityHTTPDMessageNotFoundException.php";
+require_once __DIR__ . "/../resources/lib/exceptions/NoAvailableIDNumbersException.php";
 
 use PHPStan\DependencyInjection\ValidateExcludePathsExtension;
 use UnityWebPortal\lib\CSRFToken;
