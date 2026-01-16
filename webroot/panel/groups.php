@@ -67,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 
-require $LOC_HEADER;
+require getTemplatePath("header.php");
 $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 ?>
 
@@ -258,4 +258,4 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
     });
 </script>
 
-<?php require $LOC_FOOTER; ?>
+<?php require getTemplatePath("footer.php"); ?>

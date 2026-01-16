@@ -75,6 +75,3 @@ if (isset($_SERVER["REMOTE_USER"])) {
 
     $USER->updateIsQualified(); // in case manual changes have been made to PI groups
 }
-
-$LOC_HEADER = __DIR__ . "/templates/header.php";
-$LOC_FOOTER = __DIR__ . "/templates/footer.php";
