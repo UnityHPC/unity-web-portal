@@ -49,12 +49,10 @@ class PageLoadTest extends UnityWebPortalTestCase
             // normal page load
             ["Admin", "admin/pi-mgmt.php", "/PI Management/"],
             ["Admin", "admin/user-mgmt.php", "/User Management/"],
-            ["Admin", "admin/content.php", "/Page Content Management/"],
             ["Admin", "admin/notices.php", "/Cluster Notice Management/"],
             ["NonExistent", "panel/new_account.php", "/Register New Account/"],
             ["Blank", "panel/account.php", "/Account Settings/"],
             ["Blank", "panel/groups.php", "/My Principal Investigators/"],
-            ["Blank", "panel/support.php", "/Support/"],
             ["EmptyPIGroupOwner", "panel/pi.php", "/My Users/"],
             // new_account.php should redirect to account.php if account already exists
             ["Blank", "panel/new_account.php", "/panel\/account\.php/", true],

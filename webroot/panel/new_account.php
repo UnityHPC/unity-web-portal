@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user->init($SSO["firstname"], $SSO["lastname"], $SSO["mail"], $SSO["org"]);
     // header.php will redirect to this same page again and then this page will redirect to account
 }
-require $LOC_HEADER;
+require getTemplatePath("header.php");
 $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 ?>
 
@@ -34,4 +34,4 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     <?php echo $CSRFTokenHiddenFormInput; ?>
     <input type='submit' value='Register'>
 </form>
-<?php require $LOC_FOOTER; ?>
+<?php require getTemplatePath("footer.php"); ?>
