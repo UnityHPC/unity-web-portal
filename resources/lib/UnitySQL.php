@@ -3,6 +3,8 @@
 namespace UnityWebPortal\lib;
 
 use PDO;
+use UnityWebPortal\lib\exceptions\RecordNotUniqueException;
+use UnityWebPortal\lib\exceptions\RecordNotFoundException;
 
 class UnitySQL
 {
@@ -29,6 +31,16 @@ class UnitySQL
     public function getConn(): PDO
     {
         return $this->conn;
+    }
+
+    private function throwIfEmptyOrNotUnique(array $x, string $description): void
+    {
+        if (count($x) === 0) {
+            throw new RecordNotFoundException($description);
+        }
+        if (count($x) > 1) {
+            throw new RecordNotUniqueException($description);
+        }
     }
 
     //
@@ -80,12 +92,7 @@ class UnitySQL
         $stmt->bindParam(":request_for", $dest);
         $stmt->execute();
         $result = $stmt->fetchAll();
-        if (count($result) == 0) {
-            throw new \Exception("no such request: uid='$user' request_for='$dest'");
-        }
-        if (count($result) > 1) {
-            throw new \Exception("multiple requests for uid='$user' request_for='$dest'");
-        }
+        $this->throwIfEmptyOrNotUnique($result, "uid='$user' request_for='$dest'");
         return $result[0];
     }
 
@@ -170,7 +177,9 @@ class UnitySQL
         $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_NOTICES . " WHERE id=:id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
-        return $stmt->fetchAll()[0];
+        $output = $stmt->fetchAll();
+        $this->throwIfEmptyOrNotUnique($output, "id='$id'");
+        return $output[0];
     }
 
     public function getNotices(): array
@@ -194,7 +203,9 @@ class UnitySQL
         $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_PAGES . " WHERE page=:id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
-        return $stmt->fetchAll()[0];
+        $output = $stmt->fetchAll();
+        $this->throwIfEmptyOrNotUnique($output, "id='$id'");
+        return $output[0];
     }
 
     public function editPage(string $id, string $content): void
