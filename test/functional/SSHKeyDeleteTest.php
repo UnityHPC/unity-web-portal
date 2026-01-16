@@ -3,6 +3,7 @@
 use PHPUnit\Framework\Attributes\DataProvider;
 use TRegx\PhpUnit\DataProviders\DataProvider as TRegxDataProvider;
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
+use UnityWebPortal\lib\UnityHTTPDMessageLevel;
 
 class SSHKeyDeleteTest extends UnityWebPortalTestCase
 {
@@ -35,9 +36,9 @@ class SSHKeyDeleteTest extends UnityWebPortalTestCase
     {
         global $USER;
         try {
-            $this->expectException(ArrayKeyException::class);
             $this->deleteKey($key);
             $this->assertEquals(self::$initialKeys, $USER->getSSHKeys());
+            $this->assertMessageExists(UnityHTTPDMessageLevel::ERROR, "/.*/", "/Key not found/");
         } finally {
             callPrivateMethod($USER, "setSSHKeys", self::$initialKeys);
         }
