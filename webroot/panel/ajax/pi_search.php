@@ -9,7 +9,10 @@ if ($search_query === "") {
     UnityHTTPD::die();
 }
 if (!array_key_exists("pi_group_gid_to_owner_gecos_and_mail", $_SESSION)) {
-    throw new RuntimeException('$_SESSION["pi_group_gid_to_owner_gecos_and_mail"] does not exist!');
+    UnityHTTPD::internalServerError(
+        '$_SESSION["pi_group_gid_to_owner_gecos_and_mail"] does not exist!',
+        "Session cache not found. Try reloading the page."
+    );
 }
 $pi_group_gid_to_owner_gecos_and_mail = $_SESSION["pi_group_gid_to_owner_gecos_and_mail"];
 $output = [];
