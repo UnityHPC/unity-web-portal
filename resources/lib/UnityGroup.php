@@ -361,16 +361,6 @@ class UnityGroup extends PosixGroup
         return substr($gid, strlen(self::PI_PREFIX));
     }
 
-    /**
-     * @throws \UnityWebPortal\lib\exceptions\EntryNotFoundException
-     */
-    public static function ownerMail2GID(string $email): string
-    {
-        global $LDAP;
-        $owner_uid = $LDAP->getUidFromEmail($email); // throws EntryNotFoundException
-        return self::ownerUID2GID($owner_uid);
-    }
-
     public function getGroupMembersAttributes(array $attributes, array $default_values = []): array
     {
         return $this->LDAP->getUsersAttributes(

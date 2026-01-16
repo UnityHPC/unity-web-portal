@@ -64,22 +64,6 @@ class PIMemberRequestTest extends UnityWebPortalTestCase
         }
     }
 
-    public function testRequestMembershipByOwnerMail()
-    {
-        global $USER, $SQL;
-        $this->switchUser("EmptyPIGroupOwner");
-        $pi_group = $USER->getPIGroup();
-        $this->switchUser("Blank");
-        try {
-            $this->requestMembership($pi_group->getOwner()->getMail());
-            $this->assertTrue($pi_group->requestExists($USER));
-        } finally {
-            if ($SQL->requestExists($USER->uid, $pi_group->gid)) {
-                $SQL->removeRequest($USER->uid, $pi_group->gid);
-            }
-        }
-    }
-
     public function testRequestMembershipDuplicate()
     {
         global $USER, $SQL;
