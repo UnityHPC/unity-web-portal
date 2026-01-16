@@ -2,7 +2,22 @@
 
 require_once __DIR__ . "/../../../resources/autoload.php";
 use UnityWebPortal\lib\UnityHTTPD;
+use UnityWebPortal\lib\UnityGroup;
 $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
+
+// cache PI group info in $_SESSION for ajax pi_search.php
+$owner_uids = $LDAP->getAllPIGroupOwnerUIDs();
+$owner_attributes = $LDAP->getUsersAttributes(
+    $owner_uids,
+    ["uid", "gecos", "mail"],
+    default_values: ["gecos" => [""], "mail" => [""]]
+);
+$pi_group_gid_to_owner_gecos_and_mail = [];
+foreach ($owner_attributes as $attributes) {
+    $gid = UnityGroup::ownerUID2GID($attributes["uid"][0]);
+    $pi_group_gid_to_owner_gecos_and_mail[$gid] = [$attributes["gecos"][0], $attributes["mail"][0]];
+}
+$_SESSION["pi_group_gid_to_owner_gecos_and_mail"] = $pi_group_gid_to_owner_gecos_and_mail;
 ?>
 
 <form
@@ -23,40 +38,43 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
             Terms of Service
         </a>.
     </label>
-    <input type="submit" value="Send Request">
+    <input type="submit" value="Send Request" id="newPIform-submit" disabled>
 </form>
 
 <script>
-    $("input[type=text][name=pi]").keyup(function() {
-        var searchWrapper = $("div.searchWrapper");
-        const url = '<?php echo getURL("panel/modal/pi_search.php") ?>';
-        $.ajax({
-            url: `${url}?search=` + $(this).val(),
-            success: function(result) {
-                searchWrapper.html(result);
+    (function () {
+        let ownerInfo = null;
+        const input = $("input[name=pi]");
+        const wrapper = $("div.searchWrapper");
+        const submit = $("#newPIform-submit");
 
-                if (result == "") {
-                    searchWrapper.hide();
-                } else {
-                    searchWrapper.show();
-                }
-            },
-            error: function (result) {
-                searchWrapper.html(result.responseText);
-                searchWrapper.show();
-            },
+        const updateSearch = () => {
+            const query = input.val();
+            $.ajax({
+                url: '<?php echo getURL("panel/ajax/pi_search.php") ?>',
+                data: {"search": query},
+                success: function(data) {
+                    results = JSON.parse(data);
+                    if (results.length === 0) {
+                        wrapper.html("").hide();
+                        submit.prop("disabled", true);
+                    } else if (results.includes(query)) {
+                        wrapper.html("").hide();
+                        submit.prop("disabled", false);
+                    } else {
+                        submit.prop("disabled", true);
+                        wrapper.html(results.map(gid => `<span>${gid}</span>`).join('')).show();
+                    }
+                },
+                error: result => console.error(result.responseText),
+            });
+        };
+
+        input.on("keyup", () => updateSearch());
+        wrapper.on("click", "span", function() {
+            input.val($(this).text());
+            updateSearch();
         });
-    });
-
-    $("div.searchWrapper").on("click", "span", function (event) {
-        var textBox = $("input[type=text][name=pi]");
-        textBox.val($(this).html());
-    });
-
-    /**
-     * Hides the searchresult box on click anywhere
-     */
-    $(document).click(function() {
-        $("div.searchWrapper").hide();
-    });
+        $(document).on("click", () => wrapper.hide());
+    })();
 </script>
