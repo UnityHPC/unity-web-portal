@@ -38,6 +38,9 @@ session_start();
 if (time() - ($_SESSION["LAST_ACTIVITY"] ?? 0) > CONFIG["site"]["session_cleanup_idle_seconds"]) {
     $_SESSION["csrf_tokens"] = [];
     $_SESSION["messages"] = [];
+    if (array_key_exists("pi_group_gid_to_owner_gecos_and_mail", $_SESSION)) {
+        unset($_SESSION["pi_group_gid_to_owner_gecos_and_mail"]);
+    }
     session_write_close();
     session_start();
 }
