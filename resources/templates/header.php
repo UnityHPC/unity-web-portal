@@ -106,9 +106,9 @@ if (isset($SSO)) {
         echo getHyperlink("Account Settings", "panel/account.php") . "\n";
         echo getHyperlink("My PIs", "panel/groups.php") . "\n";
 
-        if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
-            // PI only pages
-            echo getHyperlink("My Users", "panel/pi.php") . "\n";
+        foreach ($LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail()) as $gid) {
+            echo getHyperlink("Manage PI Group '$gid'", "panel/pi.php?gid=" . urlencode($gid));
+            echo "\n";
         }
 
         // additional branding items
