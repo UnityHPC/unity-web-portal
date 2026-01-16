@@ -56,7 +56,7 @@ $_SESSION["pi_group_gid_to_owner_gecos_and_mail"] = $pi_group_gid_to_owner_gecos
                 success: function(data) {
                     results = JSON.parse(data);
                     if (results.length === 0) {
-                        wrapper.html("").hide();
+                        wrapper.html("<span>No Results</span>").show();
                         submit.prop("disabled", true);
                     } else if (results.includes(query)) {
                         wrapper.html("").hide();
