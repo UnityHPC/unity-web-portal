@@ -102,7 +102,6 @@ if (isset($SSO)) {
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
         // Menu Items for Present Users
-        echo getHyperlink("Support", "panel/support.php") . "\n";
         echo getHyperlink("Account Settings", "panel/account.php") . "\n";
         echo getHyperlink("My PIs", "panel/groups.php") . "\n";
 

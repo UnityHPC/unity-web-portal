@@ -53,7 +53,6 @@ class PageLoadTest extends UnityWebPortalTestCase
             ["NonExistent", "panel/new_account.php", "/Register New Account/"],
             ["Blank", "panel/account.php", "/Account Settings/"],
             ["Blank", "panel/groups.php", "/My Principal Investigators/"],
-            ["Blank", "panel/support.php", "/Support/"],
             ["EmptyPIGroupOwner", "panel/pi.php", "/My Users/"],
             // new_account.php should redirect to account.php if account already exists
             ["Blank", "panel/new_account.php", "/panel\/account\.php/", true],
