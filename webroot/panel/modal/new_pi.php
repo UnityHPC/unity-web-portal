@@ -39,14 +39,14 @@ $_SESSION["pi_group_gid_to_owner_gecos_and_mail"] = $pi_group_gid_to_owner_gecos
             Terms of Service
         </a>.
     </label>
-    <input type="submit" value="Send Request" id="newPIform-submit" disabled>
+    <input type="submit" value="Send Request" disabled>
 </form>
 
 <script>
     (function () {
         const input = $("input[name=pi]");
         const wrapper = $("div.searchWrapper");
-        const submit = $("#newPIform-submit");
+        const submit = $("#newPIform > input[type=submit]");
 
         const updateSearch = () => {
             const query = input.val();
