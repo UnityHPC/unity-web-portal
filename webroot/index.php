@@ -10,8 +10,13 @@ require $LOC_HEADER;
 <p>
     Welcome to the UnityHPC Platform Account Portal.
     Here you can manage your SSH keys, join and leave PI groups, manage your own PI group, and more.
-    Please <a href="<?php echo getURL("panel/account.php"); ?>">Log In</a> for more information.
 </p>
+<?php
+if (!isset($SSO)) {
+    $hyperlink = getHyperlink("Log In", "panel/account.php");
+    echo "<p>Please $hyperlink for more information.</p>";
+}
+?>
 <br>
 
 <h2>Cluster Notices</h2>
