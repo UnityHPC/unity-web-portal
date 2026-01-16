@@ -4,11 +4,21 @@ require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityHTTPD;
+use UnityWebPortal\lib\UnityGroup;
 
-$group = $USER->getPIGroup();
-
-if (!$USER->isPI()) {
-    UnityHTTPD::forbidden("not a PI", "You are not a PI.");
+if (($gid = $_GET["gid"] ?? null) !== null) {
+    $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+    if ($group->getOwner()->getMail() !== $USER->getMail()) {
+        UnityHTTPD::forbidden(
+            "user '$USER->uid' is not allowed to manage PI group '$gid'",
+            "You are not allowed to manage this PI group."
+        );
+    }
+} else {
+    $group = $USER->getPIGroup();
+    if (!$USER->isPI()) {
+        UnityHTTPD::forbidden("not a PI", "You are not a PI.");
+    }
 }
 
 $getUserFromPost = function () {
