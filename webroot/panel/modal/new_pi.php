@@ -47,8 +47,7 @@ $_SESSION["pi_group_gid_to_owner_gecos_and_mail"] = $pi_group_gid_to_owner_gecos
         const input = $("input[name=pi]");
         const wrapper = $("div.searchWrapper");
         const submit = $("#newPIform > input[type=submit]");
-
-        const updateSearch = () => {
+        function updateSearch() {
             const query = input.val();
             $.ajax({
                 url: '<?php echo getURL("panel/ajax/pi_search.php") ?>',
@@ -71,7 +70,6 @@ $_SESSION["pi_group_gid_to_owner_gecos_and_mail"] = $pi_group_gid_to_owner_gecos
                 error: result => console.error(result.responseText),
             });
         };
-
         input.on("keyup", () => updateSearch());
         wrapper.on("click", "span", function() {
             input.val($(this).text());
