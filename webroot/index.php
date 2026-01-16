@@ -6,12 +6,15 @@ require $LOC_HEADER;
 ?>
 
 
-<?php
-echo $SQL->getPage(CONFIG["page"]["home"])["content"];
-?>
+<h1>Welcome</h1>
+<p>
+    Welcome to the UnityHPC Platform Account Portal.
+    Here you can manage your SSH keys, join and leave PI groups, manage your own PI group, and more.
+    Please <a href="<?php echo getURL("panel/account.php"); ?>">Log In</a> for more information.
+</p>
+<br>
 
-<h1>Cluster Notices</h1>
-<hr>
+<h2>Cluster Notices</h2>
 
 <?php
 

@@ -8,7 +8,6 @@ class UnitySQL
 {
     private const string TABLE_REQS = "requests";
     private const string TABLE_NOTICES = "notices";
-    private const string TABLE_PAGES = "pages";
     private const string TABLE_AUDIT_LOG = "audit_log";
     private const string TABLE_ACCOUNT_DELETION_REQUESTS = "account_deletion_requests";
     // FIXME this string should be changed to something more intuitive, requires production change
@@ -180,32 +179,6 @@ class UnitySQL
         );
         $stmt->execute();
         return $stmt->fetchAll();
-    }
-
-    public function getPages(): array
-    {
-        $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_PAGES);
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
-
-    public function getPage(string $id): array
-    {
-        $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_PAGES . " WHERE page=:id");
-        $stmt->bindParam(":id", $id);
-        $stmt->execute();
-        return $stmt->fetchAll()[0];
-    }
-
-    public function editPage(string $id, string $content): void
-    {
-        $stmt = $this->conn->prepare(
-            "UPDATE " . self::TABLE_PAGES . " SET content=:content WHERE page=:id",
-        );
-        $stmt->bindParam(":id", $id);
-        $stmt->bindParam(":content", $content);
-        $stmt->execute();
-        $this->addLog("edited_page", "");
     }
 
     public function addLog(string $action_type, string $recipient): void

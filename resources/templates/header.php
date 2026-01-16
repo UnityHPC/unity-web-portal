@@ -127,7 +127,6 @@ if (isset($SSO)) {
             echo getHyperlink("User Management", "admin/user-mgmt.php") . "\n";
             echo getHyperlink("PI Management", "admin/pi-mgmt.php") . "\n";
             echo getHyperlink("Cluster Notices", "admin/notices.php") . "\n";
-            echo getHyperlink("Content Management", "admin/content.php") . "\n";
         }
     } else {
         echo getHyperlink("Login / Request Account", "panel/account.php") . "\n";
