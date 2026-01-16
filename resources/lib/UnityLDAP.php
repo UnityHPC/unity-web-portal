@@ -44,7 +44,7 @@ class UnityLDAP extends LDAPConn
     private LDAPEntry $userOU;
     private LDAPEntry $groupOU; /** @phpstan-ignore property.onlyWritten */
     private LDAPEntry $pi_groupOU;
-    private LDAPEntry $org_groupOU;
+    private LDAPEntry $org_groupOU; /** @phpstan-ignore property.onlyWritten */
 
     public array $userFlagGroups;
 
