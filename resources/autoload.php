@@ -34,6 +34,7 @@ require_once __DIR__ . "/lib/exceptions/EntryNotFoundException.php";
 require_once __DIR__ . "/lib/exceptions/EnsureException.php";
 require_once __DIR__ . "/lib/exceptions/EncodingUnknownException.php";
 require_once __DIR__ . "/lib/exceptions/EncodingConversionException.php";
+require_once __DIR__ . "/lib/exceptions/RecordNotFoundException.php";
 require_once __DIR__ . "/lib/exceptions/UnityHTTPDMessageNotFoundException.php";
 
 require_once __DIR__ . "/config.php";
