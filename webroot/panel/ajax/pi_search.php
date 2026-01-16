@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../resources/autoload.php";  // Load required lib
 use UnityWebPortal\lib\UnityHTTPD;
 
 $search_query = UnityHTTPD::getQueryParameter("search");
-if (empty($search_query)) {
+if ($search_query === "") {
     echo "[]";
     UnityHTTPD::die();
 }
