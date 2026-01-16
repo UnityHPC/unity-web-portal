@@ -8,11 +8,11 @@ class RegisterUserTest extends UnityWebPortalTestCase
     public static function provider()
     {
         return [
-            // defaults/config.ini.default: ldap.offset_UIDGID=1000000
+            // defaults/config.ini.default: ldap.offset_user_(uid|gid)number=1000000
             // test/custom_user_mappings/test.csv has reservations for 1000000-1000004
-            ["NonExistent", 1000005],
-            // test/custom_user_mappings/test.csv: {user2001: 555}
-            ["CustomMapped555", 555],
+            ["NonExistent", "1000005", "1000005"],
+            // test/custom_user_mappings/test.csv: {user2001: [555, 556]}
+            ["CustomMapped555", "555", "556"],
         ];
     }
 
@@ -22,8 +22,11 @@ class RegisterUserTest extends UnityWebPortalTestCase
     }
 
     #[DataProvider("provider")]
-    public function testRegisterUserAndCreateOrg($nickname, $expected_uid_gid)
-    {
+    public function testRegisterUserAndCreateOrg(
+        string $nickname,
+        string $expected_uidnumber,
+        string $expected_gidnumber,
+    ): void {
         global $USER, $SSO, $LDAP, $SQL, $MAILER, $WEBHOOK;
         $this->switchUser($nickname);
         $uid = $USER->uid;
@@ -39,8 +42,11 @@ class RegisterUserTest extends UnityWebPortalTestCase
             $this->assertTrue($user_entry->exists());
             $this->assertTrue($user_group_entry->exists());
             $this->assertTrue($org_entry->exists());
-            $this->assertEquals($expected_uid_gid, $user_entry->getAttribute("uidnumber")[0]);
-            $this->assertEquals($expected_uid_gid, $user_group_entry->getAttribute("gidnumber")[0]);
+            $this->assertEquals($expected_uidnumber, $user_entry->getAttribute("uidnumber")[0]);
+            $this->assertEquals(
+                $expected_gidnumber,
+                $user_group_entry->getAttribute("gidnumber")[0],
+            );
         } finally {
             ensureOrgGroupDoesNotExist($org_gid);
             ensureUserDoesNotExist($uid);
