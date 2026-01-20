@@ -22,9 +22,6 @@ Typical Usage:
 Admin Features:
 
 - Automatic updating of LDAP to reflect current state of users, groups, organizations, PI groups
-- Cluster notices
-  - Added to front page, mailed, and exposed via REST API
-  - Created with a WYSIWYG HTML editor ([ckeditor5](https://github.com/ckeditor/ckeditor5))
 - Responsive Tables ([datatables.net](https://datatables.net)) for filtering, sorting, pagination, etc.
 - Branding customization for multiple domains simultaneously
 - Custom UIDNumber / GIDNumber mappings for specific users
@@ -134,6 +131,7 @@ rm "$prod" && ln -s "$old" "$prod"
 - the `pages` SQL table should be droppped
   - the `home` page can be copied over to `deployment/templates_overrides/home.php`
   - the `support` page should be moved over to wherever you host your documentation
+- the `notices` SQL table should be droppped
 
 ### 1.5 -> 1.6
 
