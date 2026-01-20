@@ -18,7 +18,11 @@ $pi_groups_attributes = $LDAP->getAllPIGroupsAttributes(["memberuid"], ["memberu
 $users_with_at_least_one_group = array_merge(
     ...array_map(fn($x) => $x["memberuid"], $pi_groups_attributes),
 );
-$qualified_list_after = array_values(array_unique($users_with_at_least_one_group));
+$users_with_at_least_one_group = array_values(array_unique($users_with_at_least_one_group));
+$native_users_attributes = $LDAP->getAllNativeUsersAttributes(["uid"]);
+$native_users = array_map(fn($x) => $x["uid"][0], $native_users_attributes);
+$non_native_users = array_diff($qualified_list_before, $native_users);
+$qualified_list_after = array_merge($users_with_at_least_one_group, $non_native_users);
 sort($qualified_list_after);
 $users_added = array_values(array_diff($qualified_list_after, $qualified_list_before));
 $users_removed = array_values(array_diff($qualified_list_before, $qualified_list_after));
@@ -26,6 +30,7 @@ echo jsonEncode(
     [
         "added" => $users_added,
         "removed" => $users_removed,
+        "not removed (non-native)" => $non_native_users,
     ],
     JSON_PRETTY_PRINT,
 ) . "\n";
