@@ -102,7 +102,6 @@ if (isset($SSO)) {
 
     if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
         // Menu Items for Present Users
-        echo getHyperlink("Support", "panel/support.php") . "\n";
         echo getHyperlink("Account Settings", "panel/account.php") . "\n";
         echo getHyperlink("My PIs", "panel/groups.php") . "\n";
 
@@ -127,7 +126,6 @@ if (isset($SSO)) {
             echo getHyperlink("User Management", "admin/user-mgmt.php") . "\n";
             echo getHyperlink("PI Management", "admin/pi-mgmt.php") . "\n";
             echo getHyperlink("Cluster Notices", "admin/notices.php") . "\n";
-            echo getHyperlink("Content Management", "admin/content.php") . "\n";
         }
     } else {
         echo getHyperlink("Login / Request Account", "panel/account.php") . "\n";
