@@ -80,7 +80,7 @@ class UnityMailer extends PHPMailer
     public function sendMail(
         string|array $recipients,
         ?string $template = null,
-        mixed $data = null,
+        ?array $data = null,
     ): bool {
         if (isset($template)) {
             $this->setFrom($this->MSG_SENDER_EMAIL, $this->MSG_SENDER_NAME);
