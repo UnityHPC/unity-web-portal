@@ -91,6 +91,7 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 <script>
 $(document).ready(() => {
     $('#user-table').DataTable({
+        stateSave: true,
         responsive: true,
         columns: [
             {responsivePriority: 2}, // name

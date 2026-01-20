@@ -228,6 +228,7 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
 <script>
     $(document).ready(() => {
         $('#pi-table').DataTable({
+            stateSave: true,
             responsive: true,
             columns: [
                 {responsivePriority: 1}, // name
@@ -239,6 +240,7 @@ if ($SQL->accDeletionRequestExists($USER->uid)) {
             layout: {topStart: {buttons: ['colvis']}}
         });
         $('#pi-request-table').DataTable({
+            stateSave: true,
             responsive: true,
             columns: [
                 {responsivePriority: 1}, // owner_name

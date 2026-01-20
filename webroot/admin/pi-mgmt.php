@@ -141,6 +141,7 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
     $(document).ready(() => {
         let pi_request_datatable = $('#pi-request-table').DataTable({
             responsive: true,
+            stateSave: true,
             columns: [
                 {responsivePriority: 2}, // name
                 {responsivePriority: 1}, // uid
@@ -150,6 +151,7 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
             ],
         });
         let pi_datatable = $('#pi-table').DataTable({
+            stateSave: true,
             columns: [
                 {className: 'details-control'}, // name
                 {}, // gid
