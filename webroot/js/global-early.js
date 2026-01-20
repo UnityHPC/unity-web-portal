@@ -12,34 +12,6 @@ function downloadFile(text, filename) {
   element.remove();
 }
 
-function setupCKEditor(extraPlugins = []) {
-  const {
-    ClassicEditor, Essentials, Bold, Italic, Strikethrough, Underline, BlockQuote, Code, CodeBlock,
-    Heading, HorizontalLine, Indent, Link, List, Paragraph, Undo, FontFamily, FontSize
-  } = CKEDITOR;
-  const plugins = [
-    Essentials, Bold, Italic, Strikethrough, Underline, BlockQuote, Code, CodeBlock,
-    Heading, HorizontalLine, Indent, Link, List, Paragraph, Undo, FontFamily, FontSize
-  ].concat(extraPlugins);
-  return ClassicEditor.create(document.querySelector('#editor'), {
-    licenseKey: 'GPL',
-    plugins: plugins,
-    toolbar: [
-      'undo', 'redo',
-      '|',
-      'heading',
-      '|',
-      'fontfamily', 'fontsize',
-      '|',
-      'bold', 'italic', 'strikethrough', 'code',
-      '|',
-      'link', 'blockQuote', 'codeBlock',
-      '|',
-      'bulletedList', 'numberedList', 'outdent', 'indent'
-    ],
-  });
-}
-
 const dataTablesRenderMailtoLink = function (data, type, row, meta) {
   if (type === 'display' && data) {
     return '<a href="mailto:' + data + '">' + data + '</a>';
