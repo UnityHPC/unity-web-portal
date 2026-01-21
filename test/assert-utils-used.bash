@@ -14,6 +14,7 @@ declare -A utils=(
     ["intval"]="str2int"
     ["preg_replace"]="_preg_replace"
     ["parse_ini_file"]="_parse_ini_file"
+    ["fopen"]="_fopen"
 )
 
 rc=0

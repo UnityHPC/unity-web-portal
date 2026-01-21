@@ -193,3 +193,13 @@ function _parse_ini_file(mixed ...$args): array
     }
     return $output;
 }
+
+/** @return resource */
+function _fopen(mixed ...$args): mixed
+{
+    $output = fopen(...$args);
+    if ($output === false) {
+        throw new Exception("fopen returned false!");
+    }
+    return $output;
+}
