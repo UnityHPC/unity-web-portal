@@ -6,6 +6,7 @@ use UnityWebPortal\lib\exceptions\CurlException;
 
 class UnityGithub
 {
+    /** @return string[] */
     public function getSshPublicKeys(string $username): array
     {
         $url = "https://api.github.com/users/$username/keys";

@@ -1,5 +1,5 @@
 parameters:
-  level: 5
+  level: 6
   paths:
     - resources
     - webroot
@@ -7,6 +7,21 @@ parameters:
   excludePaths:
     - test/Template.php
   ignoreErrors:
+    - messages:
+        - '#has no return type specified#'
+        - '#has no value type specified#'
+        - '#with no type specified#'
+        - '#with no value type specified#'
+      paths:
+        - resources/lib/phpopenldaper
+    - messages:
+        - '#has no type specified#'
+        - '#has no return type specified#'
+        - '#has no value type specified#'
+        - '#with no type specified#'
+        - '#with no value type specified#'
+      paths:
+        - test
     # $this, $data comes from UnityMailer
     - messages:
         - '#Variable \$this might not be defined.#'

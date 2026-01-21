@@ -253,6 +253,7 @@ class UnityUser
 
     /**
      * Sets the SSH keys on the account and the corresponding entry
+     * @param string[] $keys
      */
     private function setSSHKeys(array $keys, bool $send_mail = true): void
     {
@@ -268,6 +269,7 @@ class UnityUser
 
     /**
      * Returns the SSH keys attached to the account
+     * @return string[]
      */
     public function getSSHKeys(): array
     {
@@ -365,6 +367,7 @@ class UnityUser
 
     /**
      * Gets the groups this user is assigned to, can be more than one
+     * @return string[]
      */
     public function getPIGroupGIDs(): array
     {
@@ -412,7 +415,7 @@ class UnityUser
         return in_array($uid, $group->getMemberUIDs());
     }
 
-    public function updateIsQualified(bool $send_mail = true)
+    public function updateIsQualified(bool $send_mail = true): void
     {
         $this->setFlag(
             UserFlag::QUALIFIED,

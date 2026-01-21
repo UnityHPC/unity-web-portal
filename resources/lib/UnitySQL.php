@@ -2,8 +2,14 @@
 
 namespace UnityWebPortal\lib;
 
+use account_deletion_request;
 use PDO;
 
+/**
+ * @phpstan-type account_deletion_request array{timestamp: string, uid: string}
+ * @phpstan-type user_last_login array{operator: string, last_login: string}
+ * @phpstan-type request array{request_for: string, uid: string, timestamp: string}
+ */
 class UnitySQL
 {
     private const string TABLE_REQS = "requests";
@@ -12,7 +18,7 @@ class UnitySQL
     // FIXME this string should be changed to something more intuitive, requires production change
     public const string REQUEST_BECOME_PI = "admin";
 
-    private $conn;
+    private PDO $conn;
 
     public function __construct()
     {
@@ -46,7 +52,7 @@ class UnitySQL
         $stmt->execute();
     }
 
-    public function removeRequest($requestor, string $dest): void
+    public function removeRequest(string $requestor, string $dest): void
     {
         if (!$this->requestExists($requestor, $dest)) {
             return;
@@ -69,6 +75,10 @@ class UnitySQL
         $stmt->execute();
     }
 
+    /**
+     * @throws \Exception
+     * @return request
+     */
     public function getRequest(string $user, string $dest): array
     {
         $stmt = $this->conn->prepare(
@@ -98,6 +108,7 @@ class UnitySQL
         }
     }
 
+    /** @return request[] */
     public function getAllRequests(): array
     {
         $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_REQS);
@@ -105,6 +116,7 @@ class UnitySQL
         return $stmt->fetchAll();
     }
 
+    /** @return request[] */
     public function getRequests(string $dest): array
     {
         $stmt = $this->conn->prepare(
@@ -115,6 +127,7 @@ class UnitySQL
         return $stmt->fetchAll();
     }
 
+    /** @return request[] */
     public function getRequestsByUser(string $user): array
     {
         $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_REQS . " WHERE uid=:uid");
@@ -175,6 +188,7 @@ class UnitySQL
         $stmt->execute();
     }
 
+    /** @return account_deletion_request[] */
     public function getAllAccountDeletionRequests(): array
     {
         $stmt = $this->conn->prepare("SELECT * FROM " . self::TABLE_ACCOUNT_DELETION_REQUESTS);

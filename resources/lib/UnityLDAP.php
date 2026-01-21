@@ -18,6 +18,7 @@ enum UserFlag: string
 
 /**
  * An LDAP connection class which extends LDAPConn tailored for the UnityHPC Platform
+ * @phpstan-type attributes array<string, array<int|string>>
  */
 class UnityLDAP extends LDAPConn
 {
@@ -46,6 +47,7 @@ class UnityLDAP extends LDAPConn
     private LDAPEntry $pi_groupOU;
     private LDAPEntry $org_groupOU; /** @phpstan-ignore property.onlyWritten */
 
+    /** @var array<string, PosixGroup> */
     public array $userFlagGroups;
 
     public function __construct()
@@ -104,14 +106,15 @@ class UnityLDAP extends LDAPConn
         );
     }
 
-    private function isIDNumberForbidden($id): bool
+    private function isIDNumberForbidden(int $id): bool
     {
         // 0-99 are probably going to be used for local system accounts instead of LDAP accounts
         // 100-999, 60000-64999 are reserved for debian packages
         return $id <= 999 || ($id >= 60000 && $id <= 64999);
     }
 
-    private function getNextIDNumber($start, $IDsToSkip): int
+    /** @param int[] $IDsToSkip */
+    private function getNextIDNumber(int $start, array $IDsToSkip): int
     {
         $new_id = $start;
         while ($this->isIDNumberForbidden($new_id) || in_array($new_id, $IDsToSkip)) {
@@ -120,6 +123,7 @@ class UnityLDAP extends LDAPConn
         return $new_id;
     }
 
+    /** @return array<string, int> */
     private function getCustomIDMappings(): array
     {
         $output = [];
@@ -148,6 +152,7 @@ class UnityLDAP extends LDAPConn
         return $output_map;
     }
 
+    /** @return int[] */
     private function getAllUIDNumbersInUse(): array
     {
         // use baseOU for awareness of externally managed entries
@@ -161,6 +166,7 @@ class UnityLDAP extends LDAPConn
         );
     }
 
+    /** @return int[] */
     private function getAllGIDNumbersInUse(): array
     {
         // use baseOU for awareness of externally managed entries
@@ -170,6 +176,11 @@ class UnityLDAP extends LDAPConn
         );
     }
 
+    /**
+     * @param string[] $attributes
+     * @param attributes $default_values
+     * @return attributes[]
+     */
     public function getAllNativeUsersAttributes(
         array $attributes,
         array $default_values = [],
@@ -182,6 +193,7 @@ class UnityLDAP extends LDAPConn
         );
     }
 
+    /** @return UnityGroup[] */
     public function getAllPIGroups(
         UnitySQL $UnitySQL,
         UnityMailer $UnityMailer,
@@ -201,6 +213,11 @@ class UnityLDAP extends LDAPConn
         return $out;
     }
 
+    /**
+     * @param string[] $attributes
+     * @param attributes $default_values
+     * @return attributes[]
+     */
     public function getAllPIGroupsAttributes(array $attributes, array $default_values = []): array
     {
         return $this->pi_groupOU->getChildrenArrayStrict(
@@ -211,6 +228,7 @@ class UnityLDAP extends LDAPConn
         );
     }
 
+    /** @return string[] */
     public function getPIGroupGIDsWithMemberUID(string $uid): array
     {
         return array_map(
@@ -223,6 +241,7 @@ class UnityLDAP extends LDAPConn
         );
     }
 
+    /** @return string[] */
     public function getAllPIGroupOwnerUIDs(): array
     {
         return array_map(
@@ -231,6 +250,11 @@ class UnityLDAP extends LDAPConn
         );
     }
 
+    /**
+     * @param string[] $attributes
+     * @param attributes $default_values
+     * @return attributes[]
+     */
     public function getPIGroupAttributesWithMemberUID(
         string $uid,
         array $attributes,
@@ -246,6 +270,7 @@ class UnityLDAP extends LDAPConn
 
     /**
      * Returns an associative array where keys are UIDs and values are arrays of PI GIDs
+     * @return array<string, string[]>
      */
     public function getUID2PIGIDs(): array
     {
@@ -293,6 +318,10 @@ class UnityLDAP extends LDAPConn
 
     /**
      * returns an array with each UID as an array key
+     * @param string[] $uids
+     * @param string[] $attributes
+     * @param attributes $default_values
+     * @return attributes[]
      * @throws \UnityWebPortal\lib\exceptions\EntryNotFoundException
      */
     public function getUsersAttributes(

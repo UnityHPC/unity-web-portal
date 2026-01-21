@@ -4,6 +4,7 @@ namespace UnityWebPortal\lib;
 
 class UnityConfig
 {
+    /** @return mixed[] */
     public static function getConfig(string $def_config_loc, string $deploy_loc): array
     {
         $CONFIG = parse_ini_file($def_config_loc . "/config.ini.default", true, INI_SCANNER_TYPED);
@@ -18,6 +19,10 @@ class UnityConfig
         return $CONFIG;
     }
 
+    /**
+     * @param mixed[] $CONFIG
+     * @return mixed[]
+     */
     private static function pullConfig(array $CONFIG, string $loc): array
     {
         $file_loc = $loc . "/config/config.ini";

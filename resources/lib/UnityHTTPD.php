@@ -16,6 +16,9 @@ enum UnityHTTPDMessageLevel: string
     case ERROR = "error";
 }
 
+/**
+ * @phpstan-type message array{0: string, 1: string, 2: UnityHTTPDMessageLevel}
+ */
 class UnityHTTPD
 {
     public static function die(?string $x = null): never
@@ -138,7 +141,10 @@ class UnityHTTPD
         error_log("$title: " . \jsonEncode($output));
     }
 
-    // recursive on $t->getPrevious()
+    /**
+     * recursive on $t->getPrevious()
+     * @return array<string, mixed>
+     */
     private static function throwableToArray(\Throwable $t): array
     {
         $output = [
@@ -154,6 +160,7 @@ class UnityHTTPD
         return $output;
     }
 
+    /** @param null|mixed[] $data */
     public static function badRequest(
         string $log_message,
         string $user_message = "",
@@ -171,6 +178,7 @@ class UnityHTTPD
         );
     }
 
+    /** @param null|mixed[] $data */
     public static function forbidden(
         string $log_message,
         string $user_message = "",
@@ -188,6 +196,7 @@ class UnityHTTPD
         );
     }
 
+    /** @param null|mixed[] $data */
     public static function internalServerError(
         string $log_message,
         string $user_message = "",
@@ -214,8 +223,12 @@ class UnityHTTPD
         self::internalServerError("", error: $e);
     }
 
-    public static function errorHandler(int $severity, string $message, string $file, int $line)
-    {
+    public static function errorHandler(
+        int $severity,
+        string $message,
+        string $file,
+        int $line,
+    ): bool {
         if (str_contains($message, "Undefined array key")) {
             throw new ArrayKeyException($message);
         }
@@ -277,7 +290,7 @@ class UnityHTTPD
         echo "<script type='text/javascript'>alert(" . \jsonEncode($message) . ");</script>";
     }
 
-    private static function ensureSessionMessagesSanity()
+    private static function ensureSessionMessagesSanity(): void
     {
         if (!isset($_SESSION)) {
             throw new RuntimeException('$_SESSION is unset');
@@ -301,40 +314,41 @@ class UnityHTTPD
         }
     }
 
-    public static function message(string $title, string $body, UnityHTTPDMessageLevel $level)
+    public static function message(string $title, string $body, UnityHTTPDMessageLevel $level): void
     {
         self::ensureSessionMessagesSanity();
         array_push($_SESSION["messages"], [$title, $body, $level]);
     }
 
-    public static function messageDebug(string $title, string $body)
+    public static function messageDebug(string $title, string $body): void
     {
-        return self::message($title, $body, UnityHTTPDMessageLevel::DEBUG);
+        self::message($title, $body, UnityHTTPDMessageLevel::DEBUG);
     }
-    public static function messageInfo(string $title, string $body)
+    public static function messageInfo(string $title, string $body): void
     {
-        return self::message($title, $body, UnityHTTPDMessageLevel::INFO);
+        self::message($title, $body, UnityHTTPDMessageLevel::INFO);
     }
-    public static function messageSuccess(string $title, string $body)
+    public static function messageSuccess(string $title, string $body): void
     {
-        return self::message($title, $body, UnityHTTPDMessageLevel::SUCCESS);
+        self::message($title, $body, UnityHTTPDMessageLevel::SUCCESS);
     }
-    public static function messageWarning(string $title, string $body)
+    public static function messageWarning(string $title, string $body): void
     {
-        return self::message($title, $body, UnityHTTPDMessageLevel::WARNING);
+        self::message($title, $body, UnityHTTPDMessageLevel::WARNING);
     }
-    public static function messageError(string $title, string $body)
+    public static function messageError(string $title, string $body): void
     {
-        return self::message($title, $body, UnityHTTPDMessageLevel::ERROR);
+        self::message($title, $body, UnityHTTPDMessageLevel::ERROR);
     }
 
-    public static function getMessages()
+    /** @return message[] */
+    public static function getMessages(): array
     {
         self::ensureSessionMessagesSanity();
         return $_SESSION["messages"];
     }
 
-    public static function clearMessages()
+    public static function clearMessages(): void
     {
         self::ensureSessionMessagesSanity();
         $_SESSION["messages"] = [];
@@ -344,7 +358,7 @@ class UnityHTTPD
         UnityHTTPDMessageLevel $level,
         string $title,
         string $body,
-    ) {
+    ): int {
         $messages = self::getMessages();
         $error_msg = sprintf(
             "message(level='%s' title='%s' body='%s'), not found. found messages: %s",
@@ -361,16 +375,25 @@ class UnityHTTPD
         throw new UnityHTTPDMessageNotFoundException($error_msg);
     }
 
-    /* returns the 1st message that matches or throws UnityHTTPDMessageNotFoundException */
-    public static function getMessage(UnityHTTPDMessageLevel $level, string $title, string $body)
-    {
+    /**
+     * returns the 1st message that matches or throws UnityHTTPDMessageNotFoundException
+     * @return message
+     */
+    public static function getMessage(
+        UnityHTTPDMessageLevel $level,
+        string $title,
+        string $body,
+    ): array {
         $index = self::getMessageIndex($level, $title, $body);
         return $_SESSION["messages"][$index];
     }
 
     /* deletes the 1st message that matches or throws UnityHTTPDMessageNotFoundException */
-    public static function deleteMessage(UnityHTTPDMessageLevel $level, string $title, string $body)
-    {
+    public static function deleteMessage(
+        UnityHTTPDMessageLevel $level,
+        string $title,
+        string $body,
+    ): void {
         $index = self::getMessageIndex($level, $title, $body);
         unset($_SESSION["messages"][$index]);
         $_SESSION["messages"] = array_values($_SESSION["messages"]);

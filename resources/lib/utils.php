@@ -28,7 +28,8 @@ function removeSSHKeyOptionalCommentSuffix(string $key): string
 }
 
 /**
- *  @return array of length 2: [boolean is_valid, string invalid_explanation]
+ * return values: [is_valid, invalid_explanation]
+ * @return array{0: bool, 1: string}
  */
 function testValidSSHKey(string $key): array
 {
@@ -69,9 +70,9 @@ function jsonEncode(mixed $value, int $flags = 0, int $depth = 512): string
     return json_encode($value, $flags, $depth);
 }
 
-function jsonDecode(...$args): mixed
+function jsonDecode(string $x, ?bool $associative, int $depth = 512, int $flags = 0): mixed
 {
-    $output = json_decode(...$args);
+    $output = json_decode($x, $associative, $depth, $flags);
     if ($output === null) {
         throw new Exception("json_decode returned null");
     }
@@ -96,7 +97,11 @@ function mbConvertEncoding(
     return $output;
 }
 
-function mbDetectEncoding(string $string, ?array $encodings = null, mixed $_ = null): string
+/**
+ * @param null|string|string[] $encodings
+ * @throws EncodingUnknownException
+ */
+function mbDetectEncoding(string $string, mixed $encodings = null, mixed $_ = null): string
 {
     $output = mb_detect_encoding($string, $encodings, strict: true);
     if ($output === false) {
@@ -106,12 +111,12 @@ function mbDetectEncoding(string $string, ?array $encodings = null, mixed $_ = n
 }
 
 /* https://stackoverflow.com/a/15575293/18696276 */
-function pathNormalize(string $path)
+function pathNormalize(string $path): string
 {
     return preg_replace("#/+#", "/", $path);
 }
 
-function getURL(...$relative_url_components)
+function getURL(string ...$relative_url_components): string
 {
     if (!preg_match("#^\w+://#", CONFIG["site"]["url"])) {
         throw new RuntimeException('CONFIG[site][url] does not have a scheme! (ex: "https://")');
@@ -124,7 +129,7 @@ function getURL(...$relative_url_components)
     return $site_url_scheme . $path_normalized;
 }
 
-function getHyperlink($text, ...$url_components)
+function getHyperlink(string $text, string ...$url_components): string
 {
     $text = htmlspecialchars($text);
     $url = getURL(...$url_components);
@@ -133,13 +138,12 @@ function getHyperlink($text, ...$url_components)
 
 /**
  * negative numbers not allowed
- * extra args (ex: base) are passed along to intval()
  * @throws ValueError
  */
-function digits2int(string $x, ...$args): int
+function digits2int(string $x, int $base = 10): int
 {
     if (ctype_digit($x)) {
-        return intval($x, ...$args);
+        return intval($x, $base);
     } else {
         throw new ValueError("not digits: $x");
     }
@@ -160,7 +164,7 @@ function shortenString(
         substr($x, -1 * $trailing_chars, $trailing_chars);
 }
 
-function getTemplatePath(string $basename)
+function getTemplatePath(string $basename): string
 {
     $template_path = __DIR__ . "/../templates/$basename";
     $override_path = __DIR__ . "/../../deployment/templates_overrides/$basename";
