@@ -174,7 +174,7 @@ class UnityGroup extends PosixGroup
         $this->SQL->removeRequest($new_user->uid, $this->gid);
         $this->SQL->addLog(
             "approved_user",
-            jsonEncode(["user" => $new_user->uid, "group" => $this->gid]),
+            _json_encode(["user" => $new_user->uid, "group" => $this->gid]),
         );
         if ($send_mail) {
             $this->MAILER->sendMail($new_user->getMail(), "group_user_added", [
@@ -198,7 +198,7 @@ class UnityGroup extends PosixGroup
         $this->SQL->removeRequest($new_user->uid, $this->gid);
         $this->SQL->addLog(
             "denied_user",
-            jsonEncode(["user" => $new_user->uid, "group" => $this->gid]),
+            _json_encode(["user" => $new_user->uid, "group" => $this->gid]),
         );
         if ($send_mail) {
             $this->MAILER->sendMail($new_user->getMail(), "group_user_denied", [
@@ -225,7 +225,7 @@ class UnityGroup extends PosixGroup
         $this->removeMemberUID($new_user->uid);
         $this->SQL->addLog(
             "removed_user",
-            jsonEncode(["user" => $new_user->uid, "group" => $this->gid]),
+            _json_encode(["user" => $new_user->uid, "group" => $this->gid]),
         );
         if ($send_mail) {
             $this->MAILER->sendMail($new_user->getMail(), "group_user_removed", [

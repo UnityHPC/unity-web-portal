@@ -18,16 +18,19 @@ class DeleteMessageTest extends UnityWebPortalTestCase
         UnityHTTPD::messageSuccess("foo", "bar");
         UnityHTTPD::messageWarning("foo", "bar");
         try {
-            $before = array_map("jsonEncode", UnityHTTPD::getMessages());
+            $before = array_map("_json_encode", UnityHTTPD::getMessages());
             http_post(__DIR__ . "/../../webroot/panel/ajax/delete_message.php", [
                 "level" => base64_encode("debug"),
                 "title" => base64_encode("foo2"),
                 "body" => base64_encode("bar2"),
             ]);
-            $after = array_map("jsonEncode", UnityHTTPD::getMessages());
+            $after = array_map("_json_encode", UnityHTTPD::getMessages());
             $difference = array_diff($before, $after);
             $message_expected_removed = ["foo2", "bar2", UnityHTTPDMessageLevel::DEBUG];
-            $this->assertEqualsCanonicalizing([jsonEncode($message_expected_removed)], $difference);
+            $this->assertEqualsCanonicalizing(
+                [_json_encode($message_expected_removed)],
+                $difference,
+            );
         } finally {
             UnityHTTPD::clearMessages();
         }

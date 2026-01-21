@@ -18,10 +18,10 @@ class UnityWebhook
         $link = '/<a\b[^>]*href=["\']?([^"\'\s]*)[^>]*>(.*?)<\/a>/s';
 
         // Replace each HTML tag with its corresponding markdown format
-        $md = pregReplace($bold, '*$2*', $html);
-        $md = pregReplace($italic, '_$1_', $md);
-        $md = pregReplace($strikethrough, '~$1~', $md);
-        $md = pregReplace($link, '$2: $1', $md);
+        $md = _preg_replace($bold, '*$2*', $html);
+        $md = _preg_replace($italic, '_$1_', $md);
+        $md = _preg_replace($strikethrough, '~$1~', $md);
+        $md = _preg_replace($link, '$2: $1', $md);
 
         // Replace any remaining HTML tags with an empty string
         $md = strip_tags($md);
@@ -52,7 +52,7 @@ class UnityWebhook
         curl_setopt(
             $ch,
             CURLOPT_POSTFIELDS,
-            \jsonEncode(["subject" => $this->Subject, "text" => $message]),
+            \_json_encode(["subject" => $this->Subject, "text" => $message]),
         );
         $result = curl_exec($ch);
         curl_close($ch);

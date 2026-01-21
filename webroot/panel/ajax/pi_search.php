@@ -27,4 +27,4 @@ foreach ($pi_group_gid_to_owner_gecos_and_mail as $gid => [$gecos, $mail]) {
         }
     }
 }
-echo jsonEncode($output);
+echo _json_encode($output);

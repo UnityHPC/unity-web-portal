@@ -360,7 +360,7 @@ class UnityLDAP extends LDAPConn
         }
         $uids_not_found = array_diff($uids, array_keys($output));
         if (count($uids_not_found) > 0) {
-            throw new EntryNotFoundException(jsonEncode($uids_not_found));
+            throw new EntryNotFoundException(_json_encode($uids_not_found));
         }
         ksort($output);
         return $output;

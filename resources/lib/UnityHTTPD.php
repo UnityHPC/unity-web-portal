@@ -120,7 +120,7 @@ class UnityHTTPD
         $output = ["message" => $message];
         if (!is_null($data)) {
             try {
-                \jsonEncode($data);
+                \_json_encode($data);
                 $output["data"] = $data;
             } catch (\JsonException $e) {
                 $output["data"] = "data could not be JSON encoded: " . $e->getMessage();
@@ -138,7 +138,7 @@ class UnityHTTPD
         if (!is_null($errorid)) {
             $output["errorid"] = $errorid;
         }
-        error_log("$title: " . \jsonEncode($output));
+        error_log("$title: " . \_json_encode($output));
     }
 
     /**
@@ -278,8 +278,8 @@ class UnityHTTPD
         if ($do_delete_tmpfile_after_read) {
             unlink($tmpfile_path);
         }
-        $old_encoding = mbDetectEncoding($contents);
-        return mbConvertEncoding($contents, $encoding, $old_encoding);
+        $old_encoding = _mb_detect_encoding($contents);
+        return _mb_convert_encoding($contents, $encoding, $old_encoding);
     }
 
     // in firefox, the user can disable alert/confirm/prompt after the 2nd or 3rd popup
@@ -287,7 +287,7 @@ class UnityHTTPD
     public static function alert(string $message): void
     {
         // jsonEncode escapes quotes
-        echo "<script type='text/javascript'>alert(" . \jsonEncode($message) . ");</script>";
+        echo "<script type='text/javascript'>alert(" . \_json_encode($message) . ");</script>";
     }
 
     private static function ensureSessionMessagesSanity(): void
@@ -365,7 +365,7 @@ class UnityHTTPD
             $level->value,
             $title,
             $body,
-            jsonEncode($messages),
+            _json_encode($messages),
         );
         foreach ($messages as $i => $message) {
             if ($title == $message[0] && $body == $message[1] && $level == $message[2]) {

@@ -14,4 +14,4 @@ if (UnityHTTPD::getQueryParameter("type", false) == "ppk") {
     $private_str = $private->toString('OpenSSH');
 }
 header('Content-Type: application/json; charset=utf-8');
-echo jsonEncode(["public" => $public_str, "private" => $private_str]);
+echo _json_encode(["public" => $public_str, "private" => $private_str]);

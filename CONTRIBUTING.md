@@ -13,12 +13,7 @@
   - This will avoid the premature death of our automated testing processes.
 - No code should call `assert()`, instead `\ensure()`.
   - This will enforce conditions even in production.
-- No code should fail quietly, instead exceptions should be thrown. PHP builtin functions that fail quietly (ex: `json_encode`) should be replaced with a wrapper in `resources/utils.php`. Current wrappers:
-  - `json_encode` -> `jsonEncode`
-  - `json_decode` -> `jsonDecode`
-  - `mb_convert_encoding` -> `mbConvertEncoding`
-  - `mb_detect_encoding` -> `mbDetectEncoding`
-  - `intval` -> `digits2int`
+- No code should fail quietly, instead exceptions should be thrown. PHP builtin functions that fail quietly (ex: `json_encode`) should be replaced with a wrapper in `resources/utils.php`. See `test/assert-utils-used.bash` for a list of wrappers.
 - `UnityHTTPD`'s user-facing error functionality (ex: `badRequest`) should only be called from `webroot/**/*.php`.
   `resources/**/*.php` should throw exceptions instead.
 - all pages under `webroot/admin/` must check for `$USER->getFlag(UserFlag::ADMIN)` and call `UnityHTTPD::forbidden()` if not admin.

@@ -21,7 +21,7 @@ class WorkerUpdateQualifiedUsersGroupTest extends UnityWebPortalTestCase
             $pi_group_entry->appendAttribute("memberuid", $user->uid);
             [$_, $output_lines] = executeWorker("update-qualified-users-group.php");
             $output_str = implode("\n", $output_lines);
-            $output = jsonDecode($output_str, associative: true);
+            $output = _json_decode($output_str, associative: true);
             $this->assertEquals($expectedOutput, $output);
             // refresh LDAP to pick up changes from subprocess
             unset($GLOBALS["ldapconn"]);
@@ -50,7 +50,7 @@ class WorkerUpdateQualifiedUsersGroupTest extends UnityWebPortalTestCase
             $qualified_user_group->addMemberUID($USER->uid);
             [$_, $output_lines] = executeWorker("update-qualified-users-group.php");
             $output_str = implode("\n", $output_lines);
-            $output = jsonDecode($output_str, associative: true);
+            $output = _json_decode($output_str, associative: true);
             $this->assertEquals($expectedOutput, $output);
             // refresh LDAP to pick up changes from subprocess
             unset($GLOBALS["ldapconn"]);
@@ -77,7 +77,7 @@ class WorkerUpdateQualifiedUsersGroupTest extends UnityWebPortalTestCase
             $qualified_user_group->addMemberUID("non_native_user1");
             [$_, $output_lines] = executeWorker("update-qualified-users-group.php");
             $output_str = implode("\n", $output_lines);
-            $output = jsonDecode($output_str, associative: true);
+            $output = _json_decode($output_str, associative: true);
             $this->assertEquals($expectedOutput, $output);
             // refresh LDAP to pick up changes from subprocess
             unset($GLOBALS["ldapconn"]);

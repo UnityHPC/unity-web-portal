@@ -65,7 +65,7 @@ $HTTP_HEADER_TEST_INPUTS = [
     '{"key": "value"}',
     "SGVsbG8sIFdvcmxkIQ==",
     "Hello\x00World",
-    mbConvertEncoding("Hello, World!", "UTF-16"),
+    _mb_convert_encoding("Hello, World!", "UTF-16"),
 ];
 
 function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_token = true): string
@@ -73,8 +73,8 @@ function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_tok
     global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "POST";
-    $_SERVER["PHP_SELF"] = pregReplace("/.*webroot\//", "/", $phpfile);
-    $_SERVER["REQUEST_URI"] = pregReplace("/.*webroot\//", "/", $phpfile); // Slightly imprecise because it doesn't include get parameters
+    $_SERVER["PHP_SELF"] = _preg_replace("/.*webroot\//", "/", $phpfile);
+    $_SERVER["REQUEST_URI"] = _preg_replace("/.*webroot\//", "/", $phpfile); // Slightly imprecise because it doesn't include get parameters
     if (!array_key_exists("csrf_token", $post_data) && $do_generate_csrf_token) {
         $post_data["csrf_token"] = CSRFToken::generate();
     }
@@ -104,8 +104,8 @@ function http_get(string $phpfile, array $get_data = [], bool $ignore_die = fals
     global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "GET";
-    $_SERVER["PHP_SELF"] = pregReplace("/.*webroot\//", "/", $phpfile);
-    $_SERVER["REQUEST_URI"] = pregReplace("/.*webroot\//", "/", $phpfile); // Slightly imprecise because it doesn't include get parameters
+    $_SERVER["PHP_SELF"] = _preg_replace("/.*webroot\//", "/", $phpfile);
+    $_SERVER["REQUEST_URI"] = _preg_replace("/.*webroot\//", "/", $phpfile); // Slightly imprecise because it doesn't include get parameters
     $_GET = $get_data;
     ob_start();
     try {
@@ -151,7 +151,7 @@ function executeWorker(
                 "command failed! command='%s' rc=%d output=%s",
                 $command,
                 $rc,
-                jsonEncode($output),
+                _json_encode($output),
             ),
         );
     }
@@ -403,7 +403,7 @@ class UnityWebPortalTestCase extends TestCase
             $level->value,
             $title_regex,
             $body_regex,
-            jsonEncode($messages),
+            _json_encode($messages),
         );
         $messages_with_title = array_filter($messages, fn($x) => preg_match($title_regex, $x[0]));
         $messages_with_title_and_body = array_filter(
