@@ -17,7 +17,7 @@ $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
 if (!$group->exists()) {
     _die("No such group '$gid'\n", 1);
 }
-($handle = fopen($filename, "r")) or _die("Can't open '$filename'\n", 1);
+$handle = _fopen($filename, "r");
 while (($line = fgets($handle)) !== false) {
     $uid = trim($line);
     $user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
