@@ -261,8 +261,8 @@ class UnityLDAP extends LDAPConn
             filter: sprintf("(mail=%s)", ldap_escape($mail, flags: LDAP_ESCAPE_FILTER)),
         );
         $uids = array_map(fn($x) => $x["uid"][0], $users_attributes);
-        $gids = array_map(fn($x) => UnityGroup::ownerUID2GID($x), $uids);
-        $entries = array_map(fn($x) => $this->getPIGroupEntry($x), $gids);
+        $gids = array_map(UnityGroup::ownerUID2GID(...), $uids);
+        $entries = array_map($this->getPIGroupEntry(...), $gids);
         $entries_that_exist = array_filter($entries, fn($x) => $x->exists());
         $gids_that_exist = array_map(fn($x) => $x->getAttribute("cn")[0], $entries_that_exist);
         return $gids_that_exist;
