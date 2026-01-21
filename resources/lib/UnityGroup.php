@@ -72,7 +72,7 @@ class UnityGroup extends PosixGroup
         $memberuids = $this->getMemberUIDs();
         if ($send_mail) {
             $member_attributes = $this->LDAP->getUsersAttributes($memberuids, ["mail"]);
-            $member_mails = array_map(fn($x) => $x["mail"][0], $member_attributes);
+            $member_mails = array_map(fn($x) => (string) $x["mail"][0], $member_attributes);
             if (count($member_mails) > 0) {
                 $this->MAILER->sendMail($member_mails, "group_disabled", [
                     "group_name" => $this->gid,
