@@ -4,6 +4,8 @@
  * init.php - Initialization script that is run on every page of Unity
  */
 
+declare(strict_types=1);
+
 use UnityWebPortal\lib\UnityLDAP;
 use UnityWebPortal\lib\UnityMailer;
 use UnityWebPortal\lib\UnitySQL;
