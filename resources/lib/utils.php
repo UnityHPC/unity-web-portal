@@ -65,12 +65,18 @@ function testValidSSHKey(string $key): array
     }
 }
 
+/** @param int<1,max> $depth */
 function _json_encode(mixed $value, int $flags = 0, int $depth = 512): string
 {
     $flags |= JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES;
-    return json_encode($value, $flags, $depth);
+    $output = json_encode($value, $flags, $depth);
+    if ($output === false) {
+        throw new Exception("json_encode returned false!");
+    }
+    return $output;
 }
 
+/** @param int<1,max> $depth */
 function _json_decode(string $x, ?bool $associative, int $depth = 512, int $flags = 0): mixed
 {
     $output = json_decode($x, $associative, $depth, $flags);
