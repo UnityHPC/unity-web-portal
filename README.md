@@ -132,6 +132,11 @@ rm "$prod" && ln -s "$old" "$prod"
   - the `home` page can be copied over to `deployment/templates_overrides/home.php`
   - the `support` page should be moved over to wherever you host your documentation
 - the `notices` SQL table should be droppped
+- a new LDAP schema needs to be added:
+  ```shell
+  scp tools/docker-dev/identity/unity-cluster-schema.ldif root@your-ldap-server:/root/unity-cluster-schema.ldif
+  ssh root@your-ldap-server ldapadd -Y EXTERNAL -H ldapi:/// -f /root/unity-cluster-schema.ldif
+  ```
 
 ### 1.5 -> 1.6
 
