@@ -13,10 +13,8 @@ $cli->description("Add and remove users from the qualified user group.")->opt(
 $args = $cli->parse($argv, true);
 
 $qualified_list_before = $LDAP->userFlagGroups["qualified"]->getMemberUIDs();
-$pi_groups_attributes = $LDAP->getAllNonDisabledPIGroupsAttributes(
-    ["memberuid"],
-    ["memberuid" => []],
-);
+// FIXME getAllNonDefunctPIGroupsAttributes
+$pi_groups_attributes = $LDAP->getAllPIGroupsAttributes(["memberuid"], ["memberuid" => []]);
 $users_with_at_least_one_group = array_merge(
     ...array_map(fn($x) => $x["memberuid"], $pi_groups_attributes),
 );

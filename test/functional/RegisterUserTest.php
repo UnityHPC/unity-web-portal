@@ -1,6 +1,7 @@
 <?php
 
 use PHPUnit\Framework\Attributes\DataProvider;
+use UnityWebPortal\lib\UnityOrg;
 
 class RegisterUserTest extends UnityWebPortalTestCase
 {
