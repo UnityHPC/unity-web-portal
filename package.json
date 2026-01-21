@@ -4,7 +4,6 @@
     "prettier": "^3.6.2"
   },
   "dependencies": {
-    "ckeditor5": "^47.3.0",
     "copy-files-from-to": "^3.13.0",
     "datatables.net-buttons-dt": "^3.2.6",
     "datatables.net-columncontrol-dt": "^1.2.0",
@@ -16,14 +15,6 @@
     {
       "from": "node_modules/jquery/dist/jquery.min.js",
       "to": "webroot/js/jquery.min.js"
-    },
-    {
-      "from": "node_modules/ckeditor5/dist/browser/ckeditor5.umd.js",
-      "to": "webroot/js/ckeditor5.umd.js"
-    },
-    {
-      "from": "node_modules/ckeditor5/dist/browser/ckeditor5.css",
-      "to": "webroot/css/ckeditor5.css"
     },
     {
       "from": "node_modules/datatables.net-responsive/js/dataTables.responsive.min.js",

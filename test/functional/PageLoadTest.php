@@ -49,7 +49,6 @@ class PageLoadTest extends UnityWebPortalTestCase
             // normal page load
             ["Admin", "admin/pi-mgmt.php", "/PI Management/"],
             ["Admin", "admin/user-mgmt.php", "/User Management/"],
-            ["Admin", "admin/notices.php", "/Cluster Notice Management/"],
             ["NonExistent", "panel/new_account.php", "/Register New Account/"],
             ["Blank", "panel/account.php", "/Account Settings/"],
             ["Blank", "panel/groups.php", "/My Principal Investigators/"],

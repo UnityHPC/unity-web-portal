@@ -38,7 +38,7 @@ if (isset($SSO)) {
 <head>
   <?php
     $scripts = [
-      "jquery.min", "global-early", "ckeditor5.umd", "dataTables.min", "dataTables.responsive.min",
+      "jquery.min", "global-early", "dataTables.min", "dataTables.responsive.min",
       "dataTables.buttons.min", "dataTables.columnControl.min", "buttons.print.min",
       "buttons.colVis.min", "buttons.html5.min",
     ];
@@ -60,7 +60,7 @@ if (isset($SSO)) {
 
   <?php
     $stylesheets = [
-      "global", "navbar", "modal", "messages", "ckeditor5", "responsive.dataTables.min",
+      "global", "navbar", "modal", "messages", "responsive.dataTables.min",
       "dataTables.dataTables.min", "columnControl.dataTables.min", "buttons.dataTables.min",
     ];
     foreach ($stylesheets as $x) {
@@ -125,7 +125,6 @@ if (isset($SSO)) {
             // Admin only pages
             echo getHyperlink("User Management", "admin/user-mgmt.php") . "\n";
             echo getHyperlink("PI Management", "admin/pi-mgmt.php") . "\n";
-            echo getHyperlink("Cluster Notices", "admin/notices.php") . "\n";
         }
     } else {
         echo getHyperlink("Login / Request Account", "panel/account.php") . "\n";
