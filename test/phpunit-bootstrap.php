@@ -73,8 +73,8 @@ function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_tok
     global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "POST";
-    $_SERVER["PHP_SELF"] = preg_replace("/.*webroot\//", "/", $phpfile);
-    $_SERVER["REQUEST_URI"] = preg_replace("/.*webroot\//", "/", $phpfile); // Slightly imprecise because it doesn't include get parameters
+    $_SERVER["PHP_SELF"] = pregReplace("/.*webroot\//", "/", $phpfile);
+    $_SERVER["REQUEST_URI"] = pregReplace("/.*webroot\//", "/", $phpfile); // Slightly imprecise because it doesn't include get parameters
     if (!array_key_exists("csrf_token", $post_data) && $do_generate_csrf_token) {
         $post_data["csrf_token"] = CSRFToken::generate();
     }
@@ -104,8 +104,8 @@ function http_get(string $phpfile, array $get_data = [], bool $ignore_die = fals
     global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "GET";
-    $_SERVER["PHP_SELF"] = preg_replace("/.*webroot\//", "/", $phpfile);
-    $_SERVER["REQUEST_URI"] = preg_replace("/.*webroot\//", "/", $phpfile); // Slightly imprecise because it doesn't include get parameters
+    $_SERVER["PHP_SELF"] = pregReplace("/.*webroot\//", "/", $phpfile);
+    $_SERVER["REQUEST_URI"] = pregReplace("/.*webroot\//", "/", $phpfile); // Slightly imprecise because it doesn't include get parameters
     $_GET = $get_data;
     ob_start();
     try {
