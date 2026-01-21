@@ -16,7 +16,7 @@ class WorkerUnityCourseTest extends UnityWebPortalTestCase
             "cs123_org1_test",
             "user1_org1_test",
         ]);
-        $stdin_file_path = stream_get_meta_data($stdin_file)["uri"];
+        $stdin_file_path = getPathFromFileHandle($stdin_file);
         try {
             [$rc, $output_lines] = executeWorker(
                 "unity-course.php",

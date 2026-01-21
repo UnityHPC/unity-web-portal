@@ -74,7 +74,7 @@ class SSHKeyAddTest extends UnityWebPortalTestCase
         $this->assertEquals(0, $numKeysBefore);
         try {
             $tmp = tmpfile();
-            $tmp_path = stream_get_meta_data($tmp)["uri"];
+            $tmp_path = getPathFromFileHandle($tmp);
             fwrite($tmp, $key);
             $_FILES["keyfile"] = ["tmp_name" => $tmp_path];
             try {

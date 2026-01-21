@@ -9,7 +9,7 @@ use UnityWebPortal\lib\UnityOrg;
 function cn2org($cn)
 {
     $matches = [];
-    preg_match("/.*_([^_]+_[^_]+)$/", $cn, $matches);
+    _preg_match("/.*_([^_]+_[^_]+)$/", $cn, $matches);
     ensure(count($matches) == 2, "failed to extract org from cn: '$cn'");
     return $matches[1];
 }

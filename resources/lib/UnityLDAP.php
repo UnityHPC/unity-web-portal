@@ -281,8 +281,9 @@ class UnityLDAP extends LDAPConn
             default_values: ["memberuid" => []],
         );
         foreach ($pi_groups_attributes as $array) {
-            $gid = $array["cn"][0];
+            $gid = (string) $array["cn"][0];
             foreach ($array["memberuid"] as $uid) {
+                $uid = (string) $uid;
                 if (!array_key_exists($uid, $uid2pigids)) {
                     $uid2pigids[$uid] = [];
                 }

@@ -65,12 +65,18 @@ function testValidSSHKey(string $key): array
     }
 }
 
+/** @param int<1,max> $depth */
 function _json_encode(mixed $value, int $flags = 0, int $depth = 512): string
 {
     $flags |= JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES;
-    return json_encode($value, $flags, $depth);
+    $output = json_encode($value, $flags, $depth);
+    if ($output === false) {
+        throw new Exception("json_encode returned false!");
+    }
+    return $output;
 }
 
+/** @param int<1,max> $depth */
 function _json_decode(string $x, ?bool $associative, int $depth = 512, int $flags = 0): mixed
 {
     $output = json_decode($x, $associative, $depth, $flags);
@@ -175,12 +181,34 @@ function getTemplatePath(string $basename): string
     return $template_path;
 }
 
-/** @return string|mixed[] */
-function _preg_replace(mixed ...$args): string|array
-{
-    $output = preg_replace(...$args);
+function _preg_replace(
+    string $pattern,
+    string $replacement,
+    string $subject,
+    mixed ...$args,
+): string {
+    $output = preg_replace($pattern, $replacement, $subject, ...$args);
     if ($output === null) {
         throw new Exception("preg_replace returned null!");
+    }
+    return $output;
+}
+
+/**
+ * @param 0|256|512|768 $flags
+ * @param null|array{} $matches
+ * @param-out array<list<int|string|null>|string|null> $matches
+ */
+function _preg_match(
+    string $pattern,
+    string $subject,
+    ?array &$matches = null,
+    int $flags = 0,
+    int $offset = 0,
+): int {
+    $output = preg_match($pattern, $subject, $matches, $flags, $offset);
+    if ($output === false) {
+        throw new Exception("preg_match returned false!");
     }
     return $output;
 }
@@ -217,7 +245,7 @@ function _ob_get_clean(): string
 function _curl_exec(CurlHandle $handle): string
 {
     $output = curl_exec($handle);
-    if ($output === false) {
+    if (is_bool($output)) {
         throw new CurlException(curl_error($handle));
     }
     return $output;
