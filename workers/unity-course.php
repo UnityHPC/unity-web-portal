@@ -63,7 +63,7 @@ if ($course_pi_group->exists()) {
 $course_pi_group->requestGroup(false, false);
 $course_pi_group->approveGroup();
 print "LDAP entries created:\n";
-print jsonEncode(
+print _json_encode(
     [
         "course user" => flatten_attributes($LDAP->getUserEntry($cn)->getAttributes()),
         "course user group" => flatten_attributes($LDAP->getGroupEntry($cn)->getAttributes()),

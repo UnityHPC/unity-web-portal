@@ -54,8 +54,11 @@ class WorkerRemoveUsersFromGroupTest extends UnityWebPortalTestCase
             "pi_user1_org1_test asdlkjasldkj",
             doThrowIfNonzero: false,
         );
-        $this->assertEquals(1, $rc);
-        $this->assertStringContainsString("Can't open", implode("\n", $output_lines));
+        $this->assertEquals(255, $rc);
+        $this->assertStringContainsString(
+            "No such file or directory",
+            implode("\n", $output_lines),
+        );
     }
 
     public function testRemoveFromNonexistentGroup()

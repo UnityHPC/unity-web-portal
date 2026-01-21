@@ -5,6 +5,7 @@ use UnityWebPortal\lib\exceptions\EncodingUnknownException;
 use UnityWebPortal\lib\exceptions\EncodingConversionException;
 use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Exception\NoKeyLoadedException;
+use UnityWebPortal\lib\exceptions\CurlException;
 
 // like assert() but not subject to zend.assertions config
 function ensure(bool $condition, ?string $message = null): void
@@ -50,7 +51,7 @@ function testValidSSHKey(string $key): array
             sprintf(
                 "Key type '%s' is not allowed. Allowed key types are: %s",
                 shortenString($key_type, 5, 5),
-                jsonEncode(CONFIG["ldap"]["allowed_ssh_key_types"]),
+                _json_encode(CONFIG["ldap"]["allowed_ssh_key_types"]),
             ),
         ];
     }
@@ -64,13 +65,13 @@ function testValidSSHKey(string $key): array
     }
 }
 
-function jsonEncode(mixed $value, int $flags = 0, int $depth = 512): string
+function _json_encode(mixed $value, int $flags = 0, int $depth = 512): string
 {
     $flags |= JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES;
     return json_encode($value, $flags, $depth);
 }
 
-function jsonDecode(string $x, ?bool $associative, int $depth = 512, int $flags = 0): mixed
+function _json_decode(string $x, ?bool $associative, int $depth = 512, int $flags = 0): mixed
 {
     $output = json_decode($x, $associative, $depth, $flags);
     if ($output === null) {
@@ -79,7 +80,7 @@ function jsonDecode(string $x, ?bool $associative, int $depth = 512, int $flags 
     return $output;
 }
 
-function mbConvertEncoding(
+function _mb_convert_encoding(
     string $string,
     string $to_encoding,
     ?string $from_encoding = null,
@@ -87,7 +88,7 @@ function mbConvertEncoding(
     $output = mb_convert_encoding($string, $to_encoding, $from_encoding);
     if ($output === false) {
         throw new EncodingConversionException(
-            jsonEncode([
+            _json_encode([
                 "to" => $to_encoding,
                 "from" => $from_encoding,
                 "base64" => base64_encode($string),
@@ -101,7 +102,7 @@ function mbConvertEncoding(
  * @param null|string|string[] $encodings
  * @throws EncodingUnknownException
  */
-function mbDetectEncoding(string $string, mixed $encodings = null, mixed $_ = null): string
+function _mb_detect_encoding(string $string, mixed $encodings = null, mixed $_ = null): string
 {
     $output = mb_detect_encoding($string, $encodings, strict: true);
     if ($output === false) {
@@ -113,7 +114,7 @@ function mbDetectEncoding(string $string, mixed $encodings = null, mixed $_ = nu
 /* https://stackoverflow.com/a/15575293/18696276 */
 function pathNormalize(string $path): string
 {
-    return preg_replace("#/+#", "/", $path);
+    return _preg_replace("#/+#", "/", $path);
 }
 
 function getURL(string ...$relative_url_components): string
@@ -172,4 +173,52 @@ function getTemplatePath(string $basename): string
         return $override_path;
     }
     return $template_path;
+}
+
+/** @return string|mixed[] */
+function _preg_replace(mixed ...$args): string|array
+{
+    $output = preg_replace(...$args);
+    if ($output === null) {
+        throw new Exception("preg_replace returned null!");
+    }
+    return $output;
+}
+
+/** @return mixed[] */
+function _parse_ini_file(mixed ...$args): array
+{
+    $output = parse_ini_file(...$args);
+    if ($output === false) {
+        throw new Exception("parse_ini_file returned false!");
+    }
+    return $output;
+}
+
+/** @return resource */
+function _fopen(mixed ...$args): mixed
+{
+    $output = fopen(...$args);
+    if ($output === false) {
+        throw new Exception("fopen returned false!");
+    }
+    return $output;
+}
+
+function _ob_get_clean(): string
+{
+    $output = ob_get_clean();
+    if ($output === false) {
+        throw new Exception("ob_get_clean returned false!");
+    }
+    return $output;
+}
+
+function _curl_exec(CurlHandle $handle): string
+{
+    $output = curl_exec($handle);
+    if ($output === false) {
+        throw new CurlException(curl_error($handle));
+    }
+    return $output;
 }

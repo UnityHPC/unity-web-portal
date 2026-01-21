@@ -7,11 +7,15 @@ fi
 
 declare -A utils=(
     ["assert"]="ensure"
-    ["json_encode"]="jsonEncode"
-    ["json_decode"]="jsonDecode"
-    ["mb_detect_encoding"]="mbDetectEncoding"
-    ["mb_convert_encoding"]="mbConvertEncoding"
+    ["json_encode"]="_json_encode"
+    ["json_decode"]="_json_decode"
+    ["mb_detect_encoding"]="_mb_detect_encoding"
+    ["mb_convert_encoding"]="_mb_convert_encoding"
     ["intval"]="str2int"
+    ["preg_replace"]="_preg_replace"
+    ["parse_ini_file"]="_parse_ini_file"
+    ["fopen"]="_fopen"
+    ["ob_get_clean"]="_ob_get_clean"
 )
 
 rc=0

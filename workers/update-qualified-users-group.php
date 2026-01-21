@@ -27,7 +27,7 @@ $qualified_list_after = array_merge($users_with_at_least_one_group, $non_native_
 sort($qualified_list_after);
 $users_added = array_values(array_diff($qualified_list_after, $qualified_list_before));
 $users_removed = array_values(array_diff($qualified_list_before, $qualified_list_after));
-echo jsonEncode(
+echo _json_encode(
     [
         "added" => $users_added,
         "removed" => $users_removed,

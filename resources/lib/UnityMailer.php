@@ -102,7 +102,7 @@ class UnityMailer extends PHPMailer
             ob_start();
             include $template_path;
             include $footer_template_path;
-            $mes_html = ob_get_clean();
+            $mes_html = _ob_get_clean();
             $this->msgHTML($mes_html);
 
             if ($recipients == "admin") {
