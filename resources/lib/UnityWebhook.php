@@ -29,7 +29,7 @@ class UnityWebhook
         return $md;
     }
 
-    public function sendWebhook(?string $template = null, mixed $data = null): bool
+    public function sendWebhook(?string $template = null, mixed $data = null): string
     {
         $template_filename = $template . ".php";
         if (file_exists($this->override_template_dir . "/" . $template_filename)) {
@@ -54,7 +54,7 @@ class UnityWebhook
             CURLOPT_POSTFIELDS,
             \_json_encode(["subject" => $this->Subject, "text" => $message]),
         );
-        $result = curl_exec($ch);
+        $result = _curl_exec($ch);
         curl_close($ch);
         return $result;
     }

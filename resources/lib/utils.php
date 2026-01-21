@@ -212,3 +212,12 @@ function _ob_get_clean(): string
     }
     return $output;
 }
+
+function _curl_exec(mixed ...$args): string
+{
+    $output = curl_exec(...$args);
+    if ($output === false) {
+        throw new Exception("curl_exec returned false!");
+    }
+    return $output;
+}
