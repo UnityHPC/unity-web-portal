@@ -181,12 +181,24 @@ function getTemplatePath(string $basename): string
     return $template_path;
 }
 
-/** @return string|mixed[] */
-function _preg_replace(mixed ...$args): string|array
-{
-    $output = preg_replace(...$args);
+function _preg_replace(
+    string $pattern,
+    string $replacement,
+    string $subject,
+    mixed ...$args,
+): string {
+    $output = preg_replace($pattern, $replacement, $subject, ...$args);
     if ($output === null) {
         throw new Exception("preg_replace returned null!");
+    }
+    return $output;
+}
+
+function _preg_match(mixed ...$args): int
+{
+    $output = preg_match(...$args);
+    if ($output === false) {
+        throw new Exception("preg_match returned false!");
     }
     return $output;
 }
@@ -223,7 +235,7 @@ function _ob_get_clean(): string
 function _curl_exec(CurlHandle $handle): string
 {
     $output = curl_exec($handle);
-    if ($output === false) {
+    if (is_bool($output)) {
         throw new CurlException(curl_error($handle));
     }
     return $output;
