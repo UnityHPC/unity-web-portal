@@ -142,6 +142,7 @@ echo "</table>";
 <script>
     $(document).ready(() => {
         $('#users-table').DataTable({
+            stateSave: true,
             responsive: true,
             columns: [
                 {responsivePriority: 2}, // name
