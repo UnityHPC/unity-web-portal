@@ -93,7 +93,7 @@ class UnityGroup extends PosixGroup
         }
     }
 
-    private function reenable(bool $send_mail = true)
+    private function reenable(bool $send_mail = true): void
     {
         if (!$this->getIsDisabled()) {
             throw new Exception("cannot re-enable a group that is not disabled");
@@ -417,7 +417,7 @@ class UnityGroup extends PosixGroup
                 throw new \RuntimeException(
                     sprintf(
                         "expected value of length 0 or 1, found value %s of length %s",
-                        jsonEncode($value),
+                        _json_encode($value),
                         count($value),
                     ),
                 );
