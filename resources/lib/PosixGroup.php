@@ -33,6 +33,7 @@ class PosixGroup
         return $this->entry->exists();
     }
 
+    /** @return string[] */
     public function getMemberUIDs(): array
     {
         $members = $this->entry->getAttribute("memberuid");
@@ -45,6 +46,7 @@ class PosixGroup
         $this->entry->appendAttribute("memberuid", $uid);
     }
 
+    /** @param string[] $uids */
     public function addMemberUIDs(array $uids): void
     {
         foreach ($uids as $uid) {
@@ -57,6 +59,7 @@ class PosixGroup
         $this->entry->removeAttributeEntryByValue("memberuid", $uid);
     }
 
+    /** @param string[] $uids */
     public function removeMemberUIDs(array $uids): void
     {
         foreach ($uids as $uid) {
@@ -69,6 +72,7 @@ class PosixGroup
         return in_array($uid, $this->getMemberUIDs());
     }
 
+    /** @param string[] $uids */
     public function overwriteMemberUIDs(array $uids): void
     {
         $this->entry->setAttribute("memberuid", $uids);

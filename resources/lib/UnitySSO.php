@@ -33,7 +33,7 @@ class UnitySSO
     private static function getAttributeRaw(
         string $attributeName,
         ?string $fallbackAttributeName = null,
-    ) {
+    ): string {
         if (isset($_SERVER[$attributeName]) && $_SERVER[$attributeName] != "") {
             return $_SERVER[$attributeName];
         }
@@ -59,6 +59,7 @@ class UnitySSO
         return explode(";", $attribute_raw)[0];
     }
 
+    /** @return array<string, string> */
     public static function getSSO(): array
     {
         return [

@@ -1,5 +1,5 @@
 parameters:
-  level: 5
+  level: 6
   paths:
     - resources
     - webroot
@@ -7,12 +7,27 @@ parameters:
   excludePaths:
     - test/Template.php
   ignoreErrors:
+    - messages:
+        - '#has no return type specified#'
+        - '#has no value type specified#'
+        - '#with no type specified#'
+        - '#with no value type specified#'
+      paths:
+        - resources/lib/phpopenldaper
+    - messages:
+        - '#has no type specified#'
+        - '#has no return type specified#'
+        - '#has no value type specified#'
+        - '#with no type specified#'
+        - '#with no value type specified#'
+      paths:
+        - test
     # $this, $data comes from UnityMailer
     - messages:
         - '#Variable \$this might not be defined.#'
         - '#Variable \$data might not be defined.#'
       paths:
-        - resources/mail/*
+        - 'resources/mail/*'
     # assertTrue(true) makes phpunit shut up about tests doing no assertions
     - messages:
         - '#Call to method PHPUnit\\Framework\\Assert::assertTrue\(\) with true will always evaluate to true.#'
@@ -37,4 +52,4 @@ parameters:
     - messages:
         - '#Variable \$(LDAP|SQL|MAILER|WEBHOOK|GITHUB|SSO|OPERATOR|USER|LOC_HEADER|LOC_FOOTER) might not be defined.#'
       paths:
-        - *
+        - '*'

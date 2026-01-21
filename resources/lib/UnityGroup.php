@@ -271,6 +271,7 @@ class UnityGroup extends PosixGroup
         }
     }
 
+    /** @return array{0: UnityUser, 1: string}[] */
     public function getRequests(): array
     {
         $requests = $this->SQL->getRequests($this->gid);
@@ -288,6 +289,7 @@ class UnityGroup extends PosixGroup
         return $out;
     }
 
+    /** @return UnityUser[] */
     public function getGroupMembers(): array
     {
         $members = $this->getMemberUIDs();
@@ -361,6 +363,11 @@ class UnityGroup extends PosixGroup
         return substr($gid, strlen(self::PI_PREFIX));
     }
 
+    /**
+     * @param string[] $attributes
+     * @param array<string, mixed[]> $default_values
+     * @return array<string, mixed[]>
+     */
     public function getGroupMembersAttributes(array $attributes, array $default_values = []): array
     {
         return $this->LDAP->getUsersAttributes(
