@@ -2,6 +2,7 @@
 
 namespace UnityWebPortal\lib;
 
+use RuntimeException;
 use UnityWebPortal\lib\exceptions\EntryNotFoundException;
 use PHPOpenLDAPer\LDAPConn;
 use PHPOpenLDAPer\LDAPEntry;
@@ -148,6 +149,9 @@ class UnityLDAP extends LDAPConn
         }
         $output_map = [];
         foreach ($output as [$uid, $uidNumber_str]) {
+            if ($uidNumber_str === null) {
+                throw new RuntimeException("uidNumber_str is null");
+            }
             $output_map[$uid] = digits2int($uidNumber_str);
         }
         return $output_map;
@@ -289,8 +293,9 @@ class UnityLDAP extends LDAPConn
             default_values: ["memberuid" => []],
         );
         foreach ($pi_groups_attributes as $array) {
-            $gid = $array["cn"][0];
+            $gid = (string) $array["cn"][0];
             foreach ($array["memberuid"] as $uid) {
+                $uid = (string) $uid;
                 if (!array_key_exists($uid, $uid2pigids)) {
                     $uid2pigids[$uid] = [];
                 }

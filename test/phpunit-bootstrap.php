@@ -405,10 +405,13 @@ class UnityWebPortalTestCase extends TestCase
             $body_regex,
             _json_encode($messages),
         );
-        $messages_with_title = array_filter($messages, fn($x) => preg_match($title_regex, $x[0]));
+        $messages_with_title = array_filter(
+            $messages,
+            fn($x) => (bool) _preg_match($title_regex, $x[0]),
+        );
         $messages_with_title_and_body = array_filter(
             $messages_with_title,
-            fn($x) => preg_match($body_regex, $x[1]),
+            fn($x) => (bool) _preg_match($body_regex, $x[1]),
         );
         $messages_with_title_and_body_and_level = array_filter(
             $messages_with_title_and_body,
@@ -555,6 +558,7 @@ class UnityWebPortalTestCase extends TestCase
 
     function switchBackUser(bool $validate = false)
     {
+        assert($this->last_user_nickname !== null);
         $this->switchUser($this->last_user_nickname, validate: $validate);
     }
 
@@ -578,13 +582,26 @@ function getSomeUIDsOfQualifiedUsersNotRequestedAccountDeletion()
     ];
 }
 
+/**
+ * @param resource $x
+ * @throws ArrayKeyException
+ */
+function getPathFromFileHandle(mixed $x): string
+{
+    $metadata = stream_get_meta_data($x);
+    if (!array_key_exists("uri", $metadata)) {
+        throw new ArrayKeyException("stream_get_meta_data return value has no key 'uri'!");
+    }
+    return $metadata["uri"];
+}
+
 function writeLinesToTmpFile(array $lines)
 {
     $file = tmpfile();
     if (!$file) {
         throw new RuntimeException("failed to make tmpfile");
     }
-    $path = stream_get_meta_data($file)["uri"];
+    $path = getPathFromFileHandle($file);
     $contents = implode("\n", $lines);
     $fwrite = fwrite($file, $contents);
     if ($fwrite === false) {

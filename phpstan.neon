@@ -1,5 +1,5 @@
 parameters:
-  level: 6
+  level: 8
   paths:
     - resources
     - webroot
@@ -12,6 +12,15 @@ parameters:
         - '#has no value type specified#'
         - '#with no type specified#'
         - '#with no value type specified#'
+        - '#\|false given#'
+        - '#\|bool given#'
+        - '#but returns \S+\|bool#'
+        - '#does not accept \S+\|false#'
+        - '#array\|bool supplied for foreach, only iterables are supported#'
+        - '#Cannot access offset \S+ on \S+\|bool#'
+        - '#ldap_get_entries expects LDAP\\Result, array\|LDAP\\Result given#'
+        - '#array_key_exists expects array, array\|null given#'
+        - '#array\|null supplied for foreach, only iterables are supported#'
       paths:
         - resources/lib/phpopenldaper
     - messages:
@@ -20,6 +29,7 @@ parameters:
         - '#has no value type specified#'
         - '#with no type specified#'
         - '#with no value type specified#'
+        - '#Cannot access offset \S+ on \S+\|false#'
       paths:
         - test
     # $this, $data comes from UnityMailer

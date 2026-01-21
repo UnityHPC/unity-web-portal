@@ -7,7 +7,10 @@ use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Exception\NoKeyLoadedException;
 use UnityWebPortal\lib\exceptions\CurlException;
 
-// like assert() but not subject to zend.assertions config
+/**
+ * like assert() but not subject to zend.assertions config
+ * @throws EnsureException
+ */
 function ensure(bool $condition, ?string $message = null): void
 {
     if (!$condition) {
@@ -15,9 +18,10 @@ function ensure(bool $condition, ?string $message = null): void
     }
 }
 
-/*
-key must take the form "KEY_TYPE KEY_DATA OPTIONAL_COMMENT"
-*/
+/**
+ * key must take the form "KEY_TYPE KEY_DATA OPTIONAL_COMMENT"
+ * @throws ValueError
+ */
 function removeSSHKeyOptionalCommentSuffix(string $key): string
 {
     $matches = [];
@@ -65,12 +69,24 @@ function testValidSSHKey(string $key): array
     }
 }
 
+/**
+ * @param int<1,max> $depth
+ * @throws Exception
+ */
 function _json_encode(mixed $value, int $flags = 0, int $depth = 512): string
 {
     $flags |= JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES;
-    return json_encode($value, $flags, $depth);
+    $output = json_encode($value, $flags, $depth);
+    if ($output === false) {
+        throw new Exception("json_encode returned false!");
+    }
+    return $output;
 }
 
+/**
+ * @param int<1,max> $depth
+ * @throws Exception
+ */
 function _json_decode(string $x, ?bool $associative, int $depth = 512, int $flags = 0): mixed
 {
     $output = json_decode($x, $associative, $depth, $flags);
@@ -80,6 +96,7 @@ function _json_decode(string $x, ?bool $associative, int $depth = 512, int $flag
     return $output;
 }
 
+/** @throws EncodingConversionException */
 function _mb_convert_encoding(
     string $string,
     string $to_encoding,
@@ -175,36 +192,79 @@ function getTemplatePath(string $basename): string
     return $template_path;
 }
 
-/** @return string|mixed[] */
-function _preg_replace(mixed ...$args): string|array
-{
-    $output = preg_replace(...$args);
+/**
+ * @param-out int $count
+ * @throws Exception
+ */
+function _preg_replace(
+    string $pattern,
+    string $replacement,
+    string $subject,
+    int $limit = -1,
+    ?int &$count = null,
+): string {
+    $output = preg_replace($pattern, $replacement, $subject, $limit, $count);
     if ($output === null) {
         throw new Exception("preg_replace returned null!");
     }
     return $output;
 }
 
-/** @return mixed[] */
-function _parse_ini_file(mixed ...$args): array
-{
-    $output = parse_ini_file(...$args);
+/**
+ * @param 0|256|512|768 $flags
+ * @param null|array{} $matches
+ * @param-out array<list<int|string|null>|string|null> $matches
+ * @throws Exception
+ */
+function _preg_match(
+    string $pattern,
+    string $subject,
+    ?array &$matches = null,
+    int $flags = 0,
+    int $offset = 0,
+): int {
+    $output = preg_match($pattern, $subject, $matches, $flags, $offset);
+    if ($output === false) {
+        throw new Exception("preg_match returned false!");
+    }
+    return $output;
+}
+
+/**
+ * @return mixed[]
+ * @throws Exception
+ */
+function _parse_ini_file(
+    string $filename,
+    bool $process_sections = false,
+    int $scanner_mode = INI_SCANNER_NORMAL,
+): array {
+    $output = parse_ini_file($filename, $process_sections, $scanner_mode);
     if ($output === false) {
         throw new Exception("parse_ini_file returned false!");
     }
     return $output;
 }
 
-/** @return resource */
-function _fopen(mixed ...$args): mixed
-{
-    $output = fopen(...$args);
+/**
+ * @param resource $context
+ * @return resource
+ * @throws Exception
+ */
+function _fopen(
+    string $filename,
+    string $mode,
+    bool $use_include_path = false,
+    mixed $context = null,
+): mixed {
+    $output = fopen($filename, $mode, $use_include_path, $context);
     if ($output === false) {
         throw new Exception("fopen returned false!");
     }
     return $output;
 }
 
+/** @throws Exception */
 function _ob_get_clean(): string
 {
     $output = ob_get_clean();
@@ -214,10 +274,11 @@ function _ob_get_clean(): string
     return $output;
 }
 
+/** @throws Exception */
 function _curl_exec(CurlHandle $handle): string
 {
     $output = curl_exec($handle);
-    if ($output === false) {
+    if (is_bool($output)) {
         throw new CurlException(curl_error($handle));
     }
     return $output;

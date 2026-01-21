@@ -13,6 +13,7 @@ declare -A utils=(
     ["mb_convert_encoding"]="_mb_convert_encoding"
     ["intval"]="str2int"
     ["preg_replace"]="_preg_replace"
+    ["preg_match"]="_preg_match"
     ["parse_ini_file"]="_parse_ini_file"
     ["fopen"]="_fopen"
     ["ob_get_clean"]="_ob_get_clean"

@@ -243,7 +243,9 @@ class UnityHTTPD
         return $_POST[$key];
     }
 
-    /* returns null if not found and not $die_if_not_found */
+    /**
+     * @return ($die_if_not_found is true ? string : string|null)
+     */
     public static function getQueryParameter(string $key, bool $die_if_not_found = true): ?string
     {
         if (!array_key_exists($key, $_GET)) {

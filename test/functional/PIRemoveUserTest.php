@@ -58,6 +58,7 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
                 break;
             }
         }
+        assert($memberToDelete !== null);
         $this->assertNotEquals($pi->uid, $memberToDelete->uid);
         $this->assertTrue($memberToDelete->getFlag(UserFlag::QUALIFIED));
         $this->assertTrue($piGroup->memberUIDExists($memberToDelete->uid));

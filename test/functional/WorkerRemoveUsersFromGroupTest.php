@@ -19,7 +19,7 @@ class WorkerRemoveUsersFromGroupTest extends UnityWebPortalTestCase
         $uids_to_remove = array_slice($uids, 0, 3);
         $expected_new_uids = array_diff(array_merge([$pi->uid], $uids), $uids_to_remove);
         $remove_uids_file = writeLinesToTmpFile($uids_to_remove);
-        $remove_uids_file_path = stream_get_meta_data($remove_uids_file)["uri"];
+        $remove_uids_file_path = getPathFromFileHandle($remove_uids_file);
         try {
             foreach ($uids as $uid) {
                 $user = new UnityUser($uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
@@ -64,7 +64,7 @@ class WorkerRemoveUsersFromGroupTest extends UnityWebPortalTestCase
     public function testRemoveFromNonexistentGroup()
     {
         $remove_uids_file = writeLinesToTmpFile(["foo", "bar"]);
-        $remove_uids_file_path = stream_get_meta_data($remove_uids_file)["uri"];
+        $remove_uids_file_path = getPathFromFileHandle($remove_uids_file);
         [$rc, $output_lines] = executeWorker(
             "remove-users-from-group.php",
             "alskdj $remove_uids_file_path",
@@ -82,7 +82,7 @@ class WorkerRemoveUsersFromGroupTest extends UnityWebPortalTestCase
         $pi_group = $USER->getPIGroup();
         $members_before = $pi_group->getMemberUIDs();
         $remove_uids_file = writeLinesToTmpFile(["foo", "bar"]);
-        $remove_uids_file_path = stream_get_meta_data($remove_uids_file)["uri"];
+        $remove_uids_file_path = getPathFromFileHandle($remove_uids_file);
         try {
             [$rc, $output_lines] = executeWorker(
                 "remove-users-from-group.php",
