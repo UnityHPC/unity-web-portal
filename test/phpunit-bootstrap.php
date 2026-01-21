@@ -558,6 +558,7 @@ class UnityWebPortalTestCase extends TestCase
 
     function switchBackUser(bool $validate = false)
     {
+        assert($this->last_user_nickname !== null);
         $this->switchUser($this->last_user_nickname, validate: $validate);
     }
 
