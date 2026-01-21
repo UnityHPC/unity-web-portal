@@ -15,6 +15,7 @@ declare -A utils=(
     ["preg_replace"]="_preg_replace"
     ["parse_ini_file"]="_parse_ini_file"
     ["fopen"]="_fopen"
+    ["ob_get_clean"]="_ob_get_clean"
 )
 
 rc=0

@@ -203,3 +203,12 @@ function _fopen(mixed ...$args): mixed
     }
     return $output;
 }
+
+function _ob_get_clean(): string
+{
+    $output = ob_get_clean();
+    if ($output === false) {
+        throw new Exception("ob_get_clean returned false!");
+    }
+    return $output;
+}

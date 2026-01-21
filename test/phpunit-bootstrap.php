@@ -89,9 +89,9 @@ function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_tok
         }
         // https://en.wikipedia.org/wiki/Post/Redirect/Get
         ensure($post_did_redirect_or_die, "post did not redirect or die!");
-        return ob_get_clean();
+        return _ob_get_clean();
     } catch (Exception $e) {
-        ob_get_clean(); //discard output
+        _ob_get_clean(); //discard output
         throw $e;
     } finally {
         unset($_POST);
@@ -110,16 +110,16 @@ function http_get(string $phpfile, array $get_data = [], bool $ignore_die = fals
     ob_start();
     try {
         include $phpfile;
-        return ob_get_clean();
+        return _ob_get_clean();
     } catch (UnityWebPortal\lib\exceptions\NoDieException $e) {
         if ($ignore_die) {
-            return ob_get_clean();
+            return _ob_get_clean();
         } else {
-            ob_get_clean(); // discard output
+            _ob_get_clean(); // discard output
             throw $e;
         }
     } catch (Exception $e) {
-        ob_get_clean(); //discard output
+        _ob_get_clean(); //discard output
         throw $e;
     } finally {
         unset($_GET);

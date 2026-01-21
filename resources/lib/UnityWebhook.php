@@ -40,7 +40,7 @@ class UnityWebhook
 
         ob_start();
         include $template_path;
-        $mes_html = ob_get_clean();
+        $mes_html = _ob_get_clean();
 
         $message = $this->htmlToMarkdown($mes_html);
 
