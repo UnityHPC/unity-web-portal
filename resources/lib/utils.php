@@ -173,3 +173,21 @@ function getTemplatePath(string $basename): string
     }
     return $template_path;
 }
+
+/** @return string|mixed[] */
+function pregReplace(mixed ...$args): string|array {
+    $output = preg_replace(...$args);
+    if ($output === null) {
+        throw new RuntimeException("preg_replace returned null!");
+    }
+    return $output;
+}
+
+/** @return mixed[] */
+function parseINIFile(mixed ...$args): array {
+    $output = parse_ini_file(...$args);
+    if ($output === false) {
+        throw new RuntimeException("parse_ini_file returned false!");
+    }
+    return $output;
+}

@@ -12,6 +12,8 @@ declare -A utils=(
     ["mb_detect_encoding"]="mbDetectEncoding"
     ["mb_convert_encoding"]="mbConvertEncoding"
     ["intval"]="str2int"
+    ["preg_replace"]="pregReplace"
+    ["parse_ini_file"]="parseINIFile"
 )
 
 rc=0
