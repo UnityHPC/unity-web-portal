@@ -5,6 +5,7 @@ use UnityWebPortal\lib\exceptions\EncodingUnknownException;
 use UnityWebPortal\lib\exceptions\EncodingConversionException;
 use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Exception\NoKeyLoadedException;
+use UnityWebPortal\lib\exceptions\CurlException;
 
 // like assert() but not subject to zend.assertions config
 function ensure(bool $condition, ?string $message = null): void
@@ -213,11 +214,11 @@ function _ob_get_clean(): string
     return $output;
 }
 
-function _curl_exec(mixed ...$args): string
+function _curl_exec(CurlHandle $handle): string
 {
-    $output = curl_exec(...$args);
+    $output = curl_exec($handle);
     if ($output === false) {
-        throw new Exception("curl_exec returned false!");
+        throw new CurlException(curl_error($handle));
     }
     return $output;
 }

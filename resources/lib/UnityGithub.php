@@ -17,9 +17,6 @@ class UnityGithub
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         $curl_output = _curl_exec($curl);
-        if ($curl_output === false) {
-            throw new CurlException(curl_error($curl));
-        }
         $keys = _json_decode($curl_output, false);
         curl_close($curl);
 
