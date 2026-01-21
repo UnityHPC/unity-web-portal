@@ -2,7 +2,6 @@
 
 namespace UnityWebPortal\lib;
 
-use account_deletion_request;
 use PDO;
 
 /**
