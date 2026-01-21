@@ -48,7 +48,7 @@ if ($course_user->exists()) {
     $course_user_dn = $LDAP->getUserEntry($cn)->getDN();
     _die("course user already exists: '$course_user_dn'", 1);
 }
-$org = new UnityOrg($org_gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+$org = new UnityOrg($org_gid, $LDAP);
 if (!$org->exists()) {
     print "WARNING: creating new org '$org_gid'...\n";
 }
