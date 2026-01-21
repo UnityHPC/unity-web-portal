@@ -1,5 +1,5 @@
 parameters:
-  level: 7
+  level: 8
   paths:
     - resources
     - webroot
@@ -19,6 +19,8 @@ parameters:
         - '#array\|bool supplied for foreach, only iterables are supported#'
         - '#Cannot access offset \S+ on \S+\|bool#'
         - '#ldap_get_entries expects LDAP\\Result, array\|LDAP\\Result given#'
+        - '#array_key_exists expects array, array\|null given#'
+        - '#array\|null supplied for foreach, only iterables are supported#'
       paths:
         - resources/lib/phpopenldaper
     - messages:
