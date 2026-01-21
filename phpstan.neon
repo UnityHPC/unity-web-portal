@@ -27,7 +27,7 @@ parameters:
         - '#Variable \$this might not be defined.#'
         - '#Variable \$data might not be defined.#'
       paths:
-        - resources/mail/*
+        - 'resources/mail/*'
     # assertTrue(true) makes phpunit shut up about tests doing no assertions
     - messages:
         - '#Call to method PHPUnit\\Framework\\Assert::assertTrue\(\) with true will always evaluate to true.#'
@@ -52,4 +52,4 @@ parameters:
     - messages:
         - '#Variable \$(LDAP|SQL|MAILER|WEBHOOK|GITHUB|SSO|OPERATOR|USER|LOC_HEADER|LOC_FOOTER) might not be defined.#'
       paths:
-        - *
+        - '*'
