@@ -194,9 +194,19 @@ function _preg_replace(
     return $output;
 }
 
-function _preg_match(mixed ...$args): int
-{
-    $output = preg_match(...$args);
+/**
+ * @param 0|256|512|768 $flags
+ * @param null|array{} $matches
+ * @param-out array<list<int|string|null>|string|null> $matches
+ */
+function _preg_match(
+    string $pattern,
+    string $subject,
+    ?array &$matches = null,
+    int $flags = 0,
+    int $offset = 0,
+): int {
+    $output = preg_match($pattern, $subject, $matches, $flags, $offset);
     if ($output === false) {
         throw new Exception("preg_match returned false!");
     }
