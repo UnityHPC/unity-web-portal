@@ -32,6 +32,7 @@ repos:
               resources/templates/.*|
               resources/mail/.*|
               webroot/.*|
+              \.php-cs-fixer\.dist\.php|
           )$
       - id: phpcbf-impure
         name: PHP Code Beautifier and Fixer (mixed PHP/HTML files)
@@ -100,6 +101,7 @@ repos:
               resources/templates/.*|
               resources/mail/.*|
               webroot/.*|
+              \.php-cs-fixer\.dist\.php|
           )$
       - id: phpcs-impure
         name: PHP Code Sniffer (mixed PHP/HTML files)
