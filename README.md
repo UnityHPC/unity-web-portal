@@ -46,6 +46,8 @@ See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for prod
    - Submodules checked out (`git submodule update --checkout --init`)
    - Composer (`apt install composer` on Ubuntu)
    - NodeJS
+     - this is only needed because we use `npm` to manage frontend JS files like jQuery
+     - (`curl -sL "https://deb.nodesource.com/setup_24.x" | sudo bash; sudo apt update; sudo apt install nodejs` on Ubuntu)
    - Dependencies:
      - PHP extensions
        - curl, intl, ldap, mbstring, mysql, pdo, xml (`apt install php-curl php-intl php-ldap php-mbstring php-mysql php-pdo php-xml` on Ubuntu)
