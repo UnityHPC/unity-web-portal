@@ -154,7 +154,7 @@ echo "
     </table>
     <hr>
     <h2>Danger Zone</h2>
-    <div style='display: flex; flex-direction: row;'>
+    <div style='display: flex; flex-direction: row; align-items: center;'>
         <p>
             <strong>Disable PI Group</strong>
             <br>
@@ -173,7 +173,7 @@ echo "
 if (count($assocs) > 1) {
     echo "
         <input type='submit' value='Disable PI Group' disabled>
-        <p>You must first remove all members.</p>
+        <p>You must first remove all members before you can disable.</p>
     ";
 } else {
     echo "
