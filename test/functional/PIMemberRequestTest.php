@@ -1,8 +1,6 @@
 <?php
 
 use UnityWebPortal\lib\UnityHTTPDMessageLevel;
-use UnityWebPortal\lib\UnitySQL;
-use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityHTTPD;
 
 class PIMemberRequestTest extends UnityWebPortalTestCase

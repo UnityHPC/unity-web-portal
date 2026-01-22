@@ -3,7 +3,6 @@
 namespace UnityWebPortal\lib;
 
 use PHPOpenLDAPer\LDAPEntry;
-use Exception;
 
 /*
 does not extend LDAPEntry because UnityGroup extends this and I don't want UnityGroup

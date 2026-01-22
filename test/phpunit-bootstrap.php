@@ -27,7 +27,6 @@ require_once __DIR__ . "/../resources/lib/exceptions/EncodingUnknownException.ph
 require_once __DIR__ . "/../resources/lib/exceptions/EncodingConversionException.php";
 require_once __DIR__ . "/../resources/lib/exceptions/UnityHTTPDMessageNotFoundException.php";
 
-use PHPStan\DependencyInjection\ValidateExcludePathsExtension;
 use UnityWebPortal\lib\CSRFToken;
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use UnityWebPortal\lib\UnityGroup;

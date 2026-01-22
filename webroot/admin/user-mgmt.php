@@ -4,7 +4,6 @@ require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UserFlag;
-use UnityWebPortal\lib\CSRFToken;
 
 if (!$USER->getFlag(UserFlag::ADMIN)) {
     UnityHTTPD::forbidden("not an admin", "You are not an admin.");

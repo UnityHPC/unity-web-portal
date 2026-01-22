@@ -2,8 +2,6 @@
 
 namespace UnityWebPortal\lib;
 
-use UnityWebPortal\lib\exceptions\CurlException;
-
 class UnityGithub
 {
     /** @return string[] */

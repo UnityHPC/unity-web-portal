@@ -3,9 +3,7 @@
 namespace UnityWebPortal\lib;
 
 use PHPOpenLDAPer\LDAPEntry;
-use phpseclib3\Crypt\PublicKeyLoader;
 use Exception;
-use phpseclib3\Exception\NoKeyLoadedException;
 use UnityWebPortal\lib\exceptions\ArrayKeyException;
 
 class UnityUser

@@ -3,7 +3,6 @@
 $_SERVER["HTTP_HOST"] = "course-creator"; // see deployment/overrides/course-creator
 include __DIR__ . "/init.php";
 use UnityWebPortal\lib\UnityUser;
-use UnityWebPortal\lib\UnityGroup;
 use UnityWebPortal\lib\UnityOrg;
 
 function cn2org($cn)

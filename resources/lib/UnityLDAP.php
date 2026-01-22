@@ -6,7 +6,6 @@ use RuntimeException;
 use UnityWebPortal\lib\exceptions\EntryNotFoundException;
 use PHPOpenLDAPer\LDAPConn;
 use PHPOpenLDAPer\LDAPEntry;
-use UnityWebPortal\lib\PosixGroup;
 
 enum UserFlag: string
 {

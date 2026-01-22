@@ -2,7 +2,6 @@
 
 namespace UnityWebPortal\lib;
 
-use Exception;
 use UnityWebPortal\lib\exceptions\SSOException;
 
 class UnitySSO

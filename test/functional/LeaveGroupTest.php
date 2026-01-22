@@ -1,5 +1,4 @@
 <?php
-use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UserFlag;
 use UnityWebPortal\lib\UnityGroup;
 
