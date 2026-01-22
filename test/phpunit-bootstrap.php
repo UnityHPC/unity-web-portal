@@ -288,6 +288,7 @@ class UnityWebPortalTestCase extends TestCase
         "NonExistent" => "user2001_org998_test",
         "Normal" => "user4_org1_test",
         "NormalPI" => "user11_org1_test",
+        "CourseTeacher" => "user1_org1_test",
     ];
 
     private function validateUser(string $nickname)
@@ -316,6 +317,11 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertTrue($LDAP->getUserEntry($USER->uid)->exists());
                 $this->assertTrue($LDAP->getGroupEntry($USER->uid)->exists());
                 $this->assertTrue($LDAP->getOrgGroupEntry($USER->getOrg())->exists());
+                break;
+            case "CourseTeacher":
+                $gids = $LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail());
+                $course_gids = array_filter($gids, fn($x) => $x !== $USER->getPIGroup()->gid);
+                $this->assertNotEmpty($course_gids);
                 break;
             case "CustomMapped555":
                 $this->assertFalse($USER->exists());

@@ -83,4 +83,27 @@ class PageLoadTest extends UnityWebPortalTestCase
         $output = http_get($path, ignore_die: true);
         $this->assertMatchesRegularExpression("/panel\/new_account\.php/", $output);
     }
+
+    public function testLoadPIPageForAnotherGroup()
+    {
+        $this->switchUser("CourseTeacher");
+        $output = http_get(__DIR__ . "/../../webroot/panel/pi.php", [
+            "gid" => "pi_cs123_org1_test",
+        ]);
+        $this->assertMatchesRegularExpression("/My Users/", $output);
+    }
+
+    public function testLoadPIPageForAnotherGroupForbidden()
+    {
+        global $USER;
+        $this->switchUser("EmptyPIGroupOwner");
+        $gid = $USER->getPIGroup()->gid;
+        $this->switchUser("Blank");
+        $output = http_get(
+            __DIR__ . "/../../webroot/panel/pi.php",
+            ["gid" => $gid],
+            ignore_die: true,
+        );
+        $this->assertMatchesRegularExpression("/not allowed/", $output);
+    }
 }
