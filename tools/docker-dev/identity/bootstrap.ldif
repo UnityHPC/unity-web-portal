@@ -1200,6 +1200,7 @@ memberuid: user1299_org1_test
 memberuid: user1300_org1_test
 memberuid: user1301_org1_test
 memberuid: user1304_org1_test
+memberuid: cs123_org1_test
 
 dn: cn=user15_org3_test,ou=groups,dc=unityhpc,dc=test
 cn: user15_org3_test
