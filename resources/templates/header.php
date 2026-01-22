@@ -107,7 +107,7 @@ if (isset($SSO)) {
         echo getHyperlink("My PIs", "panel/groups.php") . "\n";
 
         foreach ($LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail()) as $gid) {
-            echo getHyperlink("Manage PI Group '$gid'", "panel/pi.php?gid=" . urlencode($gid));
+            echo getHyperlink("PI Group '$gid'", "panel/pi.php?gid=" . urlencode($gid));
             echo "\n";
         }
 
