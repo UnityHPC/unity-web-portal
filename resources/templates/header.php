@@ -30,16 +30,18 @@ if (isset($SSO)) {
     }
 }
 
+$pi_gids_for_navbar = [];
 if (isset($USER)) {
     $got_gids_from_cookie = false;
-    if (isset($_COOKIE["pi_gids_for_navbar"])) {
+    $cookie_name = "navbar_pi_gids_for_uid_" . $USER->uid;
+    if (isset($_COOKIE[$cookie_name])) {
         try {
-            $pi_gids_for_navbar = _json_decode($_COOKIE["pi_gids_for_navbar"]);
+            $pi_gids_for_navbar = _json_decode($_COOKIE[$cookie_name]);
             $got_gids_from_cookie = true;
         } catch (Throwable $e) {
             UnityHTTPD::errorLog(
                 "warning",
-                "failed to decode pi_gids_for_navbar from cookie",
+                "failed to decode PI GIDs from cookie",
                 error: $e,
                 data: $_COOKIE,
             );
@@ -48,13 +50,11 @@ if (isset($USER)) {
     if (!$got_gids_from_cookie) {
         $pi_gids_for_navbar = $LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail());
         setcookie(
-            "pi_gids_for_navbar",
+            $cookie_name,
             _json_encode($pi_gids_for_navbar),
             time() + 60 * 30 // expire in 30 minutes
         );
     }
-} else {
-    $pi_gids_for_navbar = [];
 }
 
 ?>
