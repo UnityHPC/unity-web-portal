@@ -68,18 +68,29 @@ class UnityGroup extends PosixGroup
         if ($this->getIsDisabled()) {
             throw new Exception("cannot disable an already disabled group");
         }
-        if (count($this->getMemberUIDs()) > 1) {
-            throw new Exception("cannot disable a group that has members");
-        }
         $this->SQL->addLog("disable_pi_group", $this->gid);
+        $memberuids = $this->getMemberUIDs();
         if ($send_mail) {
-            $this->MAILER->sendMail($this->getOwner()->getMail(), "group_disabled", [
-                "group_name" => $this->gid,
-            ]);
+            $member_attributes = $this->LDAP->getUsersAttributes($memberuids, ["mail"]);
+            $member_mails = array_map(fn($x) => (string) $x["mail"][0], $member_attributes);
+            if (count($member_mails) > 0) {
+                $this->MAILER->sendMail($member_mails, "group_disabled", [
+                    "group_name" => $this->gid,
+                ]);
+            }
         }
         $this->setIsDisabled(true);
-        $this->entry->setAttribute("memberuid", []);
-        $this->getOwner()->updateIsQualified($send_mail);
+        if (count($memberuids) > 0) {
+            $this->entry->setAttribute("memberuid", []);
+        }
+        // TODO optimize
+        // UnityUser::__construct() makes one LDAP query for each user
+        // updateIsQualified() makes one LDAP query for each member
+        // if user is no longer in any PI group, disqualify them
+        foreach ($memberuids as $uid) {
+            $user = new UnityUser($uid, $this->LDAP, $this->SQL, $this->MAILER, $this->WEBHOOK);
+            $user->updateIsQualified($send_mail);
+        }
     }
 
     private function reenable(bool $send_mail = true): void
