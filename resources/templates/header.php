@@ -30,9 +30,21 @@ if (isset($SSO)) {
     }
 }
 if (isset($USER)) {
+    $got_gids_from_cookie = false;
     if (isset($_COOKIE["pi_gids_for_navbar"])) {
-        $pi_gids_for_navbar = _json_decode($_COOKIE["pi_gids_for_navbar"]);
-    } else {
+        try {
+            $pi_gids_for_navbar = _json_decode($_COOKIE["pi_gids_for_navbar"]);
+            $got_gids_from_cookie = true;
+        } catch (Throwable $e) {
+            UnityHTTPD::errorLog(
+                "warning",
+                "failed to decode pi_gids_for_navbar from cookie",
+                error: $e,
+                data: $_COOKIE,
+            );
+        }
+    }
+    if (!$got_gids_from_cookie) {
         $pi_gids_for_navbar = $LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail());
         setcookie(
             "pi_gids_for_navbar",
