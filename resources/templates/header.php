@@ -31,7 +31,7 @@ if (isset($SSO)) {
 }
 
 $pi_gids_for_navbar = $_COOKIE["pi_gids_for_navbar"] ?? null;
-if (!$pi_gids_for_navbar) {
+if ($pi_gids_for_navbar === null) {
     $pi_gids_for_navbar = $LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail());
     setcookie(
         "pi_gids_for_navbar",
