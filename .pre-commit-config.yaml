@@ -49,6 +49,11 @@ repos:
           (?x)^(
               resources/mail/user_flag_.*\.php|
           )$
+      - id: php-cs-fixer
+        name: PHP CS Fixer
+        entry: ./vendor/bin/php-cs-fixer
+        language: system
+        files: \.php$
 
   - repo: https://github.com/rbubley/mirrors-prettier
     rev: v3.6.2
