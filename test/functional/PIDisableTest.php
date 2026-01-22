@@ -66,7 +66,11 @@ class PIDisableTest extends UnityWebPortalTestCase
             $pi_group->newUserRequest($new_user);
             $pi_group->approveUser($new_user);
             $this->assertTrue($new_user->getFlag(UserFlag::QUALIFIED));
-            http_post(__DIR__ . "/../../webroot/panel/pi.php", ["form_type" => "disable"]);
+            $this->switchUser("Admin");
+            http_post(__DIR__ . "/../../webroot/admin/pi-mgmt.php", [
+                "form_type" => "disable",
+                "pi" => $pi_group->gid,
+            ]);
             $this->assertFalse($new_user->getFlag(UserFlag::QUALIFIED));
         } finally {
             $entry = $LDAP->getPIGroupEntry($pi_group->gid);
