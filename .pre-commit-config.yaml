@@ -51,9 +51,10 @@ repos:
           )$
       - id: php-cs-fixer
         name: PHP CS Fixer
-        entry: ./vendor/bin/php-cs-fixer
+        entry: ./vendor/bin/php-cs-fixer fix
         language: system
         files: \.php$
+        pass_filenames: false
 
   - repo: https://github.com/rbubley/mirrors-prettier
     rev: v3.6.2
