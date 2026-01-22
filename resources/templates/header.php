@@ -53,6 +53,8 @@ if (isset($USER)) {
             time() + 60 * 30 // expire in 30 minutes
         );
     }
+} else {
+    $pi_gids_for_navbar = [];
 }
 
 ?>
