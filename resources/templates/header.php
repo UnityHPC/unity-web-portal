@@ -30,6 +30,16 @@ if (isset($SSO)) {
     }
 }
 
+$pi_gids_for_navbar = $_COOKIE["pi_gids_for_navbar"] ?? null;
+if (!$pi_gids_for_navbar) {
+    $pi_gids_for_navbar = $LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail());
+    setcookie(
+        "pi_gids_for_navbar",
+        _json_encode($pi_gids_for_navbar),
+        time() + 60 * 30 // expire in 30 minutes
+    );
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -106,7 +116,7 @@ if (isset($SSO)) {
         echo getHyperlink("Account Settings", "panel/account.php") . "\n";
         echo getHyperlink("My PIs", "panel/groups.php") . "\n";
 
-        foreach ($LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail()) as $gid) {
+        foreach ($pi_gids_for_navbar as $gid) {
             echo getHyperlink("PI Group '$gid'", "panel/pi.php?gid=" . urlencode($gid));
             echo "\n";
         }
