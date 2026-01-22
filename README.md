@@ -115,6 +115,8 @@ cp --preserve=all "$prod/deployment/config/config.ini" ./deployment/config/confi
 rsync -a "$prod/deployment/custom_user_mappings/" ./deployment/custom_user_mappings/
 rsync -a "$prod/deployment/overrides/" ./deployment/overrides/
 rsync -a "$prod/webroot/assets/footer_logos/" ./footer_logos/
+rsync -a "$prod/deployment/mail_overrides/" ./deployment/mail_overrides/
+rsync -a "$prod/deployment/templates_overrides/" ./deployment/templates_overrides/
 rm "$prod" && ln -s "$PWD" "$prod"
 ```
 
