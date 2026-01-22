@@ -29,15 +29,17 @@ if (isset($SSO)) {
         UnityHTTPD::redirect(getURL("panel/new_account.php"));
     }
 }
-
-$pi_gids_for_navbar = $_COOKIE["pi_gids_for_navbar"] ?? null;
-if ($pi_gids_for_navbar === null) {
-    $pi_gids_for_navbar = $LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail());
-    setcookie(
-        "pi_gids_for_navbar",
-        _json_encode($pi_gids_for_navbar),
-        time() + 60 * 30 // expire in 30 minutes
-    );
+if (isset($USER)) {
+    if (isset($_COOKIE["pi_gids_for_navbar"])) {
+        $pi_gids_for_navbar = _json_decode($_COOKIE["pi_gids_for_navbar"]);
+    } else {
+        $pi_gids_for_navbar = $LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail());
+        setcookie(
+            "pi_gids_for_navbar",
+            _json_encode($pi_gids_for_navbar),
+            time() + 60 * 30 // expire in 30 minutes
+        );
+    }
 }
 
 ?>
