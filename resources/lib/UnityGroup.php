@@ -63,6 +63,10 @@ class UnityGroup extends PosixGroup
         }
     }
 
+    /**
+     * email all members that group is now disabled, remove all members, log, set attribute
+     * the owner must manually remove all members first, but admins don't have this requirement
+     */
     public function disable(bool $send_mail = true): void
     {
         if ($this->getIsDisabled()) {
