@@ -21,7 +21,6 @@ Typical Usage:
 
 Admin Features:
 
-- Automatic updating of LDAP to reflect current state of users, groups, organizations, PI groups
 - Responsive Tables ([datatables.net](https://datatables.net)) for filtering, sorting, pagination, etc.
 - Branding customization for multiple domains simultaneously
 - Custom UIDNumber / GIDNumber mappings for specific users
