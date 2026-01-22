@@ -165,7 +165,9 @@ echo "
 if (count($assocs) > 1) {
     echo "
         <input type='submit' value='Disable PI Group' disabled>
-        <p>You must first remove all members before you can disable your group.</p>
+        <label style='margin-left: 10px;'>
+            You must first remove all members before you can disable your group.
+        </label>
     ";
 } else {
     echo "
