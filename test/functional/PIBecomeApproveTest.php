@@ -93,7 +93,7 @@ class PIBecomeApproveTest extends UnityWebPortalTestCase
         } finally {
             if ($pi_group->memberUIDExists($approve_uid)) {
                 $pi_group->removeMemberUID($approve_uid);
-                $pi_group->setIsDisabled(true);
+                callPrivateMethod($pi_group, "setIsDisabled", true);
                 assert(!$user->isPI());
             }
         }

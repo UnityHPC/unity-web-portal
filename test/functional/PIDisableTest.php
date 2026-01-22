@@ -85,9 +85,9 @@ class PIDisableTest extends UnityWebPortalTestCase
         $entry = $LDAP->getPIGroupEntry($pi_group->gid);
         $this->assertEquals([], $entry->getAttribute("isDisabled"));
         try {
-            $pi_group->setIsDisabled(false);
+            callPrivateMethod($pi_group, "setIsDisabled", false);
             $this->assertFalse($pi_group->getIsDisabled());
-            $pi_group->setIsDisabled(true);
+            callPrivateMethod($pi_group, "setIsDisabled", true);
             $this->assertTrue($pi_group->getIsDisabled());
             $entry->removeAttribute("isDisabled");
             $this->assertFalse($pi_group->getIsDisabled());
@@ -111,7 +111,7 @@ class PIDisableTest extends UnityWebPortalTestCase
             http_get(__DIR__ . "/../../webroot/admin/pi-mgmt.php"),
         );
         try {
-            $pi_group->setIsDisabled(false);
+            callPrivateMethod($pi_group, "setIsDisabled", false);
             $this->assertEquals(["FALSE"], $entry->getAttribute("isDisabled"));
             $this->assertStringContainsString(
                 $pi_group->gid,

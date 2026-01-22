@@ -413,7 +413,7 @@ class UnityGroup extends PosixGroup
         }
     }
 
-    public function setIsDisabled(bool $new_value): void
+    private function setIsDisabled(bool $new_value): void
     {
         $this->entry->setAttribute("isDisabled", $new_value ? "TRUE" : "FALSE");
     }
