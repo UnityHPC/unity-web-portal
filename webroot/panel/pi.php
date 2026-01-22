@@ -154,28 +154,25 @@ echo "
     </table>
     <hr>
     <h2>Danger Zone</h2>
+    <form
+        action=''
+        method='POST'
+        onsubmit='return confirm(\"Are you sure you want to disable your PI group?\")'
+    >
+        $CSRFTokenHiddenFormInput
+        <input type='hidden' name='form_type' value='disable'>
 ";
-if (count($assocs) > 0) {
+if (count($assocs) > 1) {
     echo "
-        <form action='' method='POST'>
-            <input type='hidden' name='form_type' value='disable'>
-            <input type='submit' value='Disable PI Account' disabled>
-            <p>You must first remove all members before you can disable your group.</p>
-        </form>
+        <input type='submit' value='Disable PI Group' disabled>
+        <p>You must first remove all members before you can disable your group.</p>
     ";
 } else {
     echo "
-        <form
-            action=''
-            method='POST'
-            onsubmit='return confirm(\"Are you sure you want to disable your PI group?\")'
-        >
-            $CSRFTokenHiddenFormInput
-            <input type='hidden' name='form_type' value='disable'>
-            <input type='submit' value='Disable PI Account'>
-        </form>
+        <input type='submit' value='Disable PI Group'>
     ";
 }
+echo "</form>";
 
 ?>
 
