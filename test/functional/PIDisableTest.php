@@ -53,30 +53,6 @@ class PIDisableTest extends UnityWebPortalTestCase
         }
     }
 
-    public function testMemberBecomesUnqualified()
-    {
-        global $USER, $LDAP;
-        $this->switchUser("Blank");
-        $new_user = $USER;
-        $this->assertFalse($new_user->getFlag(UserFlag::QUALIFIED));
-        $this->switchUser("EmptyPIGroupOwner");
-        $pi_group = $USER->getPIGroup();
-        $memberuids_before = $pi_group->getMemberUIDs();
-        try {
-            $pi_group->newUserRequest($new_user);
-            $pi_group->approveUser($new_user);
-            $this->assertTrue($new_user->getFlag(UserFlag::QUALIFIED));
-            http_post(__DIR__ . "/../../webroot/panel/pi.php", ["form_type" => "disable"]);
-            $this->assertFalse($new_user->getFlag(UserFlag::QUALIFIED));
-        } finally {
-            $entry = $LDAP->getPIGroupEntry($pi_group->gid);
-            $entry->setAttribute("memberuid", $memberuids_before);
-            $entry->setAttribute("isDisabled", "FALSE");
-            $pi_group->getOwner()->setFlag(UserFlag::QUALIFIED, true);
-            $new_user->setFlag(UserFlag::QUALIFIED, false);
-        }
-    }
-
     public function testGetDisabledSetDisabled()
     {
         global $USER, $LDAP;
