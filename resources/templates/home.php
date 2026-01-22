@@ -1,5 +1,5 @@
 <h1>Welcome</h1>
-<p>
+<p style="text-wrap: balance;">
     Welcome to the UnityHPC Platform Account Portal.
     Here you can manage your SSH keys, join and leave PI groups, manage your own PI group, and more.
     <?php
