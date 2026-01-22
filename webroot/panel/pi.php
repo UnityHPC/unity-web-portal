@@ -154,27 +154,33 @@ echo "
     </table>
     <hr>
     <h2>Danger Zone</h2>
-    <form
-        action=''
-        method='POST'
-        onsubmit='return confirm(\"Are you sure you want to disable your PI group?\")'
-    >
-        $CSRFTokenHiddenFormInput
-        <input type='hidden' name='form_type' value='disable'>
+    <div style='display: flex; flex-direction: row;'>
+        <p>
+            <strong>Disable PI Group</strong>
+            <br>
+            Your group's files will be permanently deleted,
+            and all group members will lose access to UnityHPC Platform services
+            unless they are a member of some other group.
+        </p>
+        <form
+            action=''
+            method='POST'
+            onsubmit='return confirm(\"Are you sure you want to disable your PI group?\")'
+        >
+            $CSRFTokenHiddenFormInput
+            <input type='hidden' name='form_type' value='disable'>
 ";
 if (count($assocs) > 1) {
     echo "
         <input type='submit' value='Disable PI Group' disabled>
-        <label style='margin-left: 10px;'>
-            You must first remove all members before you can disable your group.
-        </label>
+        <p>You must first remove all members.</p>
     ";
 } else {
     echo "
         <input type='submit' value='Disable PI Group'>
     ";
 }
-echo "</form>";
+echo "</div></form>";
 
 ?>
 
