@@ -31,7 +31,7 @@ if (isset($SSO)) {
 }
 
 $pi_gids_for_navbar = [];
-if (isset($USER)) {
+if (isset($USER) && ($USER->exists())) {
     $got_gids_from_cookie = false;
     $cookie_name = "navbar_pi_gids_for_uid_" . $USER->uid;
     if (isset($_COOKIE[$cookie_name])) {
