@@ -34,6 +34,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             break;
         case "disable":
+            if (count($group->getMemberUIDs()) > 1) {
+                UnityHTTPD::messageError("Cannot Disable PI Group", "Group still has members");
+                UnityHTTPD::redirect();
+            }
             if ($group->getIsDisabled()) {
                 UnityHTTPD::messageError("Cannot Disable PI Group", "Group is already disabled");
                 UnityHTTPD::redirect();
@@ -150,16 +154,28 @@ echo "
     </table>
     <hr>
     <h2>Danger Zone</h2>
-    <form
-        action=''
-        method='POST'
-        onsubmit='return confirm(\"Are you sure you want to disable your PI group?\")'
-    >
-        $CSRFTokenHiddenFormInput
-        <input type='hidden' name='form_type' value='disable'>
-        <input type='submit' value='Disable PI Account'>
-    </form>
 ";
+if (count($assocs) > 0) {
+    echo "
+        <form action='' method='POST'>
+            <input type='hidden' name='form_type' value='disable'>
+            <input type='submit' value='Disable PI Account' disabled>
+            <p>You must first remove all members before you can disable your group.</p>
+        </form>
+    ";
+} else {
+    echo "
+        <form
+            action=''
+            method='POST'
+            onsubmit='return confirm(\"Are you sure you want to disable your PI group?\")'
+        >
+            $CSRFTokenHiddenFormInput
+            <input type='hidden' name='form_type' value='disable'>
+            <input type='submit' value='Disable PI Account'>
+        </form>
+    ";
+}
 
 ?>
 
