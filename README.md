@@ -77,6 +77,8 @@ See the Docker Compose environment (`tools/docker-dev/`) for an (unsafe for prod
 1. If using custom UIDNumber/GIDNumber mappings, create `deployment/custom_user_mappings/*.csv`
    - The 1st column is UID, the 2nd column is both UIDNumber and GIDNumber
 1. Add logos to `webroot/assets/footer_logos/`
+1. Copy emails from `resources/mail` to `deployment/mail_overrides` and edit them if you wish
+1. Copy pages from `resources/templates` to `deployment/templates_overrides` and edit them if you wish
 
 ## Integration
 
