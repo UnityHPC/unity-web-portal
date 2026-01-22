@@ -29,6 +29,7 @@ if (isset($SSO)) {
         UnityHTTPD::redirect(getURL("panel/new_account.php"));
     }
 }
+
 if (isset($USER)) {
     $got_gids_from_cookie = false;
     if (isset($_COOKIE["pi_gids_for_navbar"])) {
