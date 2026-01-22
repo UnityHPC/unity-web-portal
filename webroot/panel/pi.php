@@ -132,8 +132,9 @@ echo "
         <tbody>
 ";
 
+$owner_uid = $group->getOwner()->uid;
 foreach ($assocs as $assoc) {
-    if ($assoc->uid == $USER->uid) {
+    if ($assoc->uid == $owner_uid) {
         continue;
     }
 
