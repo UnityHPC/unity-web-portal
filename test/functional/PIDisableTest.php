@@ -1,4 +1,5 @@
 <?php
+use UnityWebPortal\lib\UnityHTTPDMessageLevel;
 use UnityWebPortal\lib\UserFlag;
 
 class PIDisableTest extends UnityWebPortalTestCase
@@ -72,6 +73,33 @@ class PIDisableTest extends UnityWebPortalTestCase
                 "pi" => $pi_group->gid,
             ]);
             $this->assertFalse($new_user->getFlag(UserFlag::QUALIFIED));
+        } finally {
+            $entry = $LDAP->getPIGroupEntry($pi_group->gid);
+            $entry->setAttribute("memberuid", $memberuids_before);
+            $entry->setAttribute("isDisabled", "FALSE");
+            $pi_group->getOwner()->setFlag(UserFlag::QUALIFIED, true);
+            $new_user->setFlag(UserFlag::QUALIFIED, false);
+        }
+    }
+
+    public function testPICannotDisableIfMembersExist()
+    {
+        global $USER, $LDAP;
+        $this->switchUser("Blank");
+        $new_user = $USER;
+        $this->assertFalse($new_user->getFlag(UserFlag::QUALIFIED));
+        $this->switchUser("EmptyPIGroupOwner");
+        $pi_group = $USER->getPIGroup();
+        $memberuids_before = $pi_group->getMemberUIDs();
+        try {
+            $pi_group->newUserRequest($new_user);
+            $pi_group->approveUser($new_user);
+            http_post(__DIR__ . "/../../webroot/panel/pi.php", ["form_type" => "disable"]);
+            $this->assertMessageExists(
+                UnityHTTPDMessageLevel::ERROR,
+                "/Cannot Disable PI Group/",
+                "/Group still has members/",
+            );
         } finally {
             $entry = $LDAP->getPIGroupEntry($pi_group->gid);
             $entry->setAttribute("memberuid", $memberuids_before);
