@@ -8,6 +8,9 @@ use UnityWebPortal\lib\UnityGroup;
 
 if (($gid = $_GET["gid"] ?? null) !== null) {
     $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+    if (!$group->exists()) {
+        UnityHTTPD::badRequest("no such group: '$gid'", "This group does not exist.");
+    }
     if ($group->getOwner()->getMail() !== $USER->getMail()) {
         UnityHTTPD::forbidden(
             "user '$USER->uid' is not allowed to manage PI group '$gid'",

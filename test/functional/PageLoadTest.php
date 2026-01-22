@@ -106,4 +106,15 @@ class PageLoadTest extends UnityWebPortalTestCase
         );
         $this->assertMatchesRegularExpression("/not allowed/", $output);
     }
+
+    public function testLoadPIPageForNonexistentGroup()
+    {
+        $this->switchUser("CourseTeacher");
+        $output = http_get(
+            __DIR__ . "/../../webroot/panel/pi.php",
+            ["gid" => "foobar"],
+            ignore_die: true,
+        );
+        $this->assertMatchesRegularExpression("/This group does not exist/", $output);
+    }
 }
