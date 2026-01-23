@@ -4,11 +4,24 @@ require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityHTTPD;
+use UnityWebPortal\lib\UnityGroup;
 
-$group = $USER->getPIGroup();
-
-if (!$USER->isPI()) {
-    UnityHTTPD::forbidden("not a PI", "You are not a PI.");
+if (($gid = $_GET["gid"] ?? null) !== null) {
+    $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+    if (!$group->exists()) {
+        UnityHTTPD::badRequest("no such group: '$gid'", "This group does not exist.");
+    }
+    if ($group->getOwner()->getMail() !== $USER->getMail()) {
+        UnityHTTPD::forbidden(
+            "user '$USER->uid' is not allowed to manage PI group '$gid'",
+            "You are not allowed to manage this PI group."
+        );
+    }
+} else {
+    $group = $USER->getPIGroup();
+    if (!$USER->isPI()) {
+        UnityHTTPD::forbidden("not a PI", "You are not a PI.");
+    }
 }
 
 $getUserFromPost = function () {
@@ -57,6 +70,18 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 <hr>
 
 <?php
+foreach ($LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail()) as $gid) {
+    if ($gid === $group->gid) {
+        continue;
+    }
+    echo "
+        <form method='GET' action=''>
+            <input type='hidden' value'$gid'>
+            <input type='submit' value\"Manage Group '$gid'\">
+        </form>
+    ";
+}
+
 $requests = $group->getRequests();
 $assocs = $group->getGroupMembers();
 
@@ -122,8 +147,9 @@ echo "
         <tbody>
 ";
 
+$owner_uid = $group->getOwner()->uid;
 foreach ($assocs as $assoc) {
-    if ($assoc->uid == $USER->uid) {
+    if ($assoc->uid == $owner_uid) {
         continue;
     }
 
