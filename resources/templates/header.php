@@ -50,7 +50,8 @@ if (!$got_gids_from_cookie && isset($USER) && $USER->exists()) {
     setcookie(
         "navbar_pi_gids",
         _json_encode($navbar_pi_gids),
-        time() + 60 * 30 // expire in 30 minutes
+        time() + 60 * 30, // expire in 30 minutes
+        "/",
     );
 }
 
