@@ -95,7 +95,7 @@ class PageLoadTest extends UnityWebPortalTestCase
         } catch (NoDieException) {
             // ignore
         }
-        $output = ob_get_clean();
+        $output = _ob_get_clean();
         $this->assertMatchesRegularExpression("/Your account is locked\./", $output);
     }
 }
