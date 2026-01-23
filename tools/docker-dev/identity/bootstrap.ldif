@@ -37364,19 +37364,20 @@ uid: cs123_org1_test
 givenName: cs123
 sn: Fall 2025
 gecos: cs123 Fall 2025
-mail: user12@org1.test
+mail: user1+cs123_org1_test@org1.test
 o: org1_test
 homeDirectory: /home/cs123_org1_test
 loginShell: /bin/bash
 uidNumber: 20005
 gidNumber: 20005
 cn: cs123_org1_test
-managerUid: user12_org1_test
 
 dn: cn=pi_cs123_org1_test,ou=pi_groups,dc=unityhpc,dc=test
+objectclass: unityClusterPIGroup
 objectClass: posixGroup
 objectClass: top
 gidNumber: 20007
 cn: pi_cs123_org1_test
+managerUid: user1_org1_test
 memberUid: cs123_org1_test
-memberUid: user12_org1_test
+memberUid: user1_org1_test

@@ -13,6 +13,12 @@ function cn2org($cn)
     return $matches[1];
 }
 
+function insert_plus_address($email, $plus)
+{
+    $parts = explode("@", $email, 2);
+    return $parts[0] . "+" . $plus . "@" . $parts[1];
+}
+
 // if array is length 1 then replace it with its one element
 function flatten_attributes(array $attributes): array
 {
@@ -43,7 +49,8 @@ $org = new UnityOrg($org_gid, $LDAP);
 if (!$org->exists()) {
     print "WARNING: creating new org '$org_gid'...\n";
 }
-$course_user->init($givenName, $sn, $manager->getMail(), $org_gid);
+$mail = insert_plus_address($manager->getMail(), $cn);
+$course_user->init($givenName, $sn, $mail, $org_gid);
 
 $course_pi_group = $course_user->getPIGroup();
 if ($course_pi_group->exists()) {
