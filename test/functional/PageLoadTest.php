@@ -102,7 +102,7 @@ class PageLoadTest extends UnityWebPortalTestCase
     public function testLoadPIPageForAnotherGroup()
     {
         global $LDAP, $USER;
-        $this->switchUser("Manager");
+        $this->switchUser("CourseGroupManager");
         $gids = $LDAP->getPIGroupGIDSWithManager($USER->uid);
         $this->assertTrue(count($gids) > 0);
         $output = http_get(__DIR__ . "/../../webroot/panel/pi.php", [
@@ -139,7 +139,7 @@ class PageLoadTest extends UnityWebPortalTestCase
     public function testDisplayManagedGroups()
     {
         global $USER, $LDAP;
-        $this->switchUser("Manager");
+        $this->switchUser("CourseGroupManager");
         $gids = $LDAP->getPIGroupGIDSWithManager($USER->uid);
         $this->assertTrue(count($gids) > 0);
         $output = http_get(__DIR__ . "/../../webroot/index.php");
