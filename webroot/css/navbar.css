@@ -26,6 +26,7 @@ nav.mainNav a {
   text-decoration: none;
   cursor: pointer;
   transition: background 0.1s;
+  overflow: hidden;
 }
 
 nav.mainNav a:hover {
