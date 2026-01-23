@@ -5,15 +5,15 @@ class WorkerUnityCourseTest extends UnityWebPortalTestCase
     private static string $course_owner_uid = "cs124_org1_test";
     private static string $course_gid = "pi_cs124_org1_test";
     private static array $course_owner_name = ["cs124", "Fall 2025"];
-    private static string $manager_uid = "user12_org1_test";
-    private static string $manager_mail = "user12@org1.test";
-    private static string $courseOwnerMail = "user12+cs124_org1_test@org1.test";
+    private static string $manager_uid = "user2_org1_test";
+    private static string $manager_mail = "user2@org1.test";
+    private static string $courseOwnerMail = "user2+cs124_org1_test@org1.test";
 
     public function testCreateCourse()
     {
         global $LDAP, $USER;
-        $this->switchUser("CourseWorkerTestManager");
-        $this->assertEquals(self::$manager_mail, $USER->getMail());
+        $this->switchUser("Blank");
+        $this->assertEquals(self::$manager_uid, $USER->uid);
         $this->assertEquals(self::$manager_mail, $USER->getMail());
         $manager = $USER;
         $pi_group_entry = $LDAP->getPIGroupEntry(self::$course_gid);

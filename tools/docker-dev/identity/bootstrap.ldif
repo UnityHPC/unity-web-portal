@@ -13471,7 +13471,6 @@ dn: cn=pi_user13_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user13_org1_test
 gidnumber: 10226
 memberuid: user13_org1_test
-manageruid: user1_org1_test
 objectclass: piGroup
 objectclass: posixGroup
 objectclass: top
