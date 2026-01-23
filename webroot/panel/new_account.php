@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $USER->setFlag(UserFlag::DISABLED, false);
         UnityHTTPD::messageInfo(
             "Welcome Back!",
-            "Your previously deleted account has been reinstated."
+            "Your previously disabled account has been re-enabled."
         );
     } else {
         $USER->init($SSO["firstname"], $SSO["lastname"], $SSO["mail"], $SSO["org"]);

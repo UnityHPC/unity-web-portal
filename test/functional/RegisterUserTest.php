@@ -48,21 +48,21 @@ class RegisterUserTest extends UnityWebPortalTestCase
         }
     }
 
-    public function testResurrectNoDisabledGroup()
+    public function testReEnableUser()
     {
         global $USER;
         $this->switchUser("DisabledNotPI");
         $this->assertTrue($USER->getFlag(UserFlag::DISABLED));
         try {
             $this->register();
-            $this->assertMessageExists(UnityHTTPDMessageLevel::INFO, "/.*/", "/resurrected/");
+            $this->assertMessageExists(UnityHTTPDMessageLevel::INFO, "/.*/", "/re-enabled/");
             $this->assertFalse($USER->getFlag(UserFlag::DISABLED));
         } finally {
             $USER->setFlag(UserFlag::DISABLED, true);
         }
     }
 
-    public function testResurrectWithDisabledGroup()
+    public function testReEnableUserWithDisabledGroup()
     {
         global $USER;
         $this->switchUser("DisabledOwnerOfDisabledPIGroup");
@@ -70,7 +70,7 @@ class RegisterUserTest extends UnityWebPortalTestCase
         $this->assertFalse($USER->isPI());
         try {
             $this->register();
-            $this->assertMessageExists(UnityHTTPDMessageLevel::INFO, "/.*/", "/resurrected/");
+            $this->assertMessageExists(UnityHTTPDMessageLevel::INFO, "/.*/", "/re-enabled/");
             $this->assertFalse($USER->getFlag(UserFlag::DISABLED));
             $this->assertFalse($USER->isPI());
         } finally {
