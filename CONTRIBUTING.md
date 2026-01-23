@@ -19,6 +19,33 @@
 - all pages under `webroot/admin/` must check for `$USER->getFlag(UserFlag::ADMIN)` and call `UnityHTTPD::forbidden()` if not admin.
 - All these conventions should be enforced with `pre-commit` / github CI if possible
 
+### Caching
+
+There are two primary methods of caching: session and cookies.
+Cookies are good because it gives the user control, but a cookie value can never be trusted, and no sensitive data can be written to a cookie.
+Session is good because it can be trusted and sensitive data can be written to it, but in the event of stale cache, the only fix is to wait a while until the session is automatically cleared.
+
+Here are some examples:
+
+- `pi_search.php` (session)
+  - needs to search through the results of an LDAP query every time the user presses a key in a search box
+  - value does not need to be trusted
+  - cannot use a cookie because that would give the user the names and emails of every PI
+  - stale cache is avoided because the value is updated every time you load the page
+
+- `OPERATOR`, `OPERATOR_IP` (session)
+  - written to audit log
+  - value is trusted
+  - stale cache is avoided because the value is updated every time you load any page
+
+- CSRF tokens (session)
+  - value is trusted
+
+- `navbar_pi_gids` (cookies)
+  - the navbar on every page needs to know the list of PI groups with an owner that has the same email address as the current user
+  - value does not need to be trusted, since `pi.php` enforces its own authorization
+  - stale cache cannot be avoided
+
 ## Development Environment
 
 ### Setting up your Environment
