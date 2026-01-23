@@ -373,4 +373,15 @@ class UnityLDAP extends LDAPConn
         ksort($output);
         return $output;
     }
+
+    /** @return string[] */
+    public function getPIGroupGIDSWithManager(string $uid): array
+    {
+        $attributes = $this->pi_groupOU->getChildrenArrayStrict(
+            ["cn"],
+            false,
+            sprintf("(managerUid=%s)", ldap_escape($uid, flags: LDAP_ESCAPE_FILTER)),
+        );
+        return array_map(fn($x) => $x["cn"][0], $attributes);
+    }
 }

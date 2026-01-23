@@ -110,6 +110,9 @@ if (isset($SSO)) {
             // PI only pages
             echo getHyperlink("My Users", "panel/pi.php") . "\n";
         }
+        foreach ($LDAP->getPIGroupGIDSWithManager($USER->uid) as $gid) {
+            echo getHyperlink("PI Group '$gid'", "panel/pi.php?gid=$gid") . "\n";
+        }
 
         // additional branding items
         $num_additional_items = count(CONFIG["menuitems_secure"]["labels"]);

@@ -13,12 +13,6 @@ function cn2org($cn)
     return $matches[1];
 }
 
-function insert_plus_address($email, $plus)
-{
-    $parts = explode("@", $email, 2);
-    return $parts[0] . "+" . $plus . "@" . $parts[1];
-}
-
 // if array is length 1 then replace it with its one element
 function flatten_attributes(array $attributes): array
 {
@@ -30,16 +24,14 @@ $sn = trim(readline("Enter the year and semester of the course (example: Fall 20
 $cn = strtolower(
     trim(readline("Please enter the cn to be used for the course (example: cs123_umass_edu): ")),
 );
-$operator_uid = trim(
-    readline(
-        "Enter the UID of the Unity team member responsible for the course (example: simonleary_umass_edu): ",
-    ),
+$manager_uid = trim(
+    readline("Enter the UID of the group manager (example: simonleary_umass_edu): "),
 );
 $org_gid = cn2org($cn);
 
-$operator = new UnityUser($operator_uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
-if (!$operator->exists()) {
-    _die("no such user: '$operator_uid'", 1);
+$manager = new UnityUser($manager_uid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+if (!$manager->exists()) {
+    _die("no such user: '$manager_uid'", 1);
 }
 
 $course_user = new UnityUser($cn, $LDAP, $SQL, $MAILER, $WEBHOOK);
@@ -51,8 +43,7 @@ $org = new UnityOrg($org_gid, $LDAP);
 if (!$org->exists()) {
     print "WARNING: creating new org '$org_gid'...\n";
 }
-$mail = insert_plus_address($operator->getMail(), $cn);
-$course_user->init($givenName, $sn, $mail, $org_gid);
+$course_user->init($givenName, $sn, $manager->getMail(), $org_gid);
 
 $course_pi_group = $course_user->getPIGroup();
 if ($course_pi_group->exists()) {
@@ -61,6 +52,11 @@ if ($course_pi_group->exists()) {
 }
 $course_pi_group->requestGroup(false, false);
 $course_pi_group->approveGroup();
+
+$course_pi_group->newUserRequest($manager, false);
+$course_pi_group->approveUser($manager);
+$course_pi_group->addManagerUID($manager_uid);
+
 print "LDAP entries created:\n";
 print _json_encode(
     [
@@ -72,7 +68,4 @@ print _json_encode(
     ],
     JSON_PRETTY_PRINT,
 );
-
-$course_pi_group->newUserRequest($operator, false);
-$course_pi_group->approveUser($operator);
 

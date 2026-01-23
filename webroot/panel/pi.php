@@ -4,11 +4,24 @@ require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityHTTPD;
+use UnityWebPortal\lib\UnityGroup;
 
-$group = $USER->getPIGroup();
-
-if (!$USER->isPI()) {
-    UnityHTTPD::forbidden("not a PI", "You are not a PI.");
+if (($gid = $_GET["gid"] ?? null) !== null) {
+    $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+    if (!$group->exists()) {
+        UnityHTTPD::badRequest("no such group: '$gid'", "This group does not exist.");
+    }
+    if (!in_array($USER->uid, $group->getManagerUIDs())) {
+        UnityHTTPD::forbidden(
+            "user '$USER->uid' is a manager of group '$gid'",
+            "You are not allowed to manage this PI group."
+        );
+    }
+} else {
+    $group = $USER->getPIGroup();
+    if (!$USER->isPI()) {
+        UnityHTTPD::forbidden("not a PI", "You are not a PI.");
+    }
 }
 
 $getUserFromPost = function () {
@@ -124,6 +137,10 @@ echo "
 
 $owner_uid = $group->getOwner()->uid;
 foreach ($assocs as $assoc) {
+    if ($assoc->uid == $owner_uid) {
+        continue;
+    }
+
     echo "<tr>";
     echo "<td>" . $assoc->getFirstname() . " " . $assoc->getLastname() . "</td>";
     echo "<td>" . $assoc->uid . "</td>";

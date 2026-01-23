@@ -4,43 +4,44 @@ class WorkerUnityCourseTest extends UnityWebPortalTestCase
 {
     public function testCreateCourse()
     {
-        global $LDAP;
-        $this->switchUser("Admin");
-        $pi_group_entry = $LDAP->getPIGroupEntry("pi_cs123_org1_test");
-        $owner_user_entry = $LDAP->getUserEntry("cs123_org1_test");
+        global $LDAP, $USER;
+        $this->switchUser("CourseWorkerTestManager");
+        $manager = $USER;
+        $pi_group_entry = $LDAP->getPIGroupEntry("pi_cs124_org1_test");
+        $owner_user_entry = $LDAP->getUserEntry("cs124_org1_test");
         $this->assertFalse($pi_group_entry->exists());
         $this->assertFalse($owner_user_entry->exists());
+        $admin_uid = self::$NICKNAME2UID["Admin"];
         $stdin_file = writeLinesToTmpFile([
-            "cs123",
+            "cs124",
             "Fall 2025",
-            "cs123_org1_test",
-            "user1_org1_test",
+            "cs124_org1_test",
+            $admin_uid,
+            $manager->uid,
         ]);
         $stdin_file_path = getPathFromFileHandle($stdin_file);
         try {
-            [$rc, $output_lines] = executeWorker(
-                "unity-course.php",
-                stdinFilePath: $stdin_file_path,
-            );
+            executeWorker("unity-course.php", stdinFilePath: $stdin_file_path);
             // error_log(implode("\n", $output_lines));
             // our LDAP conn doesn't know about changes from subprocess
             unset($GLOBALS["ldapconn"]);
             $this->switchUser("Admin");
-            $pi_group_entry = $LDAP->getPIGroupEntry("pi_cs123_org1_test");
-            $owner_user_entry = $LDAP->getUserEntry("cs123_org1_test");
+            $pi_group_entry = $LDAP->getPIGroupEntry("pi_cs124_org1_test");
+            $owner_user_entry = $LDAP->getUserEntry("cs124_org1_test");
             $this->assertTrue($pi_group_entry->exists());
             $this->assertTrue($owner_user_entry->exists());
-            $this->assertEquals(
-                "user1+cs123_org1_test@org1.test",
-                $owner_user_entry->getAttribute("mail")[0],
-            );
+            $this->assertEquals($manager->getMail(), $owner_user_entry->getAttribute("mail")[0]);
             $this->assertEqualsCanonicalizing(
-                ["cs123_org1_test", "user1_org1_test"],
+                ["cs124_org1_test", $manager->uid],
                 $pi_group_entry->getAttribute("memberuid"),
             );
+            $this->assertEqualsCanonicalizing(
+                [$manager->uid],
+                $pi_group_entry->getAttribute("manageruid"),
+            );
         } finally {
-            ensurePIGroupDoesNotExist("pi_cs123_org1_test");
-            ensureUserDoesNotExist("cs123_org1_test");
+            ensurePIGroupDoesNotExist("pi_cs124_org1_test");
+            ensureUserDoesNotExist("cs124_org1_test");
             unlink($stdin_file_path);
         }
     }

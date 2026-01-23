@@ -266,6 +266,8 @@ class UnityWebPortalTestCase extends TestCase
         "user9_org3_test" => ["user9@org3.test", "foo", "bar", "user9@org3.test"],
         "user10_org1_test" => ["user10@org1.test", "foo", "bar", "user10@org1.test"],
         "user11_org1_test" => ["user11@org1.test", "foo", "bar", "user11@org1.test"],
+        "user12_org1_test" => ["user12@org1.test", "foo", "bar", "user12@org1.test"],
+        "user13_org1_test" => ["user13@org1.test", "foo", "bar", "user13@org1.test"],
         "user2001_org998_test" => ["user2001@org998.test", "foo", "bar", "user2001@org998.test"],
         "user2002_org998_test" => ["user2002@org998.test", "foo", "bar", "user2002@org998.test"],
         "user2003_org998_test" => ["user2003@org1.test", "foo", "bar", "user2001@org1.test"],
@@ -276,6 +278,7 @@ class UnityWebPortalTestCase extends TestCase
         "Admin" => "user1_org1_test",
         "Blank" => "user2_org1_test",
         "EmptyPIGroupOwner" => "user5_org2_test",
+        "CourseWorkerTestManager" => "user12_org1_test",
         "CustomMapped555" => "user2002_org998_test",
         "Disabled" => "user7_org1_test",
         "DisabledNotPI" => "user7_org1_test",
@@ -285,6 +288,8 @@ class UnityWebPortalTestCase extends TestCase
         "HasOneSshKey" => "user5_org2_test",
         "IdleLocked" => "user6_org1_test",
         "Locked" => "user8_org1_test",
+        "ManagedPIGroupOwner" => "user13_org1_test",
+        "Manager" => "user1_org1_test",
         "NonExistent" => "user2001_org998_test",
         "Normal" => "user4_org1_test",
         "NormalPI" => "user11_org1_test",
@@ -315,6 +320,9 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertTrue($LDAP->getUserEntry($USER->uid)->exists());
                 $this->assertTrue($LDAP->getUserGroupEntry($USER->uid)->exists());
                 $this->assertTrue($LDAP->getOrgGroupEntry($USER->getOrg())->exists());
+                break;
+            case "CourseWorkerTestManager":
+                $this->assertEmpty($LDAP->getPIGroupGIDSWithManager($USER->uid));
                 break;
             case "CustomMapped555":
                 $this->assertFalse($USER->exists());
@@ -357,6 +365,12 @@ class UnityWebPortalTestCase extends TestCase
                 break;
             case "Locked":
                 $this->assertTrue($USER->getFlag(UserFlag::LOCKED));
+                break;
+            case "ManagedPIGroupOwner":
+                $this->assertNotEmpty($USER->getPIGroup()->getManagerUIDs());
+                break;
+            case "Manager":
+                $this->assertNotEmpty($LDAP->getPIGroupGIDSWithManager($USER->uid));
                 break;
             case "NonExistent":
                 $this->assertFalse($USER->exists());

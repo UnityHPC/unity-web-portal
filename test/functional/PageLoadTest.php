@@ -98,4 +98,53 @@ class PageLoadTest extends UnityWebPortalTestCase
         $output = _ob_get_clean();
         $this->assertMatchesRegularExpression("/Your account is locked\./", $output);
     }
+
+    public function testLoadPIPageForAnotherGroup()
+    {
+        global $LDAP, $USER;
+        $this->switchUser("Manager");
+        $gids = $LDAP->getPIGroupGIDSWithManager($USER->uid);
+        $this->assertTrue(count($gids) > 0);
+        $output = http_get(__DIR__ . "/../../webroot/panel/pi.php", [
+            "gid" => $gids[0],
+        ]);
+        $this->assertMatchesRegularExpression("/My Users/", $output);
+    }
+
+    public function testLoadPIPageForAnotherGroupForbidden()
+    {
+        global $USER;
+        $this->switchUser("EmptyPIGroupOwner");
+        $gid = $USER->getPIGroup()->gid;
+        $this->switchUser("Blank");
+        $output = http_get(
+            __DIR__ . "/../../webroot/panel/pi.php",
+            ["gid" => $gid],
+            ignore_die: true,
+        );
+        $this->assertMatchesRegularExpression("/not allowed/", $output);
+    }
+
+    public function testLoadPIPageForNonexistentGroup()
+    {
+        $this->switchUser("Blank");
+        $output = http_get(
+            __DIR__ . "/../../webroot/panel/pi.php",
+            ["gid" => "foobar"],
+            ignore_die: true,
+        );
+        $this->assertMatchesRegularExpression("/This group does not exist/", $output);
+    }
+
+    public function testDisplayManagedGroups()
+    {
+        global $USER, $LDAP;
+        $this->switchUser("Manager");
+        $gids = $LDAP->getPIGroupGIDSWithManager($USER->uid);
+        $this->assertTrue(count($gids) > 0);
+        $output = http_get(__DIR__ . "/../../webroot/index.php");
+        foreach ($gids as $gid) {
+            $this->assertMatchesRegularExpression("/pi\.php\?gid=$gid/", $output);
+        }
+    }
 }
