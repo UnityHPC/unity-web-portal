@@ -11,14 +11,7 @@ class WorkerUnityCourseTest extends UnityWebPortalTestCase
         $owner_user_entry = $LDAP->getUserEntry("cs124_org1_test");
         $this->assertFalse($pi_group_entry->exists());
         $this->assertFalse($owner_user_entry->exists());
-        $admin_uid = self::$NICKNAME2UID["Admin"];
-        $stdin_file = writeLinesToTmpFile([
-            "cs124",
-            "Fall 2025",
-            "cs124_org1_test",
-            $admin_uid,
-            $manager->uid,
-        ]);
+        $stdin_file = writeLinesToTmpFile(["cs124", "Fall 2025", "cs124_org1_test", $manager->uid]);
         $stdin_file_path = getPathFromFileHandle($stdin_file);
         try {
             executeWorker("unity-course.php", stdinFilePath: $stdin_file_path);
