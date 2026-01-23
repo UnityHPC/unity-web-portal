@@ -70,6 +70,4 @@ if (isset($_SERVER["REMOTE_USER"])) {
     _setcookie("navbar_show_pi_pages", $USER->isPI() ? "true" : "false");
     $SQL->addLog("user_login", $SSO["user"]);
     $USER->updateIsQualified(); // in case manual changes have been made to PI groups
-} else {
-    _setcookie("navbar_show_logged_in_user_pages", "false");
 }
