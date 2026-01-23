@@ -70,13 +70,15 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 $PIGroupGIDs = [];
 $PIGroupAttributes = $LDAP->getNonDisabledPIGroupAttributesWithMemberUID(
     $USER->uid,
-    ["cn", "memberuid"],
-    default_values: ["memberuid" => []]
+    ["cn", "memberuid", "manageruid"],
+    default_values: ["memberuid" => [], "manageruid" => []]
 );
 $PIGroupMembers = [];
+$PIGroupManagers = [];
 foreach ($PIGroupAttributes as $attributes) {
     $gid = $attributes["cn"][0];
     $PIGroupMembers[$gid] = $attributes["memberuid"];
+    $PIGroupManagers[$gid] = $attributes["manageruid"];
     array_push($PIGroupGIDs, $gid);
 }
 
@@ -186,18 +188,29 @@ foreach ($PIGroupGIDs as $gid) {
     foreach ($PIGroupMembers[$gid] as $memberuid) {
         echo "<li>$memberuid</li>";
     }
-    echo "</ul></td>";
-    echo
-        "<td>
-    <form action='' method='POST'
-    onsubmit='return confirm(\"Are you sure you want to leave the PI group $gid?\")'>
-    $CSRFTokenHiddenFormInput
-    <input type='hidden' name='form_type' value='removePIForm'>
-    <input type='hidden' name='pi' value='$gid'>
-    <input type='submit' value='Leave Group'>
-    </form>
-    </td>";
-    echo "</tr>";
+    echo "</ul></td><td>";
+    echo "
+        <form
+            action=''
+            method='POST'
+            onsubmit='return confirm(\"Are you sure you want to leave the PI group $gid?\")'
+        >
+            $CSRFTokenHiddenFormInput
+            <input type='hidden' name='form_type' value='removePIForm'>
+            <input type='hidden' name='pi' value='$gid'>
+            <input type='submit' value='Leave Group'>
+        </form>
+    ";
+    if (in_array($USER->uid, $PIGroupManagers[$gid])) {
+        $url = getURL("panel/pi.php");
+        echo "
+            <form action='$url' method='GET'>
+                <input type='hidden' name='gid' value='$gid'>
+                <input type='submit' value='Manage Group'>
+            </form>
+        ";
+    }
+    echo "</td></tr>";
 }
 echo "</tbody>";
 echo "</table>";

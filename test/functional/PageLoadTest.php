@@ -142,9 +142,9 @@ class PageLoadTest extends UnityWebPortalTestCase
         $this->switchUser("CourseGroupManager");
         $gids = $LDAP->getPIGroupGIDSWithManager($USER->uid);
         $this->assertTrue(count($gids) > 0);
-        $output = http_get(__DIR__ . "/../../webroot/index.php");
+        $output = http_get(__DIR__ . "/../../webroot/panel/groups.php");
         foreach ($gids as $gid) {
-            $this->assertMatchesRegularExpression("/pi\.php\?gid=$gid/", $output);
+            $this->assertMatchesRegularExpression("/name='gid' value='$gid'/", $output);
         }
     }
 }
