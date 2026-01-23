@@ -30,13 +30,13 @@ if (isset($SSO)) {
     }
 }
 
-$pi_gids_for_navbar = [];
+$navbar_pi_gids = [];
 if (isset($USER) && $USER->exists()) {
     $got_gids_from_cookie = false;
     $cookie_name = "navbar_pi_gids_for_uid_" . $USER->uid;
     if (isset($_COOKIE[$cookie_name])) {
         try {
-            $pi_gids_for_navbar = _json_decode($_COOKIE[$cookie_name]);
+            $navbar_pi_gids = _json_decode($_COOKIE[$cookie_name]);
             $got_gids_from_cookie = true;
         } catch (Throwable $e) {
             UnityHTTPD::errorLog(
@@ -48,10 +48,10 @@ if (isset($USER) && $USER->exists()) {
         }
     }
     if (!$got_gids_from_cookie) {
-        $pi_gids_for_navbar = $LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail());
+        $navbar_pi_gids = $LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail());
         setcookie(
             $cookie_name,
-            _json_encode($pi_gids_for_navbar),
+            _json_encode($navbar_pi_gids),
             time() + 60 * 30 // expire in 30 minutes
         );
     }
@@ -133,7 +133,7 @@ if (isset($USER) && $USER->exists()) {
         echo getHyperlink("Account Settings", "panel/account.php") . "\n";
         echo getHyperlink("My PIs", "panel/groups.php") . "\n";
 
-        foreach ($pi_gids_for_navbar as $gid) {
+        foreach ($navbar_pi_gids as $gid) {
             echo getHyperlink("PI Group '$gid'", "panel/pi.php?gid=" . urlencode($gid)) . "\n";
         }
 
