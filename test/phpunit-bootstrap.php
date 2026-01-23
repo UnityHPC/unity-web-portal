@@ -72,6 +72,7 @@ function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_tok
 {
     global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
+    $_PREVIOUS_COOKIE = $_COOKIE;
     $_SERVER["REQUEST_METHOD"] = "POST";
     $_SERVER["PHP_SELF"] = _preg_replace("/.*webroot\//", "/", $phpfile);
     $_SERVER["REQUEST_URI"] = _preg_replace("/.*webroot\//", "/", $phpfile); // Slightly imprecise because it doesn't include get parameters
@@ -96,6 +97,7 @@ function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_tok
     } finally {
         unset($_POST);
         $_SERVER = $_PREVIOUS_SERVER;
+        $_COOKIE = $_PREVIOUS_COOKIE;
     }
 }
 
@@ -103,6 +105,7 @@ function http_get(string $phpfile, array $get_data = [], bool $ignore_die = fals
 {
     global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
+    $_PREVIOUS_COOKIE = $_COOKIE;
     $_SERVER["REQUEST_METHOD"] = "GET";
     $_SERVER["PHP_SELF"] = _preg_replace("/.*webroot\//", "/", $phpfile);
     $_SERVER["REQUEST_URI"] = _preg_replace("/.*webroot\//", "/", $phpfile); // Slightly imprecise because it doesn't include get parameters
@@ -124,6 +127,7 @@ function http_get(string $phpfile, array $get_data = [], bool $ignore_die = fals
     } finally {
         unset($_GET);
         $_SERVER = $_PREVIOUS_SERVER;
+        $_COOKIE = $_PREVIOUS_COOKIE;
     }
 }
 
