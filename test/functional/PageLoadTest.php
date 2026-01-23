@@ -122,8 +122,10 @@ class PageLoadTest extends UnityWebPortalTestCase
     {
         global $USER, $LDAP;
         $this->switchUser("CourseTeacher");
+        $gids = $LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail());
+        $this->assertTrue(count($gids) >= 2);
         $output = http_get(__DIR__ . "/../../webroot/index.php");
-        foreach ($LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail()) as $gid) {
+        foreach ($gids as $gid) {
             $this->assertMatchesRegularExpression("/pi\.php\?gid=$gid/", $output);
         }
     }
@@ -145,12 +147,13 @@ class PageLoadTest extends UnityWebPortalTestCase
     {
         global $USER, $LDAP;
         $this->switchUser("CourseTeacher");
-        $uid = $USER->uid;
+        $gids = $LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail());
+        $this->assertTrue(count($gids) >= 2);
         $output = http_get(
             __DIR__ . "/../../webroot/index.php",
             cookies: ["navbar_pi_gids" => "asldkjasldkjasldkj"],
         );
-        foreach ($LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail()) as $gid) {
+        foreach ($gids as $gid) {
             $this->assertMatchesRegularExpression("/pi\.php\?gid=$gid/", $output);
         }
     }
