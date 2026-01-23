@@ -159,8 +159,8 @@ echo "
             <strong>Disable PI Group</strong>
             <br>
             Your group's files will be permanently deleted,
-            and all group members will lose access to UnityHPC Platform services
-            unless they are a member of some other group.
+            and you will lose access to UnityHPC Platform services
+            unless you are a member of some other group.
         </p>
         <form
             action=''
