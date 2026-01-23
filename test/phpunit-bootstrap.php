@@ -191,7 +191,7 @@ function ensureUserDoesNotExist(string $uid)
             $flag_group->removeMemberUID($uid);
         }
     }
-    foreach ($LDAP->getPIGroupGIDsWithMemberUID($uid) as $gid) {
+    foreach ($LDAP->getNonDisabledPIGroupGIDsWithMemberUID($uid) as $gid) {
         $pi_group_entry = $LDAP->getPIGroupEntry($gid);
         $pi_group_members = $pi_group_entry->getAttribute("memberuid");
         if (in_array($uid, $pi_group_members)) {

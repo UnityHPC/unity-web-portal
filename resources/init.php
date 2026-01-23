@@ -53,6 +53,12 @@ if (!array_key_exists("csrf_tokens", $_SESSION)) {
     $_SESSION["csrf_tokens"] = [];
 }
 
+// $_SERVER["REMOTE_USER"] is only defined for pages where httpd requies authentication
+// the home page does not require authentication,
+// so if the user goes to a secure page and then back to home, they've effectively logged out
+// it would be bad UX to show the user that they are effectively logging in and out,
+// so we use session cache to remember if they have logged in recently and then pretend
+// they're logged in even if they aren't
 if (isset($_SERVER["REMOTE_USER"])) {
     // Check if SSO is enabled on this page
     $SSO = UnitySSO::getSSO();
