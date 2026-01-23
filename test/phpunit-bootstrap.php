@@ -98,14 +98,19 @@ function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_tok
     }
 }
 
-function http_get(string $phpfile, array $get_data = [], bool $ignore_die = false): string
-{
+function http_get(
+    string $phpfile,
+    array $get_data = [],
+    bool $ignore_die = false,
+    array $cookies = [],
+): string {
     global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "GET";
     $_SERVER["PHP_SELF"] = _preg_replace("/.*webroot\//", "/", $phpfile);
     $_SERVER["REQUEST_URI"] = _preg_replace("/.*webroot\//", "/", $phpfile); // Slightly imprecise because it doesn't include get parameters
     $_GET = $get_data;
+    $_COOKIE = $cookies;
     ob_start();
     try {
         include $phpfile;
@@ -122,6 +127,7 @@ function http_get(string $phpfile, array $get_data = [], bool $ignore_die = fals
         throw $e;
     } finally {
         unset($_GET);
+        unset($_COOKIE);
         $_SERVER = $_PREVIOUS_SERVER;
     }
 }

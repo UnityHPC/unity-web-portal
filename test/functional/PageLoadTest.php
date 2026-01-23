@@ -117,4 +117,41 @@ class PageLoadTest extends UnityWebPortalTestCase
         );
         $this->assertMatchesRegularExpression("/This group does not exist/", $output);
     }
+
+    public function testDisplayGroupsWithMatchingOwnerMail()
+    {
+        global $USER, $LDAP;
+        $this->switchUser("CourseTeacher");
+        $output = http_get(__DIR__ . "/../../webroot/index.php");
+        foreach ($LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail()) as $gid) {
+            $this->assertMatchesRegularExpression("/pi\.php\?gid=$gid/", $output);
+        }
+    }
+
+    public function testDisplayGroupsInCookie()
+    {
+        global $USER;
+        $this->switchUser("CourseTeacher");
+        $uid = $USER->uid;
+        $output = http_get(
+            __DIR__ . "/../../webroot/index.php",
+            cookies: ["navbar_pi_gids_for_uid_$uid" => _json_encode(["foo", "bar"])],
+        );
+        $this->assertMatchesRegularExpression("/pi\.php\?gid=foo/", $output);
+        $this->assertMatchesRegularExpression("/pi\.php\?gid=bar/", $output);
+    }
+
+    public function testDisplayGroupsWithMatchingOwnerMailIgnoreInvalidCookie()
+    {
+        global $USER, $LDAP;
+        $this->switchUser("CourseTeacher");
+        $uid = $USER->uid;
+        $output = http_get(
+            __DIR__ . "/../../webroot/index.php",
+            cookies: ["navbar_pi_gids_for_uid_$uid" => "asldkjasldkjasldkj"],
+        );
+        foreach ($LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail()) as $gid) {
+            $this->assertMatchesRegularExpression("/pi\.php\?gid=$gid/", $output);
+        }
+    }
 }
