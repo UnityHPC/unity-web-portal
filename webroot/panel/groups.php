@@ -68,7 +68,7 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 
 <?php
 $PIGroupGIDs = [];
-$PIGroupAttributes = $LDAP->getPIGroupAttributesWithMemberUID(
+$PIGroupAttributes = $LDAP->getNonDisabledPIGroupAttributesWithMemberUID(
     $USER->uid,
     ["cn", "memberuid"],
     default_values: ["memberuid" => []]

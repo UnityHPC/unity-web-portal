@@ -239,16 +239,8 @@ class UnityLDAP extends LDAPConn
     public function getNonDisabledPIGroupGIDsWithMemberUID(string $uid): array
     {
         return array_map(
-            fn($x) => $x["cn"][0],
-            $this->pi_groupOU->getChildrenArrayStrict(
-                ["cn"],
-                false,
-                sprintf(
-                    "(&(memberuid=%s)%s)",
-                    ldap_escape($uid, flags: LDAP_ESCAPE_FILTER),
-                    self::$NON_DISABLED_FILTER,
-                ),
-            ),
+            fn($x) => (string) $x["cn"][0],
+            $this->getNonDisabledPIGroupAttributesWithMemberUID($uid, ["cn"]),
         );
     }
 
@@ -266,7 +258,7 @@ class UnityLDAP extends LDAPConn
      * @param attributes $default_values
      * @return attributes[]
      */
-    public function getPIGroupAttributesWithMemberUID(
+    public function getNonDisabledPIGroupAttributesWithMemberUID(
         string $uid,
         array $attributes,
         array $default_values = [],
@@ -274,7 +266,11 @@ class UnityLDAP extends LDAPConn
         return $this->pi_groupOU->getChildrenArrayStrict(
             $attributes,
             recursive: false,
-            filter: sprintf("(memberuid=%s)", ldap_escape($uid, "", LDAP_ESCAPE_FILTER)),
+            filter: sprintf(
+                "(&(memberuid=%s)%s)",
+                ldap_escape($uid, "", LDAP_ESCAPE_FILTER),
+                self::$NON_DISABLED_FILTER,
+            ),
             default_values: $default_values,
         );
     }
