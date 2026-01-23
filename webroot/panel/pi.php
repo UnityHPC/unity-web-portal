@@ -33,6 +33,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $group->removeUser($form_user);
 
             break;
+        case "disable":
+            if (count($group->getMemberUIDs()) > 1) {
+                UnityHTTPD::messageError("Cannot Disable PI Group", "Group still has members");
+                UnityHTTPD::redirect();
+            }
+            if ($group->getIsDisabled()) {
+                UnityHTTPD::messageError("Cannot Disable PI Group", "Group is already disabled");
+                UnityHTTPD::redirect();
+            }
+            $group->disable();
+            UnityHTTPD::messageSuccess("Group Disabled", "");
+            UnityHTTPD::redirect(getURL("panel/account.php"));
+            break; /** @phpstan-ignore deadCode.unreachable */
     }
 }
 
@@ -135,8 +148,40 @@ foreach ($assocs as $assoc) {
     echo "</td>";
     echo "</tr>";
 }
-echo "</tbody>";
-echo "</table>";
+
+echo "
+    </tbody>
+    </table>
+    <hr>
+    <h2>Danger Zone</h2>
+    <div style='display: flex; flex-direction: row; align-items: center;'>
+        <p>
+            <strong>Disable PI Group</strong>
+            <br>
+            Your group's files will be permanently deleted,
+            and all group members will lose access to UnityHPC Platform services
+            unless they are a member of some other group.
+        </p>
+        <form
+            action=''
+            method='POST'
+            onsubmit='return confirm(\"Are you sure you want to disable your PI group?\")'
+        >
+            $CSRFTokenHiddenFormInput
+            <input type='hidden' name='form_type' value='disable'>
+";
+if (count($assocs) > 1) {
+    echo "
+        <input type='submit' value='Disable PI Group' disabled>
+        <p>You must first remove all members before you can disable.</p>
+    ";
+} else {
+    echo "
+        <input type='submit' value='Disable PI Group'>
+    ";
+}
+echo "</div></form>";
+
 ?>
 
 <script>
