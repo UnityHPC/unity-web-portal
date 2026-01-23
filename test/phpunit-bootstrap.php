@@ -197,6 +197,10 @@ function ensureUserDoesNotExist(string $uid)
         if (in_array($uid, $pi_group_members)) {
             $pi_group_entry->removeAttributeEntryByValue("memberuid", $uid);
         }
+        $managers = $pi_group_entry->getAttribute("manageruid");
+        if (in_array($uid, $managers)) {
+            $pi_group_entry->removeAttributeEntryByValue("manageruid", $uid);
+        }
     }
 }
 
