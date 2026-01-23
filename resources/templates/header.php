@@ -134,8 +134,7 @@ if (isset($USER) && ($USER->exists())) {
         echo getHyperlink("My PIs", "panel/groups.php") . "\n";
 
         foreach ($pi_gids_for_navbar as $gid) {
-            echo getHyperlink("PI Group '$gid'", "panel/pi.php?gid=" . urlencode($gid));
-            echo "\n";
+            echo getHyperlink("PI Group '$gid'", "panel/pi.php?gid=" . urlencode($gid)) . "\n";
         }
 
         // additional branding items
