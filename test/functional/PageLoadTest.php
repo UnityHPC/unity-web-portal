@@ -135,7 +135,7 @@ class PageLoadTest extends UnityWebPortalTestCase
         $uid = $USER->uid;
         $output = http_get(
             __DIR__ . "/../../webroot/index.php",
-            cookies: ["navbar_pi_gids_for_uid_$uid" => _json_encode(["foo", "bar"])],
+            cookies: ["navbar_pi_gids" => _json_encode(["foo", "bar"])],
         );
         $this->assertMatchesRegularExpression("/pi\.php\?gid=foo/", $output);
         $this->assertMatchesRegularExpression("/pi\.php\?gid=bar/", $output);
@@ -148,7 +148,7 @@ class PageLoadTest extends UnityWebPortalTestCase
         $uid = $USER->uid;
         $output = http_get(
             __DIR__ . "/../../webroot/index.php",
-            cookies: ["navbar_pi_gids_for_uid_$uid" => "asldkjasldkjasldkj"],
+            cookies: ["navbar_pi_gids" => "asldkjasldkjasldkj"],
         );
         foreach ($LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail()) as $gid) {
             $this->assertMatchesRegularExpression("/pi\.php\?gid=$gid/", $output);
