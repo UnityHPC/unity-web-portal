@@ -106,6 +106,7 @@ function http_get(
 ): string {
     global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
+    $_PREVIOUS_COOKIE = $_COOKIE;
     $_SERVER["REQUEST_METHOD"] = "GET";
     $_SERVER["PHP_SELF"] = _preg_replace("/.*webroot\//", "/", $phpfile);
     $_SERVER["REQUEST_URI"] = _preg_replace("/.*webroot\//", "/", $phpfile); // Slightly imprecise because it doesn't include get parameters
@@ -127,8 +128,8 @@ function http_get(
         throw $e;
     } finally {
         unset($_GET);
-        unset($_COOKIE);
         $_SERVER = $_PREVIOUS_SERVER;
+        $_COOKIE = $_PREVIOUS_COOKIE;
     }
 }
 
