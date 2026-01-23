@@ -76,8 +76,8 @@ foreach ($LDAP->getPIGroupGIDsWithOwnerMail($USER->getMail()) as $gid) {
     }
     echo "
         <form method='GET' action=''>
-            <input type='hidden' value'$gid'>
-            <input type='submit' value\"Manage Group '$gid'\">
+            <input type='hidden' name='gid' value='$gid'>
+            <input type='submit' value=\"Manage Group '$gid'\">
         </form>
     ";
 }
