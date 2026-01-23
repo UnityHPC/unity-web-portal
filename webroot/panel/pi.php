@@ -122,13 +122,14 @@ echo "
         <tbody>
 ";
 
+$owner_uid = $group->getOwner()->uid;
 foreach ($assocs as $assoc) {
     echo "<tr>";
     echo "<td>" . $assoc->getFirstname() . " " . $assoc->getLastname() . "</td>";
     echo "<td>" . $assoc->uid . "</td>";
     echo "<td>" . $assoc->getMail() . "</td>";
     echo "<td>";
-    $disabled = $assoc->uid === $USER->uid ? "disabled" : "";
+    $disabled = $assoc->uid === $owner_uid ? "disabled" : "";
     echo
         "<form action='' method='POST'>
     $CSRFTokenHiddenFormInput
