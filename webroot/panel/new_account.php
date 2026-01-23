@@ -3,7 +3,6 @@
 require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityHTTPD;
-use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UserFlag;
 
 if ($USER->exists() && (!$USER->getFlag(UserFlag::DISABLED))) {
