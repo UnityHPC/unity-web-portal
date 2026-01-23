@@ -10,7 +10,8 @@
         "robiningelbrecht/phpunit-coverage-tools": "<2",
         "squizlabs/php_codesniffer": "*",
         "phpstan/phpstan": "^2.1",
-        "rawr/phpunit-data-provider": "^3.3"
+        "rawr/phpunit-data-provider": "^3.3",
+        "friendsofphp/php-cs-fixer": "^3.92"
     },
     "config": {
         "platform": {

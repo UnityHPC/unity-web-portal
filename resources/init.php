@@ -11,7 +11,6 @@ use UnityWebPortal\lib\UnitySSO;
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityWebhook;
 use UnityWebPortal\lib\UnityGithub;
-use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UserFlag;
 
 if (CONFIG["site"]["enable_exception_handler"]) {

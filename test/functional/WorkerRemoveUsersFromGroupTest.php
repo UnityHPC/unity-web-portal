@@ -1,7 +1,6 @@
 <?php
 
 use UnityWebPortal\lib\UnityUser;
-use UnityWebPortal\lib\UnityLDAP;
 
 class WorkerRemoveUsersFromGroupTest extends UnityWebPortalTestCase
 {

@@ -1,8 +1,6 @@
 <?php
 
 use UnityWebPortal\lib\UserFlag;
-use UnityWebPortal\lib\UnityUser;
-use UnityWebPortal\lib\UnityGroup;
 use PHPUnit\Framework\Attributes\DataProvider;
 use TRegx\PhpUnit\DataProviders\DataProvider as TRegxDataProvider;
 
