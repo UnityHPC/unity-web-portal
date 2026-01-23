@@ -43,7 +43,7 @@ if (isset($USER) && ($USER->exists())) {
                 "warning",
                 "failed to decode PI GIDs from cookie",
                 error: $e,
-                data: $_COOKIE,
+                data: ['$_COOKIE' => $_COOKIE],
             );
         }
     }
