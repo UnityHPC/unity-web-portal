@@ -128,7 +128,7 @@ class PageLoadTest extends UnityWebPortalTestCase
         }
     }
 
-    public function testDisplayGroupsInCookie()
+    public function testDisplayGroupsWithMatchingOwnerMailFromCookie()
     {
         global $USER;
         $this->switchUser("CourseTeacher");
