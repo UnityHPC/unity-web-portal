@@ -23,3 +23,7 @@ Terminology:
   - if the owner is disabled, their group is also disabled
   - `memberuid` attribute should be empty
   - if you have any integrations (ex: updating slurm account DB), they should take care to ignore these PI groups
+- **association**: a user is _associated_ with a PI group (and vice versa) if they are the owner, a member, or a manager
+- **manager**: a user who has been granted authority over a PI group
+  - a manager must also be a member
+  - TODO there is no GUI for a PI to promote a user to manager, only an admin can do it
