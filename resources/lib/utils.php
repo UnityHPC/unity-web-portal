@@ -283,3 +283,17 @@ function _curl_exec(CurlHandle $handle): string
     }
     return $output;
 }
+
+function _setcookie(
+    string $name,
+    string $value,
+    int $ttl_seconds = 600,
+    string $path = "/",
+    string $domain = "",
+    bool $secure = false,
+    bool $httponly = false,
+): void {
+    setcookie($name, $value, time() + $ttl_seconds, $path, $domain, $secure, $httponly);
+    // $_COOKIE won't see this change until the next page load, update it now
+    $_COOKIE[$name] = $value;
+}

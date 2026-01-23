@@ -11,7 +11,6 @@ use UnityWebPortal\lib\UnitySSO;
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityWebhook;
 use UnityWebPortal\lib\UnityGithub;
-use UnityWebPortal\lib\UnityHTTPD;
 use UnityWebPortal\lib\UserFlag;
 
 if (CONFIG["site"]["enable_exception_handler"]) {
@@ -55,26 +54,22 @@ if (!array_key_exists("csrf_tokens", $_SESSION)) {
 }
 
 if (isset($_SERVER["REMOTE_USER"])) {
-    // Check if SSO is enabled on this page
+    _setcookie("navbar_show_logged_in_user_pages", "true");
     $SSO = UnitySSO::getSSO();
-    $_SESSION["SSO"] = $SSO;
-
-    $OPERATOR = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $WEBHOOK);
-    $_SESSION["is_admin"] = $OPERATOR->getFlag(UserFlag::ADMIN);
-
     $_SESSION["OPERATOR"] = $SSO["user"];
     $_SESSION["OPERATOR_IP"] = $_SERVER["REMOTE_ADDR"];
-
-    if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
+    if (
+        isset($_SESSION["viewUser"]) &&
+        $LDAP->userFlagGroups["admin"]->memberUIDExists($SSO["user"])
+    ) {
         $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     } else {
-        $USER = $OPERATOR;
+        $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     }
-
-    $_SESSION["user_exists"] = $USER->exists();
-    $_SESSION["is_pi"] = $USER->isPI();
-
-    $SQL->addLog("user_login", $OPERATOR->uid);
-
+    _setcookie("navbar_show_admin_pages", $USER->getFlag(UserFlag::ADMIN) ? "true" : "false");
+    _setcookie("navbar_show_pi_pages", $USER->isPI() ? "true" : "false");
+    $SQL->addLog("user_login", $SSO["user"]);
     $USER->updateIsQualified(); // in case manual changes have been made to PI groups
+} else {
+    _setcookie("navbar_show_logged_in_user_pages", "false");
 }

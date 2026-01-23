@@ -5,10 +5,7 @@ use UnityWebPortal\lib\UnityHTTPD;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // another page should have already validated and we can't validate the same token twice
     // UnityHTTPD::validatePostCSRFToken();
-    if (
-        ($_SESSION["is_admin"] ?? false) == true
-        && ($_POST["form_type"] ?? null) == "clearView"
-    ) {
+    if (($_POST["form_type"] ?? null) == "clearView") {
         unset($_SESSION["viewUser"]);
         UnityHTTPD::redirect(getURL("admin/user-mgmt.php"));
     }
@@ -21,13 +18,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     UnityHTTPD::redirect();
 }
 
-if (isset($SSO)) {
-    if (
-        !$_SESSION["user_exists"]
-        && !str_ends_with($_SERVER['PHP_SELF'], "/panel/new_account.php")
-    ) {
-        UnityHTTPD::redirect(getURL("panel/new_account.php"));
-    }
+if (isset($USER) && !$USER->exists() && !str_ends_with($_SERVER['PHP_SELF'], "/new_account.php")) {
+    UnityHTTPD::redirect(getURL("panel/new_account.php"));
 }
 
 ?>
@@ -100,30 +92,23 @@ if (isset($SSO)) {
         CONFIG["menuitems"]["labels"][$i] . "</a>\n";
     }
 
-    if (isset($_SESSION["user_exists"]) && $_SESSION["user_exists"]) {
+    if (($_COOKIE["navbar_show_logged_in_user_pages"] ?? "false") === "true") {
         echo "<hr class='navHR'>\n";
-        // Menu Items for Present Users
         echo getHyperlink("Account Settings", "panel/account.php") . "\n";
         echo getHyperlink("My PIs", "panel/groups.php") . "\n";
 
-        if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
-            // PI only pages
+        if (($_COOKIE["navbar_show_pi_pages"] ?? "false") === "true") {
             echo getHyperlink("My Users", "panel/pi.php") . "\n";
         }
 
-        // additional branding items
         $num_additional_items = count(CONFIG["menuitems_secure"]["labels"]);
         for ($i = 0; $i < $num_additional_items; $i++) {
             echo "<a target='_blank' href='" . CONFIG["menuitems_secure"]["links"][$i] . "'>" .
             CONFIG["menuitems_secure"]["labels"][$i] . "</a>\n";
         }
 
-        // admin pages
-        if (
-            isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] && !isset($_SESSION["viewUser"])
-        ) {
+        if (($_COOKIE["navbar_show_admin_pages"] ?? "false") === "true") {
             echo "<hr class='navHR'>\n";
-            // Admin only pages
             echo getHyperlink("User Management", "admin/user-mgmt.php") . "\n";
             echo getHyperlink("PI Management", "admin/pi-mgmt.php") . "\n";
         }
@@ -177,11 +162,7 @@ if (isset($SSO)) {
         );
     }
     echo "</div>";
-    if (
-        isset($_SESSION["is_admin"])
-        && $_SESSION["is_admin"]
-        && isset($_SESSION["viewUser"])
-    ) {
+    if (isset($_SESSION["viewUser"])) {
         $viewUser = $_SESSION["viewUser"];
         $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         echo "
