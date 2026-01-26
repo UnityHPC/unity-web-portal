@@ -13,7 +13,7 @@ if (($gid = $_GET["gid"] ?? null) !== null) {
     }
     if (!in_array($USER->uid, $group->getManagerUIDs())) {
         UnityHTTPD::forbidden(
-            "user '$USER->uid' is a manager of group '$gid'",
+            "user '$USER->uid' is not a manager of group '$gid'",
             "You are not allowed to manage this PI group."
         );
     }
