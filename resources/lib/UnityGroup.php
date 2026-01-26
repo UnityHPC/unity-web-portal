@@ -345,7 +345,7 @@ class UnityGroup extends PosixGroup
         \ensure(!$this->entry->exists());
         $nextGID = $this->LDAP->getNextPIGIDNumber();
         $this->entry->create([
-            "objectclass" => ["unityClusterPIGroup", "posixGroup", "top"],
+            "objectclass" => ["piGroup", "posixGroup", "top"],
             "gidnumber" => strval($nextGID),
             "memberuid" => [$owner->uid],
         ]);
