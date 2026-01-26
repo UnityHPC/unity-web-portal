@@ -79,6 +79,7 @@ if (isset($_SERVER["REMOTE_USER"])) {
             "Your account was previously locked due to inactivity.",
         );
     }
+
     // $_SERVER["REMOTE_USER"] is only defined for pages where httpd requies authentication
     // the home page does not require authentication,
     // so if the user goes to a secure page and then back to home, they've effectively logged out
