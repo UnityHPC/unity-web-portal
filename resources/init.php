@@ -63,7 +63,7 @@ if (!array_key_exists("csrf_tokens", $_SESSION)) {
 // so we use session cache to remember if they have logged in recently and then pretend
 // they're logged in even if they aren't
 if (isset($_SERVER["REMOTE_USER"])) {
-    $_SESSION["navbar_show_logged_in_pages"] = true;
+    $_SESSION["navbar_show_logged_in_user_pages"] = true;
     $SSO = UnitySSO::getSSO();
     $_SESSION["OPERATOR"] = $SSO["user"];
     $_SESSION["OPERATOR_IP"] = $_SERVER["REMOTE_ADDR"];
