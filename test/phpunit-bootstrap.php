@@ -311,8 +311,7 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertFalse($USER->getFlag(UserFlag::GHOST));
                 $this->assertFalse($USER->getFlag(UserFlag::IDLELOCKED));
                 $this->assertFalse($USER->getFlag(UserFlag::LOCKED));
-                // FIXME uncomment this after https://github.com/UnityHPC/account-portal/pull/473
-                // $this->assertFalse($USER->getFlag(UserFlag::QUALIFIED));
+                $this->assertFalse($USER->getFlag(UserFlag::QUALIFIED));
                 $this->assertTrue($LDAP->getUserEntry($USER->uid)->exists());
                 $this->assertTrue($LDAP->getGroupEntry($USER->uid)->exists());
                 $this->assertTrue($LDAP->getOrgGroupEntry($USER->getOrg())->exists());
