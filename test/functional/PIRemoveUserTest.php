@@ -2,6 +2,7 @@
 
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UserFlag;
+use UnityWebPortal\lib\UnityGroup;
 use TRegx\PhpUnit\DataProviders\DataProvider as TRegxDataProvider;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -89,6 +90,53 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
             if (!$piGroup->memberUIDExists($pi->uid)) {
                 $piGroup->newUserRequest($pi);
                 $piGroup->approveUser($pi);
+            }
+        }
+    }
+
+    public function testRemoveMemberAlsoRemovesManager()
+    {
+        global $USER;
+        $this->switchUser("CourseGroupOwner");
+        $group = $USER->getPIGroup();
+        $manager_uids = $group->getManagerUIDs();
+        $this->assertNotEmpty($manager_uids);
+        $manager_uid = $manager_uids[0];
+        try {
+            $group->removeMemberUID($manager_uid);
+            $this->assertFalse($group->memberUIDExists($manager_uid));
+            $this->assertFalse($group->managerUIDExists($manager_uid));
+        } finally {
+            if (!$group->memberUIDExists($manager_uid)) {
+                $group->addMemberUID($manager_uid);
+            }
+            if (!$group->managerUIDExists($manager_uid)) {
+                $group->addManagerUID($manager_uid);
+            }
+        }
+    }
+
+    public function testManagerRemovesThemselfRedirectsToGroups()
+    {
+        global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
+        $this->switchUser("CourseGroupManager");
+        $managed_groups = $LDAP->getNonDisabledPIGroupGIDsWithManagerUID($USER->uid);
+        $this->assertNotEmpty($managed_groups);
+        $gid = $managed_groups[0];
+        $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+        try {
+            $output = http_post(
+                __DIR__ . "/../../webroot/panel/pi.php",
+                ["form_type" => "remUser", "uid" => $USER->uid],
+                ["gid" => $gid],
+            );
+            $this->assertMatchesRegularExpression("/panel\/groups\.php/", $output);
+        } finally {
+            if (!$group->memberUIDExists($USER->uid)) {
+                $group->addMemberUID($USER->uid);
+            }
+            if (!$group->managerUIDExists($USER->uid)) {
+                $group->addManagerUID($USER->uid);
             }
         }
     }

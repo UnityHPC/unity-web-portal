@@ -7,7 +7,12 @@ olcAttributeTypes: ( 1.1.1 NAME 'isDisabled'
     SYNTAX 1.3.6.1.4.1.1466.115.121.1.7
     SINGLE-VALUE
     )
+olcAttributeTypes: ( 1.1.3 NAME 'managerUid'
+    DESC 'users with permission to manage group'
+    EQUALITY caseExactIA5Match
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+    )
 olcObjectClasses: ( 1.1.2 NAME 'piGroup' SUP top AUXILIARY
     DESC 'PI Group'
-    MAY ( isDisabled )
+    MAY ( isDisabled $ managerUid )
     )

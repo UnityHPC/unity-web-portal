@@ -245,6 +245,23 @@ class UnityLDAP extends LDAPConn
     }
 
     /** @return string[] */
+    public function getNonDisabledPIGroupGIDsWithManagerUID(string $uid): array
+    {
+        return array_map(
+            fn($x) => $x["cn"][0],
+            $this->pi_groupOU->getChildrenArrayStrict(
+                ["cn"],
+                false,
+                sprintf(
+                    "(&(manageruid=%s)%s)",
+                    ldap_escape($uid, flags: LDAP_ESCAPE_FILTER),
+                    self::$NON_DISABLED_FILTER,
+                ),
+            ),
+        );
+    }
+
+    /** @return string[] */
     public function getAllNonDisabledPIGroupOwnerUIDs(): array
     {
         return array_map(

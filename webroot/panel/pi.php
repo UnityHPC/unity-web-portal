@@ -4,11 +4,27 @@ require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityHTTPD;
+use UnityWebPortal\lib\UnityGroup;
 
-$group = $USER->getPIGroup();
+if (($gid = $_GET["gid"] ?? null) !== null) {
+    $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+    $user_is_owner = false;
+    if (!$group->exists()) {
+        UnityHTTPD::badRequest("no such group: '$gid'", "This group does not exist.");
+    }
+    if (!in_array($USER->uid, $group->getManagerUIDs())) {
+        UnityHTTPD::forbidden("not a manager of group '$gid'", "You cannot manage this group.");
+    }
+} else {
+    $group = $USER->getPIGroup();
+    $user_is_owner = true;
+    if (!$group->exists()) {
+        UnityHTTPD::badRequest("not a PI", "You are not a PI.");
+    }
+}
 
-if (!$USER->isPI()) {
-    UnityHTTPD::forbidden("not a PI", "You are not a PI.");
+if ($group->getIsDisabled()) {
+    UnityHTTPD::forbidden("group '$gid' is disabled", "This group is disabled.");
 }
 
 $getUserFromPost = function () {
@@ -23,17 +39,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $form_user = $getUserFromPost();
             if ($_POST["action"] == "Approve") {
                 $group->approveUser($form_user);
+                UnityHTTPD::messageSuccess("User Approved", "");
+                UnityHTTPD::redirect();
             } elseif ($_POST["action"] == "Deny") {
                 $group->denyUser($form_user);
+                UnityHTTPD::messageSuccess("User Denied", "");
+                UnityHTTPD::redirect();
+            } else {
+                UnityHTTPD::badRequest(sprintf("unrecognized action: '%s'", $_POST["action"]), "");
             }
-            break;
+            break; /** @phpstan-ignore deadCode.unreachable */
         case "remUser":
             $form_user = $getUserFromPost();
             // remove user button clicked
             $group->removeUser($form_user);
-
-            break;
+            UnityHTTPD::messageSuccess("User Removed", "");
+            // group manager removed themself
+            if ($USER->uid === $form_user->uid) {
+                UnityHTTPD::redirect("/panel/groups.php");
+            } else {
+                UnityHTTPD::redirect();
+            }
+            break; /** @phpstan-ignore deadCode.unreachable */
         case "disable":
+            if (!$user_is_owner) {
+                UnityHTTPD::forbidden("Manager cannot disable", "Only the group owner can disable");
+            }
             if (count($group->getMemberUIDs()) > 1) {
                 UnityHTTPD::messageError("Cannot Disable PI Group", "Group still has members");
                 UnityHTTPD::redirect();
@@ -51,9 +82,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 require getTemplatePath("header.php");
 $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
-?>
 
-<h1>My Users</h1>
+if ($user_is_owner) {
+    echo "<h1>My Users</h1>";
+} else {
+    echo sprintf("<h1>PI Group '$group->gid'</h1>");
+}
+?>
 <hr>
 
 <?php
@@ -169,7 +204,12 @@ echo "
             $CSRFTokenHiddenFormInput
             <input type='hidden' name='form_type' value='disable'>
 ";
-if (count($assocs) > 1) {
+if (!$user_is_owner) {
+    echo "
+        <input type='submit' value='Disable PI Group' disabled>
+        <p>Only the group owner can disable the group.</p>
+    ";
+} elseif (count($assocs) > 1) {
     echo "
         <input type='submit' value='Disable PI Group' disabled>
         <p>You must first remove all members before you can disable.</p>

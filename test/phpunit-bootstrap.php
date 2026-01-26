@@ -67,8 +67,12 @@ $HTTP_HEADER_TEST_INPUTS = [
     _mb_convert_encoding("Hello, World!", "UTF-16"),
 ];
 
-function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_token = true): string
-{
+function http_post(
+    string $phpfile,
+    array $post_data,
+    array $query_parameters = [],
+    bool $do_generate_csrf_token = true,
+): string {
     global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "POST";
@@ -78,6 +82,7 @@ function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_tok
         $post_data["csrf_token"] = CSRFToken::generate();
     }
     $_POST = $post_data;
+    $_GET = $query_parameters;
     ob_start();
     try {
         $post_did_redirect_or_die = false;
@@ -94,6 +99,7 @@ function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_tok
         throw $e;
     } finally {
         unset($_POST);
+        unset($_GET);
         $_SERVER = $_PREVIOUS_SERVER;
     }
 }
@@ -197,6 +203,10 @@ function ensureUserDoesNotExist(string $uid)
         if (in_array($uid, $pi_group_members)) {
             $pi_group_entry->removeAttributeEntryByValue("memberuid", $uid);
         }
+        $managers = $pi_group_entry->getAttribute("manageruid");
+        if (in_array($uid, $managers)) {
+            $pi_group_entry->removeAttributeEntryByValue("manageruid", $uid);
+        }
     }
 }
 
@@ -266,20 +276,30 @@ class UnityWebPortalTestCase extends TestCase
         "user9_org3_test" => ["user9@org3.test", "foo", "bar", "user9@org3.test"],
         "user10_org1_test" => ["user10@org1.test", "foo", "bar", "user10@org1.test"],
         "user11_org1_test" => ["user11@org1.test", "foo", "bar", "user11@org1.test"],
+        "user12_org1_test" => ["user12@org1.test", "foo", "bar", "user12@org1.test"],
         "user2001_org998_test" => ["user2001@org998.test", "foo", "bar", "user2001@org998.test"],
         "user2002_org998_test" => ["user2002@org998.test", "foo", "bar", "user2002@org998.test"],
         "user2003_org998_test" => ["user2003@org1.test", "foo", "bar", "user2001@org1.test"],
         "user2004_org998_test" => ["user2004@org1.test", "foo", "bar", "user2001@org1.test"],
         "user2005_org1_test" => ["user2005@org1.test", "foo", "bar", "user2005@org1.test"],
+        "cs123_org1_test" => [
+            "cs123@org1.test",
+            "cs123",
+            "Fall 2025",
+            "user1+cs123_org1_test@org1.test",
+        ],
     ];
     public static array $NICKNAME2UID = [
         "Admin" => "user1_org1_test",
         "Blank" => "user2_org1_test",
         "EmptyPIGroupOwner" => "user5_org2_test",
+        "CourseGroupOwner" => "cs123_org1_test",
+        "CourseGroupManager" => "user1_org1_test",
         "CustomMapped555" => "user2002_org998_test",
         "Disabled" => "user7_org1_test",
         "DisabledNotPI" => "user7_org1_test",
         "DisabledOwnerOfDisabledPIGroup" => "user9_org3_test",
+        "DisabledPIGroup_user9_org3_test_Manager" => "user12_org1_test",
         "ReenabledOwnerOfDisabledPIGroup" => "user10_org1_test",
         "HasNoSshKeys" => "user3_org1_test",
         "HasOneSshKey" => "user5_org2_test",
@@ -316,6 +336,13 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertTrue($LDAP->getUserGroupEntry($USER->uid)->exists());
                 $this->assertTrue($LDAP->getOrgGroupEntry($USER->getOrg())->exists());
                 break;
+            case "CourseGroupOwner":
+                $this->assertTrue($USER->getPIGroup()->exists());
+                $this->assertNotEmpty($USER->getPIGroup()->getManagerUIDs());
+                break;
+            case "CourseGroupManager":
+                $this->assertNotEmpty($LDAP->getNonDisabledPIGroupGIDsWithManagerUID($USER->uid));
+                break;
             case "CustomMapped555":
                 $this->assertFalse($USER->exists());
                 $this->assertFalse($LDAP->getUserEntry($USER->uid)->exists());
@@ -339,6 +366,11 @@ class UnityWebPortalTestCase extends TestCase
             case "DisabledNotPI":
                 $this->assertTrue($USER->getFlag(UserFlag::DISABLED));
                 $this->assertFalse($USER->getPIGroup()->exists());
+                break;
+            case "DisabledPIGroup_user9_org3_test_Manager":
+                $pi_group_entry = $LDAP->getPIGroupEntry("pi_user9_org3_test");
+                $this->assertContains($USER->uid, $pi_group_entry->getAttribute("manageruid"));
+                $this->assertEquals("TRUE", $pi_group_entry->getAttribute("isDisabled")[0]);
                 break;
             case "ReenabledOwnerOfDisabledPIGroup":
                 $this->assertTrue($USER->exists());

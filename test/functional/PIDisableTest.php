@@ -1,6 +1,7 @@
 <?php
 use UnityWebPortal\lib\UnityHTTPDMessageLevel;
 use UnityWebPortal\lib\UserFlag;
+use UnityWebPortal\lib\UnityGroup;
 
 class PIDisableTest extends UnityWebPortalTestCase
 {
@@ -52,6 +53,28 @@ class PIDisableTest extends UnityWebPortalTestCase
             $entry->setAttribute("isDisabled", "FALSE");
             $pi_group->getOwner()->setFlag(UserFlag::QUALIFIED, true);
         }
+    }
+
+    public function testDisableGroupByManager()
+    {
+        global $USER, $LDAP, $SQL, $MAILER, $WEBHOOK;
+        $this->switchUser("CourseGroupManager");
+        $managed_groups = $LDAP->getNonDisabledPIGroupGIDsWithManagerUID($USER->uid);
+        $this->assertNotEmpty($managed_groups);
+        $gid = $managed_groups[0];
+        $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+        $this->assertFalse($group->getIsDisabled());
+        http_post(
+            __DIR__ . "/../../webroot/panel/pi.php",
+            ["form_type" => "disable"],
+            ["gid" => $gid],
+        );
+        $this->assertMessageExists(
+            UnityHTTPDMessageLevel::ERROR,
+            "/Permission denied/",
+            "/Only the group owner can disable/",
+        );
+        $this->assertFalse($group->getIsDisabled());
     }
 
     public function testMemberBecomesUnqualified()

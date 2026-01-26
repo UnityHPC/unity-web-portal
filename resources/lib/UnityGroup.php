@@ -3,6 +3,7 @@
 namespace UnityWebPortal\lib;
 
 use Exception;
+use UnityWebPortal\lib\exceptions\EntryNotFoundException;
 
 /**
  * Class that represents a single PI group in the UnityHPC Platform.
@@ -430,5 +431,42 @@ class UnityGroup extends PosixGroup
     private function setIsDisabled(bool $new_value): void
     {
         $this->entry->setAttribute("isDisabled", $new_value ? "TRUE" : "FALSE");
+    }
+
+    public function addManagerUID(string $uid): void
+    {
+        $new_manager = new UnityUser($uid, $this->LDAP, $this->SQL, $this->MAILER, $this->WEBHOOK);
+        if (!$new_manager->exists()) {
+            throw new EntryNotFoundException("user '$uid' does not exist!");
+        }
+        $member_uids = $this->getMemberUIDs();
+        if (!in_array($uid, $member_uids)) {
+            throw new Exception("user '$uid' is not a group member!");
+        }
+        $this->entry->appendAttribute("managerUid", $uid);
+    }
+
+    public function removeManagerUID(string $uid): void
+    {
+        $this->entry->removeAttributeEntryByValue("managerUid", $uid);
+    }
+
+    public function managerUIDExists(string $uid): bool
+    {
+        return in_array($uid, $this->entry->getAttribute("managerUid"));
+    }
+
+    /** @return string[] */
+    public function getManagerUIDs(): array
+    {
+        return $this->entry->getAttribute("managerUid");
+    }
+
+    public function removeMemberUID(string $uid): void
+    {
+        if ($this->managerUIDExists($uid)) {
+            $this->removeManagerUID($uid);
+        }
+        parent::removeMemberUID($uid);
     }
 }
