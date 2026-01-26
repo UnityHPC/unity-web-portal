@@ -37349,7 +37349,7 @@ gecos: Melissa Price
 uid: user2005_org1_test
 uidnumber: 33130
 
-dn: cn=cs123_org1_test,ou=groups,dc=unityhpc,dc=test
+dn: cn=cs123_org1_test,ou=user_groups,dc=unityhpc,dc=test
 objectClass: posixGroup
 objectClass: top
 gidNumber: 20005
