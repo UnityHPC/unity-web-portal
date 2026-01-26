@@ -327,7 +327,7 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertNotEmpty($USER->getPIGroup()->getManagerUIDs());
                 break;
             case "CourseGroupManager":
-                $this->assertNotEmpty($LDAP->getPIGroupGIDSWithManager($USER->uid));
+                $this->assertNotEmpty($LDAP->getNonDisabledPIGroupGIDsWithManagerUID($USER->uid));
                 break;
             case "CustomMapped555":
                 $this->assertFalse($USER->exists());
