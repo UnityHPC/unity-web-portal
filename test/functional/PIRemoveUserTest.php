@@ -92,4 +92,26 @@ class PIRemoveUserTest extends UnityWebPortalTestCase
             }
         }
     }
+
+    public function testRemoveMemberAlsoRemovesManager()
+    {
+        global $USER;
+        $this->switchUser("CourseGroupOwner");
+        $group = $USER->getPIGroup();
+        $manager_uids = $group->getManagerUIDs();
+        $this->assertNotEmpty($manager_uids);
+        $manager_uid = $manager_uids[0];
+        try {
+            $group->removeMemberUID($manager_uid);
+            $this->assertFalse($group->memberUIDExists($manager_uid));
+            $this->assertFalse($group->managerUIDExists($manager_uid));
+        } finally {
+            if (!$group->memberUIDExists($manager_uid)) {
+                $group->addMemberUID($manager_uid);
+            }
+            if (!$group->managerUIDExists($manager_uid)) {
+                $group->addManagerUID($manager_uid);
+            }
+        }
+    }
 }

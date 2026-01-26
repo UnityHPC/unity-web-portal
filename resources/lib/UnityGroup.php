@@ -461,4 +461,12 @@ class UnityGroup extends PosixGroup
     {
         return $this->entry->getAttribute("managerUid");
     }
+
+    public function removeMemberUID(string $uid): void
+    {
+        if ($this->managerUIDExists($uid)) {
+            $this->removeManagerUID($uid);
+        }
+        parent::removeMemberUID($uid);
+    }
 }
