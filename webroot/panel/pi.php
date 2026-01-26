@@ -89,8 +89,6 @@ if ($user_is_owner) {
     echo sprintf("<h1>PI Group '$group->gid'</h1>");
 }
 ?>
-
-<h1>PI Group Management</h1>
 <hr>
 
 <?php
