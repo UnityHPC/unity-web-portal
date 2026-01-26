@@ -63,27 +63,21 @@ if (!array_key_exists("csrf_tokens", $_SESSION)) {
 // so we use session cache to remember if they have logged in recently and then pretend
 // they're logged in even if they aren't
 if (isset($_SERVER["REMOTE_USER"])) {
-    // Check if SSO is enabled on this page
+    $_SESSION["navbar_show_logged_in_pages"] = true;
     $SSO = UnitySSO::getSSO();
-    $_SESSION["SSO"] = $SSO;
-
-    $OPERATOR = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $WEBHOOK);
-    $_SESSION["is_admin"] = $OPERATOR->getFlag(UserFlag::ADMIN);
-
     $_SESSION["OPERATOR"] = $SSO["user"];
     $_SESSION["OPERATOR_IP"] = $_SERVER["REMOTE_ADDR"];
-
-    if (isset($_SESSION["viewUser"]) && $_SESSION["is_admin"]) {
+    if (
+        isset($_SESSION["viewUser"]) &&
+        $LDAP->userFlagGroups["admin"]->memberUIDExists($SSO["user"])
+    ) {
         $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     } else {
-        $USER = $OPERATOR;
+        $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     }
-
-    $_SESSION["user_exists"] = $USER->exists();
-    $_SESSION["is_pi"] = $USER->isPI();
-
-    $SQL->addLog("user_login", $OPERATOR->uid);
-
+    $_SESSION["navbar_show_admin_pages"] = true;
+    $_SESSION["navbar_show_pi_pages"] = true;
+    $SQL->addLog("user_login", $SSO["user"]);
     $USER->updateIsQualified(); // in case manual changes have been made to PI groups
 
     if ($USER->getFlag(UserFlag::LOCKED)) {
