@@ -17,7 +17,28 @@ $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
 $members = $group->getGroupMembersAttributes(["gecos", "mail"]);
 $requests = $group->getRequests();
 
-$count = count($members) + count($requests);
+foreach ($requests as [$user, $timestamp]) {
+    echo "<tr style='background: var(--light_panel_background);'>";
+    $name = $user->getFullName();
+    $email = $user->getMail();
+    echo "<td>$name</td>";
+    echo "<td>$user->uid</td>";
+    echo "<td>$email</td>";
+    echo "<td>";
+    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
+    echo
+        "<form action='' method='POST'
+    onsubmit='return confirm(\"Are you sure you want to approve $user->uid ?\");'>
+    $CSRFTokenHiddenFormInput
+    <input type='hidden' name='form_type' value='reqChild'>
+    <input type='hidden' name='uid' value='$user->uid'>
+    <input type='hidden' name='pi' value='$group->gid'>
+    <input type='submit' name='action' value='Approve'>
+    <input type='submit' name='action' value='Deny'></form>";
+    echo "</td>";
+    echo "</tr>";
+}
+
 foreach ($members as $uid => $attributes) {
     if ($uid == $group->getOwner()->uid) {
         continue;
@@ -45,28 +66,6 @@ foreach ($members as $uid => $attributes) {
         <input type='submit' value='Remove'>
         </form>
     ";
-    echo "</td>";
-    echo "</tr>";
-}
-
-foreach ($requests as [$user, $timestamp]) {
-    echo "<tr style='background: var(--light_panel_background);'>";
-    $name = $user->getFullName();
-    $email = $user->getMail();
-    echo "<td>$name</td>";
-    echo "<td>$user->uid</td>";
-    echo "<td>$email</td>";
-    echo "<td>";
-    $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
-    echo
-        "<form action='' method='POST'
-    onsubmit='return confirm(\"Are you sure you want to approve $user->uid ?\");'>
-    $CSRFTokenHiddenFormInput
-    <input type='hidden' name='form_type' value='reqChild'>
-    <input type='hidden' name='uid' value='$user->uid'>
-    <input type='hidden' name='pi' value='$group->gid'>
-    <input type='submit' name='action' value='Approve'>
-    <input type='submit' name='action' value='Deny'></form>";
     echo "</td>";
     echo "</tr>";
 }
