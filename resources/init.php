@@ -67,10 +67,7 @@ if (isset($_SERVER["REMOTE_USER"])) {
     $SSO = UnitySSO::getSSO();
     $_SESSION["OPERATOR"] = $SSO["user"];
     $_SESSION["OPERATOR_IP"] = $_SERVER["REMOTE_ADDR"];
-    if (
-        isset($_SESSION["viewUser"]) &&
-        $LDAP->userFlagGroups["admin"]->memberUIDExists($SSO["user"])
-    ) {
+    if (isset($_SESSION["viewUser"])) {
         $USER = new UnityUser($_SESSION["viewUser"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     } else {
         $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $WEBHOOK);
