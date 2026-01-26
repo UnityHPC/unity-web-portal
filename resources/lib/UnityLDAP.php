@@ -44,7 +44,7 @@ class UnityLDAP extends LDAPConn
     // Instance vars for various ldapEntry objects
     private LDAPEntry $baseOU;
     private LDAPEntry $userOU;
-    private LDAPEntry $groupOU; /** @phpstan-ignore property.onlyWritten */
+    private LDAPEntry $userGroupOU; /** @phpstan-ignore property.onlyWritten */
     private LDAPEntry $pi_groupOU;
     private LDAPEntry $org_groupOU; /** @phpstan-ignore property.onlyWritten */
 
@@ -56,7 +56,7 @@ class UnityLDAP extends LDAPConn
         parent::__construct(CONFIG["ldap"]["uri"], CONFIG["ldap"]["user"], CONFIG["ldap"]["pass"]);
         $this->baseOU = $this->getEntry(CONFIG["ldap"]["basedn"]);
         $this->userOU = $this->getEntry(CONFIG["ldap"]["user_ou"]);
-        $this->groupOU = $this->getEntry(CONFIG["ldap"]["group_ou"]);
+        $this->userGroupOU = $this->getEntry(CONFIG["ldap"]["usergroup_ou"]);
         $this->pi_groupOU = $this->getEntry(CONFIG["ldap"]["pigroup_ou"]);
         $this->org_groupOU = $this->getEntry(CONFIG["ldap"]["orggroup_ou"]);
         $this->userFlagGroups = [];
@@ -306,10 +306,10 @@ class UnityLDAP extends LDAPConn
         return $this->getEntry(UnityLDAP::RDN . "=$uid," . CONFIG["ldap"]["user_ou"]);
     }
 
-    public function getGroupEntry(string $gid): LDAPEntry
+    public function getUserGroupEntry(string $gid): LDAPEntry
     {
         $gid = ldap_escape($gid, flags: LDAP_ESCAPE_DN);
-        return $this->getEntry(UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["group_ou"]);
+        return $this->getEntry(UnityLDAP::RDN . "=$gid," . CONFIG["ldap"]["usergroup_ou"]);
     }
 
     public function getPIGroupEntry(string $gid): LDAPEntry

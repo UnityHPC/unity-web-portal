@@ -65,7 +65,7 @@ print "LDAP entries created:\n";
 print _json_encode(
     [
         "course user" => flatten_attributes($LDAP->getUserEntry($cn)->getAttributes()),
-        "course user group" => flatten_attributes($LDAP->getGroupEntry($cn)->getAttributes()),
+        "course user group" => flatten_attributes($LDAP->getUserGroupEntry($cn)->getAttributes()),
         "course PI group" => flatten_attributes(
             $LDAP->getPIGroupEntry($course_pi_group->gid)->getAttributes(),
         ),
