@@ -12,15 +12,12 @@ if (($gid = $_GET["gid"] ?? null) !== null) {
         UnityHTTPD::badRequest("no such group: '$gid'", "This group does not exist.");
     }
     if (!in_array($USER->uid, $group->getManagerUIDs())) {
-        UnityHTTPD::forbidden(
-            "user '$USER->uid' is not a manager of group '$gid'",
-            "You are not allowed to manage this PI group."
-        );
+        UnityHTTPD::forbidden("not a manager of group '$gid'", "You cannot manage this group.");
     }
 } else {
     $group = $USER->getPIGroup();
-    if (!$USER->isPI()) {
-        UnityHTTPD::forbidden("not a PI", "You are not a PI.");
+    if (!$group->exists()) {
+        UnityHTTPD::badRequest("not a PI", "You are not a PI.");
     }
 }
 

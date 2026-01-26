@@ -122,7 +122,7 @@ class PageLoadTest extends UnityWebPortalTestCase
             ["gid" => $gid],
             ignore_die: true,
         );
-        $this->assertMatchesRegularExpression("/not allowed/", $output);
+        $this->assertMatchesRegularExpression("/You cannot manage this group/", $output);
     }
 
     public function testLoadPIPageForNonexistentGroup()
@@ -140,7 +140,7 @@ class PageLoadTest extends UnityWebPortalTestCase
     {
         $this->switchUser("ReenabledOwnerOfDisabledPIGroup");
         $output = http_get(__DIR__ . "/../../webroot/panel/pi.php", ignore_die: true);
-        $this->assertMatchesRegularExpression("/You are not a PI/", $output);
+        $this->assertMatchesRegularExpression("/This group is disabled/", $output);
     }
 
     public function testLoadPIPageForAnotherDisabledGroup()

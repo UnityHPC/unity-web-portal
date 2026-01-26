@@ -356,7 +356,7 @@ class UnityWebPortalTestCase extends TestCase
                 $this->assertFalse($USER->getPIGroup()->exists());
                 break;
             case "DisabledPIGroup_user9_org3_test_Manager":
-                $pi_group_entry = $LDAP->getPIGroupEntry("user9_org3_test");
+                $pi_group_entry = $LDAP->getPIGroupEntry("pi_user9_org3_test");
                 $this->assertContains($USER->uid, $pi_group_entry->getAttribute("manageruid"));
                 $this->assertEquals("TRUE", $pi_group_entry->getAttribute("isDisabled")[0]);
                 break;
