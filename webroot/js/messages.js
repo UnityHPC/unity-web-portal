@@ -26,6 +26,6 @@ $(document).ready(function () {
     });
 
     $('#clear_all_messages_button').on('click', function () {
-        $('#messages .message button').click();
+        $('#messages .message:visible button').click();
     });
 });
