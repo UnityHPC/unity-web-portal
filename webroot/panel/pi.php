@@ -24,6 +24,10 @@ if (($gid = $_GET["gid"] ?? null) !== null) {
     }
 }
 
+if ($group->getIsDisabled()) {
+    UnityHTTPD::forbidden("group '$gid' is disabled", "This group is disabled.");
+}
+
 $getUserFromPost = function () {
     global $LDAP, $SQL, $MAILER, $WEBHOOK;
     return new UnityUser(UnityHTTPD::getPostData("uid"), $LDAP, $SQL, $MAILER, $WEBHOOK);
