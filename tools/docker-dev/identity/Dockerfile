@@ -12,7 +12,7 @@ RUN rm -rf /var/lib/ldap
 RUN mkdir /var/lib/ldap
 RUN chown openldap:openldap /var/lib/ldap
 COPY ssh.ldif /etc/ldap/schema/ssh.ldif
-COPY unity-cluster-schema.ldif /etc/ldap/schema/unity-cluster.ldif
+COPY account-portal-schema.ldif /etc/ldap/schema/account-portal.ldif
 COPY ldap-config.ldif /tmp/ldap-config.ldif
 COPY bootstrap.ldif /tmp/bootstrap.ldif
 COPY load-modules.ldif /tmp/load-modules.ldif
@@ -23,7 +23,7 @@ RUN service slapd start; \
     ldapadd    -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/nis.ldif; \
     ldapadd    -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/inetorgperson.ldif; \
     ldapadd    -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ssh.ldif; \
-    ldapadd    -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/unity-cluster.ldif; \
+    ldapadd    -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/account-portal.ldif; \
     ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/ldap-config.ldif; \
     ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/load-modules.ldif; \
     ldapadd    -Y EXTERNAL -H ldapi:/// -f /tmp/configure-unique.ldif; \

@@ -1,6 +1,6 @@
-dn: cn=unityCluster,cn=schema,cn=config
+dn: cn=accountPortal,cn=schema,cn=config
 objectClass: olcSchemaConfig
-cn: unityCluster
+cn: accountPortal
 olcAttributeTypes: ( 1.1.1 NAME 'isDisabled'
     DESC 'if disabled, systems should pretend this group does not exist'
     EQUALITY booleanMatch
@@ -8,6 +8,6 @@ olcAttributeTypes: ( 1.1.1 NAME 'isDisabled'
     SINGLE-VALUE
     )
 olcObjectClasses: ( 1.1.2 NAME 'piGroup' SUP top AUXILIARY
-    DESC 'Unity Cluster PI Group'
+    DESC 'PI Group'
     MAY ( isDisabled )
     )
