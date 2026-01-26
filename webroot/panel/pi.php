@@ -138,10 +138,6 @@ echo "
 
 $owner_uid = $group->getOwner()->uid;
 foreach ($assocs as $assoc) {
-    if ($assoc->uid == $USER->uid) {
-        continue;
-    }
-
     echo "<tr>";
     echo "<td>" . $assoc->getFirstname() . " " . $assoc->getLastname() . "</td>";
     echo "<td>" . $assoc->uid . "</td>";
