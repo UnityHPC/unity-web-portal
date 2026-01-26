@@ -47,7 +47,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $form_user = $getUserFromPost();
             // remove user button clicked
             $group->removeUser($form_user);
-
+            // group manager removed themself
+            if ($USER->uid === $form_user->uid) {
+                UnityHTTPD::redirect("/panel/groups.php");
+            }
             break;
         case "disable":
             if (!$user_is_owner) {
