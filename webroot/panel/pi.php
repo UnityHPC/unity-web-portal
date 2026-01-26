@@ -39,19 +39,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $form_user = $getUserFromPost();
             if ($_POST["action"] == "Approve") {
                 $group->approveUser($form_user);
+                UnityHTTPD::messageSuccess("User Approved", "");
+                UnityHTTPD::redirect();
             } elseif ($_POST["action"] == "Deny") {
                 $group->denyUser($form_user);
+                UnityHTTPD::messageSuccess("User Denied", "");
+                UnityHTTPD::redirect();
+            } else {
+                UnityHTTPD::badRequest(sprintf("unrecognized action: '%s'", $_POST["action"]), "");
             }
-            break;
+            break; /** @phpstan-ignore deadCode.unreachable */
         case "remUser":
             $form_user = $getUserFromPost();
             // remove user button clicked
             $group->removeUser($form_user);
+            UnityHTTPD::messageSuccess("User Removed", "");
             // group manager removed themself
             if ($USER->uid === $form_user->uid) {
                 UnityHTTPD::redirect("/panel/groups.php");
+            } else {
+                UnityHTTPD::redirect();
             }
-            break;
+            break; /** @phpstan-ignore deadCode.unreachable */
         case "disable":
             if (!$user_is_owner) {
                 UnityHTTPD::forbidden("Manager cannot disable", "Only the group owner can disable");
