@@ -82,6 +82,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 require getTemplatePath("header.php");
 $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
+
+if ($user_is_owner) {
+    echo "<h1>My Users</h1>";
+} else {
+    echo sprintf("<h1>PI Group '$group->gid'</h1>");
+}
 ?>
 
 <h1>PI Group Management</h1>
