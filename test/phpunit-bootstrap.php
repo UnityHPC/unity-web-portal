@@ -270,6 +270,7 @@ class UnityWebPortalTestCase extends TestCase
         "user9_org3_test" => ["user9@org3.test", "foo", "bar", "user9@org3.test"],
         "user10_org1_test" => ["user10@org1.test", "foo", "bar", "user10@org1.test"],
         "user11_org1_test" => ["user11@org1.test", "foo", "bar", "user11@org1.test"],
+        "user12_org1_test" => ["user12@org1.test", "foo", "bar", "user12@org1.test"],
         "user2001_org998_test" => ["user2001@org998.test", "foo", "bar", "user2001@org998.test"],
         "user2002_org998_test" => ["user2002@org998.test", "foo", "bar", "user2002@org998.test"],
         "user2003_org998_test" => ["user2003@org1.test", "foo", "bar", "user2001@org1.test"],
@@ -286,6 +287,7 @@ class UnityWebPortalTestCase extends TestCase
         "Disabled" => "user7_org1_test",
         "DisabledNotPI" => "user7_org1_test",
         "DisabledOwnerOfDisabledPIGroup" => "user9_org3_test",
+        "DisabledPIGroup_user9_org3_test_Manager" => "user12_org1_test",
         "ReenabledOwnerOfDisabledPIGroup" => "user10_org1_test",
         "HasNoSshKeys" => "user3_org1_test",
         "HasOneSshKey" => "user5_org2_test",
@@ -352,6 +354,11 @@ class UnityWebPortalTestCase extends TestCase
             case "DisabledNotPI":
                 $this->assertTrue($USER->getFlag(UserFlag::DISABLED));
                 $this->assertFalse($USER->getPIGroup()->exists());
+                break;
+            case "DisabledPIGroup_user9_org3_test_Manager":
+                $pi_group_entry = $LDAP->getPIGroupEntry("user9_org3_test");
+                $this->assertContains($USER->uid, $pi_group_entry->getAttribute("manageruid"));
+                $this->assertEquals("TRUE", $pi_group_entry->getAttribute("isDisabled")[0]);
                 break;
             case "ReenabledOwnerOfDisabledPIGroup":
                 $this->assertTrue($USER->exists());

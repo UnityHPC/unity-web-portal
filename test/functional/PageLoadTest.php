@@ -136,6 +136,24 @@ class PageLoadTest extends UnityWebPortalTestCase
         $this->assertMatchesRegularExpression("/This group does not exist/", $output);
     }
 
+    public function testLoadPIPageForDisabledGroup()
+    {
+        $this->switchUser("ReenabledOwnerOfDisabledPIGroup");
+        $output = http_get(__DIR__ . "/../../webroot/panel/pi.php", ignore_die: true);
+        $this->assertMatchesRegularExpression("/You are not a PI/", $output);
+    }
+
+    public function testLoadPIPageForAnotherDisabledGroup()
+    {
+        $this->switchUser("DisabledPIGroup_user9_org3_test_Manager");
+        $output = http_get(
+            __DIR__ . "/../../webroot/panel/pi.php",
+            ["gid" => "pi_user9_org3_test"],
+            ignore_die: true,
+        );
+        $this->assertMatchesRegularExpression("/This group is disabled/", $output);
+    }
+
     public function testDisplayManagedGroups()
     {
         global $USER, $LDAP;

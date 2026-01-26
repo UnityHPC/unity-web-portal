@@ -10960,6 +10960,7 @@ objectclass: piGroup
 objectclass: posixGroup
 objectclass: top
 isDisabled: TRUE
+managerUid: user12_org1_test
 
 dn: cn=pi_user10_org1_test,ou=pi_groups,dc=unityhpc,dc=test
 cn: pi_user10_org1_test
