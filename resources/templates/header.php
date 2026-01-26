@@ -6,8 +6,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // another page should have already validated and we can't validate the same token twice
     // UnityHTTPD::validatePostCSRFToken();
     if (($_POST["form_type"] ?? null) == "clearView") {
-        unset($_SESSION["viewUser"]);
-        UnityHTTPD::redirect(getURL("admin/user-mgmt.php"));
+        if (isset($_SESSION["viewUser"])) {
+            unset($_SESSION["viewUser"]);
+            UnityHTTPD::redirect(getURL("admin/user-mgmt.php"));
+        } else {
+            throw new Exception('Cannot clearView because $_SESSION["viewUser"] is not set!');
+        }
     }
     // Webroot files need to handle their own POSTs before loading the header
     // so that they can do UnityHTTPD::badRequest before anything else has been printed.
