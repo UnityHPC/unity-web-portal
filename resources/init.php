@@ -72,8 +72,9 @@ if (isset($_SERVER["REMOTE_USER"])) {
     } else {
         $USER = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $WEBHOOK);
     }
-    $_SESSION["navbar_show_admin_pages"] = true;
-    $_SESSION["navbar_show_pi_pages"] = true;
+    $admin_group = $LDAP->userFlagGroups["admin"];
+    $_SESSION["navbar_show_admin_pages"] = $admin_group->memberUIDExists($USER->uid);
+    $_SESSION["navbar_show_pi_pages"] = $USER->getPIGroup()->exists();
     $SQL->addLog("user_login", $SSO["user"]);
     $USER->updateIsQualified(); // in case manual changes have been made to PI groups
 
