@@ -53,7 +53,7 @@ class PageLoadTest extends UnityWebPortalTestCase
             ["NonExistent", "panel/new_account.php", "/Register New Account/"],
             ["Blank", "panel/account.php", "/Account Settings/"],
             ["Blank", "panel/groups.php", "/My Principal Investigators/"],
-            ["EmptyPIGroupOwner", "panel/pi.php", "/My Users/"],
+            ["EmptyPIGroupOwner", "panel/pi.php", "/PI Group Management/"],
             // new_account.php should redirect to account.php if account already exists
             ["Blank", "panel/new_account.php", "/panel\/account\.php/", true],
             // non-PI can't access pi.php
@@ -108,7 +108,7 @@ class PageLoadTest extends UnityWebPortalTestCase
         $output = http_get(__DIR__ . "/../../webroot/panel/pi.php", [
             "gid" => $gids[0],
         ]);
-        $this->assertMatchesRegularExpression("/My Users/", $output);
+        $this->assertMatchesRegularExpression("/PI Group Management/", $output);
     }
 
     public function testLoadPIPageForAnotherGroupForbidden()

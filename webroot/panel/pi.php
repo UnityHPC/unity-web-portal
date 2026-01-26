@@ -67,7 +67,7 @@ require getTemplatePath("header.php");
 $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
 ?>
 
-<h1>My Users</h1>
+<h1>PI Group Management</h1>
 <hr>
 
 <?php

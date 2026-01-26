@@ -108,7 +108,7 @@ if (isset($SSO)) {
 
         if (isset($_SESSION["is_pi"]) && $_SESSION["is_pi"]) {
             // PI only pages
-            echo getHyperlink("My Users", "panel/pi.php") . "\n";
+            echo getHyperlink("PI Group Management", "panel/pi.php") . "\n";
         }
 
         // additional branding items
