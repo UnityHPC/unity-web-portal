@@ -10,7 +10,7 @@ use PHPOpenLDAPer\LDAPEntry;
 enum UserFlag: string
 {
     case ADMIN = "admin";
-    case GHOST = "ghost";
+    case DISABLED = "disabled";
     case IDLELOCKED = "idlelocked";
     case LOCKED = "locked";
     case QUALIFIED = "qualified";

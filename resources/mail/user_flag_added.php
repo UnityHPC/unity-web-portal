@@ -22,10 +22,10 @@ page in our documentation for next steps.
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>
-<?php case UserFlag::GHOST: ?>
-<?php $this->Subject = "User Deleted"; ?>
+<?php case UserFlag::DISABLED: ?>
+<?php $this->Subject = "User Disabled"; ?>
 <p>Hello,</p>
-<p>Your account on the UnityHPC Platform has been deleted.</p>
+<p>Your account on the UnityHPC Platform has been disabled.</p>
 <p>If you believe this to be a mistake, please reply to this email as soon as possible.</p>
 <?php break; ?>
 

@@ -7,10 +7,10 @@ case UserFlag::QUALIFIED: ?>
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>
-<?php case UserFlag::GHOST: ?>
-<?php $this->Subject = "User Resurrected"; ?>
+<?php case UserFlag::DISABLED: ?>
+<?php $this->Subject = "User Re-Enabled"; ?>
 <p>Hello,</p>
-<p>User "<?php echo $data["user"] ?>" has been resurrected (no longer marked as ghost). </p>
+<p>User "<?php echo $data["user"] ?>" has been re-enabled. </p>
 <?php break; ?>
 
 <?php /////////////////////////////////////////////////////////////////////////////////////////// ?>

@@ -1,6 +1,8 @@
 <?php
 
 use PHPUnit\Framework\Attributes\DataProvider;
+use UnityWebPortal\lib\UnityHTTPDMessageLevel;
+use UnityWebPortal\lib\UserFlag;
 
 class RegisterUserTest extends UnityWebPortalTestCase
 {
@@ -43,6 +45,36 @@ class RegisterUserTest extends UnityWebPortalTestCase
         } finally {
             ensureOrgGroupDoesNotExist($org_gid);
             ensureUserDoesNotExist($uid);
+        }
+    }
+
+    public function testReEnableUser()
+    {
+        global $USER;
+        $this->switchUser("DisabledNotPI");
+        $this->assertTrue($USER->getFlag(UserFlag::DISABLED));
+        try {
+            $this->register();
+            $this->assertMessageExists(UnityHTTPDMessageLevel::INFO, "/.*/", "/re-enabled/");
+            $this->assertFalse($USER->getFlag(UserFlag::DISABLED));
+        } finally {
+            $USER->setFlag(UserFlag::DISABLED, true);
+        }
+    }
+
+    public function testReEnableUserWithDisabledGroup()
+    {
+        global $USER;
+        $this->switchUser("DisabledOwnerOfDisabledPIGroup");
+        $this->assertTrue($USER->getFlag(UserFlag::DISABLED));
+        $this->assertFalse($USER->isPI());
+        try {
+            $this->register();
+            $this->assertMessageExists(UnityHTTPDMessageLevel::INFO, "/.*/", "/re-enabled/");
+            $this->assertFalse($USER->getFlag(UserFlag::DISABLED));
+            $this->assertFalse($USER->isPI());
+        } finally {
+            $USER->setFlag(UserFlag::DISABLED, true);
         }
     }
 }

@@ -36,7 +36,7 @@ offset_UIDGID = 1000000 ; start point when allocating new UID/GID pairs for a ne
 offset_PIGID = 2000000 ; start point when allocating new GID for a new PI group
 offset_ORGGID = 3000000 ; start point when allocating new GID for a new org group
 user_flag_groups[admin] =      "cn=web_admins,dc=unityhpc,dc=test" ; admin user group dn
-user_flag_groups[ghost] =      "cn=ghost,dc=unityhpc,dc=test"      ; ghost user group dn
+user_flag_groups[disabled] =   "cn=disabled,dc=unityhpc,dc=test"   ; disabled user group dn
 user_flag_groups[idlelocked] = "cn=idlelocked,dc=unityhpc,dc=test" ; idlelocked user group dn
 user_flag_groups[locked] =     "cn=locked,dc=unityhpc,dc=test"     ; locked user group dn
 user_flag_groups[qualified] =  "cn=unityusers,dc=unityhpc,dc=test" ; qualified user group (in at least one PI group)

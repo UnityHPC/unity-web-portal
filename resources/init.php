@@ -12,6 +12,7 @@ use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityWebhook;
 use UnityWebPortal\lib\UnityGithub;
 use UnityWebPortal\lib\UserFlag;
+use UnityWebPortal\lib\UnityHTTPD;
 
 if (CONFIG["site"]["enable_exception_handler"]) {
     set_exception_handler(["UnityWebPortal\lib\UnityHTTPD", "exceptionHandler"]);
@@ -82,4 +83,16 @@ if (isset($_SERVER["REMOTE_USER"])) {
     $SQL->addLog("user_login", $OPERATOR->uid);
 
     $USER->updateIsQualified(); // in case manual changes have been made to PI groups
+
+    if ($USER->getFlag(UserFlag::LOCKED)) {
+        UnityHTTPD::forbidden("locked", "Your account is locked.");
+    }
+
+    if ($OPERATOR == $USER && $USER->getFlag(UserFlag::IDLELOCKED)) {
+        $USER->setFlag(UserFlag::IDLELOCKED, false);
+        UnityHTTPD::messageSuccess(
+            "Account Unlocked",
+            "Your account was previously locked due to inactivity.",
+        );
+    }
 }

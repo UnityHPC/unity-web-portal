@@ -1,9 +1,25 @@
 Terminology:
 
 - **qualified user**: a user who is currently a PI or a member of at least one PI group
+  - your other services should require this group for authorization
 - **unqualified user**: inverse of qualified
-- **native user**: a user created by this account portal
+- **native user**: a user whose entries exist in the OUs given in `config.ini`
 - **non-native user**: inverse of native
   - users created for administrative purposes should not be mixed with native users in the LDAP OUs given in `config.ini` or else this account portal may get confused
-- **disabled group**: a PI group that was disabled by its owner or had its owner disabled
-  - memberuid attribute should be empty
+- **locked user**: a user who has been manually denied access to your services by an admin
+  - this account portal gives HTTP 403 permission denied for these users on any page where httpd has authentication
+  - your other services should block this group for authorization
+- **idlelocked user**: a user who has been inactive for so long that they lose access to your services
+  - as soon as they log in to this account portal, this flag is removed
+  - your other services should block this group for authorization
+- **disabled user**: a user that we pretend does not exist
+  - TODO user can disable their account in the GUI
+  - TODO if a user is inactive for too long, they expire and become disabled
+  - `sshpublickey` attribute should be empty
+  - your other services should block this group for authorization
+  - if you have any integrations (ex: creating home directories), they should take care to ignore these users
+- **disabled group**: a PI group that we pretend does not exist
+  - owner can disable their group in the GUI, admin can disable any group in the GUI
+  - if the owner is disabled, their group is also disabled
+  - `memberuid` attribute should be empty
+  - if you have any integrations (ex: updating slurm account DB), they should take care to ignore these PI groups

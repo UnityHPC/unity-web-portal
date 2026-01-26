@@ -3,15 +3,22 @@
 require_once __DIR__ . "/../../resources/autoload.php";
 
 use UnityWebPortal\lib\UnityHTTPD;
-use UnityWebPortal\lib\UnityUser;
+use UnityWebPortal\lib\UserFlag;
 
-if ($USER->exists()) {
+if ($USER->exists() && (!$USER->getFlag(UserFlag::DISABLED))) {
     UnityHTTPD::redirect(getURL("panel/account.php"));
 }
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     UnityHTTPD::validatePostCSRFToken();
-    $user = new UnityUser($SSO["user"], $LDAP, $SQL, $MAILER, $WEBHOOK);
-    $user->init($SSO["firstname"], $SSO["lastname"], $SSO["mail"], $SSO["org"]);
+    if ($USER->getFlag(UserFlag::DISABLED)) {
+        $USER->setFlag(UserFlag::DISABLED, false);
+        UnityHTTPD::messageInfo(
+            "Welcome Back!",
+            "Your previously disabled account has been re-enabled."
+        );
+    } else {
+        $USER->init($SSO["firstname"], $SSO["lastname"], $SSO["mail"], $SSO["org"]);
+    }
     // header.php will redirect to this same page again and then this page will redirect to account
 }
 require getTemplatePath("header.php");
