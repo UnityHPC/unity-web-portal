@@ -8,6 +8,7 @@ use UnityWebPortal\lib\UnityGroup;
 
 if (($gid = $_GET["gid"] ?? null) !== null) {
     $group = new UnityGroup($gid, $LDAP, $SQL, $MAILER, $WEBHOOK);
+    $user_is_owner = false;
     if (!$group->exists()) {
         UnityHTTPD::badRequest("no such group: '$gid'", "This group does not exist.");
     }
@@ -16,6 +17,7 @@ if (($gid = $_GET["gid"] ?? null) !== null) {
     }
 } else {
     $group = $USER->getPIGroup();
+    $user_is_owner = true;
     if (!$group->exists()) {
         UnityHTTPD::badRequest("not a PI", "You are not a PI.");
     }
@@ -48,6 +50,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             break;
         case "disable":
+            if (!$user_is_owner) {
+                UnityHTTPD::forbidden("Manager cannot disable", "Only the group owner can disable");
+            }
             if (count($group->getMemberUIDs()) > 1) {
                 UnityHTTPD::messageError("Cannot Disable PI Group", "Group still has members");
                 UnityHTTPD::redirect();
@@ -183,7 +188,12 @@ echo "
             $CSRFTokenHiddenFormInput
             <input type='hidden' name='form_type' value='disable'>
 ";
-if (count($assocs) > 1) {
+if (!$user_is_owner) {
+    echo "
+        <input type='submit' value='Disable PI Group' disabled>
+        <p>Only the group owner can disable the group.</p>
+    ";
+} elseif (count($assocs) > 1) {
     echo "
         <input type='submit' value='Disable PI Group' disabled>
         <p>You must first remove all members before you can disable.</p>

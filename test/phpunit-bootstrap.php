@@ -67,8 +67,12 @@ $HTTP_HEADER_TEST_INPUTS = [
     _mb_convert_encoding("Hello, World!", "UTF-16"),
 ];
 
-function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_token = true): string
-{
+function http_post(
+    string $phpfile,
+    array $post_data,
+    array $query_parameters = [],
+    bool $do_generate_csrf_token = true,
+): string {
     global $LDAP, $SQL, $MAILER, $WEBHOOK, $GITHUB, $SITE, $SSO, $USER, $LOC_HEADER, $LOC_FOOTER;
     $_PREVIOUS_SERVER = $_SERVER;
     $_SERVER["REQUEST_METHOD"] = "POST";
@@ -78,6 +82,7 @@ function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_tok
         $post_data["csrf_token"] = CSRFToken::generate();
     }
     $_POST = $post_data;
+    $_GET = $query_parameters;
     ob_start();
     try {
         $post_did_redirect_or_die = false;
@@ -94,6 +99,7 @@ function http_post(string $phpfile, array $post_data, bool $do_generate_csrf_tok
         throw $e;
     } finally {
         unset($_POST);
+        unset($_GET);
         $_SERVER = $_PREVIOUS_SERVER;
     }
 }
