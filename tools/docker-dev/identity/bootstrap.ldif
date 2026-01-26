@@ -37373,7 +37373,7 @@ gidNumber: 20005
 cn: cs123_org1_test
 
 dn: cn=pi_cs123_org1_test,ou=pi_groups,dc=unityhpc,dc=test
-objectclass: unityClusterPIGroup
+objectclass: piGroup
 objectClass: posixGroup
 objectClass: top
 gidNumber: 20007
