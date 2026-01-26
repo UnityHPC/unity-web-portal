@@ -142,6 +142,10 @@ rm "$prod" && ln -s "$old" "$prod"
   scp tools/docker-dev/identity/unity-cluster-schema.ldif root@your-ldap-server:/root/unity-cluster-schema.ldif
   ssh root@your-ldap-server ldapadd -Y EXTERNAL -H ldapi:/// -f /root/unity-cluster-schema.ldif
   ```
+- the objectClass `piGroup` needs to be added to all your PI groups
+  ```shell
+  ./workers/ensure-all-pi-groups-have-objectClass.php
+  ```
 - the `[ldap]group_ou` option has been renamed to `[ldap]usergroup_ou`
 - the `[ldap]user_flag_groups[ghost]` group has been renamed to `[ldap]user_flag_groups[disabled]`
 
