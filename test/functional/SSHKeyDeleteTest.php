@@ -2,7 +2,6 @@
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use TRegx\PhpUnit\DataProviders\DataProvider as TRegxDataProvider;
-use UnityWebPortal\lib\exceptions\ArrayKeyException;
 use UnityWebPortal\lib\UnityHTTPDMessageLevel;
 
 class SSHKeyDeleteTest extends UnityWebPortalTestCase
