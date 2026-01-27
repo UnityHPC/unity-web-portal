@@ -101,6 +101,10 @@ class UnityUser
         if ($oldValue == $newValue) {
             return;
         }
+        $this->SQL->addLog(
+            sprintf("set_user_flag_%s_%s", $flag->value, $newValue ? "true" : "false"),
+            $this->uid,
+        );
         if ($newValue) {
             $this->LDAP->userFlagGroups[$flag->value]->addMemberUID($this->uid);
             if ($doSendMail) {
