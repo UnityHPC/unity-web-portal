@@ -50,11 +50,11 @@ class UnityGroup extends PosixGroup
             "user" => $this->getOwner()->uid,
             "org" => $this->getOwner()->getOrg(),
             "name" => $this->getOwner()->getFullName(),
-            "email" => $this->getOwnerAndManagerMails(),
+            "email" => $this->getOwner()->getMail(),
         ];
         $this->SQL->addRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         if ($send_mail) {
-            $this->MAILER->sendMail($this->getOwnerAndManagerMails(), "group_request");
+            $this->MAILER->sendMail($this->getOwner()->getMail(), "group_request");
             $this->WEBHOOK->sendWebhook("group_request_admin", $context);
             if ($send_mail_to_admins) {
                 $this->MAILER->sendMail("admin", "group_request_admin", $context);
@@ -134,7 +134,7 @@ class UnityGroup extends PosixGroup
         $this->SQL->removeRequest($this->getOwner()->uid, UnitySQL::REQUEST_BECOME_PI);
         $this->SQL->addLog("approved_group", $this->getOwner()->uid);
         if ($send_mail) {
-            $this->MAILER->sendMail($this->getOwnerAndManagerMails(), "group_created");
+            $this->MAILER->sendMail($this->getOwner()->getMail(), "group_created");
         }
         // having your own group makes you qualified
         $this->getOwner()->updateIsQualified($send_mail);
@@ -152,7 +152,7 @@ class UnityGroup extends PosixGroup
         }
         $this->SQL->addLog("denied_group", $this->getOwner()->uid);
         if ($send_mail) {
-            $this->MAILER->sendMail($this->getOwnerAndManagerMails(), "group_denied");
+            $this->MAILER->sendMail($this->getOwner()->getMail(), "group_denied");
         }
     }
 
