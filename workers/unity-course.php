@@ -43,10 +43,11 @@ $org = new UnityOrg($org_gid, $LDAP);
 if (!$org->exists()) {
     print "WARNING: creating new org '$org_gid'...\n";
 }
+$mail = ""; // temporary empty mail
+$course_user->init($givenName, $sn, $mail, $org_gid);
 
 $course_pi_group = $course_user->getPIGroup();
-$mail = $course_pi_group->addPlusAddressToMail($manager->getMail());
-$course_user->init($givenName, $sn, $mail, $org_gid);
+$course_user->setMail($course_pi_group->addPlusAddressToMail($manager->getMail()));
 
 if ($course_pi_group->exists()) {
     $course_pi_group_dn = $LDAP->getPIGroupEntry($course_pi_group->gid)->getDN();
