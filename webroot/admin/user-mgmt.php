@@ -21,6 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 require getTemplatePath("header.php");
 $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
+$flags_to_display = array_filter(UserFlag::cases(), fn($x) => $x !== UserFlag::DISABLED);
 ?>
 
 <h1>User Management</h1>
@@ -38,6 +39,9 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
             <th>Mail</th>
             <th>Groups</th>
             <th>Actions</th>
+<?php foreach ($flags_to_display as $flag) : ?>
+            <th><?php echo $flag->value; ?></th>
+<?php endforeach ?>
         </tr>
     </thead>
     <tbody>
@@ -51,9 +55,16 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
             "mail" => ["(not found)"]
         ]
     );
+    $users_with_flags = [];
+    foreach (UserFlag::cases() as $flag) {
+        $users_with_flags[$flag->value] = $LDAP->userFlagGroups[$flag->value]->getMemberUIDs();
+    }
     usort($user_attributes, fn ($a, $b) => strcmp($a["uid"][0], $b["uid"][0]));
     foreach ($user_attributes as $attributes) {
         $uid = $attributes["uid"][0];
+        if (in_array($uid, $users_with_flags[UserFlag::DISABLED->value])) {
+            continue;
+        }
         if ($SQL->accDeletionRequestExists($uid)) {
             echo "<tr style='color:#555555; font-style: italic'>";
         } else {
@@ -81,6 +92,12 @@ $CSRFTokenHiddenFormInput = UnityHTTPD::getCSRFTokenHiddenFormInput();
         <input type='submit' name='action' value='Access'>
         </form>";
         echo "</td>";
+        foreach ($flags_to_display as $flag) {
+            echo sprintf(
+                "<td>%s</td>",
+                in_array($uid, $users_with_flags[$flag->value]) ? $flag->value : ""
+            );
+        }
         echo "</tr>";
     }
     ?>
@@ -99,6 +116,9 @@ $(document).ready(() => {
             {responsivePriority: 2, render: dataTablesRenderMailtoLink}, // mail
             {responsivePriority: 3, searchable: false}, // groups
             {responsivePriority: 1, searchable: false}, // actions
+<?php foreach ($flags_to_display as $flag) : ?>
+            {visible: false}, // <?php echo $flag->value . "\n"?>
+<?php endforeach ?>
         ],
         layout: {topStart: {buttons: ['colvis']}}
     });
