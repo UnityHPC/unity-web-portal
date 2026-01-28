@@ -4,20 +4,11 @@ $_SERVER["HTTP_HOST"] = "course-creator"; // see deployment/overrides/course-cre
 include __DIR__ . "/init.php";
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityOrg;
-use UnityWebPortal\lib\UnityMailer;
 
 function cn2org($cn)
 {
     $matches = [];
     _preg_match("/.*_([^_]+_[^_]+)$/", $cn, $matches);
-    ensure(count($matches) == 2, "failed to extract org from cn: '$cn'");
-    return $matches[1];
-}
-
-function strip_org($cn)
-{
-    $matches = [];
-    _preg_match("/(.*)_[^_]+_[^_]+$/", $cn, $matches);
     ensure(count($matches) == 2, "failed to extract org from cn: '$cn'");
     return $matches[1];
 }
@@ -52,8 +43,7 @@ $org = new UnityOrg($org_gid, $LDAP);
 if (!$org->exists()) {
     print "WARNING: creating new org '$org_gid'...\n";
 }
-$mail = UnityMailer::formatPlusAddress($manager->getMail(), strip_org($cn));
-$course_user->init($givenName, $sn, $mail, $org_gid);
+$course_user->init($givenName, $sn, "", $org_gid); // mail attribute will be set shortly after
 
 $course_pi_group = $course_user->getPIGroup();
 if ($course_pi_group->exists()) {
@@ -61,7 +51,8 @@ if ($course_pi_group->exists()) {
     _die("course PI group already exists: '$course_pi_group_dn'", 1);
 }
 $course_pi_group->requestGroup(false, false);
-$course_pi_group->approveGroup();
+$course_pi_group->approveGroup(false);
+$course_user->setMail($course_pi_group->addPlusAddressToMail($manager->getMail()));
 
 $course_pi_group->newUserRequest($manager, false);
 $course_pi_group->approveUser($manager);

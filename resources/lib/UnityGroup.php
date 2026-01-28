@@ -490,19 +490,20 @@ class UnityGroup extends PosixGroup
         parent::removeMemberUID($uid);
     }
 
-    private function getShortName(): string
+    public function addPlusAddressToMail(string $mail): string
     {
         $matches = [];
         $owner_uid = $this->getOwner()->uid;
         _preg_match("/(.*)_[^_]+_[^_]+$/", $owner_uid, $matches);
         ensure(count($matches) == 2, "failed to extract org from uid: '$owner_uid'");
-        return $matches[1];
+        $short_name = $matches[1];
+        $parts = explode("@", $mail, 2);
+        return sprintf("%s+%s@%s", $parts[0], $short_name, $parts[1]);
     }
 
     /** @return string[] */
     private function getOwnerMailAndPlusAddressedManagerMails(): array
     {
-        $shortName = $this->getShortName();
         $mails = [$this->getOwner()->getMail()];
         foreach ($this->getManagerUIDs() as $manager_uid) {
             $manager = new UnityUser(
@@ -512,7 +513,7 @@ class UnityGroup extends PosixGroup
                 $this->MAILER,
                 $this->WEBHOOK,
             );
-            array_push($mails, UnityMailer::formatPlusAddress($manager->getMail(), $shortName));
+            array_push($mails, $this->addPlusAddressToMail($manager->getMail()));
         }
         $mails = array_unique($mails);
         sort($mails);
