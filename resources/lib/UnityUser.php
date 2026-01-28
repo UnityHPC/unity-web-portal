@@ -63,7 +63,7 @@ class UnityUser
         ]);
         \ensure(!$this->entry->exists());
         $this->entry->create([
-            "objectclass" => UnityLDAP::POSIX_ACCOUNT_CLASS,
+            "objectclass" => ["inetorgperson", "posixAccount", "top", "ldapPublicKey"],
             "uid" => $this->uid,
             "givenname" => $firstname,
             "sn" => $lastname,
@@ -91,6 +91,7 @@ class UnityUser
         return $this->LDAP->userFlagGroups[$flag->value]->memberUIDExists($this->uid);
     }
 
+    /** if you want to set the "disabled" flag, you should probably use disable() or reEnable() */
     public function setFlag(
         UserFlag $flag,
         bool $newValue,
@@ -424,6 +425,31 @@ class UnityUser
             count($this->getPIGroupGIDs()) !== 0,
             doSendMail: $send_mail,
             doSendMailAdmin: false,
+        );
+    }
+
+    public function disable(bool $send_mail = true, bool $send_mail_admin = true): void
+    {
+        foreach ($this->LDAP->getNonDisabledPIGroupGIDsWithMemberUID($this->uid) as $gid) {
+            $group = new UnityGroup($gid, $this->LDAP, $this->SQL, $this->MAILER, $this->WEBHOOK);
+            $group->removeMemberUID($this->uid);
+        }
+        $this->entry->removeAttribute("sshPublicKey");
+        $this->setFlag(
+            UserFlag::DISABLED,
+            true,
+            doSendMail: $send_mail,
+            doSendMailAdmin: $send_mail_admin,
+        );
+    }
+
+    public function reEnable(bool $send_mail = true, bool $send_mail_admin = true): void
+    {
+        $this->setFlag(
+            UserFlag::DISABLED,
+            false,
+            doSendMail: $send_mail,
+            doSendMailAdmin: $send_mail_admin,
         );
     }
 }
