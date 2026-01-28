@@ -503,6 +503,7 @@ class UnityGroup extends PosixGroup
     /** @return string[] */
     private function getOwnerMailAndPlusAddressedManagerMails(): array
     {
+        $shortName = $this->getShortName();
         $mails = [$this->getOwner()->getMail()];
         foreach ($this->getManagerUIDs() as $manager_uid) {
             $manager = new UnityUser(
@@ -512,10 +513,7 @@ class UnityGroup extends PosixGroup
                 $this->MAILER,
                 $this->WEBHOOK,
             );
-            array_push(
-                $mails,
-                UnityMailer::formatPlusAddress($manager->getMail(), $this->getShortName()),
-            );
+            array_push($mails, UnityMailer::formatPlusAddress($manager->getMail(), $shortName));
         }
         $mails = array_unique($mails);
         sort($mails);
