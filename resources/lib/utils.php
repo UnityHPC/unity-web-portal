@@ -213,7 +213,7 @@ function _preg_replace(
 /**
  * @param 0|256|512|768 $flags
  * @param null|array{} $matches
- * @param-out array<list<int|string|null>|string|null> $matches
+ * @param-out string[] $matches
  * @throws Exception
  */
 function _preg_match(
@@ -223,10 +223,26 @@ function _preg_match(
     int $flags = 0,
     int $offset = 0,
 ): int {
-    $output = preg_match($pattern, $subject, $matches, $flags, $offset);
+    $dirty_matches = [];
+    $output = preg_match($pattern, $subject, $dirty_matches, $flags, $offset);
     if ($output === false) {
         throw new Exception("preg_match returned false!");
     }
+    $clean_matches = [];
+    foreach ($dirty_matches as $i => $match) {
+        if (!is_string($match)) {
+            throw new Exception(
+                sprintf(
+                    "preg_match made matches '%s', but match index %s is not a string!",
+                    _json_encode($matches),
+                    $i,
+                ),
+            );
+        } else {
+            array_push($clean_matches, $match);
+        }
+    }
+    $matches = $clean_matches;
     return $output;
 }
 

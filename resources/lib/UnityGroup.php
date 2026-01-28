@@ -104,9 +104,13 @@ class UnityGroup extends PosixGroup
         }
         $this->SQL->addLog("reenabled_pi_group", $this->gid);
         if ($send_mail) {
-            $this->MAILER->sendMail($this->getOwnerAndManagerMails(), "group_reenabled", [
-                "group_name" => $this->gid,
-            ]);
+            $this->MAILER->sendMail(
+                $this->getOwnerMailAndPlusAddressedManagerMails(),
+                "group_reenabled",
+                [
+                    "group_name" => $this->gid,
+                ],
+            );
         }
         $this->setIsDisabled(false);
         $owner_uid = $this->getOwner()->uid;
@@ -177,7 +181,7 @@ class UnityGroup extends PosixGroup
         $this->SQL->removeRequest($user->uid, $this->gid);
         if ($send_mail) {
             $this->MAILER->sendMail(
-                $this->getOwnerAndManagerMails(),
+                $this->getOwnerMailAndPlusAddressedManagerMails(),
                 "group_join_request_cancelled",
                 ["uid" => $user->uid],
             );
@@ -202,13 +206,17 @@ class UnityGroup extends PosixGroup
             $this->MAILER->sendMail($new_user->getMail(), "group_user_added", [
                 "group" => $this->gid,
             ]);
-            $this->MAILER->sendMail($this->getOwnerAndManagerMails(), "group_user_added_owner", [
-                "group" => $this->gid,
-                "user" => $new_user->uid,
-                "name" => $new_user->getFullname(),
-                "email" => $new_user->getMail(),
-                "org" => $new_user->getOrg(),
-            ]);
+            $this->MAILER->sendMail(
+                $this->getOwnerMailAndPlusAddressedManagerMails(),
+                "group_user_added_owner",
+                [
+                    "group" => $this->gid,
+                    "user" => $new_user->uid,
+                    "name" => $new_user->getFullname(),
+                    "email" => $new_user->getMail(),
+                    "org" => $new_user->getOrg(),
+                ],
+            );
         }
         $new_user->updateIsQualified($send_mail); // being in a group makes you qualified
     }
@@ -226,13 +234,17 @@ class UnityGroup extends PosixGroup
             $this->MAILER->sendMail($new_user->getMail(), "group_user_denied", [
                 "group" => $this->gid,
             ]);
-            $this->MAILER->sendMail($this->getOwnerAndManagerMails(), "group_user_denied_owner", [
-                "group" => $this->gid,
-                "user" => $new_user->uid,
-                "name" => $new_user->getFullName(),
-                "email" => $new_user->getMail(),
-                "org" => $new_user->getOrg(),
-            ]);
+            $this->MAILER->sendMail(
+                $this->getOwnerMailAndPlusAddressedManagerMails(),
+                "group_user_denied_owner",
+                [
+                    "group" => $this->gid,
+                    "user" => $new_user->uid,
+                    "name" => $new_user->getFullName(),
+                    "email" => $new_user->getMail(),
+                    "org" => $new_user->getOrg(),
+                ],
+            );
         }
     }
 
@@ -253,13 +265,17 @@ class UnityGroup extends PosixGroup
             $this->MAILER->sendMail($new_user->getMail(), "group_user_removed", [
                 "group" => $this->gid,
             ]);
-            $this->MAILER->sendMail($this->getOwnerAndManagerMails(), "group_user_removed_owner", [
-                "group" => $this->gid,
-                "user" => $new_user->uid,
-                "name" => $new_user->getFullName(),
-                "email" => $new_user->getMail(),
-                "org" => $new_user->getOrg(),
-            ]);
+            $this->MAILER->sendMail(
+                $this->getOwnerMailAndPlusAddressedManagerMails(),
+                "group_user_removed_owner",
+                [
+                    "group" => $this->gid,
+                    "user" => $new_user->uid,
+                    "name" => $new_user->getFullName(),
+                    "email" => $new_user->getMail(),
+                    "org" => $new_user->getOrg(),
+                ],
+            );
         }
         // if user is no longer in any PI group, disqualify them
         $new_user->updateIsQualified($send_mail);
@@ -283,13 +299,17 @@ class UnityGroup extends PosixGroup
             $this->MAILER->sendMail($new_user->getMail(), "group_user_request", [
                 "group" => $this->gid,
             ]);
-            $this->MAILER->sendMail($this->getOwnerAndManagerMails(), "group_user_request_owner", [
-                "group" => $this->gid,
-                "user" => $new_user->uid,
-                "name" => $new_user->getFullname(),
-                "email" => $new_user->getMail(),
-                "org" => $new_user->getOrg(),
-            ]);
+            $this->MAILER->sendMail(
+                $this->getOwnerMailAndPlusAddressedManagerMails(),
+                "group_user_request_owner",
+                [
+                    "group" => $this->gid,
+                    "user" => $new_user->uid,
+                    "name" => $new_user->getFullname(),
+                    "email" => $new_user->getMail(),
+                    "org" => $new_user->getOrg(),
+                ],
+            );
         }
     }
 
@@ -472,8 +492,16 @@ class UnityGroup extends PosixGroup
         parent::removeMemberUID($uid);
     }
 
+    private function getShortName(): string
+    {
+        $matches = [];
+        _preg_match("/(.*)_[^_]+_[^_]+$/", $this->gid, $matches);
+        ensure(count($matches) == 2, "failed to extract org from gid: '$this->gid'");
+        return $matches[1];
+    }
+
     /** @return string[] */
-    private function getOwnerAndManagerMails(): array
+    private function getOwnerMailAndPlusAddressedManagerMails(): array
     {
         $mails = [$this->getOwner()->getMail()];
         foreach ($this->getManagerUIDs() as $manager_uid) {
@@ -484,7 +512,10 @@ class UnityGroup extends PosixGroup
                 $this->MAILER,
                 $this->WEBHOOK,
             );
-            array_push($mails, $manager->getMail());
+            array_push(
+                $mails,
+                UnityMailer::formatPlusAddress($manager->getMail(), $this->getShortName()),
+            );
         }
         $mails = array_unique($mails);
         sort($mails);

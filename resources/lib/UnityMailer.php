@@ -127,4 +127,10 @@ class UnityMailer extends PHPMailer
             return false;
         }
     }
+
+    public static function formatPlusAddress(string $email, string $plus): string
+    {
+        $parts = explode("@", $email, 2);
+        return sprintf("%s+%s@%s", $parts[0], $plus, $parts[1]);
+    }
 }

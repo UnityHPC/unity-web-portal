@@ -4,6 +4,7 @@ $_SERVER["HTTP_HOST"] = "course-creator"; // see deployment/overrides/course-cre
 include __DIR__ . "/init.php";
 use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityOrg;
+use UnityWebPortal\lib\UnityMailer;
 
 function cn2org($cn)
 {
@@ -11,12 +12,6 @@ function cn2org($cn)
     _preg_match("/.*_([^_]+_[^_]+)$/", $cn, $matches);
     ensure(count($matches) == 2, "failed to extract org from cn: '$cn'");
     return $matches[1];
-}
-
-function insert_plus_address($email, $plus)
-{
-    $parts = explode("@", $email, 2);
-    return $parts[0] . "+" . $plus . "@" . $parts[1];
 }
 
 function strip_org($cn)
@@ -57,7 +52,7 @@ $org = new UnityOrg($org_gid, $LDAP);
 if (!$org->exists()) {
     print "WARNING: creating new org '$org_gid'...\n";
 }
-$mail = insert_plus_address($manager->getMail(), strip_org($cn));
+$mail = UnityMailer::formatPlusAddress($manager->getMail(), strip_org($cn));
 $course_user->init($givenName, $sn, $mail, $org_gid);
 
 $course_pi_group = $course_user->getPIGroup();
