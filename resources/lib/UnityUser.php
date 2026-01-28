@@ -91,6 +91,7 @@ class UnityUser
         return $this->LDAP->userFlagGroups[$flag->value]->memberUIDExists($this->uid);
     }
 
+    /** if you want to set the "disabled" flag, you should probably use disable() or reEnable() */
     public function setFlag(
         UserFlag $flag,
         bool $newValue,
@@ -437,6 +438,16 @@ class UnityUser
         $this->setFlag(
             UserFlag::DISABLED,
             true,
+            doSendMail: $send_mail,
+            doSendMailAdmin: $send_mail_admin,
+        );
+    }
+
+    public function reEnable(bool $send_mail = true, bool $send_mail_admin = true): void
+    {
+        $this->setFlag(
+            UserFlag::DISABLED,
+            false,
             doSendMail: $send_mail,
             doSendMailAdmin: $send_mail_admin,
         );
