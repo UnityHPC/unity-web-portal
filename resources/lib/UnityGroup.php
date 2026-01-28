@@ -492,11 +492,10 @@ class UnityGroup extends PosixGroup
 
     public function addPlusAddressToMail(string $mail): string
     {
-        $matches = [];
-        $owner_uid = $this->getOwner()->uid;
-        _preg_match("/(.*)_[^_]+_[^_]+$/", $owner_uid, $matches);
-        ensure(count($matches) == 2, "failed to extract org from uid: '$owner_uid'");
-        $short_name = $matches[1];
+        $owner = $this->getOwner();
+        $org = $owner->getOrg();
+        ensure(str_ends_with($owner->uid, $org));
+        $short_name = substr($owner->uid, 0, -1 * strlen($org));
         $parts = explode("@", $mail, 2);
         return sprintf("%s+%s@%s", $parts[0], $short_name, $parts[1]);
     }
