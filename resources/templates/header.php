@@ -153,7 +153,7 @@ if (isset($SSO)) {
     if (count($messages) >= 3) {
         echo "<button id='clear_all_messages_button'>Clear All Messages</button>";
     }
-    foreach ($messages as [$title, $body, $level]) {
+    foreach (array_reverse($messages) as [$title, $body, $level]) {
         echo sprintf(
             "
               <div class='message %s'>
