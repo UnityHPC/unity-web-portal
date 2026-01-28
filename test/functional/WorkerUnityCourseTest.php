@@ -7,7 +7,7 @@ class WorkerUnityCourseTest extends UnityWebPortalTestCase
     private static array $course_owner_name = ["cs124", "Fall 2025"];
     private static string $manager_uid = "user2_org1_test";
     private static string $manager_mail = "user2@org1.test";
-    private static string $courseOwnerMail = "user2+cs124_org1_test@org1.test";
+    private static string $courseOwnerMail = "user2+cs124@org1.test";
 
     public function testCreateCourse()
     {
