@@ -199,7 +199,7 @@ echo "
         <form
             action=''
             method='POST'
-            onsubmit='return confirm(\"Are you sure you want to disable your PI group?\")'
+            onsubmit='return confirm(\"🚨 Are you sure you want to DISABLE your PI group? 🚨\")'
         >
             $CSRFTokenHiddenFormInput
             <input type='hidden' name='form_type' value='disable'>
