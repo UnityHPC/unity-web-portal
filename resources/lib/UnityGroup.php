@@ -495,8 +495,9 @@ class UnityGroup extends PosixGroup
     private function getShortName(): string
     {
         $matches = [];
-        _preg_match("/(.*)_[^_]+_[^_]+$/", $this->getOwner()->uid, $matches);
-        ensure(count($matches) == 2, "failed to extract org from gid: '$this->gid'");
+        $owner_uid = $this->getOwner()->uid;
+        _preg_match("/(.*)_[^_]+_[^_]+$/", $owner_uid, $matches);
+        ensure(count($matches) == 2, "failed to extract org from uid: '$owner_uid'");
         return $matches[1];
     }
 
