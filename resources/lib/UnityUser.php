@@ -63,7 +63,7 @@ class UnityUser
         ]);
         \ensure(!$this->entry->exists());
         $this->entry->create([
-            "objectclass" => UnityLDAP::POSIX_ACCOUNT_CLASS,
+            "objectclass" => ["inetorgperson", "posixAccount", "top", "ldapPublicKey"],
             "uid" => $this->uid,
             "givenname" => $firstname,
             "sn" => $lastname,
@@ -434,7 +434,6 @@ class UnityUser
             $group->removeMemberUID($this->uid);
         }
         $this->entry->removeAttribute("sshPublicKey");
-        $this->entry->removeAttribute("mail");
         $this->setFlag(
             UserFlag::DISABLED,
             true,
