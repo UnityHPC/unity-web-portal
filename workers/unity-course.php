@@ -13,20 +13,6 @@ function cn2org($cn)
     return $matches[1];
 }
 
-function insert_plus_address($email, $plus)
-{
-    $parts = explode("@", $email, 2);
-    return $parts[0] . "+" . $plus . "@" . $parts[1];
-}
-
-function strip_org($cn)
-{
-    $matches = [];
-    _preg_match("/(.*)_[^_]+_[^_]+$/", $cn, $matches);
-    ensure(count($matches) == 2, "failed to extract org from cn: '$cn'");
-    return $matches[1];
-}
-
 // if array is length 1 then replace it with its one element
 function flatten_attributes(array $attributes): array
 {
@@ -57,10 +43,12 @@ $org = new UnityOrg($org_gid, $LDAP);
 if (!$org->exists()) {
     print "WARNING: creating new org '$org_gid'...\n";
 }
-$mail = insert_plus_address($manager->getMail(), strip_org($cn));
+$mail = ""; // temporary empty mail
 $course_user->init($givenName, $sn, $mail, $org_gid);
 
 $course_pi_group = $course_user->getPIGroup();
+$course_user->setMail($course_pi_group->addPlusAddressToMail($manager->getMail()));
+
 if ($course_pi_group->exists()) {
     $course_pi_group_dn = $LDAP->getPIGroupEntry($course_pi_group->gid)->getDN();
     _die("course PI group already exists: '$course_pi_group_dn'", 1);
