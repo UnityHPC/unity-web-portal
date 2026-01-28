@@ -211,7 +211,7 @@ function _preg_replace(
 }
 
 /**
- * @param 0|256|512|768 $flags
+ * @param 0|768 $flags
  * @param null|array{} $matches
  * @param-out string[] $matches
  * @throws Exception
@@ -223,6 +223,12 @@ function _preg_match(
     int $flags = 0,
     int $offset = 0,
 ): int {
+    if ($flags & PREG_UNMATCHED_AS_NULL) {
+        throw new Exception("PREG_UNMATCHED_AS_NULL flag is forbidden");
+    }
+    if ($flags & PREG_OFFSET_CAPTURE) {
+        throw new Exception("PREG_OFFSET_CAPTURE flag is forbidden");
+    }
     $dirty_matches = [];
     $output = preg_match($pattern, $subject, $dirty_matches, $flags, $offset);
     if ($output === false) {
