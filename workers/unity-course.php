@@ -55,7 +55,7 @@ $course_user->init($givenName, $sn, $mail, $org_gid);
 $course_user->setFlag(UserFlag::IMMORTAL, true, false, true);
 
 $course_pi_group = $course_user->getPIGroup();
-$course_user->setMail($course_pi_group->addPlusAddressToMail($manager->getMail()));
+$course_user->setMail($course_pi_group->addPlusAddressToMail($managers[0]->getMail()));
 
 if ($course_pi_group->exists()) {
     $course_pi_group_dn = $LDAP->getPIGroupEntry($course_pi_group->gid)->getDN();
