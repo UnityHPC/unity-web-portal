@@ -39,6 +39,9 @@ $cn = strtolower(
 $manager_uids = parse_comma_delimited_list(
     readline("Enter the UID(s) of the group manager(s) (example: simonleary_umass_edu,bryank_uri_edu): ")
 );
+if (count($manager_uids) === 0) {
+    _die("at least one group manager UID is required", 1);
+}
 $org_gid = cn2org($cn);
 
 $managers = [];
