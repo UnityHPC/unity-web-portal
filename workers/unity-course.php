@@ -67,7 +67,7 @@ $course_pi_group->approveGroup();
 foreach ($managers as $manager) {
     $course_pi_group->newUserRequest($manager, false);
     $course_pi_group->approveUser($manager);
-    $course_pi_group->addManagerUID($manager_uid);   
+    $course_pi_group->addManagerUID($manager_uid);
 }
 
 print "LDAP entries created:\n";
