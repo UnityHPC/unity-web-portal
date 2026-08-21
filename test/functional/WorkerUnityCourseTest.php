@@ -6,7 +6,7 @@ class WorkerUnityCourseTest extends UnityWebPortalTestCase
     private static string $course_gid = "pi_cs124_org1_test";
     private static array $course_owner_name = ["cs124", "Fall 2025"];
     private static string $test1_manager_uid = "user2_org1_test";
-    private static array $test2_manager_uids = ["user1_org1_test", "user2_org1_test"];
+    private static array $test2_manager_uids = ["user2_org1_test", "user1_org1_test"];
     private static string $manager_mail = "user2@org1.test";
     private static string $courseOwnerMail = "user2+cs124@org1.test";
 
