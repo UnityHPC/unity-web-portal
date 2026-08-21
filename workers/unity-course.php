@@ -20,19 +20,36 @@ function flatten_attributes(array $attributes): array
     return array_map(fn($v) => count($v) === 1 ? $v[0] : $v, $attributes);
 }
 
+/** return string[] */
+function parse_comma_delimited_list(string $input): array
+{
+    $output = trim($input);
+    $output = explode(",", $output);
+    $output = array_map("trim", $output);
+    $output = array_unique($output);
+    $output = array_filter($output, fn($x) => $x !== "");
+    return $output;
+}
+
 $givenName = trim(readline("Enter the course ID (example: CS123): "));
 $sn = trim(readline("Enter the year and semester of the course (example: Fall 2025): "));
 $cn = strtolower(
     trim(readline("Please enter the cn to be used for the course (example: cs123_umass_edu): ")),
 );
-$manager_uid = trim(
-    readline("Enter the UID of the group manager (example: simonleary_umass_edu): "),
+$manager_uids = parse_comma_delimited_list(
+    readline("Enter the UID(s) of the group manager(s) (example: simonleary_umass_edu,bryank_uri_edu): ")
 );
+if (count($manager_uids) === 0) {
+    _die("at least one group manager UID is required", 1);
+}
 $org_gid = cn2org($cn);
 
-$manager = new UnityUser($manager_uid, $LDAP, $SQL, $MAILER);
-if (!$manager->exists()) {
-    _die("no such user: '$manager_uid'", 1);
+$managers = [];
+foreach ($manager_uids as $manager_uid) {
+    array_push($managers, new UnityUser($manager_uid, $LDAP, $SQL, $MAILER));
+    if (!end($managers)->exists()) {
+        _die("no such user: '$manager_uid'", 1);
+    }
 }
 
 $course_user = new UnityUser($cn, $LDAP, $SQL, $MAILER);
@@ -49,7 +66,7 @@ $course_user->init($givenName, $sn, $mail, $org_gid);
 $course_user->setFlag(UserFlag::IMMORTAL, true, false, true);
 
 $course_pi_group = $course_user->getPIGroup();
-$course_user->setMail($course_pi_group->addPlusAddressToMail($manager->getMail()));
+$course_user->setMail($course_pi_group->addPlusAddressToMail($managers[0]->getMail()));
 
 if ($course_pi_group->exists()) {
     $course_pi_group_dn = $LDAP->getPIGroupEntry($course_pi_group->gid)->getDN();
@@ -58,9 +75,11 @@ if ($course_pi_group->exists()) {
 $course_pi_group->requestGroup(false, false);
 $course_pi_group->approveGroup();
 
-$course_pi_group->newUserRequest($manager, false);
-$course_pi_group->approveUser($manager);
-$course_pi_group->addManagerUID($manager_uid);
+foreach ($managers as $manager) {
+    $course_pi_group->newUserRequest($manager, false);
+    $course_pi_group->approveUser($manager);
+    $course_pi_group->addManagerUID($manager->uid);
+}
 
 print "LDAP entries created:\n";
 print _json_encode(
