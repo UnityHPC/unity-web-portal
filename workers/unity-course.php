@@ -6,14 +6,6 @@ use UnityWebPortal\lib\UnityUser;
 use UnityWebPortal\lib\UnityOrg;
 use UnityWebPortal\lib\UserFlag;
 
-function cn2org($cn)
-{
-    $matches = [];
-    _preg_match("/.*_([^_]+_[^_]+)$/", $cn, $matches);
-    assert(count($matches) == 2, "failed to extract org from cn: '$cn'");
-    return $matches[1];
-}
-
 // if array is length 1 then replace it with its one element
 function flatten_attributes(array $attributes): array
 {
@@ -32,17 +24,21 @@ function parse_comma_delimited_list(string $input): array
 }
 
 $givenName = trim(readline("Enter the course ID (example: CS123): "));
+if (!_preg_match("/^[a-zA-Z0-9_-]+$/", $givenName)) {
+    _die("error: course ID '$givenName' contains invalid characters", 1);
+}
 $sn = trim(readline("Enter the year and semester of the course (example: Fall 2025): "));
-$cn = strtolower(
-    trim(readline("Please enter the cn to be used for the course (example: cs123_umass_edu): ")),
-);
+$org_gid = strtolower(trim(readline("Please enter the organization (example: umass_edu): ")));
+if (!_preg_match("/^[a-z0-9_]+$/", $org_gid)) {
+    _die("error: organization '$org_gid' contains invalid characters", 1);
+}
+$cn = implode("_", [strtolower($givenName), $org_gid]);
 $manager_uids = parse_comma_delimited_list(
     readline("Enter the UID(s) of the group manager(s) (example: simonleary_umass_edu,bryank_uri_edu): ")
 );
 if (count($manager_uids) === 0) {
     _die("at least one group manager UID is required", 1);
 }
-$org_gid = cn2org($cn);
 
 $managers = [];
 foreach ($manager_uids as $manager_uid) {

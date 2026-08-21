@@ -2,9 +2,11 @@
 
 class WorkerUnityCourseTest extends UnityWebPortalTestCase
 {
+    private static string $course_id = "cs124";
+    private static string $course_org = "org1_test";
     private static string $course_owner_uid = "cs124_org1_test";
     private static string $course_gid = "pi_cs124_org1_test";
-    private static array $course_owner_name = ["cs124", "Fall 2025"];
+    private static string $course_semester = "Fall 2025";
     private static string $test1_manager_uid = "user2_org1_test";
     private static array $test2_manager_uids = ["user2_org1_test", "user1_org1_test"];
     private static string $test2_manager_uids_str = " user2_org1_test , user1_org1_test , ,,, user2_org1_test ";
@@ -23,9 +25,9 @@ class WorkerUnityCourseTest extends UnityWebPortalTestCase
         $this->assertFalse($pi_group_entry->exists());
         $this->assertFalse($owner_user_entry->exists());
         $stdin_file = writeLinesToTmpFile([
-            self::$course_owner_name[0],
-            self::$course_owner_name[1],
-            self::$course_owner_uid,
+            self::$course_id,
+            self::$course_semester,
+            self::$course_org,
             self::$test1_manager_uid,
         ]);
         $stdin_file_path = getPathFromFileHandle($stdin_file);
@@ -62,9 +64,9 @@ class WorkerUnityCourseTest extends UnityWebPortalTestCase
         $this->assertFalse($pi_group_entry->exists());
         $this->assertFalse($owner_user_entry->exists());
         $stdin_file = writeLinesToTmpFile([
-            self::$course_owner_name[0],
-            self::$course_owner_name[1],
-            self::$course_owner_uid,
+            self::$course_id,
+            self::$course_semester,
+            self::$course_org,
             self::$test2_manager_uids_str,
         ]);
         $stdin_file_path = getPathFromFileHandle($stdin_file);
