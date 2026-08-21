@@ -25,14 +25,20 @@ $sn = trim(readline("Enter the year and semester of the course (example: Fall 20
 $cn = strtolower(
     trim(readline("Please enter the cn to be used for the course (example: cs123_umass_edu): ")),
 );
-$manager_uid = trim(
-    readline("Enter the UID of the group manager (example: simonleary_umass_edu): "),
+$manager_uids = explode(
+    ",",
+    trim(
+        readline("Enter the UID(s) of the group manager(s) (example: simonleary_umass_edu,bryank_uri_edu): ")
+    )
 );
 $org_gid = cn2org($cn);
 
-$manager = new UnityUser($manager_uid, $LDAP, $SQL, $MAILER);
-if (!$manager->exists()) {
-    _die("no such user: '$manager_uid'", 1);
+$managers = [];
+for ($manager_uid in $manager_uids) {
+    array_push($managers, new UnityUser($manager_uid, $LDAP, $SQL, $MAILER));
+    if (!end($managers)->exists()) {
+        _die("no such user: '$manager_uid'", 1);
+    }    
 }
 
 $course_user = new UnityUser($cn, $LDAP, $SQL, $MAILER);
@@ -58,9 +64,11 @@ if ($course_pi_group->exists()) {
 $course_pi_group->requestGroup(false, false);
 $course_pi_group->approveGroup();
 
-$course_pi_group->newUserRequest($manager, false);
-$course_pi_group->approveUser($manager);
-$course_pi_group->addManagerUID($manager_uid);
+for ($manager in $managers) {
+    $course_pi_group->newUserRequest($manager, false);
+    $course_pi_group->approveUser($manager);
+    $course_pi_group->addManagerUID($manager_uid);   
+}
 
 print "LDAP entries created:\n";
 print _json_encode(
