@@ -20,21 +20,24 @@ function flatten_attributes(array $attributes): array
     return array_map(fn($v) => count($v) === 1 ? $v[0] : $v, $attributes);
 }
 
+/** return string[] */
+function parse_comma_delimited_list(string $input): array
+{
+    $output = trim($input);
+    $output = explode(",", $output);
+    $output = array_map("trim", $output);
+    $output = array_unique($output);
+    $output = array_filter($output, fn($x) => $x !== "");
+    return $output;
+}
+
 $givenName = trim(readline("Enter the course ID (example: CS123): "));
 $sn = trim(readline("Enter the year and semester of the course (example: Fall 2025): "));
 $cn = strtolower(
     trim(readline("Please enter the cn to be used for the course (example: cs123_umass_edu): ")),
 );
-$manager_uids = array_unique(
-    array_map(
-        "trim",
-        explode(
-            ",",
-            trim(
-                readline("Enter the UID(s) of the group manager(s) (example: simonleary_umass_edu,bryank_uri_edu): ")
-            )
-        )
-    )
+$manager_uids = parse_comma_delimited_list(
+    readline("Enter the UID(s) of the group manager(s) (example: simonleary_umass_edu,bryank_uri_edu): ")
 );
 $org_gid = cn2org($cn);
 
