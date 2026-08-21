@@ -7,6 +7,7 @@ class WorkerUnityCourseTest extends UnityWebPortalTestCase
     private static array $course_owner_name = ["cs124", "Fall 2025"];
     private static string $test1_manager_uid = "user2_org1_test";
     private static array $test2_manager_uids = ["user2_org1_test", "user1_org1_test"];
+    private static string $test2_manager_uids_str = " user2_org1_test , user1_org1_test , user2_org1_test ";
     private static string $manager_mail = "user2@org1.test";
     private static string $courseOwnerMail = "user2+cs124@org1.test";
 
@@ -64,7 +65,7 @@ class WorkerUnityCourseTest extends UnityWebPortalTestCase
             self::$course_owner_name[0],
             self::$course_owner_name[1],
             self::$course_owner_uid,
-            implode(",", self::$test2_manager_uids),
+            self::$test2_manager_uids_str,
         ]);
         $stdin_file_path = getPathFromFileHandle($stdin_file);
         try {

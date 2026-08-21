@@ -25,10 +25,15 @@ $sn = trim(readline("Enter the year and semester of the course (example: Fall 20
 $cn = strtolower(
     trim(readline("Please enter the cn to be used for the course (example: cs123_umass_edu): ")),
 );
-$manager_uids = explode(
-    ",",
-    trim(
-        readline("Enter the UID(s) of the group manager(s) (example: simonleary_umass_edu,bryank_uri_edu): ")
+$manager_uids = array_unique(
+    array_map(
+        "trim",
+        explode(
+            ",",
+            trim(
+                readline("Enter the UID(s) of the group manager(s) (example: simonleary_umass_edu,bryank_uri_edu): ")
+            )
+        )
     )
 );
 $org_gid = cn2org($cn);
