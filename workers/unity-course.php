@@ -34,7 +34,7 @@ $manager_uids = explode(
 $org_gid = cn2org($cn);
 
 $managers = [];
-for ($manager_uids as $manager_uid) {
+foreach ($manager_uids as $manager_uid) {
     array_push($managers, new UnityUser($manager_uid, $LDAP, $SQL, $MAILER));
     if (!end($managers)->exists()) {
         _die("no such user: '$manager_uid'", 1);
@@ -64,7 +64,7 @@ if ($course_pi_group->exists()) {
 $course_pi_group->requestGroup(false, false);
 $course_pi_group->approveGroup();
 
-for ($managers as $manager) {
+foreach ($managers as $manager) {
     $course_pi_group->newUserRequest($manager, false);
     $course_pi_group->approveUser($manager);
     $course_pi_group->addManagerUID($manager_uid);   
