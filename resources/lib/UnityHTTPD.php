@@ -100,9 +100,10 @@ class UnityHTTPD
             // text may not be shown in the webpage in an obvious way, so make a popup
             self::alert(implode(" -- ", [$title, ...$body_paragraphs]));
             echo sprintf(
-                "<h1>%s</h1>\n%s\n",
+                "<h1>%s</h1>\n%s\n<br>\n<a href='%s'>Go to Home</a>",
                 htmlspecialchars($title),
                 implode("\n<br>\n", $body_paragraphs),
+                getRelativeURL("/index.php"),
             );
             // display_errors should not be enabled in production
             if (
