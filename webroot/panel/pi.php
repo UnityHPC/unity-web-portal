@@ -20,7 +20,7 @@ if (($gid = $_GET["gid"] ?? null) !== null) {
     $group = $USER->getPIGroup();
     $user_is_owner = true;
     if (!$group->exists()) {
-        UnityHTTPD::badRequest("not a PI", "You are not a PI.");
+        UnityHTTPD::forbidden("not a PI", "You are not a PI.");
     }
 }
 
