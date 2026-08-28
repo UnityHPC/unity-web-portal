@@ -22,11 +22,7 @@
 ### Setting up your Environment
 
 1. Clone this repo (including submodules): `git clone <this-repo> --recurse-submodules`
-1. Install php v8.3
-1. Install PHP extensions (`apt install php-curl php-intl php-ldap php-mbstring php-mysql php-pdo php-xml` on Ubuntu)
-1. install [composer](https://getcomposer.org/)
-1. install PHP dependencies: `composer install`
-1. If you're on Windows, use [WSL](https://learn.microsoft.com/en-us/windows/wsl/)
+1. Install php v8.3 (used only for syntax checking)
 1. Download and install [docker desktop](https://www.docker.com/products/docker-desktop/)
    1. Linux users only: Download and install docker compose plugin (`apt install docker-compose-plugin && ln -s /usr/libexec/docker/cli-plugins/docker-compose /bin/docker-compose` on Ubuntu)
 1. `docker login`
@@ -35,8 +31,6 @@
 1. Install [pre-commit](https://pre-commit.com/)
 1. setup pre-commit hooks: `pre-commit install`
 1. Install modern implementation of grep (not macOS builtin grep): `brew install grep`
-1. Install `npm`
-1. Install nodeJS tools: `npm install`
 1. If using vscode, Copy the recommended config: `cp ./.vscode/settings-recommended.jsonc ./.vscode/settings.json`
 
 ### Environment Usage
